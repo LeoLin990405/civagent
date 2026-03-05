@@ -6,6 +6,10 @@
 
 ![系统架构](./images/flow-architecture.png)
 
+
+> 📌 **关于原创性** — 本项目首次提交于 **2026-02-22**（[commit 记录](https://github.com/wanikua/boluobobo-ai-court-tutorial/commits/main)），是「用中国古代官制隐喻 AI 多 Agent 协作」这一概念的原始实现。我们注意到 [cft0808/edict](https://github.com/cft0808/edict)（首次提交 2026-02-23，晚约 21 小时）在框架选型、SOUL.md 人格文件、install.sh 部署方式、竞品对比表格等方面与本项目高度一致，详见 [Issue #55](https://github.com/cft0808/edict/issues/55)。
+>
+> **欢迎转载，请注明出处。**
 ---
 
 ## 为什么选这套方案？
@@ -262,22 +266,6 @@ clawdbot doctor
 
 - [Clawdbot 官方文档](https://docs.clawd.bot)
 - [Clawdbot GitHub](https://github.com/clawdbot/clawdbot)
-
----
-
-## 📌 关于原创性 / Originality Notice
-
-本项目是「用中国古代官制隐喻 AI 多 Agent 协作」这一概念的原始实现，首次提交于 **2026-02-22**（[commit 记录](https://github.com/wanikua/boluobobo-ai-court-tutorial/commits/main)）。
-
-我们注意到 [cft0808/edict](https://github.com/cft0808/edict) 项目（首次提交 2026-02-23，晚于本项目约 21 小时）在以下方面与本项目高度一致：
-
-- 基于同一框架（OpenClaw / Clawdbot）
-- 相同的 SOUL.md 人格文件结构
-- 相同的 install.sh 一键部署方式
-- 相似的竞品对比表格（CrewAI / MetaGPT / AutoGen）
-
-详见 [Issue #55](https://github.com/cft0808/edict/issues/55)。
----
 
 ## ⚠️ 免责声明 / Disclaimer
 
