@@ -265,6 +265,20 @@ clawdbot doctor
 
 ---
 
+## 📌 关于原创性 / Originality Notice
+
+本项目是「用中国古代官制隐喻 AI 多 Agent 协作」这一概念的原始实现，首次提交于 **2026-02-22**（[commit 记录](https://github.com/wanikua/boluobobo-ai-court-tutorial/commits/main)）。
+
+我们注意到 [cft0808/edict](https://github.com/cft0808/edict) 项目（首次提交 2026-02-23，晚于本项目约 21 小时）在以下方面与本项目高度一致：
+
+- 基于同一框架（OpenClaw / Clawdbot）
+- 相同的 SOUL.md 人格文件结构
+- 相同的 install.sh 一键部署方式
+- 相似的竞品对比表格（CrewAI / MetaGPT / AutoGen）
+
+详见 [Issue #55](https://github.com/cft0808/edict/issues/55)。
+---
+
 ## ⚠️ 免责声明 / Disclaimer
 
 本项目按"原样"提供，不承担任何直接或间接责任。/ This project is provided "as is" without any warranties.
