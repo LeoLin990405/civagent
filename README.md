@@ -262,8 +262,6 @@ clawdbot doctor
 
 - [Clawdbot 官方文档](https://docs.clawd.bot)
 - [Clawdbot GitHub](https://github.com/clawdbot/clawdbot)
-- [云服务商 免费套餐](https://www.你的云服务商/)
-- [LLM API](https://你的LLM服务商控制台)
 
 ---
 
