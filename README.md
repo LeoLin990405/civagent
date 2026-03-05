@@ -150,6 +150,7 @@ clawdbot cron add \
 
 ### 🤖 多 Agent 协作
 每个部门是独立 Bot，@谁谁回复，@everyone 全员响应。大任务自动新建 Thread 保持频道整洁。
+> ⚠️ 想让 Bot 之间互相触发（如成语接龙、多 Bot 讨论），需在 `clawdbot.json` 的 `channels.discord` 中加上 `"allowBots": true`。不加的话 Bot 默认忽略其他 Bot 的消息。同时每个 account 都要设置 `"groupPolicy": "open"`，否则群聊消息会被静默丢弃。
 
 ### 🧠 独立记忆系统
 每个 Agent 有独立的工作区和 `memory/` 目录。对话积累的项目知识会持久化到文件，跨会话保留。Agent 越用越懂你的项目。

@@ -240,6 +240,7 @@ cat > "$CONFIG_DIR/clawdbot.json" << CONFIG_EOF
     "discord": {
       "enabled": true,
       "groupPolicy": "open",
+      "allowBots": true,
       "accounts": {
         "main": {
           "name": "司礼监",
