@@ -10,6 +10,8 @@
 > 📌 **关于原创性** — 本项目首次提交于 **2026-02-22**（[commit 记录](https://github.com/wanikua/boluobobo-ai-court-tutorial/commits/main)），是「用中国古代官制隐喻 AI 多 Agent 协作」这一概念的原始实现。我们注意到 [cft0808/edict](https://github.com/cft0808/edict)（首次提交 2026-02-23，晚约 21 小时）在框架选型、SOUL.md 人格文件、install.sh 部署方式、竞品对比表格等方面与本项目高度一致，详见 [Issue #55](https://github.com/cft0808/edict/issues/55)。
 >
 > **欢迎转载，请注明出处。**
+>
+> 📕 小红书原创系列：[赛博皇帝的日常：睡前下旨，AI连夜肝完代码](https://www.xiaohongshu.com/discovery/item/69a95dc3000000002801e886) | [用AI当上皇帝的第3天，我已经欲罢不能了](https://www.xiaohongshu.com/discovery/item/6998638f000000000d0092fe)
 ---
 
 ## 为什么选这套方案？
