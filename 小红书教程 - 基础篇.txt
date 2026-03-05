@@ -343,6 +343,7 @@ nano ~/.clawdbot/clawdbot.json
     "discord": {
       "enabled": true,
       "groupPolicy": "open",
+      "allowBots": true,
       "accounts": {
         "main": {
           "name": "司礼监",
@@ -394,6 +395,9 @@ nano ~/.clawdbot/clawdbot.json
 💡 注意 groupPolicy: "open" 这个配置很重要！
 不加的话默认是 "allowlist"，Bot 会静默丢弃所有群聊消息。
 channels 和每个 account 里都要加。
+💡 allowBots: true 也很关键！
+加了之后 Bot 之间才能互相看到消息、互相触发回复。
+不加的话 Bot 会忽略其他 Bot 的消息，多 Bot 协作就玩不起来。
 
 ━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -458,6 +462,7 @@ channels 和每个 account 里都要加。
 - JSON 格式要正确，逗号、括号不能少
 - API Key 两边的引号不要丢
 - groupPolicy: "open" 不能漏！channels 和每个 account 里都要加
+- allowBots: true 不能漏！不加的话 Bot 之间互相看不到消息
 - 每个 Bot 都要开 Message Content Intent！漏了就收不到消息
 
 
