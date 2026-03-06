@@ -1153,7 +1153,7 @@ function readGatewayLogs(opts = {}) {
     } catch {
       // Fallback: read from clawdbot log file
       const logPaths = [
-        '/home/ubuntu/.clawdbot/logs/gateway.log',
+        `${HOME}/.clawdbot/logs/gateway.log`,
         '/tmp/clawdbot.log',
         '/tmp/boluo-gui.log',
       ];
