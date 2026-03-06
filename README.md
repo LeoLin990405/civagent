@@ -263,6 +263,15 @@ clawdbot doctor
 
 ---
 
+## 🏛️ 加入朝会
+
+| 公众号「菠言菠语」 | 微信群「OpenClaw 皇帝交流群」 |
+|:---:|:---:|
+| ![公众号](./images/qr-wechat-official.jpg) | ![微信群](./images/qr-wechat-group.png) |
+| 关注获取最新教程和更新 | 群二维码过期请关注公众号获取最新入口 |
+
+---
+
 ## 相关链接
 
 - [AI 朝廷 Skill — 中文版](https://github.com/wanikua/ai-court-skill)

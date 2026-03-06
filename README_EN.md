@@ -262,6 +262,15 @@ clawdbot doctor
 
 ---
 
+## 🏛️ Join the Court
+
+| WeChat Official: 菠言菠语 | WeChat Group: OpenClaw Emperors |
+|:---:|:---:|
+| ![WeChat Official](./images/qr-wechat-official.jpg) | ![WeChat Group](./images/qr-wechat-group.png) |
+| Follow for tutorials & updates | If QR expired, follow the official account for latest link |
+
+---
+
 ## Related Links
 
 - [AI Court Skill — Chinese](https://github.com/wanikua/ai-court-skill)
