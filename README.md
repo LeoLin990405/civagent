@@ -1,3 +1,5 @@
+[English Version](./README_EN.md)
+
 # 🏛️ 30 分钟搭建你的 AI 朝廷
 
 > 一台免费服务器 + [Clawdbot](https://github.com/clawdbot/clawdbot) = 一支 7×24 在线的 AI 团队
