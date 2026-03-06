@@ -16,7 +16,7 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = 18790;
 
-const AUTH_TOKEN = process.env.BOLUO_AUTH_TOKEN || '351351wwW..';
+const AUTH_TOKEN = process.env.BOLUO_AUTH_TOKEN || '';
 
 const AGENT_DEPT_MAP = {
   'main': '司礼监', 'gongbu': '工部', 'hubu': '户部', 'libu': '吏部',
@@ -133,7 +133,7 @@ function getRecentLogs(limit = 100) {
 
 app.get('/api/status', authMiddleware, async (req, res) => {
   const config = getClawdbotConfig();
-  const defaultModel = config?.agents?.defaults?.model?.primary || 'minimax/MiniMax-M2.5';
+  const defaultModel = config?.agents?.defaults?.model?.primary || 'default';
 
   let agentIds = [];
   if (existsSync(AGENTS_DIR)) {
@@ -904,7 +904,7 @@ app.get('/api/notion/data', authMiddleware, (req, res) => {
 const WEATHER_DEFAULT_LOCATION = process.env.WEATHER_LOCATION || 'Beijing';
 
 app.get('/api/weather', authMiddleware, (req, res) => {
-  const location = req.query.location || WEATHER_DEFAULT_LOCATION;
+  const location = String(req.query.location || WEATHER_DEFAULT_LOCATION).replace(/[^a-zA-Z0-9,+\-_ .]/g, "");
   
   try {
     const output = require('child_process').execSync(`curl -s "wttr.in/${location}?format=j1"`, { 
@@ -1053,7 +1053,7 @@ app.get('/api/cron', authMiddleware, (req, res) => {
 });
 
 app.post('/api/cron/run/:id', authMiddleware, (req, res) => {
-  const { id } = req.params;
+  const id = req.params.id.replace(/[^a-zA-Z0-9_\-]/g, '');
   const { execSync } = require('child_process');
   try {
     execSync(`clawdbot cron run ${id}`, { encoding: 'utf-8', timeout: 10000 });
@@ -1066,7 +1066,7 @@ app.post('/api/cron/run/:id', authMiddleware, (req, res) => {
 // Cron enable/disable
 app.patch('/api/cron/jobs/:id', authMiddleware, (req, res) => {
   try {
-    const { id } = req.params;
+    const id = req.params.id.replace(/[^a-zA-Z0-9_\-]/g, '');
     const { enabled } = req.body;
     const { execSync } = require('child_process');
     
@@ -1145,7 +1145,7 @@ function readGatewayLogs(opts = {}) {
     // Try journalctl for clawdbot service logs
     const { execSync } = require('child_process');
     let cmd = 'journalctl -u clawdbot --no-pager -n 200 --output=short-iso 2>/dev/null';
-    if (since) cmd += ` --since="${since}"`;
+    if (since) cmd += ` --since="${String(since).replace(/[^a-zA-Z0-9:\-_ ]/g, "")}"`;
     
     let output = '';
     try {
