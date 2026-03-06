@@ -266,7 +266,7 @@ clawdbot doctor
 
 | Xiaohongshu (小红书) | WeChat Official: 菠言菠语 | WeChat Group: OpenClaw Emperors |
 |:---:|:---:|:---:|
-| [![Xiaohongshu](https://img.shields.io/badge/小红书-Follow-FF2442?style=for-the-badge&logo=xiaohongshu)](https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d) | ![WeChat Official](./images/qr-wechat-official.jpg) | ![WeChat Group](./images/qr-wechat-group.png) |
+| <a href="https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d"><img src="https://img.shields.io/badge/小红书-Follow-FF2442?style=for-the-badge&logo=xiaohongshu" height="180"/></a> | <img src="./images/qr-wechat-official.jpg" width="180"/> | <img src="./images/qr-wechat-group.png" width="180"/> |
 | [Profile](https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d) | Follow for tutorials & updates | If QR expired, follow the official account for latest link |
 
 ---
