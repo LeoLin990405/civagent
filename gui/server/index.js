@@ -30,7 +30,7 @@ const HOME = process.env.HOME || '/home/ubuntu';
 const AGENTS_DIR = join(HOME, '.clawdbot/agents');
 const CONFIG_PATH = join(HOME, '.clawdbot/clawdbot.json');
 
-app.use(cors());
+app.use(cors({ origin: ['https://gui.at2.one'] }));
 app.use(express.json());
 
 function authMiddleware(req, res, next) {
