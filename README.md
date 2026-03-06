@@ -302,3 +302,5 @@ clawdbot doctor
 ---
 
 v3.4 | MIT License
+
+> 📜 This project is licensed under MIT. If you create derivative works or projects inspired by this architecture, please credit the original: [boluobobo-ai-court-tutorial](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua)
