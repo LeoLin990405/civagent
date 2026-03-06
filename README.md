@@ -265,10 +265,10 @@ clawdbot doctor
 
 ## 🏛️ 加入朝会
 
-| 公众号「菠言菠语」 | 微信群「OpenClaw 皇帝交流群」 |
-|:---:|:---:|
-| ![公众号](./images/qr-wechat-official.jpg) | ![微信群](./images/qr-wechat-group.png) |
-| 关注获取最新教程和更新 | 群二维码过期请关注公众号获取最新入口 |
+| 小红书 | 公众号「菠言菠语」 | 微信群「OpenClaw 皇帝交流群」 |
+|:---:|:---:|:---:|
+| [![小红书](https://img.shields.io/badge/小红书-关注-FF2442?style=for-the-badge&logo=xiaohongshu)](https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d) | ![公众号](./images/qr-wechat-official.jpg) | ![微信群](./images/qr-wechat-group.png) |
+| [主页](https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d) | 关注获取最新教程和更新 | 群二维码过期请关注公众号获取最新入口 |
 
 ---
 
