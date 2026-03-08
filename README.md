@@ -684,6 +684,64 @@ openclaw pairing approve feishu <配对码>
 
 ---
 
+## 📝 接入 Notion（自动归档）
+
+AI 朝廷可以通过 Notion Skill 自动写日报、归档数据、管理知识库。配置只需 3 步。
+
+### 第一步：创建 Notion Integration
+
+1. 访问 [Notion Integrations](https://www.notion.so/profile/integrations)
+2. 点击 **New integration**（新建集成）
+3. 填写名称（如「AI 朝廷」），选择关联的 Workspace
+4. 创建后复制 **Internal Integration Secret**（格式 `ntn_xxx` 或 `secret_xxx`）
+
+### 第二步：存储 API Key
+
+```bash
+# 创建配置目录并保存 Key
+mkdir -p ~/.config/notion
+echo "ntn_你的token" > ~/.config/notion/api_key
+```
+
+### 第三步：授权页面/数据库
+
+这一步**很关键**，不做的话 API 会返回 404：
+
+1. 打开你想让 AI 访问的 Notion 页面或数据库
+2. 点击右上角 **`···`** → **Connect to**（连接到）
+3. 选择你刚创建的 Integration 名称
+4. 子页面会自动继承权限
+
+> ⚠️ **每个要访问的顶级页面/数据库都需要手动授权一次**，Integration 不会自动获得整个 Workspace 的权限。
+
+### 验证
+
+```bash
+# 测试 API 是否通了
+NOTION_KEY=$(cat ~/.config/notion/api_key)
+curl -s "https://api.notion.com/v1/users/me" \
+  -H "Authorization: Bearer $NOTION_KEY" \
+  -H "Notion-Version: 2025-09-03" | head -c 200
+```
+
+看到返回的 JSON 包含你的 Integration 名称就说明配置成功了。
+
+### 使用示例
+
+配好后就可以在 Discord 里让 Agent 操作 Notion：
+
+```
+@司礼监 把今天的工作总结写到 Notion 日报里
+@户部 创建一个新的财务数据库，字段包含日期、收入、支出、备注
+@礼部 把这周的社媒数据更新到 Notion 舆情表
+```
+
+> 💡 Notion 适合做**持久化存档**（日报/周报/知识库），Discord 适合做**实时交互**，两者配合效果最佳。
+>
+> 📖 Notion API 文档：[developers.notion.com](https://developers.notion.com)
+
+---
+
 ## 常见问题
 
 ### 基础问题
