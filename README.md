@@ -534,14 +534,27 @@ Agent 可以运行在 Docker 沙箱中，代码执行互不干扰。支持配置
 
 ### Web 管理后台（菠萝王朝 Dashboard）
 
-本项目内置了一套 Web 管理后台（`gui/` 目录），基于 React + TypeScript + Vite 构建，提供：
+本项目内置了一套 Web 管理后台（`gui/` 目录），基于 React + TypeScript + Vite 构建：
 
-- **📊 仪表盘**：实时查看各部门状态、Token 消耗、系统负载
-- **💬 朝堂**：直接在 Web 端与各部门 Bot 对话
-- **📋 会话管理**：查看所有历史会话、消息详情、Token 统计
-- **⏰ 定时任务**：可视化管理 Cron 任务（启用/禁用/手动触发）
-- **📈 Token 统计**：按部门、按日期的 Token 消耗分析
-- **🔧 系统健康**：CPU/内存/磁盘监控、Gateway 状态
+<p align="center">
+  <img src="./images/gui-court.png" alt="朝堂总览 — 各部门状态一目了然" width="90%" />
+  <br/>
+  <em>朝堂总览 — 御座、六部、诸院，在线状态一目了然</em>
+</p>
+
+<p align="center">
+  <img src="./images/gui-sessions.png" alt="会话管理 — Token 消耗、消息统计" width="90%" />
+  <br/>
+  <em>会话管理 — 88 个会话、9008 条消息、87.34M Token 消耗实时追踪</em>
+</p>
+
+功能包括：
+- **仪表盘**：实时查看各部门状态、Token 消耗、系统负载
+- **朝堂**：直接在 Web 端与各部门 Bot 对话
+- **会话管理**：查看所有历史会话、消息详情、Token 统计
+- **定时任务**：可视化管理 Cron 任务（启用/禁用/手动触发）
+- **Token 统计**：按部门、按日期的 Token 消耗分析
+- **系统健康**：CPU/内存/磁盘监控、Gateway 状态
 
 **启动方式：**
 ```bash
