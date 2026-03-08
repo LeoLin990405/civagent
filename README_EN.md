@@ -260,7 +260,7 @@ Cloud providers' free tiers (where available).
 ChatGPT is a single generalist that forgets everything when you close the tab. This system gives you multiple specialists — each agent has its own domain expertise, persistent memory, and tool permissions. They can automatically commit code to GitHub, write docs to Notion, and run tasks on a schedule.
 
 **Q: Can I use other models?**
-Yes. OpenClaw supports various LLM providers, OpenAI, Google Gemini, and others (including economy models). Just change the model config in `openclaw.json`. Different departments can use different models.
+Yes. OpenClaw supports Anthropic, OpenAI, Google Gemini, and any other provider compatible with the OpenAI API format. Just change the model config in `openclaw.json`. Different departments can use different models.
 
 **Q: How much does the API cost per month?**
 Depends on usage intensity. Light usage: $10–15/month, moderate: $20–30/month. Cost-saving tip: use power models for heavy tasks, fast models for light tasks (roughly 5× cheaper), and plug in economy models for simple tasks to save even more.
