@@ -202,7 +202,18 @@ Each agent is a standalone Discord Bot bound to its own AI identity:
 
 ### Step 1: One-Line Deployment (5 minutes)
 
-Grab a Linux server (ARM 4-core, 24 GB RAM recommended), SSH in, and run:
+Grab a Linux server and SSH in. Recommended providers:
+
+| Provider | Config | Cost |
+|----------|--------|------|
+| **Alibaba Cloud** | ECS 2C4G / ARM | Free trial / from ¥40/mo |
+| **Tencent Cloud** | Lighthouse 2C4G | Free trial / from ¥40/mo |
+| **AWS** | t4g.medium (ARM) | Free Tier 12 months |
+| **GCP** | e2-medium | Free Trial 90 days |
+| **Oracle Cloud** | ARM 4C24G | **Always Free** |
+| **Local Mac** | M1/M2/M3/M4 | No server needed |
+
+Then run:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
@@ -329,7 +340,7 @@ It's not just a chatbot — the built-in toolset covers the entire development l
 | Automation | Cron scheduled tasks, Heartbeat self-checks |
 | Media | TTS voice, Screenshots, Video frame extraction |
 | Operations | tmux remote control, Shell command execution |
-| Communication | Discord, Slack, Telegram, WhatsApp, Signal… |
+| Communication | Discord, Slack, Lark (Feishu), Telegram, WhatsApp, Signal… |
 | Extensions | OpenClaw Hub community Skills, Custom Skills |
 
 ### ⏰ Scheduled Tasks (Cron)

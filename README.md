@@ -77,7 +77,7 @@
 | 🛠️ **60+ 内置 Skill** | GitHub、Notion、浏览器、Cron、TTS 等开箱即用 |
 | ⏰ **自动化任务** | Cron 定时任务 + 心跳自检，7×24 无人值守 |
 | 🔒 **沙箱隔离** | Docker 容器隔离，Agent 代码执行互不干扰 |
-| 💬 **Discord 原生** | 手机电脑都能用，@mention 即可调用，零学习成本 |
+| 💬 **多平台支持** | Discord / 飞书 / Slack / Telegram 等，@mention 即可调用 |
 | 🖥️ **Web 管理后台** | React + TypeScript 构建的 Dashboard，可视化管理 |
 | 🌐 **OpenClaw 生态** | 基于 [OpenClaw](https://github.com/openclawai/openclaw) 框架，可使用 [OpenClaw Hub](https://github.com/openclawai/openclaw) 的 Skill 生态 |
 
@@ -233,14 +233,30 @@
 
 ### 第一步：一键部署（5 分钟）
 
-准备一台 Linux 服务器（推荐 ARM 4核 24GB），SSH 连上，跑这一行：
+准备一台 Linux 服务器，SSH 连上，选择对应的安装方式：
+
+#### 🖥️ 服务器推荐
+
+| 平台 | 推荐配置 | 费用 | 说明 |
+|------|----------|------|------|
+| **阿里云** | ECS 2核4G / ARM | 免费试用 / 低至 ¥40/月 | [领取免费试用](https://free.aliyun.com/) |
+| **腾讯云** | 轻量应用服务器 2核4G | 免费试用 / 低至 ¥40/月 | [领取免费试用](https://cloud.tencent.com/act/free) |
+| **华为云** | HECS 2核4G | 免费试用 | [领取免费试用](https://activity.huaweicloud.com/free_test/) |
+| **AWS** | t4g.medium (ARM) | 免费套餐 12 个月 | [Free Tier](https://aws.amazon.com/free/) |
+| **GCP** | e2-medium | 免费套餐 90 天 | [Free Trial](https://cloud.google.com/free) |
+| **Oracle Cloud** | ARM 4核24G | **永久免费** | [Always Free](https://www.oracle.com/cloud/free/) |
+| **本地 Mac** | M1/M2/M3/M4 | 无需服务器 | 见下方 Mac 安装 |
+
+> 💡 推荐 ARM 架构 + 4GB 以上内存。如果只跑司礼监（单 Agent），2GB 内存也够用。
+
+#### 🐧 Linux 一键安装
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
 ```
 
 脚本自动完成：
-- ✅ 系统更新 + 云服务商防火墙配置
+- ✅ 系统更新 + 防火墙配置（自动适配阿里云/腾讯云/Oracle 等）
 - ✅ 4GB Swap（防 OOM）
 - ✅ Node.js 22 + GitHub CLI + Chromium
 - ✅ OpenClaw 全局安装
@@ -494,7 +510,7 @@ openclaw cron add \
 | 自动化 | Cron 定时任务、心跳自检 |
 | 媒体 | TTS 语音、截图、视频帧提取 |
 | 运维 | tmux 远程控制、Shell 命令执行 |
-| 通信 | Discord、Slack、Telegram、WhatsApp、Signal… |
+| 通信 | Discord、Slack、飞书（Lark）、Telegram、WhatsApp、Signal… |
 | 扩展 | OpenClaw Hub 社区 Skill、自定义 Skill |
 
 ### ⏰ 定时任务（Cron）
