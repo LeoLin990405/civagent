@@ -6,7 +6,7 @@
 
 ### 30-Minute Setup · Multi-Agent Collaboration · Zero Code · Ancient Governance Wisdom × Modern AI Management
 
-> **Modeled after the Ming Dynasty's Three Departments and Six Ministries (三省六部制), built on the [OpenClaw](https://github.com/openclawai/openclaw) framework.**
+> **Modeled after the Ming Dynasty's Three Departments and Six Ministries (三省六部制), built on the [OpenClaw](https://github.com/openclaw/openclaw) framework.**
 > One server + OpenClaw = A 24/7 AI imperial court at your command.
 
 <p align="center">
@@ -47,7 +47,7 @@ These concepts map perfectly to modern multi-agent system design needs. **Ancien
 | 🔒 **Sandbox Isolation** | Docker container isolation, agent code runs independently |
 | 💬 **Native Discord** | Works on phone & desktop, @mention to invoke, zero learning curve |
 | 🖥️ **Web Dashboard** | React + TypeScript dashboard for visual management |
-| 🌐 **OpenClaw Ecosystem** | Built on [OpenClaw](https://github.com/openclawai/openclaw), access the [OpenClaw Hub](https://github.com/openclawai/openclaw) Skill ecosystem |
+| 🌐 **OpenClaw Ecosystem** | Built on [OpenClaw](https://github.com/openclaw/openclaw), access the [OpenClaw Hub](https://github.com/openclaw/openclaw) Skill ecosystem |
 
 ### 🏢 Prefer a Corporate Edition?
 
@@ -66,7 +66,7 @@ If you're more familiar with modern corporate management concepts, we have an **
 | 吏部 Personnel Ministry | VP Product / PMO | Project management, team coordination |
 | 刑部 Justice Ministry | General Counsel | Legal compliance, contract review |
 
-> 💡 Both projects are built on the same [OpenClaw](https://github.com/openclawai/openclaw) framework with identical architecture — only the role names and cultural context differ. Pick the style you prefer!
+> 💡 Both projects are built on the same [OpenClaw](https://github.com/openclaw/openclaw) framework with identical architecture — only the role names and cultural context differ. Pick the style you prefer!
 
 ---
 
@@ -208,6 +208,7 @@ Grab a Linux server and SSH in. Recommended providers:
 |----------|--------|------|
 | **Alibaba Cloud** | ECS 2C4G / ARM | Free trial / from ¥40/mo |
 | **Tencent Cloud** | Lighthouse 2C4G | Free trial / from ¥40/mo |
+| **Huawei Cloud** | HECS 2C4G | Free trial |
 | **AWS** | t4g.medium (ARM) | Free Tier 12 months |
 | **GCP** | e2-medium | Free Trial 90 days |
 | **Oracle Cloud** | ARM 4C24G | **Always Free** |
@@ -313,7 +314,7 @@ Under Shangshu Province were the **Six Ministries**, each managing its own domai
 | **户部 hubu** — Revenue | Census & taxation | Finance & operations | Power Model | Cost analysis, budgeting, e-commerce operations |
 | **礼部 libu** — Rites | Ceremonies & diplomacy | Brand & marketing | Fast Model | Copywriting, social media, content strategy |
 | **工部 gongbu** — Works | Engineering & construction | Infrastructure | Fast Model | DevOps, CI/CD, server management |
-| **吏部 libu** — Personnel | Official selection | Project management | Fast Model | Startup incubation, task tracking, team coordination |
+| **吏部 libu2** — Personnel | Official selection | Project management | Fast Model | Startup incubation, task tracking, team coordination |
 | **刑部 xingbu** — Justice | Law & punishment | Legal & compliance | Fast Model | Contract review, intellectual property, compliance checks |
 
 > 💡 Model tiering strategy: Use power models for heavy tasks (coding/analysis), fast models for light tasks (copywriting/management) — saves roughly 5× on costs. You can also plug in economy models for further savings.
@@ -330,7 +331,7 @@ Each department is its own Bot. @mention one and it responds; @everyone triggers
 Each agent has its own workspace and `memory/` directory. Project knowledge accumulated through conversations is persisted to files and retained across sessions. The more you use an agent, the better it understands your project.
 
 ### 🛠️ 60+ Built-in Skills (Powered by OpenClaw Ecosystem)
-It's not just a chatbot — the built-in toolset covers the entire development lifecycle, and you can extend with more Skills from [OpenClaw Hub](https://github.com/openclawai/openclaw):
+It's not just a chatbot — the built-in toolset covers the entire development lifecycle, and you can extend with more Skills from [OpenClaw Hub](https://github.com/openclaw/openclaw):
 
 | Category | Skills |
 |----------|--------|
@@ -364,14 +365,27 @@ Beyond Discord command-line interaction, the AI Court also offers multiple graph
 
 ### Web Dashboard (Boluo Dynasty Dashboard)
 
-This project includes a built-in Web management dashboard (in the `gui/` directory), built with React + TypeScript + Vite, providing:
+This project includes a built-in Web management dashboard (in the `gui/` directory), built with React + TypeScript + Vite:
 
-- **📊 Dashboard**: Real-time view of department status, token consumption, system load
-- **💬 Court Hall**: Chat directly with department Bots from the web interface
-- **📋 Session Management**: Browse all historical sessions, message details, token stats
-- **⏰ Cron Jobs**: Visual management of scheduled tasks (enable/disable/manual trigger)
-- **📈 Token Analytics**: Token consumption breakdown by department and date
-- **🔧 System Health**: CPU/memory/disk monitoring, Gateway status
+<p align="center">
+  <img src="./images/gui-court.png" alt="Court Overview — all departments at a glance" width="90%" />
+  <br/>
+  <em>Court Overview — Throne, Six Ministries, and Auxiliary Offices with live status</em>
+</p>
+
+<p align="center">
+  <img src="./images/gui-sessions.png" alt="Session Management — token consumption and message stats" width="90%" />
+  <br/>
+  <em>Session Management — 88 sessions, 9008 messages, 87.34M tokens tracked in real-time</em>
+</p>
+
+Features include:
+- **Dashboard**: Real-time view of department status, token consumption, system load
+- **Court Hall**: Chat directly with department Bots from the web interface
+- **Session Management**: Browse all historical sessions, message details, token stats
+- **Cron Jobs**: Visual management of scheduled tasks (enable/disable/manual trigger)
+- **Token Analytics**: Token consumption breakdown by department and date
+- **System Health**: CPU/memory/disk monitoring, Gateway status
 
 **How to start:**
 ```bash
@@ -461,7 +475,7 @@ No. OpenClaw maintains independent sessions for each user × agent combination. 
 Yes. Agents can use `sessions_spawn` to delegate sub-tasks to other agents, or `sessions_send` to message another agent's session. For example, 司礼监 (Chief Steward) can assign coding tasks to 兵部 bingbu.
 
 **Q: How do I create custom Skills?**
-OpenClaw has a built-in Skill Creator tool for creating custom Skills. Each Skill is a directory containing `SKILL.md` (instructions) + scripts + resources. Place it in the `skills/` directory of your workspace, and agents can use it immediately. You can also find community-shared Skills on [OpenClaw Hub](https://github.com/openclawai/openclaw).
+OpenClaw has a built-in Skill Creator tool for creating custom Skills. Each Skill is a directory containing `SKILL.md` (instructions) + scripts + resources. Place it in the `skills/` directory of your workspace, and agents can use it immediately. You can also find community-shared Skills on [OpenClaw Hub](https://github.com/openclaw/openclaw).
 
 **Q: How do I connect private models (Ollama, etc.)?**
 Add an OpenAI API-compatible provider in the `models.providers` section of `openclaw.json`, pointing `baseUrl` to your Ollama address. Local Ollama models have zero API costs.
@@ -483,8 +497,8 @@ openclaw doctor
 
 | Xiaohongshu (小红书) | WeChat Official: 菠言菠语 | WeChat Group: OpenClaw Emperors |
 |:---:|:---:|:---:|
-| <a href="https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d"><img src="https://img.shields.io/badge/小红书-Follow-FF2442?style=for-the-badge&logo=xiaohongshu" height="180"/></a> | <img src="./images/qr-wechat-official.jpg" width="180"/> | <img src="./images/qr-wechat-group.png" width="180"/> |
-| [Profile](https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d) | Follow for tutorials & updates | If QR expired, follow the official account for latest link |
+| <a href="https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d"><img src="./images/avatar-xiaohongshu.png" width="180" style="border-radius:50%"/></a> | <img src="./images/qr-wechat-official.jpg" width="180"/> | <img src="./images/qr-wechat-group.png" width="180"/> |
+| [@菠萝菠菠🍍](https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d) | Follow for tutorials & updates | If QR expired, follow the official account for latest link |
 
 ---
 
@@ -492,7 +506,7 @@ openclaw doctor
 
 - 🏢 [Become CEO — Corporate Edition](https://github.com/wanikua/become-ceo) — Same architecture, modern corporate roles
 - 🎭 [AI Court Skill — Chinese](https://github.com/wanikua/ai-court-skill)
-- 🔧 [OpenClaw Framework](https://github.com/openclawai/openclaw) — The underlying framework for this project
+- 🔧 [OpenClaw Framework](https://github.com/openclaw/openclaw) — The underlying framework for this project
 - 📖 [OpenClaw Official Documentation](https://docs.openclaw.ai)
 
 ## ⚠️ 免责声明 / Disclaimer

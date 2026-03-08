@@ -6,7 +6,7 @@
 
 ### 30 分钟搭建 · 多 Agent 协作 · 零代码 · 古代治国智慧 × 现代 AI 管理
 
-> **以明朝三省六部制为蓝本，用 [OpenClaw](https://github.com/openclawai/openclaw) 框架构建的多 Agent 协作系统。**
+> **以明朝三省六部制为蓝本，用 [OpenClaw](https://github.com/openclaw/openclaw) 框架构建的多 Agent 协作系统。**
 > 一台服务器 + OpenClaw = 一支 7×24 在线的 AI 朝廷。
 
 <p align="center">
@@ -79,7 +79,7 @@
 | **沙箱隔离** | Docker 容器隔离，Agent 代码执行互不干扰 |
 | **多平台支持** | Discord / 飞书 / Slack / Telegram 等，@mention 即可调用 |
 | **Web 管理后台** | React + TypeScript 构建的 Dashboard，可视化管理 |
-| **OpenClaw 生态** | 基于 [OpenClaw](https://github.com/openclawai/openclaw) 框架，可使用 [OpenClaw Hub](https://github.com/openclawai/openclaw) 的 Skill 生态 |
+| **OpenClaw 生态** | 基于 [OpenClaw](https://github.com/openclaw/openclaw) 框架，可使用 [OpenClaw Hub](https://github.com/openclaw/openclaw) 的 Skill 生态 |
 
 ### 想要企业版？
 
@@ -98,7 +98,7 @@
 | 吏部 | VP Product / PMO | 项目管理、团队协调 |
 | 刑部 | General Counsel | 法务合规、合同审查 |
 
-> 💡 两个项目基于相同的 [OpenClaw](https://github.com/openclawai/openclaw) 框架，架构完全一致，只是角色命名和文化背景不同。选你喜欢的风格即可！
+> 💡 两个项目基于相同的 [OpenClaw](https://github.com/openclaw/openclaw) 框架，架构完全一致，只是角色命名和文化背景不同。选你喜欢的风格即可！
 
 ---
 
@@ -167,7 +167,7 @@
 ```
 
 每个 Agent 绑定一个 Discord Bot 账号，由同一个 Gateway 进程统一管理：
-- **独立会话**：每个 Agent 有独立的会话存储（`~/.clawdbot/agents/<agentId>/sessions`），互不干扰
+- **独立会话**：每个 Agent 有独立的会话存储（`~/.openclaw/agents/<agentId>/sessions`），互不干扰
 - **独立模型**：重活用强力模型，轻活用快速模型，省钱又高效
 - **独立沙箱**：可配置 Docker 沙箱隔离，每个 Agent 独立容器
 - **身份注入**：Gateway 自动将 SOUL.md + IDENTITY.md + 工作区文件组装为系统提示
@@ -288,7 +288,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 
 ```bash
 # 编辑配置，填入 API Key 和 Bot Token
-# 完整安装脚本用 ~/.openclaw/openclaw.json，精简脚本用 ~/.clawdbot/clawdbot.json
+# 配置文件路径取决于安装的包：openclaw 用 ~/.openclaw/openclaw.json，clawdbot 用 ~/.clawdbot/clawdbot.json
 nano ~/.openclaw/openclaw.json
 
 # 启动朝廷
@@ -502,7 +502,7 @@ openclaw cron add \
 每个 Agent 有独立的工作区和 `memory/` 目录。对话积累的项目知识会持久化到文件，跨会话保留。Agent 越用越懂你的项目。
 
 ### 60+ 内置 Skill（基于 OpenClaw 生态）
-不只是聊天——内置的工具覆盖开发全流程，且可通过 [OpenClaw Hub](https://github.com/openclawai/openclaw) 扩展更多 Skill：
+不只是聊天——内置的工具覆盖开发全流程，且可通过 [OpenClaw Hub](https://github.com/openclaw/openclaw) 扩展更多 Skill：
 
 | 类别 | Skill |
 |------|-------|
@@ -646,7 +646,7 @@ sandbox mode 设成 `all` 会把 Agent 跑在 Docker 容器里，默认只读文
 能。Agent 可以通过 `sessions_spawn` 产生子任务给其他 Agent，也可以通过 `sessions_send` 发消息给其他 Agent 的会话。比如司礼监可以把编码任务派给兵部。
 
 **Q: 怎么自定义 Skill？**
-OpenClaw 有内置的 Skill Creator 工具，可以创建自定义 Skill。每个 Skill 是一个包含 `SKILL.md`（指令）+ 脚本 + 资源的目录。放到工作区的 `skills/` 目录下即可被 Agent 使用。也可以从 [OpenClaw Hub](https://github.com/openclawai/openclaw) 获取社区共享的 Skill。
+OpenClaw 有内置的 Skill Creator 工具，可以创建自定义 Skill。每个 Skill 是一个包含 `SKILL.md`（指令）+ 脚本 + 资源的目录。放到工作区的 `skills/` 目录下即可被 Agent 使用。也可以从 [OpenClaw Hub](https://github.com/openclaw/openclaw) 获取社区共享的 Skill。
 
 **Q: 怎么接入私有模型（Ollama 等）？**
 在 `openclaw.json` 的 `models.providers` 中添加兼容 OpenAI API 格式的 provider，指定 `baseUrl` 到你的 Ollama 地址即可。Ollama 本地模型零 API 费用。
@@ -677,7 +677,7 @@ openclaw doctor
 
 - 🏢 [Become CEO — 企业版（English）](https://github.com/wanikua/become-ceo) — 同一架构的现代企业版
 - 🎭 [AI 朝廷 Skill — 中文版](https://github.com/wanikua/ai-court-skill)
-- 🔧 [OpenClaw 框架](https://github.com/openclawai/openclaw) — 本项目的底层框架
+- 🔧 [OpenClaw 框架](https://github.com/openclaw/openclaw) — 本项目的底层框架
 - 📖 [OpenClaw 官方文档](https://docs.openclaw.ai)
 
 ## 免责声明 / Disclaimer
