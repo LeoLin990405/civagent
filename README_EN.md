@@ -331,7 +331,6 @@ openclaw doctor
 
 - [AI Court Skill — Chinese](https://github.com/wanikua/ai-court-skill)
 - [Become CEO — English](https://github.com/wanikua/become-ceo)
-
 - [OpenClaw Official Documentation](https://docs.openclaw.ai)
 - [OpenClaw GitHub](https://github.com/openclawai/openclaw)
 
