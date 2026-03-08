@@ -208,17 +208,11 @@ This project includes a built-in Web management dashboard (in the `gui/` directo
 
 **How to start:**
 ```bash
-# Enter the GUI directory
-cd gui/server
-
-# Install dependencies
-npm install
+# Build the frontend
+cd gui && npm install && npm run build
 
 # Start the backend API server (default port 18790)
-node index.js
-
-# Build the frontend
-cd .. && npm install && npm run build
+cd server && npm install && node index.js
 ```
 
 Access at: `http://your-server-ip:18790`

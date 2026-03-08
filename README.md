@@ -215,17 +215,11 @@ Agent 可以运行在 Docker 沙箱中，代码执行互不干扰。支持配置
 
 **启动方式：**
 ```bash
-# 进入 GUI 目录
-cd gui/server
-
-# 安装依赖
-npm install
+# 构建前端
+cd gui && npm install && npm run build
 
 # 启动后端 API 服务（默认端口 18790）
-node index.js
-
-# 访问前端（需要先构建）
-cd .. && npm install && npm run build
+cd server && npm install && node index.js
 ```
 
 访问地址：`http://你的服务器IP:18790`
