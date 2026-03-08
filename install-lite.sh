@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================
-# AI 朝廷精简配置脚本（适用于已装好 OpenClaw 的用户）
+# AI 朝廷精简配置脚本（适用于已装好 OpenClaw 或 Clawdbot 的用户）
 # 跳过系统依赖，只初始化工作区 + 生成配置模板
 # ============================================
 set -e
@@ -50,7 +50,13 @@ echo ""
 # ---- 初始化工作区 ----
 echo -e "${YELLOW}[1/3] 初始化朝廷工作区...${NC}"
 WORKSPACE="$HOME/clawd"
-CONFIG_DIR="$HOME/.clawdbot"
+if [ "$CLI_CMD" = "openclaw" ]; then
+    CONFIG_DIR="$HOME/.openclaw"
+    CONFIG_FILE="openclaw.json"
+else
+    CONFIG_DIR="$HOME/.clawdbot"
+    CONFIG_FILE="clawdbot.json"
+fi
 mkdir -p "$WORKSPACE"
 mkdir -p "$CONFIG_DIR"
 cd "$WORKSPACE"
@@ -119,14 +125,14 @@ mkdir -p memory
 # ---- 生成配置文件 ----
 echo -e "${YELLOW}[2/3] 生成配置文件...${NC}"
 
-if [ -f "$CONFIG_DIR/clawdbot.json" ]; then
-    echo -e "  ${YELLOW}⚠ 配置文件已存在，备份为 clawdbot.json.bak${NC}"
-    cp "$CONFIG_DIR/clawdbot.json" "$CONFIG_DIR/clawdbot.json.bak"
+if [ -f "$CONFIG_DIR/$CONFIG_FILE" ]; then
+    echo -e "  ${YELLOW}⚠ 配置文件已存在，备份为 ${CONFIG_FILE}.bak${NC}"
+    cp "$CONFIG_DIR/$CONFIG_FILE" "$CONFIG_DIR/${CONFIG_FILE}.bak"
 fi
 
 if [ "$MODE_CHOICE" = "2" ]; then
 # ==================== 纯 WebUI 模式 ====================
-cat > "$CONFIG_DIR/clawdbot.json" << CONFIG_EOF
+cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
 {
   "models": {
     "providers": {
@@ -166,7 +172,7 @@ echo -e "  ${GREEN}✓ WebUI 模式配置已生成${NC}"
 
 else
 # ==================== Discord 多Bot模式 ====================
-cat > "$CONFIG_DIR/clawdbot.json" << CONFIG_EOF
+cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
 {
   "models": {
     "providers": {
@@ -317,14 +323,14 @@ echo -e "${GREEN}🎉 工作区初始化完成！${NC}"
 echo "================================"
 echo ""
 echo -e "  工作区：${CYAN}$WORKSPACE${NC}"
-echo -e "  配置文件：${CYAN}$CONFIG_DIR/clawdbot.json${NC}"
+echo -e "  配置文件：${CYAN}$CONFIG_DIR/$CONFIG_FILE${NC}"
 echo ""
 
 if [ "$MODE_CHOICE" = "2" ]; then
 echo -e "  ${YELLOW}接下来只需要 3 步：${NC}"
 echo ""
 echo "  1. 编辑配置文件，填入 LLM API Key："
-echo "     nano ~/.clawdbot/clawdbot.json"
+echo "     nano $CONFIG_DIR/$CONFIG_FILE"
 echo ""
 echo "  2. 启动 Gateway："
 echo "     $CLI_CMD gateway --verbose"
@@ -336,13 +342,13 @@ else
 echo -e "  ${YELLOW}接下来需要 3 步：${NC}"
 echo ""
 echo "  1. 编辑配置文件，填入 LLM API Key："
-echo "     nano ~/.clawdbot/clawdbot.json"
+echo "     nano $CONFIG_DIR/$CONFIG_FILE"
 echo ""
 echo "  2. 创建 Discord Bot（每个部门一个）："
 echo "     a) 访问 https://discord.com/developers/applications"
 echo "     b) 创建 Application → Bot → 复制 Token"
 echo "     c) 重复创建多个 Bot（司礼监、兵部、户部...按需）"
-echo "     d) 把每个 Token 填到 clawdbot.json 的 accounts 对应位置"
+echo "     d) 把每个 Token 填到 $CONFIG_FILE 的 accounts 对应位置"
 echo "     e) 每个 Bot 都要开启 Message Content Intent"
 echo "     f) 邀请所有 Bot 到你的 Discord 服务器"
 echo ""
