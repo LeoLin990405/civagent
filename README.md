@@ -17,6 +17,14 @@
   <img src="https://img.shields.io/badge/部署-5分钟-red?style=for-the-badge" />
 </p>
 
+<p align="center">
+  <img src="./images/flow-architecture.png" alt="系统架构流程图" width="80%" />
+</p>
+
+<p align="center">
+  <img src="./images/discord-architecture.png" alt="Discord 朝廷架构图" width="80%" />
+</p>
+
 ---
 
 ## 📜 这个项目是什么？
@@ -69,9 +77,6 @@
 > 💡 两个项目基于相同的 [OpenClaw](https://github.com/openclawai/openclaw) 框架，架构完全一致，只是角色命名和文化背景不同。选你喜欢的风格即可！
 
 ---
-
-![系统架构](./images/flow-architecture.png)
-
 
 > 📌 **关于原创性** — 本项目首次提交于 **2026-02-22**（[commit 记录](https://github.com/wanikua/boluobobo-ai-court-tutorial/commits/main)），是「用中国古代官制隐喻 AI 多 Agent 协作」这一概念的原始实现。我们注意到 [cft0808/edict](https://github.com/cft0808/edict)（首次提交 2026-02-23，晚约 21 小时）在框架选型、SOUL.md 人格文件、部署方式、竞品对比表格等方面与本项目高度一致，详见 [Issue #55](https://github.com/cft0808/edict/issues/55)。
 >
@@ -275,8 +280,6 @@ openclaw cron add \
   --message "生成今日日报，写入 Notion 并发送到 Discord" \
   --session isolated --token <你的token>
 ```
-
-![朝廷架构](./images/discord-architecture.png)
 
 ---
 
