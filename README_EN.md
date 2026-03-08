@@ -92,6 +92,7 @@ After the script finishes, you just need two things:
 
 ```bash
 # Edit config — fill in API Key and Bot Tokens
+# Full install uses ~/.openclaw/openclaw.json; lite install uses ~/.clawdbot/clawdbot.json
 nano ~/.openclaw/openclaw.json
 
 # Start the court

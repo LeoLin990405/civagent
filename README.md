@@ -99,6 +99,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 
 ```bash
 # 编辑配置，填入 API Key 和 Bot Token
+# 完整安装脚本用 ~/.openclaw/openclaw.json，精简脚本用 ~/.clawdbot/clawdbot.json
 nano ~/.openclaw/openclaw.json
 
 # 启动朝廷
