@@ -605,6 +605,85 @@ Discord 本身就是最佳的 GUI 管理界面：
 
 ---
 
+## 📱 接入飞书（Feishu/Lark）
+
+除了 Discord，AI 朝廷也支持飞书作为交互界面。飞书插件已内置在新版 OpenClaw 中，无需额外安装。
+
+### 第一步：创建飞书应用
+
+1. 访问 [飞书开放平台](https://open.feishu.cn/app)，登录后点击 **创建企业自建应用**
+2. 填写应用名称和描述，选择图标
+3. 在 **凭证与基础信息** 页面，复制 **App ID**（格式 `cli_xxx`）和 **App Secret**
+
+### 第二步：配置权限和能力
+
+1. **添加权限**：进入 **权限管理**，点击 **批量导入**，粘贴以下内容：
+```json
+{
+  "scopes": {
+    "tenant": [
+      "im:message", "im:message:send_as_bot", "im:message:readonly",
+      "im:message.p2p_msg:readonly", "im:message.group_at_msg:readonly",
+      "im:resource", "im:chat.members:bot_access",
+      "im:chat.access_event.bot_p2p_chat:read"
+    ]
+  }
+}
+```
+
+2. **开启机器人能力**：进入 **应用能力 > 机器人**，启用并设置机器人名称
+
+3. **配置事件订阅**：进入 **事件订阅**，选择 **使用长连接接收事件（WebSocket）**，添加事件 `im.message.receive_v1`
+
+> ⚠️ 配置事件订阅前，需要先完成下面第三步并启动 Gateway，否则长连接可能保存失败。
+
+4. **发布应用**：在 **版本管理与发布** 中创建版本，提交审核发布
+
+### 第三步：配置 OpenClaw
+
+**方式一：命令行向导（推荐）**
+```bash
+openclaw channels add
+# 选择 Feishu，输入 App ID 和 App Secret
+```
+
+**方式二：手动编辑配置文件**
+```json5
+{
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "dmPolicy": "pairing",
+      "accounts": {
+        "main": {
+          "appId": "cli_xxx",
+          "appSecret": "你的App Secret"
+        }
+      }
+    }
+  }
+}
+```
+
+### 第四步：启动并测试
+
+```bash
+# 启动/重启 Gateway
+openclaw gateway restart
+
+# 在飞书里找到你的机器人，发一条消息
+# 首次会收到配对码，执行以下命令批准：
+openclaw pairing approve feishu <配对码>
+```
+
+批准后即可正常聊天。群聊中需要 @机器人 才会触发回复。
+
+> 💡 飞书使用 WebSocket 长连接，**不需要公网IP或域名**，本地部署也能用。
+>
+> 📖 完整飞书文档：[docs.openclaw.ai/channels/feishu](https://docs.openclaw.ai/channels/feishu)
+
+---
+
 ## 常见问题
 
 ### 基础问题
