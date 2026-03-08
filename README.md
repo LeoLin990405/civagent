@@ -68,7 +68,7 @@ OpenClaw Gateway（Node.js 守护进程）
 
 ### 第一步：一键部署（5 分钟）
 
-领好 云服务器（ARM 4核 24GB，永久免费），SSH 连上，跑这一行：
+领好云服务器（ARM 4核 24GB，永久免费），SSH 连上，跑这一行：
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
@@ -273,7 +273,7 @@ Discord 本身就是最佳的 GUI 管理界面：
 ChatGPT 是一个通才，对话结束就失忆。这套系统是多个专家——每个 Agent 有自己的专业领域、持久记忆和工具权限。能自动写代码提交 GitHub、自动写文档到 Notion、定时执行任务。
 
 **Q: 能用其他模型吗？**
-能。OpenClaw 支持 LLM 服务商、OpenAI、Google Gemini、其他服务商（经济模型）等。在 `openclaw.json` 里改 model 配置就行。不同部门可以用不同模型。
+能。OpenClaw 支持 Anthropic、OpenAI、Google Gemini 等主流服务商，也可接入其他兼容 OpenAI API 格式的服务商。在 `openclaw.json` 里改 model 配置就行。不同部门可以用不同模型。
 
 **Q: 每月 API 费用大概多少？**
 看使用强度。轻度使用 $10-15/月，中度 $20-30/月。省钱技巧：重活用 强力模型，轻活用 快速模型（便宜约 5 倍），简单任务可接入 经济模型 等国产模型进一步降本。
