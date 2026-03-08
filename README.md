@@ -742,6 +742,41 @@ curl -s "https://api.notion.com/v1/users/me" \
 
 ---
 
+## 🏥 配置诊断（doctor.sh）
+
+遇到问题？跑一行命令自动检查配置：
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/doctor.sh)
+```
+
+诊断内容包括：
+- ✅ OpenClaw/Node.js 安装检查
+- ✅ 配置文件格式和 API Key 检查
+- ✅ Discord Bot Token、allowBots、groupPolicy 检查
+- ✅ Agent 和 Binding 路由匹配检查
+- ✅ 工作区文件（SOUL.md / USER.md / memory/）检查
+- ✅ Notion 等可选集成检查
+- ✅ **@everyone 不触发的完整排查清单**
+
+### @everyone 不触发 Bot 回复？
+
+这是最常见的问题，通常原因是 **Discord Developer Portal 的 Intent 没开**：
+
+1. 打开 [Discord Developer Portal](https://discord.com/developers/applications)
+2. 选择你的 Bot → 左侧 **Bot** 页面
+3. 往下翻到 **Privileged Gateway Intents**，开启以下三项：
+   - ✅ **Message Content Intent**（必须）
+   - ✅ **Server Members Intent**（必须）
+   - ✅ **Presence Intent**（可选）
+4. **每个 Bot 都要开**，不是只开一个！
+5. 确认服务器里每个 Bot 的角色有 **View Channels** 权限
+6. 确认配置文件里 `channels.discord.groupPolicy` 和每个 account 的 `groupPolicy` 都是 `"open"`
+
+> ⚠️ 改完 Intent 后需要**重启 Gateway**：`openclaw gateway restart` 或 `systemctl --user restart openclaw-gateway`
+
+---
+
 ## 常见问题
 
 ### 基础问题
