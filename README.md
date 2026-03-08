@@ -209,7 +209,7 @@
 
 ### 第一步：一键部署（5 分钟）
 
-领好云服务器（ARM 4核 24GB，永久免费），SSH 连上，跑这一行：
+准备一台 Linux 服务器（推荐 ARM 4核 24GB），SSH 连上，跑这一行：
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
@@ -543,9 +543,6 @@ Discord 本身就是最佳的 GUI 管理界面：
 
 **Q: 需要会写代码吗？**
 不需要。一键脚本搞定安装，配置文件填几个 Key 就行。所有交互都是在 Discord 里用自然语言。
-
-**Q: 服务器真的免费吗？**
-云服务商的免费套餐（如有）。
 
 **Q: 和直接用 ChatGPT 有什么区别？**
 ChatGPT 是一个通才，对话结束就失忆。这套系统是多个专家——每个 Agent 有自己的专业领域、持久记忆和工具权限。能自动写代码提交 GitHub、自动写文档到 Notion、定时执行任务。

@@ -202,7 +202,7 @@ Each agent is a standalone Discord Bot bound to its own AI identity:
 
 ### Step 1: One-Line Deployment (5 minutes)
 
-Grab a free cloud server (ARM 4-core, 24 GB RAM — free tier), SSH in, and run:
+Grab a Linux server (ARM 4-core, 24 GB RAM recommended), SSH in, and run:
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
@@ -402,9 +402,6 @@ For the basics (server provisioning → installation → configuration → first
 
 **Q: Do I need to know how to code?**
 No. The one-line install script handles setup, and configuration is just filling in a few keys. All interaction happens through natural language in Discord.
-
-**Q: Is the server really free?**
-Cloud providers' free tiers (where available).
 
 **Q: How is this different from just using ChatGPT?**
 ChatGPT is a single generalist that forgets everything when you close the tab. This system gives you multiple specialists — each agent has its own domain expertise, persistent memory, and tool permissions. They can automatically commit code to GitHub, write docs to Notion, and run tasks on a schedule.
