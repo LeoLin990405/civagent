@@ -320,7 +320,7 @@ echo -e "  配置文件：${CYAN}$CONFIG_DIR/clawdbot.json${NC}"
 echo ""
 
 if [ "$MODE_CHOICE" = "2" ]; then
-echo -e "  ${YELLOW}接下来只需要 2 步：${NC}"
+echo -e "  ${YELLOW}接下来只需要 3 步：${NC}"
 echo ""
 echo "  1. 编辑配置文件，填入 LLM API Key："
 echo "     nano ~/.clawdbot/clawdbot.json"

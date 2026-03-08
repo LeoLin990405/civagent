@@ -141,7 +141,7 @@ Inspired by the Ming Dynasty's six-ministry system, each "department" is an inde
 
 | Ministry | Role | Recommended Model | Typical Use Cases |
 |----------|------|-------------------|-------------------|
-| **司礼监 siliijian** — Chief Steward | Central coordination | Fast Model | Daily chat, task delegation, automated reporting |
+| **司礼监 silijian** — Chief Steward | Central coordination | Fast Model | Daily chat, task delegation, automated reporting |
 | **兵部 bingbu** — Engineering | Software engineering | Power Model | Coding, architecture design, code review, debugging |
 | **户部 hubu** — Finance | Finance & operations | Power Model | Cost analysis, budgeting, e-commerce operations |
 | **礼部 libu** — Marketing | Brand & marketing | Fast Model | Copywriting, social media, content strategy |
