@@ -560,16 +560,23 @@ Agent 可以运行在 Docker 沙箱中，代码执行互不干扰。支持配置
 
 **启动方式：**
 ```bash
-# 构建前端
+# 1. 先 clone 教程仓库（如果还没有）
+git clone https://github.com/wanikua/boluobobo-ai-court-tutorial.git
+cd boluobobo-ai-court-tutorial
+
+# 2. 构建前端
 cd gui && npm install && npm run build
 
-# 启动后端 API 服务（默认端口 18790）
-cd server && npm install && node index.js
+# 3. 安装后端依赖并启动（设置登录密码）
+cd server && npm install
+BOLUO_AUTH_TOKEN=你的密码 node index.js
 ```
+
+> ⚠️ **登录密码说明**：启动后端时通过环境变量 `BOLUO_AUTH_TOKEN` 设置登录密码。打开页面后用这个密码登录。如果不想要密码验证，需要修改 `server/index.js` 中的 `authMiddleware`。
 
 访问地址：`http://你的服务器IP:18790`
 
-> 💡 生产环境建议通过 Nginx 反向代理 + HTTPS 访问，不要直接暴露端口。
+> 💡 生产环境建议通过 Nginx 反向代理 + HTTPS 访问，不要直接暴露端口。长期运行建议用 `pm2` 或 `screen`：`BOLUO_AUTH_TOKEN=你的密码 pm2 start server/index.js --name boluo-gui`
 
 ### Discord 作为 GUI
 
