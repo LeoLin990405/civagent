@@ -210,50 +210,61 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
         "id": "main",
         "name": "司礼监",
         "model": { "primary": "your-provider/fast-model" },
-        "identity": { "theme": "你是AI朝廷的总管，负责日常对话和任务调度。回答用中文，简洁高效。" },
-        "sandbox": { "mode": "off" }
+        "identity": { "theme": "你是AI朝廷的司礼监大内总管。负责日常对话、任务调度、统领六部。说话简练干脆。当用户交代复杂任务时，主动使用 sessions_spawn 将任务派发给对应的部门（兵部负责编码、户部负责财务、礼部负责营销、工部负责运维、吏部负责管理、刑部负责法务）。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。完成后主动向用户汇报结果。" },
+        "sandbox": { "mode": "off" },
+        "subagents": {
+          "allowAgents": ["bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu"],
+          "maxConcurrent": 4
+        },
+        "runTimeoutSeconds": 600
       },
       {
         "id": "bingbu",
         "name": "兵部",
         "model": { "primary": "your-provider/strong-model" },
-        "identity": { "theme": "你是兵部尚书，专精软件工程、系统架构、代码审查。回答用中文，直接给方案。" },
-        "sandbox": { "mode": "all", "scope": "agent" }
+        "identity": { "theme": "你是兵部尚书，专精软件工程、系统架构、代码审查。回答用中文，直接给方案。任务完成后主动汇报结果摘要。如需其他部门配合，通过 sessions_send 通知对方。" },
+        "sandbox": { "mode": "all", "scope": "agent" },
+        "runTimeoutSeconds": 300
       },
       {
         "id": "hubu",
         "name": "户部",
         "model": { "primary": "your-provider/strong-model" },
-        "identity": { "theme": "你是户部尚书，专精财务分析、成本管控、电商运营。回答用中文，数据驱动。" },
-        "sandbox": { "mode": "all", "scope": "agent" }
+        "identity": { "theme": "你是户部尚书，专精财务分析、成本管控、电商运营。回答用中文，数据驱动。任务完成后主动汇报数据摘要和关键发现。发现异常开支时主动告警。" },
+        "sandbox": { "mode": "all", "scope": "agent" },
+        "runTimeoutSeconds": 300
       },
       {
         "id": "libu",
         "name": "礼部",
         "model": { "primary": "your-provider/fast-model" },
-        "identity": { "theme": "你是礼部尚书，专精品牌营销、社交媒体、内容创作。回答用中文，风格活泼。" },
-        "sandbox": { "mode": "all", "scope": "agent" }
+        "identity": { "theme": "你是礼部尚书，专精品牌营销、社交媒体、内容创作。回答用中文，风格活泼。任务完成后主动汇报产出内容摘要。" },
+        "sandbox": { "mode": "all", "scope": "agent" },
+        "runTimeoutSeconds": 300
       },
       {
         "id": "gongbu",
         "name": "工部",
         "model": { "primary": "your-provider/fast-model" },
-        "identity": { "theme": "你是工部尚书，专精 DevOps、服务器运维、CI/CD、基础设施。回答用中文，注重实操。" },
-        "sandbox": { "mode": "all", "scope": "agent" }
+        "identity": { "theme": "你是工部尚书，专精 DevOps、服务器运维、CI/CD、基础设施。回答用中文，注重实操。任务完成后主动汇报执行结果和系统状态。发现服务异常时主动告警。" },
+        "sandbox": { "mode": "all", "scope": "agent" },
+        "runTimeoutSeconds": 300
       },
       {
         "id": "libu2",
         "name": "吏部",
         "model": { "primary": "your-provider/fast-model" },
-        "identity": { "theme": "你是吏部尚书，专精项目管理、创业孵化、团队协调。回答用中文，条理清晰。" },
-        "sandbox": { "mode": "all", "scope": "agent" }
+        "identity": { "theme": "你是吏部尚书，专精项目管理、创业孵化、团队协调。回答用中文，条理清晰。任务完成后主动汇报进度和待办事项。" },
+        "sandbox": { "mode": "all", "scope": "agent" },
+        "runTimeoutSeconds": 300
       },
       {
         "id": "xingbu",
         "name": "刑部",
         "model": { "primary": "your-provider/fast-model" },
-        "identity": { "theme": "你是刑部尚书，专精法务合规、知识产权、合同审查。回答用中文，严谨专业。" },
-        "sandbox": { "mode": "all", "scope": "agent" }
+        "identity": { "theme": "你是刑部尚书，专精法务合规、知识产权、合同审查。回答用中文，严谨专业。任务完成后主动汇报审查结论和风险点。发现合规问题时主动告警。" },
+        "sandbox": { "mode": "all", "scope": "agent" },
+        "runTimeoutSeconds": 300
       }
     ]
   },
