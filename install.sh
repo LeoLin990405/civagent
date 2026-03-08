@@ -190,6 +190,7 @@ cat > "$CONFIG_DIR/openclaw.json" << CONFIG_EOF
         "id": "main",
         "name": "司礼监",
         "model": { "primary": "your-provider/fast-model" },
+        "identity": { "theme": "你是AI朝廷的总管，负责日常对话和任务调度。回答用中文，简洁高效。" },
         "sandbox": { "mode": "off" }
       },
       {
