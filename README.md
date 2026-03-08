@@ -231,6 +231,12 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 > ```
 > 支持两种模式：Discord 多Bot模式 或 纯 WebUI 模式（不需要Discord）。
 
+> 🍎 **macOS 用户？** 用 Mac 专用脚本，自动通过 Homebrew 安装所有依赖：
+> ```bash
+> bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install-mac.sh)
+> ```
+> 支持 Intel 和 Apple Silicon (M1/M2/M3/M4)，自动检测架构。
+
 ### 第二步：填 Key 上线（10 分钟）
 
 跑完脚本，你只需要填两样东西：

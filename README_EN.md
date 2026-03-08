@@ -224,6 +224,12 @@ The install script features color-coded output with progress indicators and ✓ 
 > ```
 > Supports two modes: Discord multi-Bot mode or pure WebUI mode (no Discord needed).
 
+> 🍎 **macOS user?** Use the Mac-specific script — installs all dependencies via Homebrew:
+> ```bash
+> bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install-mac.sh)
+> ```
+> Supports both Intel and Apple Silicon (M1/M2/M3/M4), auto-detects architecture.
+
 ### Step 2: Add Your Keys (10 minutes)
 
 After the script finishes, you just need two things:
