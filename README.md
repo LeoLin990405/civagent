@@ -852,6 +852,10 @@ openclaw doctor
 
 ---
 
+## 🤝 推荐
+
+- 🎁 [MiniMax Coding Plan](https://platform.minimaxi.com/subscribe/coding-plan?code=CIeSxc2iq2&source=link) — 88折专属优惠 + Builder 权益
+
 ## 相关链接
 
 - 🏢 [Become CEO — 企业版（English）](https://github.com/wanikua/become-ceo) — 同一架构的现代企业版
