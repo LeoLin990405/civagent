@@ -1365,24 +1365,92 @@ app.get('/api/channel-messages', authMiddleware, async (req, res) => {
 });
 
 // 发送指令到Discord频道
-app.post('/api/command', authMiddleware, async (req, res) => {
-  const { channel, message, botId } = req.body;
-  const targetChannel = channel || '1474091579630293164'; // 默认朝堂频道
-  
-  // 读取bot token - 使用指定的botId发送
+// 获取 Discord 服务器频道列表
+app.get('/api/discord-channels', authMiddleware, async (req, res) => {
   try {
     const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
-    // Try target bot first, fall back to main
-    let account = config.channels?.discord?.accounts?.[botId];
-    let usedBot = botId;
-    if (!account?.token) {
-      account = config.channels?.discord?.accounts?.['main'];
-      usedBot = 'main';
-    }
-    const token = account?.token;
+    const mainAccount = config.channels?.discord?.accounts?.['main'];
+    const token = mainAccount?.token;
+    if (!token) return res.status(400).json({ error: 'Main bot token not found' });
+
+    // 先获取 bot 所在的 guild
+    const guildRes = await fetch('https://discord.com/api/v10/users/@me/guilds', {
+      headers: { 'Authorization': `Bot ${token}` }
+    });
+    if (!guildRes.ok) return res.status(guildRes.status).json({ error: 'Failed to fetch guilds' });
+    const guilds = await guildRes.json();
+    if (guilds.length === 0) return res.json({ channels: [] });
+
+    // 获取第一个 guild 的频道列表（文字频道）
+    const guildId = guilds[0].id;
+    const chRes = await fetch(`https://discord.com/api/v10/guilds/${guildId}/channels`, {
+      headers: { 'Authorization': `Bot ${token}` }
+    });
+    if (!chRes.ok) return res.status(chRes.status).json({ error: 'Failed to fetch channels' });
+    const allChannels = await chRes.json();
+
+    // 只返回文字频道 (type 0) 和公告频道 (type 5)
+    const textChannels = allChannels
+      .filter(ch => ch.type === 0 || ch.type === 5)
+      .map(ch => ({ id: ch.id, name: ch.name, parentId: ch.parent_id }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+
+    // 也返回分类 (type 4) 方便前端分组
+    const categories = allChannels
+      .filter(ch => ch.type === 4)
+      .map(ch => ({ id: ch.id, name: ch.name }));
+
+    res.json({ channels: textChannels, categories, guildId });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 获取 bot 的 Discord user ID（用于正确 @mention）
+app.get('/api/bot-user-ids', authMiddleware, async (req, res) => {
+  try {
+    const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
+    const accounts = config.channels?.discord?.accounts || {};
+    const results = {};
+
+    await Promise.all(Object.entries(accounts).map(async ([agentId, acc]) => {
+      if (!acc.token) return;
+      try {
+        const r = await fetch('https://discord.com/api/v10/users/@me', {
+          headers: { 'Authorization': `Bot ${acc.token}` }
+        });
+        if (r.ok) {
+          const user = await r.json();
+          results[agentId] = user.id;
+        }
+      } catch { /* skip */ }
+    }));
+
+    res.json({ botUserIds: results });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// 发送指令到Discord频道（始终用主bot发送，正确@mention目标bot）
+app.post('/api/command', authMiddleware, async (req, res) => {
+  const { channel, message, botId, mentionUserId } = req.body;
+  const targetChannel = channel || '1474091579630293164'; // 默认朝堂频道
+  
+  try {
+    const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
+    // 始终用主bot（司礼监）的token发送，模拟"用户下旨"
+    const mainAccount = config.channels?.discord?.accounts?.['main'];
+    const token = mainAccount?.token;
     
     if (!token) {
-      return res.status(400).json({ error: `Bot ${botId} token not found` });
+      return res.status(400).json({ error: 'Main bot token not found' });
+    }
+
+    // 构建消息：如果指定了目标bot且有其Discord user ID，用真正的@mention
+    let finalMessage = message;
+    if (mentionUserId && botId !== 'main') {
+      finalMessage = `<@${mentionUserId}> ${message}`;
     }
 
     const r = await fetch(`https://discord.com/api/v10/channels/${targetChannel}/messages`, {
@@ -1391,12 +1459,12 @@ app.post('/api/command', authMiddleware, async (req, res) => {
         'Authorization': `Bot ${token}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ content: message })
+      body: JSON.stringify({ content: finalMessage })
     });
     
     if (r.ok) {
       const data = await r.json();
-      res.json({ success: true, messageId: data.id, sentAs: usedBot });
+      res.json({ success: true, messageId: data.id, sentAs: 'main', channel: targetChannel });
     } else {
       const err = await r.text();
       res.status(r.status).json({ error: err });
