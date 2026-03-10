@@ -1,7 +1,7 @@
 #!/bin/bash
 # ============================================
 # AI 朝廷一键部署脚本
-# 适用于 云服务商 ARM / Ubuntu 24.04（22.04 也可用）
+# 支持: Ubuntu/Debian, CentOS/RHEL, Alpine, macOS
 # ============================================
 set -e
 
@@ -12,8 +12,31 @@ BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m'
 
+# ---- 系统检测 ----
+detect_os() {
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        echo "macos"
+    elif [ -f /etc/debian_version ]; then
+        echo "debian"
+    elif [ -f /etc/redhat-release ] || [ -f /etc/centos-release ]; then
+        echo "redhat"
+    elif [ -f /etc/alpine-release ]; then
+        echo "alpine"
+    else
+        echo "unknown"
+    fi
+}
+
+OS_TYPE=$(detect_os)
+
+if [ "$OS_TYPE" = "unknown" ]; then
+    echo -e "${RED}✗ 不支持的操作系统: $OSTYPE${NC}"
+    echo "支持: Ubuntu/Debian、CentOS/RHEL、Alpine、macOS"
+    echo "其他系统请手动安装: Node.js 22+、GitHub CLI、Chromium、OpenClaw"
+    exit 1
+fi
+
 # ---- Docker / root 环境适配 ----
-# 如果已经是 root（如 Docker 容器内），就跳过 sudo
 if [ "$(id -u)" -eq 0 ]; then
     SUDO=""
 else
@@ -25,32 +48,64 @@ else
     fi
 fi
 
-# 检测是否在 Docker 容器内
+# 检测 Docker
 IN_DOCKER=false
 if [ -f /.dockerenv ] || grep -q docker /proc/1/cgroup 2>/dev/null || grep -q containerd /proc/1/cgroup 2>/dev/null; then
     IN_DOCKER=true
 fi
 
+# macOS 检测
+IS_MACOS=false
+if [ "$OS_TYPE" = "macos" ]; then
+    IS_MACOS=true
+    # macOS 需要 Homebrew
+    if ! command -v brew &>/dev/null; then
+        echo -e "${RED}✗ macOS 需要先安装 Homebrew${NC}"
+        echo '运行: /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
+        exit 1
+    fi
+fi
+
 echo ""
 echo -e "${BLUE}AI 朝廷一键部署${NC}"
 echo "================================"
-if $IN_DOCKER; then
-    echo -e "${CYAN}  📦 检测到 Docker 环境${NC}"
-fi
+echo -e "  系统: ${GREEN}$OS_TYPE${NC}"
+$IN_DOCKER && echo -e "  ${CYAN}📦 Docker 环境${NC}"
 echo ""
+
+# ============================================
+# 包管理器封装函数
+# ============================================
+pkg_update() {
+    case "$OS_TYPE" in
+        debian)  $SUDO apt-get update -qq ;;
+        redhat)  $SUDO dnf check-update -q 2>/dev/null || $SUDO yum check-update -q 2>/dev/null || true ;;
+        alpine)  $SUDO apk update -q ;;
+        macos)   brew update --quiet 2>/dev/null || true ;;
+    esac
+}
+
+pkg_install() {
+    case "$OS_TYPE" in
+        debian)  $SUDO apt-get install -y -qq "$@" ;;
+        redhat)  $SUDO dnf install -y -q "$@" 2>/dev/null || $SUDO yum install -y -q "$@" ;;
+        alpine)  $SUDO apk add --quiet --no-cache "$@" ;;
+        macos)   brew install --quiet "$@" ;;
+    esac
+}
 
 # ---- 1. 系统更新 ----
 echo -e "${YELLOW}[1/8] 系统更新...${NC}"
-$SUDO apt-get update -qq
+pkg_update
 
 # ---- 2. 防火墙 ----
-if $IN_DOCKER; then
-    echo -e "${YELLOW}[2/8] 配置防火墙...${NC}"
+echo -e "${YELLOW}[2/8] 配置防火墙...${NC}"
+if $IS_MACOS; then
+    echo -e "  ${CYAN}↳ macOS，跳过防火墙配置${NC}"
+elif $IN_DOCKER; then
     echo -e "  ${CYAN}↳ Docker 环境，跳过防火墙配置${NC}"
 else
-    echo -e "${YELLOW}[2/8] 配置防火墙...${NC}"
     # 云服务商 默认 iptables 有一条 REJECT 规则会阻断非 SSH 流量，只删这条
-    # 注意：不能 flush 整个链，否则在 DROP 策略下会丢失 SSH 连接
     $SUDO iptables -D INPUT -j REJECT --reject-with icmp-host-prohibited 2>/dev/null || true
     $SUDO iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited 2>/dev/null || true
     $SUDO netfilter-persistent save 2>/dev/null || true
@@ -58,13 +113,12 @@ else
 fi
 
 # ---- 3. Swap（小内存机器需要）----
-if $IN_DOCKER; then
-    echo -e "${YELLOW}[3/8] 配置 Swap...${NC}"
-    echo -e "  ${CYAN}↳ Docker 环境，跳过 Swap 配置${NC}"
+echo -e "${YELLOW}[3/8] 配置 Swap...${NC}"
+if $IS_MACOS || $IN_DOCKER; then
+    echo -e "  ${CYAN}↳ 跳过 Swap 配置${NC}"
 else
-    echo -e "${YELLOW}[3/8] 配置 Swap...${NC}"
     if [ ! -f /swapfile ]; then
-        $SUDO fallocate -l 4G /swapfile
+        $SUDO fallocate -l 4G /swapfile 2>/dev/null || $SUDO dd if=/dev/zero of=/swapfile bs=1G count=4 2>/dev/null
         $SUDO chmod 600 /swapfile
         $SUDO mkswap /swapfile
         $SUDO swapon /swapfile
@@ -75,17 +129,54 @@ else
     fi
 fi
 
-# ---- 4. Node.js ----
-echo -e "${YELLOW}[4/8] 安装 Node.js 22...${NC}"
-if command -v node &>/dev/null && [[ "$(node -v)" == v22* ]]; then
-    echo -e "  ${GREEN}✓ Node.js $(node -v) 已安装${NC}"
-else
-    if [ -n "$SUDO" ]; then
-        curl -fsSL https://deb.nodesource.com/setup_22.x | $SUDO -E bash - > /dev/null 2>&1
+# ---- 4. Node.js 22+ ----
+echo -e "${YELLOW}[4/8] 安装 Node.js 22+...${NC}"
+install_nodejs() {
+    case "$OS_TYPE" in
+        debian)
+            if [ -n "$SUDO" ]; then
+                curl -fsSL https://deb.nodesource.com/setup_22.x | $SUDO -E bash - > /dev/null 2>&1
+            else
+                curl -fsSL https://deb.nodesource.com/setup_22.x | bash - > /dev/null 2>&1
+            fi
+            pkg_install nodejs
+            ;;
+        redhat)
+            if [ -n "$SUDO" ]; then
+                curl -fsSL https://rpm.nodesource.com/setup_22.x | $SUDO bash - > /dev/null 2>&1
+            else
+                curl -fsSL https://rpm.nodesource.com/setup_22.x | bash - > /dev/null 2>&1
+            fi
+            pkg_install nodejs
+            ;;
+        alpine)
+            # Alpine 默认仓库版本低，用 nodesource 方式
+            # 如果 apk 版本够高就直接装，否则用 unofficial builds
+            if $SUDO apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main nodejs npm 2>/dev/null; then
+                true
+            else
+                pkg_install nodejs npm
+            fi
+            ;;
+        macos)
+            brew install --quiet node@22
+            # 确保 node@22 在 PATH 中
+            brew link --overwrite node@22 2>/dev/null || true
+            ;;
+    esac
+}
+
+if command -v node &>/dev/null; then
+    NODE_MAJOR=$(node -v | sed 's/v\([0-9]*\).*/\1/')
+    if [ "$NODE_MAJOR" -ge 22 ] 2>/dev/null; then
+        echo -e "  ${GREEN}✓ Node.js $(node -v) 已安装${NC}"
     else
-        curl -fsSL https://deb.nodesource.com/setup_22.x | bash - > /dev/null 2>&1
+        echo -e "  ${YELLOW}⚠ Node.js $(node -v) 版本过低，升级中...${NC}"
+        install_nodejs
+        echo -e "  ${GREEN}✓ Node.js $(node -v) 安装完成${NC}"
     fi
-    $SUDO apt-get install -y nodejs -qq
+else
+    install_nodejs
     echo -e "  ${GREEN}✓ Node.js $(node -v) 安装完成${NC}"
 fi
 
@@ -94,40 +185,103 @@ echo -e "${YELLOW}[5/8] 安装 GitHub CLI...${NC}"
 if command -v gh &>/dev/null; then
     echo -e "  ${GREEN}✓ gh $(gh --version | head -1 | awk '{print $3}') 已安装${NC}"
 else
-    curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | $SUDO dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null
-    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | $SUDO tee /etc/apt/sources.list.d/github-cli.list > /dev/null
-    $SUDO apt-get update -qq && $SUDO apt-get install gh -y -qq
+    case "$OS_TYPE" in
+        debian)
+            curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | $SUDO dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg 2>/dev/null
+            echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | $SUDO tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+            $SUDO apt-get update -qq && $SUDO apt-get install -y -qq gh
+            ;;
+        redhat)
+            $SUDO dnf install -y -q 'dnf-command(config-manager)' 2>/dev/null || true
+            $SUDO dnf config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo 2>/dev/null \
+                || $SUDO yum-config-manager --add-repo https://cli.github.com/packages/rpm/gh-cli.repo 2>/dev/null || true
+            pkg_install gh
+            ;;
+        alpine)
+            pkg_install github-cli
+            ;;
+        macos)
+            brew install --quiet gh
+            ;;
+    esac
     echo -e "  ${GREEN}✓ gh CLI 安装完成${NC}"
 fi
 
 # ---- 6. Chromium（浏览器，Agent 搜索/截图用）----
 echo -e "${YELLOW}[6/8] 安装 Chromium 浏览器...${NC}"
-if command -v chromium &>/dev/null || command -v chromium-browser &>/dev/null; then
-    echo -e "  ${GREEN}✓ Chromium 已安装，跳过${NC}"
+if command -v chromium &>/dev/null || command -v chromium-browser &>/dev/null || command -v google-chrome &>/dev/null; then
+    echo -e "  ${GREEN}✓ 浏览器已安装，跳过${NC}"
+elif $IS_MACOS && [ -d "/Applications/Google Chrome.app" -o -d "/Applications/Chromium.app" ]; then
+    echo -e "  ${GREEN}✓ 浏览器已安装，跳过${NC}"
 elif ! $IN_DOCKER && snap list chromium &>/dev/null 2>&1; then
     echo -e "  ${GREEN}✓ Chromium 已安装（snap），跳过${NC}"
 else
-    # Debian 12+ 包名是 chromium，Ubuntu 用 chromium-browser
-    if $SUDO apt-get install -y chromium -qq 2>/dev/null; then
-        echo -e "  ${GREEN}✓ Chromium 安装完成${NC}"
-    elif $SUDO apt-get install -y chromium-browser -qq 2>/dev/null; then
-        echo -e "  ${GREEN}✓ Chromium 安装完成${NC}"
-    elif ! $IN_DOCKER && command -v snap &>/dev/null; then
-        # snap 在 Docker 内不可用，只在非 Docker 环境兜底
-        $SUDO snap install chromium 2>/dev/null && echo -e "  ${GREEN}✓ Chromium 安装完成（snap）${NC}"
-    else
-        echo -e "  ${YELLOW}⚠ Chromium 安装失败，浏览器功能可能不可用${NC}"
-    fi
+    case "$OS_TYPE" in
+        debian)
+            if $SUDO apt-get install -y chromium -qq 2>/dev/null; then
+                echo -e "  ${GREEN}✓ Chromium 安装完成${NC}"
+            elif $SUDO apt-get install -y chromium-browser -qq 2>/dev/null; then
+                echo -e "  ${GREEN}✓ Chromium 安装完成${NC}"
+            elif ! $IN_DOCKER && command -v snap &>/dev/null; then
+                $SUDO snap install chromium 2>/dev/null && echo -e "  ${GREEN}✓ Chromium 安装完成（snap）${NC}"
+            else
+                echo -e "  ${YELLOW}⚠ Chromium 安装失败，浏览器功能可能不可用${NC}"
+            fi
+            ;;
+        redhat)
+            # CentOS/RHEL: 启用 EPEL + chromium
+            $SUDO dnf install -y -q epel-release 2>/dev/null || $SUDO yum install -y -q epel-release 2>/dev/null || true
+            $SUDO dnf config-manager --set-enabled crb 2>/dev/null || true
+            if pkg_install chromium-headless 2>/dev/null; then
+                echo -e "  ${GREEN}✓ Chromium 安装完成${NC}"
+            else
+                echo -e "  ${YELLOW}⚠ Chromium 安装失败，浏览器功能可能不可用${NC}"
+            fi
+            ;;
+        alpine)
+            if pkg_install chromium 2>/dev/null; then
+                echo -e "  ${GREEN}✓ Chromium 安装完成${NC}"
+            else
+                echo -e "  ${YELLOW}⚠ Chromium 安装失败${NC}"
+            fi
+            ;;
+        macos)
+            brew install --quiet --cask chromium 2>/dev/null \
+                && echo -e "  ${GREEN}✓ Chromium 安装完成${NC}" \
+                || echo -e "  ${YELLOW}⚠ Chromium 安装失败，可手动安装 Chrome${NC}"
+            ;;
+    esac
 fi
-# 设置 Puppeteer 浏览器路径（OpenClaw 的浏览器 skill 需要）
-if ! grep -q PUPPETEER_EXECUTABLE_PATH ~/.bashrc 2>/dev/null; then
-    # 按优先级查找：chromium（Debian）→ chromium-browser（Ubuntu）→ snap
-    CHROME_BIN=$(which chromium 2>/dev/null || which chromium-browser 2>/dev/null || echo "/snap/chromium/current/usr/lib/chromium-browser/chrome")
-    if [ ! -f "$CHROME_BIN" ]; then
-        CHROME_BIN="/snap/chromium/current/usr/lib/chromium-browser/chrome"
+
+# 设置 Puppeteer 浏览器路径
+if ! grep -q PUPPETEER_EXECUTABLE_PATH ~/.bashrc ~/.zshrc 2>/dev/null; then
+    case "$OS_TYPE" in
+        macos)
+            if [ -d "/Applications/Google Chrome.app" ]; then
+                CHROME_BIN="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
+            elif [ -d "/Applications/Chromium.app" ]; then
+                CHROME_BIN="/Applications/Chromium.app/Contents/MacOS/Chromium"
+            else
+                CHROME_BIN=""
+            fi
+            SHELL_RC="$HOME/.zshrc"
+            ;;
+        redhat)
+            CHROME_BIN=$(which chromium-headless 2>/dev/null || which chromium-browser 2>/dev/null || which google-chrome 2>/dev/null || echo "")
+            SHELL_RC="$HOME/.bashrc"
+            ;;
+        *)
+            CHROME_BIN=$(which chromium 2>/dev/null || which chromium-browser 2>/dev/null || echo "/snap/chromium/current/usr/lib/chromium-browser/chrome")
+            if [ ! -f "$CHROME_BIN" ] && [ "$CHROME_BIN" = "/snap/chromium/current/usr/lib/chromium-browser/chrome" ]; then
+                CHROME_BIN=""
+            fi
+            SHELL_RC="$HOME/.bashrc"
+            ;;
+    esac
+    if [ -n "$CHROME_BIN" ]; then
+        echo "export PUPPETEER_EXECUTABLE_PATH=\"$CHROME_BIN\"" >> "$SHELL_RC"
+        echo -e "  ${GREEN}✓ 浏览器路径已配置 ($CHROME_BIN)${NC}"
     fi
-    echo "export PUPPETEER_EXECUTABLE_PATH=\"$CHROME_BIN\"" >> ~/.bashrc
-    echo -e "  ${GREEN}✓ 浏览器路径已配置 ($CHROME_BIN)${NC}"
 fi
 
 # ---- 7. OpenClaw ----
@@ -136,7 +290,12 @@ if command -v openclaw &>/dev/null; then
     CURRENT_VER=$(openclaw --version 2>/dev/null || echo "unknown")
     echo -e "  ${GREEN}✓ OpenClaw 已安装 ($CURRENT_VER)，更新中...${NC}"
 fi
-$SUDO npm install -g openclaw --loglevel=error
+# pnpm 优先，npm 兜底
+if command -v pnpm &>/dev/null; then
+    pnpm add -g openclaw --silent 2>/dev/null || $SUDO npm install -g openclaw --loglevel=error
+else
+    $SUDO npm install -g openclaw --loglevel=error
+fi
 echo -e "  ${GREEN}✓ OpenClaw $(openclaw --version 2>/dev/null) 安装完成${NC}"
 
 # ---- 8. 初始化工作区 ----
@@ -359,12 +518,11 @@ fi
 mkdir -p memory
 
 # ---- 安装 Gateway 服务（开机自启）----
-if $IN_DOCKER; then
-    echo -e "${YELLOW}安装 Gateway 服务...${NC}"
-    echo -e "  ${CYAN}↳ Docker 环境，跳过 systemd 服务安装${NC}"
+echo -e "${YELLOW}安装 Gateway 服务...${NC}"
+if $IS_MACOS || $IN_DOCKER; then
+    echo -e "  ${CYAN}↳ 跳过 systemd 服务安装${NC}"
     echo -e "  ${CYAN}↳ 请手动启动: openclaw gateway --verbose${NC}"
 else
-    echo -e "${YELLOW}安装 Gateway 服务...${NC}"
     openclaw gateway install 2>/dev/null \
         && echo -e "  ${GREEN}✓ Gateway 服务已安装（开机自启）${NC}" \
         || echo -e "  ${YELLOW}⚠ Gateway 服务安装跳过（配置填好后运行 openclaw gateway install）${NC}"
@@ -391,10 +549,18 @@ echo "     e) 每个 Bot 都要开启 Message Content Intent"
 echo "     f) 邀请所有 Bot 到你的 Discord 服务器"
 echo ""
 echo -e "  ${YELLOW}3. 启动朝廷${NC}"
-echo "     systemctl --user start openclaw-gateway"
+if $IS_MACOS; then
+    echo "     openclaw gateway --verbose"
+else
+    echo "     systemctl --user start openclaw-gateway"
+fi
 echo ""
 echo -e "  ${YELLOW}4. 验证${NC}"
-echo "     systemctl --user status openclaw-gateway"
+if $IS_MACOS; then
+    echo "     openclaw gateway status"
+else
+    echo "     systemctl --user status openclaw-gateway"
+fi
 echo "     然后在 Discord @你的Bot 说话试试"
 echo ""
 echo -e "  ${YELLOW}5. 添加定时任务（可选）${NC}"
