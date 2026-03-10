@@ -80,7 +80,11 @@ echo -e "${YELLOW}[4/8] 安装 Node.js 22...${NC}"
 if command -v node &>/dev/null && [[ "$(node -v)" == v22* ]]; then
     echo -e "  ${GREEN}✓ Node.js $(node -v) 已安装${NC}"
 else
-    curl -fsSL https://deb.nodesource.com/setup_22.x | $SUDO -E bash - > /dev/null 2>&1
+    if [ -n "$SUDO" ]; then
+        curl -fsSL https://deb.nodesource.com/setup_22.x | $SUDO -E bash - > /dev/null 2>&1
+    else
+        curl -fsSL https://deb.nodesource.com/setup_22.x | bash - > /dev/null 2>&1
+    fi
     $SUDO apt-get install -y nodejs -qq
     echo -e "  ${GREEN}✓ Node.js $(node -v) 安装完成${NC}"
 fi
@@ -98,12 +102,22 @@ fi
 
 # ---- 6. Chromium（浏览器，Agent 搜索/截图用）----
 echo -e "${YELLOW}[6/8] 安装 Chromium 浏览器...${NC}"
-if command -v chromium &>/dev/null || command -v chromium-browser &>/dev/null || snap list chromium &>/dev/null 2>&1; then
+if command -v chromium &>/dev/null || command -v chromium-browser &>/dev/null; then
     echo -e "  ${GREEN}✓ Chromium 已安装，跳过${NC}"
+elif ! $IN_DOCKER && snap list chromium &>/dev/null 2>&1; then
+    echo -e "  ${GREEN}✓ Chromium 已安装（snap），跳过${NC}"
 else
-    # Debian 12+ 包名是 chromium，Ubuntu 用 chromium-browser，snap 作为兜底
-    $SUDO apt-get install -y chromium -qq 2>/dev/null || $SUDO apt-get install -y chromium-browser -qq 2>/dev/null || $SUDO snap install chromium 2>/dev/null
-    echo -e "  ${GREEN}✓ Chromium 安装完成${NC}"
+    # Debian 12+ 包名是 chromium，Ubuntu 用 chromium-browser
+    if $SUDO apt-get install -y chromium -qq 2>/dev/null; then
+        echo -e "  ${GREEN}✓ Chromium 安装完成${NC}"
+    elif $SUDO apt-get install -y chromium-browser -qq 2>/dev/null; then
+        echo -e "  ${GREEN}✓ Chromium 安装完成${NC}"
+    elif ! $IN_DOCKER && command -v snap &>/dev/null; then
+        # snap 在 Docker 内不可用，只在非 Docker 环境兜底
+        $SUDO snap install chromium 2>/dev/null && echo -e "  ${GREEN}✓ Chromium 安装完成（snap）${NC}"
+    else
+        echo -e "  ${YELLOW}⚠ Chromium 安装失败，浏览器功能可能不可用${NC}"
+    fi
 fi
 # 设置 Puppeteer 浏览器路径（OpenClaw 的浏览器 skill 需要）
 if ! grep -q PUPPETEER_EXECUTABLE_PATH ~/.bashrc 2>/dev/null; then
@@ -345,10 +359,16 @@ fi
 mkdir -p memory
 
 # ---- 安装 Gateway 服务（开机自启）----
-echo -e "${YELLOW}安装 Gateway 服务...${NC}"
-openclaw gateway install 2>/dev/null \
-    && echo -e "  ${GREEN}✓ Gateway 服务已安装（开机自启）${NC}" \
-    || echo -e "  ${YELLOW}⚠ Gateway 服务安装跳过（配置填好后运行 openclaw gateway install）${NC}"
+if $IN_DOCKER; then
+    echo -e "${YELLOW}安装 Gateway 服务...${NC}"
+    echo -e "  ${CYAN}↳ Docker 环境，跳过 systemd 服务安装${NC}"
+    echo -e "  ${CYAN}↳ 请手动启动: openclaw gateway --verbose${NC}"
+else
+    echo -e "${YELLOW}安装 Gateway 服务...${NC}"
+    openclaw gateway install 2>/dev/null \
+        && echo -e "  ${GREEN}✓ Gateway 服务已安装（开机自启）${NC}" \
+        || echo -e "  ${YELLOW}⚠ Gateway 服务安装跳过（配置填好后运行 openclaw gateway install）${NC}"
+fi
 
 echo ""
 echo "================================"

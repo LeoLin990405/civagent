@@ -26,7 +26,7 @@ echo "================================"
 echo ""
 
 # ---- 检测 CLI ----
-echo -e "${YELLOW}[1/7] 检查安装...${NC}"
+echo -e "${YELLOW}[1/8] 检查安装...${NC}"
 
 if command -v openclaw &>/dev/null; then
     CLI_CMD="openclaw"
@@ -52,7 +52,7 @@ fi
 
 # ---- 检测配置文件 ----
 echo ""
-echo -e "${YELLOW}[2/7] 检查配置文件...${NC}"
+echo -e "${YELLOW}[2/8] 检查配置文件...${NC}"
 
 # 查找配置文件
 CONFIG_FILE=""
@@ -84,7 +84,7 @@ fi
 
 # ---- 检测 API Key ----
 echo ""
-echo -e "${YELLOW}[3/7] 检查模型配置...${NC}"
+echo -e "${YELLOW}[3/8] 检查模型配置...${NC}"
 
 # 检查是否有placeholder
 if grep -q "YOUR_LLM_API_KEY\|YOUR_API_KEY\|your-api-key\|sk-xxx\|your-provider" "$CONFIG_FILE" 2>/dev/null; then
@@ -104,7 +104,7 @@ fi
 
 # ---- 检测 Discord 配置 ----
 echo ""
-echo -e "${YELLOW}[4/7] 检查 Discord 配置...${NC}"
+echo -e "${YELLOW}[4/8] 检查 Discord 配置...${NC}"
 
 if grep -q '"discord"' "$CONFIG_FILE" 2>/dev/null; then
     # 检查是否启用
