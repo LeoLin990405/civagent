@@ -8,11 +8,11 @@ interface Bot {
 }
 
 interface DiscordChannel {
-  id: string; name: string; parentId?: string
+  id: string; name: string; parentId?: string; position?: number
 }
 
 interface Category {
-  id: string; name: string
+  id: string; name: string; position?: number
 }
 
 const COLORS: Record<string, { bg: string; hat: string }> = {
@@ -139,8 +139,13 @@ export default function Court() {
     // 加载频道列表
     fetch('/api/discord-channels', { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } })
       .then(r => r.json()).then(d => {
-        setDiscordChannels(d.channels || [])
+        const channels = d.channels || []
+        setDiscordChannels(channels)
         setCategories(d.categories || [])
+        // 自动选中第一个频道，避免 select value 不匹配
+        if (channels.length > 0 && !selectedChannel) {
+          setSelectedChannel(channels[0].id)
+        }
       }).catch(() => {})
     // 加载 bot user IDs（用于正确 @mention）
     fetch('/api/bot-user-ids', { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } })
@@ -312,7 +317,9 @@ export default function Court() {
               <>
                 {/* 按分类分组 */}
                 {categories.map(cat => {
-                  const children = discordChannels.filter(ch => ch.parentId === cat.id)
+                  const children = discordChannels
+                    .filter(ch => ch.parentId === cat.id)
+                    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
                   if (children.length === 0) return null
                   return (
                     <optgroup key={cat.id} label={cat.name}>

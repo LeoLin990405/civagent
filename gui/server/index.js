@@ -1365,8 +1365,15 @@ app.get('/api/channel-messages', authMiddleware, async (req, res) => {
 });
 
 // 发送指令到Discord频道
-// 获取 Discord 服务器频道列表
+// 获取 Discord 服务器频道列表（带缓存）
+let discordChannelsCache = { data: null, ts: 0 };
+const CHANNELS_CACHE_TTL = 300000; // 5分钟缓存
+
 app.get('/api/discord-channels', authMiddleware, async (req, res) => {
+  if (discordChannelsCache.data && Date.now() - discordChannelsCache.ts < CHANNELS_CACHE_TTL) {
+    return res.json(discordChannelsCache.data);
+  }
+
   try {
     const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
     const mainAccount = config.channels?.discord?.accounts?.['main'];
@@ -1389,25 +1396,36 @@ app.get('/api/discord-channels', authMiddleware, async (req, res) => {
     if (!chRes.ok) return res.status(chRes.status).json({ error: 'Failed to fetch channels' });
     const allChannels = await chRes.json();
 
-    // 只返回文字频道 (type 0) 和公告频道 (type 5)
+    // 只返回文字频道 (type 0) 和公告频道 (type 5)，按 Discord position 排序
     const textChannels = allChannels
       .filter(ch => ch.type === 0 || ch.type === 5)
-      .map(ch => ({ id: ch.id, name: ch.name, parentId: ch.parent_id }))
-      .sort((a, b) => a.name.localeCompare(b.name));
+      .map(ch => ({ id: ch.id, name: ch.name, parentId: ch.parent_id, position: ch.position ?? 0 }))
+      .sort((a, b) => a.position - b.position);
 
-    // 也返回分类 (type 4) 方便前端分组
+    // 也返回分类 (type 4) 方便前端分组，按 position 排序
     const categories = allChannels
       .filter(ch => ch.type === 4)
-      .map(ch => ({ id: ch.id, name: ch.name }));
+      .map(ch => ({ id: ch.id, name: ch.name, position: ch.position ?? 0 }))
+      .sort((a, b) => a.position - b.position);
 
-    res.json({ channels: textChannels, categories, guildId });
+    const result = { channels: textChannels, categories, guildId };
+    discordChannelsCache = { data: result, ts: Date.now() };
+    res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
 
-// 获取 bot 的 Discord user ID（用于正确 @mention）
+// 获取 bot 的 Discord user ID（用于正确 @mention），带内存缓存
+let botUserIdsCache = { data: null, ts: 0 };
+const BOT_USER_IDS_TTL = 600000; // 10分钟缓存
+
 app.get('/api/bot-user-ids', authMiddleware, async (req, res) => {
+  // 命中缓存直接返回
+  if (botUserIdsCache.data && Date.now() - botUserIdsCache.ts < BOT_USER_IDS_TTL) {
+    return res.json({ botUserIds: botUserIdsCache.data });
+  }
+
   try {
     const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
     const accounts = config.channels?.discord?.accounts || {};
@@ -1426,6 +1444,7 @@ app.get('/api/bot-user-ids', authMiddleware, async (req, res) => {
       } catch { /* skip */ }
     }));
 
+    botUserIdsCache = { data: results, ts: Date.now() };
     res.json({ botUserIds: results });
   } catch (err) {
     res.status(500).json({ error: err.message });
