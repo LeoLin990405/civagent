@@ -2,6 +2,8 @@
 
 <!-- SEO Keywords: Three Departments and Six Ministries, Ming Dynasty, Six Ministries System, Zhongshu Province, Menxia Province, Shangshu Province, AI Court, AI Agent, Multi-Agent Collaboration, AI Management, Ancient China Governance, Modern Management, Organization Architecture, OpenClaw, multi-agent, ancient-china -->
 
+> **⚠️ Originality Notice:** This project was first published on **Feb 22, 2026** (promotional posts on Xiaohongshu as early as Feb 20). It is the original creator of the "Three Departments & Six Ministries × AI Multi-Agent" concept. A copycat project was created 21 hours later with 15/15 core design decisions identical, without any attribution. Full evidence: [GitHub Issue](https://github.com/cft0808/edict/issues/55). We welcome forks and derivatives — just give credit where it's due.
+
 <p align="center">
   <img src="./images/boluobobo-mascot.png" alt="Boluobobo Mascot" width="200" />
 </p>

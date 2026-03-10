@@ -2,6 +2,8 @@
 
 <!-- SEO 关键词 / Keywords：三省六部、明朝、六部制、中书省、门下省、尚书省、司礼监、兵部、户部、礼部、工部、刑部、吏部、AI朝廷、AI Agent、多Agent协作、人工智能管理、古代治国、现代管理、组织架构、OpenClaw、multi-agent、ancient-china -->
 
+> **⚠️ 维权声明：** 本项目于 **2026年2月22日** 首发（[小红书推广帖更早于2月20日](https://www.xiaohongshu.com/discovery/item/6998638f000000000d0092fe?source=webshare)），是「三省六部制 × AI 多智能体」概念的原创项目。近日发现有项目在 21 小时后创建了 15/15 核心设计决策完全一致的仿品，且不注明来源。完整证据链见 [GitHub Issue](https://github.com/cft0808/edict/issues/55) | [维权文章](https://mp.weixin.qq.com/s/erVkoANrpZQFawMCNn6p9g)。我们欢迎 fork 和二次开发，但请尊重开源精神，注明出处。
+
 <p align="center">
   <img src="./images/boluobobo-mascot.png" alt="菠萝菠菠 Mascot" width="200" />
 </p>
