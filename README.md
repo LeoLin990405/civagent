@@ -2,6 +2,10 @@
 
 <!-- SEO 关键词 / Keywords：三省六部、明朝、六部制、中书省、门下省、尚书省、司礼监、兵部、户部、礼部、工部、刑部、吏部、AI朝廷、AI Agent、多Agent协作、人工智能管理、古代治国、现代管理、组织架构、OpenClaw、multi-agent、ancient-china -->
 
+<p align="center">
+  <img src="./images/boluobobo-mascot.png" alt="菠萝菠菠 Mascot" width="200" />
+</p>
+
 # 🏛️ AI 朝廷 — 用明代六部制管理你的 AI Agent 团队
 
 ### 30 分钟搭建 · 多 Agent 协作 · 零代码 · 古代治国智慧 × 现代 AI 管理

@@ -2,6 +2,10 @@
 
 <!-- SEO Keywords: Three Departments and Six Ministries, Ming Dynasty, Six Ministries System, Zhongshu Province, Menxia Province, Shangshu Province, AI Court, AI Agent, Multi-Agent Collaboration, AI Management, Ancient China Governance, Modern Management, Organization Architecture, OpenClaw, multi-agent, ancient-china -->
 
+<p align="center">
+  <img src="./images/boluobobo-mascot.png" alt="Boluobobo Mascot" width="200" />
+</p>
+
 # 🏛️ AI Court — Manage Your AI Agent Team with China's Imperial Six Ministries System
 
 ### 30-Minute Setup · Multi-Agent Collaboration · Zero Code · Ancient Governance Wisdom × Modern AI Management
