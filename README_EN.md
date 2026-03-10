@@ -23,6 +23,18 @@
   <img src="https://img.shields.io/badge/Deploy-5_min-red?style=for-the-badge" />
 </p>
 
+<div align="center">
+
+### 👑 Become Emperor in One Click
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
+```
+
+**One command. 5 minutes. You are the Emperor.** [→ Full Install Guide](#quick-start)
+
+</div>
+
 ---
 
 ## 📜 What Is This?

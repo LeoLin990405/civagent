@@ -19,6 +19,18 @@
   <img src="https://img.shields.io/badge/部署-5分钟-red?style=for-the-badge" />
 </p>
 
+<div align="center">
+
+### 👑 一键当皇帝
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
+```
+
+**一行命令，5 分钟，你就是皇上。** [→ 详细安装指南](#快速开始)
+
+</div>
+
 <p align="center">
   <img src="./images/flow-architecture.png" alt="系统架构流程图" width="80%" />
 </p>
