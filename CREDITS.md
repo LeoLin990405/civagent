@@ -18,8 +18,14 @@ We extend our deepest gratitude for this creative and inspiring open-source cont
 **AI 治理天下** (AI Governance) extends the original concept to cover 20 Chinese dynasties
 and 19 global empires, creating a universal multi-regime governance platform.
 
-- Fork maintained by [@LeoLin990405](https://github.com/LeoLin990405)
+- Fork maintained by [@LeoLin990405](https://github.com/LeoLin990405) — a history undergraduate and AI programming enthusiast
 - Original concept and Tang Dynasty implementation: [@wanikua](https://github.com/wanikua)
+
+## Inspirations / 灵感来源
+
+- **[@wanikua](https://github.com/wanikua)** — The original [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tutorial) project that started it all
+- **钱穆《中国历代政治得失》** — Qian Mu's systematic analysis of Chinese political institutions across dynasties, which revealed how ancient governance design maps to modern agent orchestration patterns
+- **World Political History coursework** — Studying governance systems from Athens to the Mongol Empire, each answering the same question: how to organize effective collaboration
 
 ## Framework
 
