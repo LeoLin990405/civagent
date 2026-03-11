@@ -1493,18 +1493,61 @@ app.get('/api/bot-user-ids', authMiddleware, async (req, res) => {
   }
 });
 
-// 发送指令到Discord频道（始终用主bot发送，正确@mention目标bot）
+// Webhook 缓存：channelId -> { id, token, url }
+const webhookCache = {};
+
+// 获取或创建频道 Webhook（用于模拟用户身份发消息）
+async function getOrCreateWebhook(channelId, botToken) {
+  // 命中缓存
+  if (webhookCache[channelId]) {
+    return webhookCache[channelId];
+  }
+
+  // 查找已有的 webhook
+  const listRes = await fetch(`https://discord.com/api/v10/channels/${channelId}/webhooks`, {
+    headers: { 'Authorization': `Bot ${botToken}` }
+  });
+  if (listRes.ok) {
+    const webhooks = await listRes.json();
+    // 找我们创建的 webhook
+    const existing = webhooks.find(w => w.name === 'AI朝廷-下旨');
+    if (existing) {
+      const wh = { id: existing.id, token: existing.token, url: `https://discord.com/api/webhooks/${existing.id}/${existing.token}` };
+      webhookCache[channelId] = wh;
+      return wh;
+    }
+  }
+
+  // 创建新 webhook
+  const createRes = await fetch(`https://discord.com/api/v10/channels/${channelId}/webhooks`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bot ${botToken}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name: 'AI朝廷-下旨' })
+  });
+  if (!createRes.ok) {
+    const err = await createRes.text();
+    throw new Error(`创建 Webhook 失败: ${err}`);
+  }
+  const wh = await createRes.json();
+  const result = { id: wh.id, token: wh.token, url: `https://discord.com/api/webhooks/${wh.id}/${wh.token}` };
+  webhookCache[channelId] = result;
+  return result;
+}
+
+// 发送指令到Discord频道（通过 Webhook 以用户身份发送）
 app.post('/api/command', authMiddleware, async (req, res) => {
-  const { channel, message, botId, mentionUserId } = req.body;
+  const { channel, message, botId, mentionUserId, username, avatarUrl } = req.body;
   const targetChannel = channel || '1474091579630293164'; // 默认朝堂频道
   
   try {
     const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
-    // 始终用主bot（司礼监）的token发送，模拟"用户下旨"
     const mainAccount = config.channels?.discord?.accounts?.['main'];
-    const token = mainAccount?.token;
+    const botToken = mainAccount?.token;
     
-    if (!token) {
+    if (!botToken) {
       return res.status(400).json({ error: 'Main bot token not found' });
     }
 
@@ -1514,20 +1557,29 @@ app.post('/api/command', authMiddleware, async (req, res) => {
       finalMessage = `<@${mentionUserId}> ${message}`;
     }
 
-    const r = await fetch(`https://discord.com/api/v10/channels/${targetChannel}/messages`, {
+    // 通过 Webhook 发送，显示为用户身份
+    const webhook = await getOrCreateWebhook(targetChannel, botToken);
+    const senderName = username || '皇上';
+
+    const r = await fetch(`${webhook.url}?wait=true`, {
       method: 'POST',
-      headers: {
-        'Authorization': `Bot ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ content: finalMessage })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: finalMessage,
+        username: senderName,
+        ...(avatarUrl ? { avatar_url: avatarUrl } : {})
+      })
     });
     
     if (r.ok) {
       const data = await r.json();
-      res.json({ success: true, messageId: data.id, sentAs: 'main', channel: targetChannel });
+      res.json({ success: true, messageId: data.id, sentAs: senderName, channel: targetChannel });
     } else {
       const err = await r.text();
+      // Webhook 失效时清除缓存重试
+      if (r.status === 404 || r.status === 401) {
+        delete webhookCache[targetChannel];
+      }
       res.status(r.status).json({ error: err });
     }
   } catch (err) {
