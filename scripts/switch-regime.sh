@@ -117,13 +117,15 @@ if [ -f "$TEMPLATE" ]; then
     EXISTING_CONFIG="$OPENCLAW_DIR/openclaw.json"
     if [ -f "$EXISTING_CONFIG" ]; then
         echo -e "${YELLOW}→ Merging openclaw.json.template with existing config...${NC}"
+        OUTPUT_PATH="$EXISTING_CONFIG"
         # Extract existing API keys and tokens using python3
+        export TEMPLATE EXISTING_CONFIG OUTPUT_PATH
         python3 << 'PYEOF'
 import json, sys, os
 
-template_path = sys.argv[1] if len(sys.argv) > 1 else os.environ.get('TEMPLATE')
-existing_path = sys.argv[2] if len(sys.argv) > 2 else os.environ.get('EXISTING_CONFIG')
-output_path = sys.argv[3] if len(sys.argv) > 3 else os.environ.get('OUTPUT_PATH')
+template_path = os.environ.get('TEMPLATE')
+existing_path = os.environ.get('EXISTING_CONFIG')
+output_path = os.environ.get('OUTPUT_PATH')
 
 try:
     with open(template_path) as f:
