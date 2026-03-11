@@ -247,6 +247,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 
 准备一台 Linux 服务器，SSH 连上，选择对应的安装方式：
 
+> 🔴 **新手请用云服务器，不要在个人电脑上安装！** Agent 拥有工作区的完整读写和命令执行权限，在云服务器上出问题随时重建，在个人电脑上可能误删文件。详见 [安全须知](#🛡️-安全须知新手必读)。
+
 #### 服务器推荐
 
 | 平台 | 推荐配置 | 费用 | 说明 |
@@ -913,6 +915,67 @@ openclaw doctor --fix
 > **欢迎转载，请注明出处。**
 >
 > 📕 小红书原创系列：[用AI当上皇帝的第3天，我已经欲罢不能了](https://www.xiaohongshu.com/discovery/item/6998638f000000000d0092fe) | [赛博皇帝的日常：睡前下旨，AI连夜肝完代码](https://www.xiaohongshu.com/discovery/item/69a95dc3000000002801e886)
+
+---
+
+## 🛡️ 安全须知（新手必读）
+
+### ⚠️ 不建议在本地电脑安装
+
+**强烈建议使用云服务器，不要在个人电脑上跑 Agent：**
+
+| | 云服务器 | 本地电脑 |
+|---|---|---|
+| Agent 能动的文件 | 仅服务器上的工作区 | **你的所有个人文件** |
+| 搞坏了怎么办 | 重建服务器，5 分钟恢复 | 个人文件可能丢失 |
+| API Key 泄露风险 | 隔离在服务器 | 暴露在个人环境 |
+| 24 小时在线 | ✅ 服务器不关机 | ❌ 关电脑就停了 |
+
+> 🔴 **特别提醒**：Agent 拥有工作区内的**完整读写权限**，包括执行命令。如果你把工作区设成 `$HOME`（家目录），Agent 理论上可以读写你的所有文件。在云服务器上这不是问题（服务器本来就是给它用的），但在个人电脑上就是安全隐患。
+
+### 🔒 Workspace 权限配置（重要）
+
+`workspace` 是 Agent 的"领地"——它只能读写这个目录。配置原则：
+
+```
+✅ 推荐：专用目录
+"workspace": "/home/ubuntu/clawd"        ← Agent 只能动这个目录
+
+❌ 危险：家目录
+"workspace": "/home/ubuntu"              ← Agent 能动你所有文件
+
+❌ 绝对不要：根目录
+"workspace": "/"                         ← 等于给 Agent root 权限
+```
+
+**Sandbox 沙箱配置建议：**
+
+| 模式 | 说明 | 推荐场景 |
+|------|------|----------|
+| `"mode": "all"` | Docker 容器隔离，最安全 | 执行不信任的代码（兵部等） |
+| `"mode": "non-main"` | 除主 Agent 外都沙箱化 | 默认推荐 |
+| `"mode": "off"` | 无隔离，完整系统权限 | 仅司礼监/需要完整权限的 Agent |
+
+```json
+// 推荐配置：defaults 里开沙箱，只给司礼监关沙箱
+"agents": {
+  "defaults": {
+    "workspace": "/home/ubuntu/clawd",
+    "sandbox": { "mode": "non-main" }
+  },
+  "list": [
+    { "id": "silijian", "sandbox": { "mode": "off" } },
+    { "id": "bingbu", "sandbox": { "mode": "all", "scope": "agent" } }
+  ]
+}
+```
+
+### 🔑 API Key 安全
+
+- **不要** 把含 API Key 的配置文件提交到 GitHub 公开仓库
+- **不要** 在群聊里发 API Key
+- **建议** 给 API Key 设置用量上限（在 LLM 服务商后台）
+- **建议** 定期轮换 Key
 
 ---
 

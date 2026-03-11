@@ -143,13 +143,20 @@ Boot Volume：200GB（免费最大）
 - Google Cloud $300 额度（需信用卡）
 - 腾讯云/阿里云学生机（¥9.9/月）
 
-🟢 方案 3：本地运行（最简单⭐⭐⭐）
+🟡 方案 3：本地运行（能用但不推荐）
 - Mac/Windows 直接装 OpenClaw
 - 不用服务器，但电脑需要保持开机
 - 成本：0 元（只付 API 费）
 
-💡 建议：方案 3 最适合新手试用！不用折腾服务器，5 分钟搞定！
-想 24 小时在线还是得用云服务器。
+⚠️ 注意：本地安装有安全风险！
+Agent 拥有工作区内的完整读写权限，包括执行命令。
+在云服务器上出问题随时重建，但在个人电脑上可能误删你的文件。
+新手强烈建议先用云服务器！等熟悉了再考虑本地。
+
+💡 如果一定要本地装，请注意：
+- workspace 设为专用目录（如 ~/clawd），绝对不要设成家目录
+- 给所有 Agent 开 sandbox 隔离
+- 不要给 Agent 关沙箱（sandbox mode: off）的权限
 
 ━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -308,6 +315,10 @@ nano ~/.openclaw/openclaw.json
       "workspace": "/home/ubuntu/clawd",
       "model": { "primary": "your-provider/fast-model" },
       "sandbox": { "mode": "non-main" }
+      
+⚠️ workspace 是 Agent 的"领地"，它能读写这个目录下的所有文件！
+   设为 /home/ubuntu/clawd ✅  设为 /home/ubuntu ❌（太大）设为 / ❌（等于root）
+⚠️ sandbox "non-main" 表示除主 Agent 外都跑在 Docker 沙箱里，更安全
     },
     "list": [
       {
@@ -522,6 +533,9 @@ systemctl --user stop openclaw-gateway
 ━━━━━━━━━━━━━━━━━━━━━━━━
 
 七、常见问题 Q&A
+
+💡 更多 FAQ 见 README.md 的"常见问题"章节
+   https://github.com/wanikua/boluobobo-ai-court-tutorial#常见问题
 
 Q1: 云服务商注册一直失败怎么办？
 
