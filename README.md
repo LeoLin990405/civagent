@@ -1,32 +1,47 @@
 [English Version](./README_EN.md) | [原始项目 Original Project](https://github.com/wanikua/boluobobo-ai-court-tutorial)
 
-# 🏛️ AI 治理天下 — 以古今中外 57 种政体治理你的 AI 团队
+# 🎮 CivAgent — 选择你的文明，指挥你的 AI 团队
 
-### 20 个中华朝代 + 37 个世界帝国 · 纯配置切换 · 零代码 · 基于 OpenClaw
+### 人类 5000 年治国智慧 × AI 多 Agent 协作 | 57 种政体 · 纯配置切换 · 零代码 · 基于 OpenClaw
 
 <p align="center">
-  <img src="https://img.shields.io/badge/政体-57种-gold?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/文明-57种-gold?style=for-the-badge" />
   <img src="https://img.shields.io/badge/中华朝代-20个-red?style=for-the-badge" />
   <img src="https://img.shields.io/badge/世界帝国-37个-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/编排模式-6种-purple?style=for-the-badge" />
   <img src="https://img.shields.io/badge/框架-OpenClaw-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/代码修改-零-orange?style=for-the-badge" />
 </p>
 
 <div align="center">
 
-### 👑 选择你的政体，一键切换
+> *"The whole history of the world is summed up in the fact that,*
+> *when nations are strong, they are not always just,*
+> *and when they wish to be just, they are no longer strong."*
+> *— Winston Churchill*
+
+</div>
+
+---
+
+<div align="center">
+
+### 🏛️ 选择你的文明，一键部署
 
 ```bash
-# 秦始皇的中央集权
+# 🐉 秦始皇的中央集权 — 令行禁止，效率至上
 ./scripts/switch-regime.sh china/qin
 
-# 雅典直接民主
+# 🏛️ 雅典直接民主 — 所有 Agent 平等投票
 ./scripts/switch-regime.sh global/athens
 
-# 美国三权分立
+# ⚖️ 美国三权分立 — 立法、行政、司法互相制衡
 ./scripts/switch-regime.sh global/us-federal
 
-# 查看全部 39 种政体
+# 🗡️ 斯巴达双王制 — 双主节点冗余保障
+./scripts/switch-regime.sh global/sparta
+
+# 📜 查看全部 57 种文明
 ./scripts/list-regimes.sh
 ```
 
@@ -64,7 +79,7 @@
 
 然后我刷到了 wanikua 的 [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tutorial) 项目——**它已经把这个想法的第一步做出来了！** 用唐朝三省六部制来编排 AI Agent，真的太妙了。
 
-于是我在想：既然唐朝可以，**为什么不把人类历史上所有的经典政体都做出来？** 从夏朝到太平天国，从古埃及到苏联，每一种政体都是前人用千百年的实践检验过的组织架构方案。把它们变成纯配置模块，让所有人都能一键切换体验——这就是 **AI 治理天下** 的由来。
+于是我在想：既然唐朝可以，**为什么不把人类历史上所有的经典政体都做出来？** 就像《文明》游戏让你选择不同文明来体验不同的科技树和治国策略——CivAgent 让你选择不同政体来体验不同的 AI 编排模式。从夏朝到太平天国，从古埃及到欧盟，每一种政体都是前人用千百年的实践检验过的组织架构方案。
 
 这个项目不是在评价哪种制度好哪种制度坏，而是在探索：**不同的组织架构模式，在不同的任务场景下，会带来怎样不同的协作效果？** 中央集权适合快速执行，制衡体制适合质量把控，联邦自治适合多团队并行……这些古人用血与泪验证过的经验，或许真的能帮到今天的 AI 编排。
 
@@ -74,18 +89,35 @@
 
 ## 这个项目是什么？
 
-**AI 治理天下**将人类历史上 57 种经典政体——从夏朝的家族制到美国的三权分立——映射为 AI 多 Agent 协作的组织架构。每种政体是一个纯配置模块（JSON + Markdown），切换政体不需要改任何代码。
+**CivAgent (AI 文明)** 将人类历史上 57 种经典政体——从夏朝的家族制到美国的三权分立，从苏美尔的神庙经济到欧盟的超国家治理——映射为 AI 多 Agent 协作的组织架构。每种政体是一个纯配置模块（JSON + Markdown），切换政体不需要改任何代码。
 
 **核心理念：** 古代治国的智慧 = 现代管理 AI 团队的最佳实践。
 
+### 为什么叫 CivAgent？
+
+就像 Sid Meier 的《文明》(Civilization) 让你选择不同文明来体验不同的治国策略：
+
+| 《文明》游戏 | CivAgent |
+|-------------|----------|
+| 选择一个文明 | 选择一种政体 |
+| 每个文明有独特的科技树 | 每种政体有独特的 Agent 编排模式 |
+| 不同文明有不同的特殊能力 | 不同政体有不同的协作优势 |
+| 建造奇观提升能力 | 配置 SOUL.md 定义行为准则 |
+| 选择政策卡牌组合 | 组合 Agent 角色与权限 |
+| 外交、贸易、战争策略 | Agent 间的通信、审核、竞争机制 |
+
+**CivAgent = Civilization + Agent。** 用文明的智慧，编排 Agent 的协作。
+
 ---
 
-## 政体目录
+## 文明图鉴
 
-### 中华朝代（20）
+### 🐉 中华朝代（20）
 
-| # | ID | 朝代 | 时代 | 制度 | Agent 模式 | Agent 数 |
-|---|-----|------|------|------|-----------|---------|
+> *从部落联盟到中央集权，从贵族政治到文官体制——中华五千年，每个朝代都是一次制度实验。*
+
+| # | ID | 朝代 | 时代 | 制度 | Agent 编排模式 | Agent 数 |
+|---|-----|------|------|------|---------------|---------|
 | 1 | `china/xia` | [夏](./regimes/china/xia/README.md) | c.2070-1600 BC | 分封制/家族制 | 族长集权 + 松散部落 | 5 |
 | 2 | `china/shang` | [商](./regimes/china/shang/README.md) | c.1600-1046 BC | 神权贵族制 | 神权决策 + 贵族执行 | 6 |
 | 3 | `china/zhou` | [周](./regimes/china/zhou/README.md) | c.1046-256 BC | 宗法分封制 | 联邦自治 | 8 |
@@ -107,62 +139,142 @@
 | 19 | `china/western-xia` | [西夏](./regimes/china/western-xia/README.md) | 1038-1227 | 多民族州郡制 | 军事优先 + 宗教辅助 | 5 |
 | 20 | `china/taiping` | [太平天国](./regimes/china/taiping/README.md) | 1851-1864 | 神权专制/天王制 | 天王绝对集权 | 7 |
 
-### 世界帝国（37）
+### 🌍 世界帝国（37）
+
+> *从尼罗河畔的法老到日内瓦的联邦委员会，从两河流域的苏美尔到南非的祖鲁——每个文明都在用自己的方式回答同一个问题。*
+
+#### 古代文明 (Ancient Civilizations)
 
 | # | ID | 帝国 | 时代 | 制度 | Agent 模式 | Agent 数 |
 |---|-----|------|------|------|-----------|---------|
-| 1 | `global/egypt` | [古埃及](./regimes/global/egypt/README.md) | 3100-30 BC | 法老神权制 | 神王 + 维齐尔代理 | 6 |
-| 2 | `global/athens` | [雅典民主](./regimes/global/athens/README.md) | 508-322 BC | 直接民主制 | 全体 Agent 投票 | 6 |
-| 3 | `global/sparta` | [斯巴达](./regimes/global/sparta/README.md) | 900-192 BC | 双王制 | 双王协调 + 监察官监督 | 6 |
-| 4 | `global/roman-republic` | [罗马共和国](./regimes/global/roman-republic/README.md) | 509-27 BC | 元老院 + 执政官 | 双执政官 + 元老院投票 | 8 |
-| 5 | `global/roman-empire` | [罗马帝国](./regimes/global/roman-empire/README.md) | 27 BC-476 AD | 帝制官僚 | 皇帝 + 行省长官层级 | 7 |
-| 6 | `global/byzantine` | [拜占庭帝国](./regimes/global/byzantine/README.md) | 330-1453 | 神权独裁制 | 皇帝-上帝代理人 + 大臣 | 7 |
-| 7 | `global/persian` | [波斯帝国](./regimes/global/persian/README.md) | 550-330 BC | 总督制 | 万王之王 + 自治总督 | 7 |
-| 8 | `global/ottoman` | [奥斯曼帝国](./regimes/global/ottoman/README.md) | 1299-1922 | 苏丹-迪万制 | 大维齐尔调度 | 7 |
-| 9 | `global/mongol` | [蒙古帝国](./regimes/global/mongol/README.md) | 1206-1368 | 汗国-忽里勒台 | 大汗 + 忽里勒台议事 | 6 |
-| 10 | `global/hre` | [神圣罗马帝国](./regimes/global/hre/README.md) | 962-1806 | 选帝侯制 | 选帝侯选举 + 诸侯自治 | 7 |
-| 11 | `global/british` | [英国议会制](./regimes/global/british/README.md) | 1689-至今 | 君主立宪制 | 首相执政，君主象征 | 8 |
-| 12 | `global/french` | [法国绝对君主制](./regimes/global/french/README.md) | 1643-1789 | 朕即国家 | 太阳王绝对权力 | 7 |
-| 13 | `global/russian` | [俄罗斯沙皇制](./regimes/global/russian/README.md) | 1547-1917 | 专制 + 贵族杜马 | 沙皇专制 + 参政院 | 7 |
-| 14 | `global/shogunate` | [日本幕府制](./regimes/global/shogunate/README.md) | 1603-1868 | 幕府制 | 将军实权，天皇象征 | 7 |
-| 15 | `global/mughal` | [莫卧儿帝国](./regimes/global/mughal/README.md) | 1526-1857 | 曼萨布达尔制 | 皇帝 + 品级官僚 | 7 |
-| 16 | `global/us-federal` | [美国联邦制](./regimes/global/us-federal/README.md) | 1789-至今 | 三权分立 | 立法/行政/司法分权 | 7 |
-| 17 | `global/soviet` | [苏联](./regimes/global/soviet/README.md) | 1922-1991 | 政治局制 | 总书记 + 政治局委员会 | 7 |
-| 18 | `global/inca` | [印加帝国](./regimes/global/inca/README.md) | 1438-1533 | 萨帕·印卡四方制 | 太阳之子 + 四方总督 | 6 |
-| 19 | `global/aztec` | [阿兹特克三方联盟](./regimes/global/aztec/README.md) | 1428-1521 | 三方联盟制 | 三城邦议事会 | 6 |
-| 20 | `global/sumeria` | [苏美尔城邦](./regimes/global/sumeria/README.md) | c.4500-1900 BC | 神庙经济制 | 神权 + 王权双轨 | 6 |
-| 21 | `global/carthage` | [迦太基共和国](./regimes/global/carthage/README.md) | 814-146 BC | 商业寡头制 | 双苏非特 + 元老院 | 7 |
-| 22 | `global/maurya` | [孔雀王朝](./regimes/global/maurya/README.md) | 322-185 BC | 政事论制 | 皇帝 + 谍报网 | 7 |
-| 23 | `global/caliphate` | [阿拔斯哈里发国](./regimes/global/caliphate/README.md) | 750-1258 | 哈里发-维齐尔制 | 知识增强型集权 | 7 |
-| 24 | `global/viking` | [维京庭议制](./regimes/global/viking/README.md) | 800-1100 | 庭议民主制 | 全体庭议投票 | 5 |
-| 25 | `global/venice` | [威尼斯共和国](./regimes/global/venice/README.md) | 697-1797 | 总督+大议会 | 反腐制衡体系 | 7 |
-| 26 | `global/mali` | [马里帝国](./regimes/global/mali/README.md) | 1235-1600 | 曼萨制 | 口传传统 + 贸易网 | 6 |
-| 27 | `global/khmer` | [高棉帝国](./regimes/global/khmer/README.md) | 802-1431 | 神王制 | 神王绝对 + 水利 | 6 |
-| 28 | `global/safavid` | [萨法维帝国](./regimes/global/safavid/README.md) | 1501-1736 | 什叶派神权君主制 | 沙阿 + 宗教权威 | 7 |
-| 29 | `global/joseon` | [朝鲜王朝](./regimes/global/joseon/README.md) | 1392-1897 | 新儒学官僚制 | 三司言谏制衡 | 7 |
-| 30 | `global/habsburg` | [哈布斯堡·奥匈帝国](./regimes/global/habsburg/README.md) | 1867-1918 | 二元君主制 | 双轨议会并行 | 7 |
-| 31 | `global/polish` | [波兰立陶宛联邦](./regimes/global/polish/README.md) | 1569-1795 | 选举君主制 | 自由否决权 + 议会 | 6 |
-| 32 | `global/napoleon` | [拿破仑帝国](./regimes/global/napoleon/README.md) | 1804-1815 | 功绩制中央集权 | 能力至上 + 法典 | 7 |
-| 33 | `global/prussia` | [普鲁士王国](./regimes/global/prussia/README.md) | 1701-1918 | 军事官僚制 | 总参谋部体系 | 6 |
-| 34 | `global/meiji` | [明治日本](./regimes/global/meiji/README.md) | 1868-1912 | 立宪君主制 | 元老非正式集权 | 7 |
-| 35 | `global/eu` | [欧盟](./regimes/global/eu/README.md) | 1993-至今 | 超国家治理 | 三方共决民主 | 7 |
-| 36 | `global/swiss` | [瑞士联邦](./regimes/global/swiss/README.md) | 1291-至今 | 直接民主制 | 公投 + 合议制 | 6 |
+| 1 | `global/sumeria` | [苏美尔城邦](./regimes/global/sumeria/README.md) | c.4500-1900 BC | 神庙经济制 | 神权 + 王权双轨 | 6 |
+| 2 | `global/egypt` | [古埃及](./regimes/global/egypt/README.md) | 3100-30 BC | 法老神权制 | 神王 + 维齐尔代理 | 6 |
+| 3 | `global/athens` | [雅典民主](./regimes/global/athens/README.md) | 508-322 BC | 直接民主制 | 全体 Agent 投票 | 6 |
+| 4 | `global/sparta` | [斯巴达](./regimes/global/sparta/README.md) | 900-192 BC | 双王制 | 双王协调 + 监察官监督 | 6 |
+| 5 | `global/persian` | [波斯帝国](./regimes/global/persian/README.md) | 550-330 BC | 总督制 | 万王之王 + 自治总督 | 7 |
+| 6 | `global/carthage` | [迦太基共和国](./regimes/global/carthage/README.md) | 814-146 BC | 商业寡头制 | 双苏非特 + 元老院 | 7 |
+| 7 | `global/maurya` | [孔雀王朝](./regimes/global/maurya/README.md) | 322-185 BC | 政事论制 | 皇帝 + 谍报网 | 7 |
+
+#### 古典帝国 (Classical Empires)
+
+| # | ID | 帝国 | 时代 | 制度 | Agent 模式 | Agent 数 |
+|---|-----|------|------|------|-----------|---------|
+| 8 | `global/roman-republic` | [罗马共和国](./regimes/global/roman-republic/README.md) | 509-27 BC | 元老院 + 执政官 | 双执政官 + 元老院投票 | 8 |
+| 9 | `global/roman-empire` | [罗马帝国](./regimes/global/roman-empire/README.md) | 27 BC-476 AD | 帝制官僚 | 皇帝 + 行省长官层级 | 7 |
+| 10 | `global/byzantine` | [拜占庭帝国](./regimes/global/byzantine/README.md) | 330-1453 | 神权独裁制 | 皇帝-上帝代理人 + 大臣 | 7 |
+
+#### 中世纪政权 (Medieval Powers)
+
+| # | ID | 帝国 | 时代 | 制度 | Agent 模式 | Agent 数 |
+|---|-----|------|------|------|-----------|---------|
+| 11 | `global/caliphate` | [阿拔斯哈里发国](./regimes/global/caliphate/README.md) | 750-1258 | 哈里发-维齐尔制 | 知识增强型集权 | 7 |
+| 12 | `global/viking` | [维京庭议制](./regimes/global/viking/README.md) | 800-1100 | 庭议民主制 | 全体庭议投票 | 5 |
+| 13 | `global/hre` | [神圣罗马帝国](./regimes/global/hre/README.md) | 962-1806 | 选帝侯制 | 选帝侯选举 + 诸侯自治 | 7 |
+| 14 | `global/mongol` | [蒙古帝国](./regimes/global/mongol/README.md) | 1206-1368 | 汗国-忽里勒台 | 大汗 + 忽里勒台议事 | 6 |
+| 15 | `global/venice` | [威尼斯共和国](./regimes/global/venice/README.md) | 697-1797 | 总督+大议会 | 反腐制衡体系 | 7 |
+| 16 | `global/mali` | [马里帝国](./regimes/global/mali/README.md) | 1235-1600 | 曼萨制 | 口传传统 + 贸易网 | 6 |
+| 17 | `global/khmer` | [高棉帝国](./regimes/global/khmer/README.md) | 802-1431 | 神王制 | 神王绝对 + 水利 | 6 |
+
+#### 近世帝国 (Early Modern Empires)
+
+| # | ID | 帝国 | 时代 | 制度 | Agent 模式 | Agent 数 |
+|---|-----|------|------|------|-----------|---------|
+| 18 | `global/ottoman` | [奥斯曼帝国](./regimes/global/ottoman/README.md) | 1299-1922 | 苏丹-迪万制 | 大维齐尔调度 | 7 |
+| 19 | `global/safavid` | [萨法维帝国](./regimes/global/safavid/README.md) | 1501-1736 | 什叶派神权君主制 | 沙阿 + 宗教权威 | 7 |
+| 20 | `global/mughal` | [莫卧儿帝国](./regimes/global/mughal/README.md) | 1526-1857 | 曼萨布达尔制 | 皇帝 + 品级官僚 | 7 |
+| 21 | `global/joseon` | [朝鲜王朝](./regimes/global/joseon/README.md) | 1392-1897 | 新儒学官僚制 | 三司言谏制衡 | 7 |
+| 22 | `global/shogunate` | [日本幕府制](./regimes/global/shogunate/README.md) | 1603-1868 | 幕府制 | 将军实权，天皇象征 | 7 |
+| 23 | `global/polish` | [波兰立陶宛联邦](./regimes/global/polish/README.md) | 1569-1795 | 选举君主制 | 自由否决权 + 议会 | 6 |
+
+#### 绝对主义与革命时代 (Age of Absolutism & Revolution)
+
+| # | ID | 帝国 | 时代 | 制度 | Agent 模式 | Agent 数 |
+|---|-----|------|------|------|-----------|---------|
+| 24 | `global/french` | [法国绝对君主制](./regimes/global/french/README.md) | 1643-1789 | 朕即国家 | 太阳王绝对权力 | 7 |
+| 25 | `global/british` | [英国议会制](./regimes/global/british/README.md) | 1689-至今 | 君主立宪制 | 首相执政，君主象征 | 8 |
+| 26 | `global/russian` | [俄罗斯沙皇制](./regimes/global/russian/README.md) | 1547-1917 | 专制 + 贵族杜马 | 沙皇专制 + 参政院 | 7 |
+| 27 | `global/habsburg` | [哈布斯堡·奥匈帝国](./regimes/global/habsburg/README.md) | 1867-1918 | 二元君主制 | 双轨议会并行 | 7 |
+| 28 | `global/prussia` | [普鲁士王国](./regimes/global/prussia/README.md) | 1701-1918 | 军事官僚制 | 总参谋部体系 | 6 |
+| 29 | `global/napoleon` | [拿破仑帝国](./regimes/global/napoleon/README.md) | 1804-1815 | 功绩制中央集权 | 能力至上 + 法典 | 7 |
+
+#### 近现代体制 (Modern Systems)
+
+| # | ID | 帝国 | 时代 | 制度 | Agent 模式 | Agent 数 |
+|---|-----|------|------|------|-----------|---------|
+| 30 | `global/us-federal` | [美国联邦制](./regimes/global/us-federal/README.md) | 1789-至今 | 三权分立 | 立法/行政/司法分权 | 7 |
+| 31 | `global/meiji` | [明治日本](./regimes/global/meiji/README.md) | 1868-1912 | 立宪君主制 | 元老非正式集权 | 7 |
+| 32 | `global/soviet` | [苏联](./regimes/global/soviet/README.md) | 1922-1991 | 政治局制 | 总书记 + 政治局委员会 | 7 |
+| 33 | `global/eu` | [欧盟](./regimes/global/eu/README.md) | 1993-至今 | 超国家治理 | 三方共决民主 | 7 |
+| 34 | `global/swiss` | [瑞士联邦](./regimes/global/swiss/README.md) | 1291-至今 | 直接民主制 | 公投 + 合议制 | 6 |
+
+#### 非洲与美洲 (Africa & Americas)
+
+| # | ID | 帝国 | 时代 | 制度 | Agent 模式 | Agent 数 |
+|---|-----|------|------|------|-----------|---------|
+| 35 | `global/inca` | [印加帝国](./regimes/global/inca/README.md) | 1438-1533 | 萨帕·印卡四方制 | 太阳之子 + 四方总督 | 6 |
+| 36 | `global/aztec` | [阿兹特克三方联盟](./regimes/global/aztec/README.md) | 1428-1521 | 三方联盟制 | 三城邦议事会 | 6 |
 | 37 | `global/zulu` | [祖鲁王国](./regimes/global/zulu/README.md) | 1816-1897 | 军事团制 | 国王 + 军团层级 | 5 |
 
 ---
 
-## 6 种编排模式
+## 6 种编排模式 — 你的「治国科技树」
 
-每种政体对应一种 Agent 编排模式：
+就像《文明》中的科技树决定了你的发展路线，CivAgent 的 6 种编排模式决定了 AI 团队的协作方式：
 
-| 模式 | 代表政体 | 特点 | 适用场景 |
-|------|---------|------|---------|
-| **中央集权** | 秦、元、古埃及、法国、苏联 | 单一 main agent 统管所有 subagent | 需要快速决策和执行 |
-| **制衡** | 唐、宋、隋、罗马共和国、美国 | 多个顶层 agent 互相审核 | 需要质量把控 |
-| **双轨** | 明(内阁+司礼监)、斯巴达、辽 | 两个 main 级 agent 分庭抗礼 | 需要双重审批 |
-| **联邦** | 周、三国、五代、神圣罗马帝国、波斯 | 独立 agent 组，最小化协调 | 多团队并行 |
-| **民主议会** | 雅典、蒙古忽里勒台 | 平等 agent，投票决策 | 需要集体智慧 |
-| **神权** | 商、太平天国、古埃及、拜占庭 | 最高 agent 拥有绝对权威 | 需要强力领导 |
+```
+                        ┌──────────────┐
+                        │   神权模式    │ 商·太平天国·埃及·拜占庭
+                        │  (Theocratic) │ 绝对权威，不容置疑
+                        └──────┬───────┘
+                               │
+              ┌────────────────┼────────────────┐
+              │                │                │
+     ┌────────▼────────┐ ┌────▼─────┐ ┌────────▼────────┐
+     │  中央集权模式     │ │ 双轨模式  │ │  联邦自治模式     │
+     │ (Centralized)   │ │(Dual     │ │ (Federated)     │
+     │ 秦·元·法国·苏联  │ │ Power)   │ │ 周·三国·HRE·波斯 │
+     │ 一元化指挥       │ │ 明·斯巴达 │ │ 分散自治         │
+     └────────┬────────┘ │ ·辽      │ └────────┬────────┘
+              │          │ 双重审批  │          │
+              │          └────┬─────┘          │
+              │               │                │
+              └───────────────┼────────────────┘
+                              │
+              ┌───────────────┼───────────────┐
+              │                               │
+     ┌────────▼────────┐             ┌────────▼────────┐
+     │  制衡模式        │             │  民主议会模式     │
+     │ (Checks &       │             │ (Democratic      │
+     │  Balances)       │             │  Council)        │
+     │ 唐·宋·美国·隋   │             │ 雅典·蒙古·维京   │
+     │ 互相审核         │             │ 平等投票         │
+     └─────────────────┘             └─────────────────┘
+```
+
+### 模式详解
+
+| 模式 | 代表文明 | 核心特点 | OpenClaw 实现 | 最佳场景 |
+|------|---------|---------|--------------|---------|
+| **中央集权** (Centralized) | 秦、元、古埃及、法国绝对制、苏联、拿破仑、普鲁士、孔雀王朝 | 单一 main agent 统管所有 subagent，命令链清晰，执行迅速 | 单 `main` + `subagents.allowAgents` | 紧急任务、需要快速一致决策 |
+| **制衡** (Checks & Balances) | 唐、宋、隋、罗马共和国、美国联邦、威尼斯、朝鲜、迦太基 | 多个顶层 agent 互相审核，防止单点错误 | 多 top-level agent + `sessions_send` 审核 | 高质量要求、防错场景 |
+| **双轨** (Dual Power) | 明(内阁+司礼监)、斯巴达(双王)、辽(南北面)、哈布斯堡(二元制) | 两个 main 级 agent 各管一条线，交叉审批 | 双 `main` + 重叠 subagents | 需要双重审批、两条产品线 |
+| **联邦** (Federated) | 周、三国、五代、神圣罗马帝国、波斯、波兰联邦 | 独立 agent 组自治运行，最小化跨组协调 | 独立 agent 组 + 最少通信 | 多团队并行、微服务架构 |
+| **民主议会** (Democratic) | 雅典、蒙古忽里勒台、维京庭议、瑞士、欧盟 | 所有 agent 平等参与，投票决策 | 等级 agent + 投票 `sessions_send` | 头脑风暴、集体决策 |
+| **神权** (Theocratic) | 商、太平天国、古埃及、拜占庭、萨法维、高棉 | 最高 agent 拥有绝对权威，其他 agent 完全服从 | 绝对权威 `main` + 服从性 subagents | 强力领导、紧急危机处理 |
+
+### 按需选择文明
+
+| 你的需求 | 推荐文明 | 原因 |
+|---------|---------|------|
+| ⚡ 快速执行，不需讨论 | 秦（中央集权）/ 拿破仑 | 命令直达，效率第一 |
+| 🔍 质量审核，防止出错 | 唐（制衡）/ 美国（三权分立）/ 威尼斯 | 多方互审，层层把关 |
+| 🏁 多团队竞争并行 | 三国（联邦）/ 波斯 | 各自独立，竞争出最优方案 |
+| 🗳️ 集体讨论民主决策 | 雅典 / 维京 / 瑞士 | 所有 Agent 平等投票 |
+| 🔐 双重审批流程 | 明（双轨）/ 哈布斯堡 | 内阁票拟 + 司礼监批红 |
+| 💪 强力领导快速推进 | 苏联 / 古埃及（神权） | 最高权威不容挑战 |
+| 🧠 知识密集型任务 | 阿拔斯哈里发 / 朝鲜 | 知识增强 + 儒学审谏 |
+| 🛡️ 军事化项目管理 | 普鲁士 / 祖鲁 | 总参谋部式精确执行 |
+| 🌐 跨团队多方协商 | 欧盟 / 蒙古 | 多方共决 + 松散联盟 |
 
 ---
 
@@ -178,20 +290,20 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install-mac.sh)
 ```
 
-### 2. 克隆本项目
+### 2. 克隆 CivAgent
 
 ```bash
-git clone https://github.com/LeoLin990405/boluobobo-ai-court-tutorial.git ai-governance
-cd ai-governance
+git clone https://github.com/LeoLin990405/boluobobo-ai-court-tutorial.git civagent
+cd civagent
 ```
 
-### 3. 选择政体
+### 3. 选择你的文明
 
 ```bash
-# 列出所有可用政体
+# 列出所有可用文明
 ./scripts/list-regimes.sh
 
-# 切换到你想要的政体（例如秦朝中央集权）
+# 切换到你想要的文明（例如秦朝中央集权）
 ./scripts/switch-regime.sh china/qin
 ```
 
@@ -207,13 +319,13 @@ openclaw gateway restart
 
 ---
 
-## 如何切换政体
+## 切换文明
 
 ```bash
-# 查看当前政体
+# 查看当前文明
 cat ~/.openclaw/.active-regime
 
-# 切换到新政体（自动备份旧配置）
+# 切换到新文明（自动备份旧配置）
 ./scripts/switch-regime.sh global/athens
 
 # 重启生效
@@ -222,15 +334,15 @@ openclaw gateway restart
 
 切换时会自动：
 1. 备份当前的 SOUL.md / IDENTITY.md / openclaw.json
-2. 部署新政体的配置文件
+2. 部署新文明的配置文件
 3. 保留你的 API Key 和 Bot Token
 
 ---
 
-## 如何创建自定义政体
+## 创建自定义文明
 
 ```bash
-# 从模板创建新政体
+# 从模板创建新文明
 ./scripts/create-regime.sh global/your-empire
 
 # 编辑 5 个配置文件
@@ -245,67 +357,61 @@ openclaw gateway restart
 ## 项目结构
 
 ```
-ai-governance/
+civagent/
 ├── CREDITS.md                 # 致谢原作者 @wanikua
-├── regimes/                   # 核心：所有政体配置
-│   ├── _template/             # 政体模板（5 个文件）
+├── regimes/                   # 核心：57 种文明配置
+│   ├── _template/             # 文明模板（5 个文件）
 │   ├── china/                 # 20 个中华朝代
 │   │   ├── tang/              # ⭐ 原版（保留不动）
 │   │   ├── qin/               # 秦·三公九卿
 │   │   ├── han/               # 汉·三公九卿
 │   │   └── ...
-│   └── global/                # 19 个世界帝国
+│   └── global/                # 37 个世界帝国
 │       ├── athens/            # 雅典·直接民主
 │       ├── roman-republic/    # 罗马·元老院
+│       ├── sumeria/           # 苏美尔·神庙经济
+│       ├── venice/            # 威尼斯·反腐制衡
 │       └── ...
-├── scripts/                   # 政体管理工具
-│   ├── switch-regime.sh       # 切换政体
-│   ├── list-regimes.sh        # 列出所有政体
+├── scripts/                   # 文明管理工具
+│   ├── switch-regime.sh       # 切换文明
+│   ├── list-regimes.sh        # 列出所有文明
 │   ├── validate-regime.sh     # 验证配置
-│   └── create-regime.sh       # 创建新政体
+│   └── create-regime.sh       # 创建新文明
 ├── docs/
-│   └── regime-design-guide.md # 政体设计指南
+│   └── regime-design-guide.md # 文明设计指南
 ├── install.sh                 # 安装脚本（原版）
 ├── gui/                       # Web 管理界面（原版）
 └── skills/                    # OpenClaw Skills（原版）
 ```
 
-每个政体包含 5 个文件：
+每种文明包含 5 个文件：
 
-| 文件 | 作用 |
-|------|------|
-| `metadata.json` | 机器可读的元数据（名称、时代、标签等） |
-| `openclaw.json.template` | OpenClaw Agent 配置模板（Agent 定义、绑定、模型分配） |
-| `SOUL.md` | 时代主题的行为准则（语言风格、交互规范、禁忌） |
-| `IDENTITY.md` | 组织架构图 + 角色映射表 + 协作流程 |
-| `README.md` | 说明文档 + 历史背景 + 使用示例 |
+| 文件 | 作用 | 《文明》类比 |
+|------|------|------------|
+| `metadata.json` | 机器可读的元数据（名称、时代、标签等） | 文明信息卡 |
+| `openclaw.json.template` | OpenClaw Agent 配置模板 | 单位和建筑定义 |
+| `SOUL.md` | 时代主题的行为准则（语言风格、禁忌） | 文明特性 |
+| `IDENTITY.md` | 组织架构图 + 角色映射表 | 科技树 + 政策卡 |
+| `README.md` | 说明文档 + 历史背景 + 使用示例 | 文明百科 |
 
 ---
 
 ## 常见问题
 
 **Q: 和原始 AI 朝廷项目有什么关系？**
-AI 治理天下是 [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tutorial) 的扩展 fork。原始的唐朝三省六部制配置完整保留在 `regimes/china/tang/`，我们在此基础上增加了 56 种新政体。原始项目的所有功能（安装脚本、GUI、Skills 等）均保持不变。
+CivAgent 是 [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tutorial) 的扩展 fork。原始的唐朝三省六部制配置完整保留在 `regimes/china/tang/`，我们在此基础上增加了 56 种新政体。原始项目的所有功能（安装脚本、GUI、Skills 等）均保持不变。
 
-**Q: 切换政体需要改代码吗？**
-不需要。每种政体是纯配置文件（JSON + Markdown），运行 `switch-regime.sh` 即可切换。
+**Q: 切换文明需要改代码吗？**
+不需要。每种文明是纯配置文件（JSON + Markdown），运行 `switch-regime.sh` 即可切换——就像《文明》里选择文明一样简单。
 
-**Q: 我可以创建自己的政体吗？**
-可以。运行 `create-regime.sh` 从模板创建，然后填写 5 个配置文件即可。欢迎 PR 贡献新政体！
+**Q: 我可以创建自己的文明吗？**
+可以。运行 `create-regime.sh` 从模板创建，然后填写 5 个配置文件即可。欢迎 PR 贡献新文明！创建你自己的「MOD」吧。
 
-**Q: 哪种政体最适合我？**
-
-| 你的需求 | 推荐政体 | 原因 |
-|---------|---------|------|
-| 快速执行，不需要讨论 | 秦（中央集权） | 丞相统管一切，命令直达 |
-| 质量审核，防止出错 | 唐（制衡）/ 美国（三权分立） | 多方互审，层层把关 |
-| 多团队并行竞争 | 三国（联邦） | 魏蜀吴各自独立，竞争出最优方案 |
-| 集体讨论民主决策 | 雅典（民主议会） | 所有 Agent 平等投票 |
-| 双重审批流程 | 明（双轨） | 内阁票拟 + 司礼监批红 |
-| 强力领导快速推进 | 苏联（中央集权） | 总书记 + 政治局高效决策 |
+**Q: 和《文明》游戏有什么关系？**
+没有官方关系。但灵感确实来自《文明》系列——不同文明有不同的科技树和治国策略，CivAgent 则是不同政体有不同的 Agent 编排模式。核心理念一样：**文明的选择决定了你的治理方式。**
 
 **Q: 这些政体的历史内容准确吗？**
-我尽力保证了历史准确性（毕竟我是历史专业的），但这个项目的核心目的是 AI Agent 编排，而不是学术论文。如果你发现任何历史错误，非常欢迎提 Issue 或 PR 纠正！
+我尽力保证了历史准确性（毕竟我是历史专业的），每种政体的设计都有对应的学术文献支撑（见下方参考文献）。但这个项目的核心目的是 AI Agent 编排，而不是学术论文。如果你发现任何历史错误，非常欢迎提 Issue 或 PR 纠正！
 
 ---
 
@@ -313,8 +419,11 @@ AI 治理天下是 [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tut
 
 ### 直接灵感
 
-- [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua) — 原始创意和唐朝实现，点燃了整个项目
-- [OpenClaw](https://github.com/openclaw/openclaw) — 底层多 Agent 框架
+| 来源 | 说明 |
+|------|------|
+| [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua) | 原始创意和唐朝实现，点燃了整个项目 |
+| [OpenClaw](https://github.com/openclaw/openclaw) | 底层多 Agent 框架 |
+| Sid Meier's *Civilization* 系列 | 「选择文明 → 体验不同治国策略」的核心交互理念 |
 
 ### 中国政治制度史·通论
 
@@ -330,13 +439,13 @@ AI 治理天下是 [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tut
 - **杨宽《战国史》** — 理解从分封到郡县的制度转型，启发了周→秦的编排模式差异
 - **姚大力《读史的智慧》** — 蒙元和清代多民族帝国的治理逻辑，帮助理解「因俗而治」的辽金元清模式
 
-### 各朝代·帝国专题参考
+### 各文明·帝国专题参考
 
-每个政体模块的设计都有对应的学术支撑。以下按项目中的政体分组列出核心参考：
+每个文明模块的设计都有对应的学术支撑。以下按项目中的文明分组列出核心参考：
 
 #### 中华朝代
 
-| 政体 | 核心参考文献 |
+| 文明 | 核心参考文献 |
 |------|------------|
 | **夏** `china/xia` | 许宏《最早的中国》· 李学勤《夏商周年代学札记》· 刘莉 & 陈星灿《中国考古学：旧石器时代晚期到早期青铜时代》(*The Archaeology of China*, Cambridge, 2012) |
 | **商** `china/shang` | 陈梦家《殷虚卜辞综述》· 宋镇豪 主编《商代史》(11 卷) · David Keightley, *Sources of Shang History: The Oracle-Bone Inscriptions of Bronze Age China* (1978) |
@@ -361,27 +470,45 @@ AI 治理天下是 [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tut
 
 #### 世界帝国
 
-| 政体 | 核心参考文献 |
+| 文明 | 核心参考文献 |
 |------|------------|
+| **苏美尔** `global/sumeria` | Samuel Noah Kramer, *The Sumerians: Their History, Culture, and Character* (1963) · Marc Van De Mieroop, *The Ancient Mesopotamian City* (1997) · Harriet Crawford, *Sumer and the Sumerians* (2nd ed., 2004) |
 | **古埃及** `global/egypt` | Ian Shaw (ed.), *The Oxford History of Ancient Egypt* (2000) · Barry Kemp, *Ancient Egypt: Anatomy of a Civilization* (3rd ed., 2018) · Toby Wilkinson, *The Rise and Fall of Ancient Egypt* (2010) |
 | **雅典民主** `global/athens` | Josiah Ober, *Mass and Elite in Democratic Athens* (1989) · Mogens Hansen, *The Athenian Democracy in the Age of Demosthenes* (1991) · Donald Kagan, *Pericles of Athens and the Birth of Democracy* (1991) |
 | **斯巴达** `global/sparta` | Paul Cartledge, *Sparta and Lakonia* (2nd ed., 2002) & *The Spartans* (2003) · W.G. Forrest, *A History of Sparta 950–192 BC* (1968) |
+| **波斯帝国** `global/persian` | Pierre Briant, *From Cyrus to Alexander: A History of the Persian Empire* (2002) · Amélie Kuhrt, *The Persian Empire* (2007) · Josef Wiesehöfer, *Ancient Persia* (2001) |
+| **迦太基** `global/carthage` | Serge Lancel, *Carthage: A History* (1995) · Richard Miles, *Carthage Must Be Destroyed* (2010) · Dexter Hoyos, *The Carthaginians* (2010) |
+| **孔雀王朝** `global/maurya` | Romila Thapar, *Aśoka and the Decline of the Mauryas* (3rd ed., 2012) · Kautilya, *Arthashastra* (R.P. Kangle ed., 1965) · Upinder Singh, *A History of Ancient and Early Medieval India* (2008) |
 | **罗马共和国** `global/roman-republic` | Mary Beard, *SPQR: A History of Ancient Rome* (2015) · Harriet Flower (ed.), *The Cambridge Companion to the Roman Republic* (2nd ed., 2014) · Ronald Syme, *The Roman Revolution* (1939) |
 | **罗马帝国** `global/roman-empire` | Edward Gibbon, *The Decline and Fall of the Roman Empire* (经典) · Peter Heather, *The Fall of the Roman Empire* (2006) · Fergus Millar, *The Emperor in the Roman World* (1977) |
 | **拜占庭** `global/byzantine` | Cyril Mango (ed.), *The Oxford History of Byzantium* (2002) · John Haldon, *Byzantium in the Seventh Century* (1990) · Judith Herrin, *Byzantium: The Surprising Life of a Medieval Empire* (2007) |
-| **波斯帝国** `global/persian` | Pierre Briant, *From Cyrus to Alexander: A History of the Persian Empire* (2002) · Amélie Kuhrt, *The Persian Empire* (2007) · Josef Wiesehöfer, *Ancient Persia* (2001) |
-| **奥斯曼帝国** `global/ottoman` | Halil İnalcık, *The Ottoman Empire: The Classical Age 1300–1600* (1973) · Caroline Finkel, *Osman's Dream: The Story of the Ottoman Empire* (2005) · Suraiya Faroqhi, *The Ottoman Empire and the World Around It* (2004) |
-| **蒙古帝国** `global/mongol` | Jack Weatherford, *Genghis Khan and the Making of the Modern World* (2004) · David Morgan, *The Mongols* (2nd ed., 2007) · Timothy May, *The Mongol Empire* (Edinburgh, 2018) |
+| **阿拔斯哈里发** `global/caliphate` | Hugh Kennedy, *The Prophet and the Age of the Caliphates* (3rd ed., 2016) · Dimitri Gutas, *Greek Thought, Arabic Culture* (1998) · Tayeb El-Hibri, *Reinterpreting Islamic Historiography* (1999) |
+| **维京** `global/viking` | Jesse Byock, *Viking Age Iceland* (2001) · Else Roesdahl, *The Vikings* (3rd ed., 2016) · Neil Price, *Children of Ash and Elm: A History of the Vikings* (2020) |
 | **神圣罗马帝国** `global/hre` | Peter Wilson, *Heart of Europe: A History of the Holy Roman Empire* (2016) · Joachim Whaley, *Germany and the Holy Roman Empire* (2 vols., Oxford, 2012) |
-| **英国议会制** `global/british` | Robert Tombs, *The English and Their History* (2014) · David Starkey, *Crown and Country: A History of England through the Monarchy* (2010) · A.V. Dicey, *Introduction to the Study of the Law of the Constitution* (1885, 经典) |
-| **法国绝对君主制** `global/french` | John Lynn, *The Wars of Louis XIV* (1999) · Peter Burke, *The Fabrication of Louis XIV* (1992) · William Beik, *Absolutism and Society in Seventeenth-Century France* (1985) |
-| **俄罗斯沙皇制** `global/russian` | Orlando Figes, *A People's Tragedy: The Russian Revolution* (1996) · Geoffrey Hosking, *Russia: People and Empire 1552–1917* (1997) · Richard Pipes, *Russia under the Old Regime* (1974) |
-| **日本幕府制** `global/shogunate` | Conrad Totman, *Tokugawa Ieyasu: Shogun* (1983) & *Early Modern Japan* (1993) · Marius Jansen, *The Making of Modern Japan* (2000) · 朝尾直弘 等《岩波日本史》 |
+| **蒙古帝国** `global/mongol` | Jack Weatherford, *Genghis Khan and the Making of the Modern World* (2004) · David Morgan, *The Mongols* (2nd ed., 2007) · Timothy May, *The Mongol Empire* (Edinburgh, 2018) |
+| **威尼斯** `global/venice` | John Julius Norwich, *A History of Venice* (1982) · Frederic Lane, *Venice: A Maritime Republic* (1973) · Robert Finlay, *Politics in Renaissance Venice* (1980) |
+| **马里帝国** `global/mali` | Nehemia Levtzion, *Ancient Ghana and Mali* (1973) · D.T. Niane, *Sundiata: An Epic of Old Mali* (1965) · Michael Gomez, *African Dominion: A New History of Empire in Early and Medieval West Africa* (2018) |
+| **高棉帝国** `global/khmer` | David Chandler, *A History of Cambodia* (4th ed., 2008) · Michael Coe, *Angkor and the Khmer Civilization* (2003) · Charles Higham, *The Civilization of Angkor* (2001) |
+| **奥斯曼帝国** `global/ottoman` | Halil İnalcık, *The Ottoman Empire: The Classical Age 1300–1600* (1973) · Caroline Finkel, *Osman's Dream: The Story of the Ottoman Empire* (2005) · Suraiya Faroqhi, *The Ottoman Empire and the World Around It* (2004) |
+| **萨法维帝国** `global/safavid` | Andrew Newman, *Safavid Iran: Rebirth of a Persian Empire* (2006) · Rudi Matthee, *Persia in Crisis: Safavid Decline and the Fall of Isfahan* (2012) · Roger Savory, *Iran under the Safavids* (1980) |
 | **莫卧儿帝国** `global/mughal` | John Richards, *The Mughal Empire* (*New Cambridge History of India*, 1993) · Abraham Eraly, *The Mughal Throne* (2003) · Ruby Lal, *Empress: The Astonishing Reign of Nur Jahan* (2018) |
+| **朝鲜王朝** `global/joseon` | JaHyun Kim Haboush, *The Confucian Kingship in Korea* (1988) · Michael Seth, *A History of Korea* (2nd ed., 2016) · Martina Deuchler, *The Confucian Transformation of Korea* (1992) |
+| **日本幕府制** `global/shogunate` | Conrad Totman, *Tokugawa Ieyasu: Shogun* (1983) & *Early Modern Japan* (1993) · Marius Jansen, *The Making of Modern Japan* (2000) · 朝尾直弘 等《岩波日本史》 |
+| **波兰联邦** `global/polish` | Norman Davies, *God's Playground: A History of Poland* (2 vols., 2005) · Robert Frost, *The Oxford History of Poland-Lithuania, Vol. 1* (2015) · Daniel Stone, *The Polish-Lithuanian State, 1386–1795* (2001) |
+| **法国绝对制** `global/french` | John Lynn, *The Wars of Louis XIV* (1999) · Peter Burke, *The Fabrication of Louis XIV* (1992) · William Beik, *Absolutism and Society in Seventeenth-Century France* (1985) |
+| **英国议会制** `global/british` | Robert Tombs, *The English and Their History* (2014) · David Starkey, *Crown and Country: A History of England through the Monarchy* (2010) · A.V. Dicey, *Introduction to the Study of the Law of the Constitution* (1885, 经典) |
+| **俄罗斯沙皇制** `global/russian` | Orlando Figes, *A People's Tragedy: The Russian Revolution* (1996) · Geoffrey Hosking, *Russia: People and Empire 1552–1917* (1997) · Richard Pipes, *Russia under the Old Regime* (1974) |
+| **哈布斯堡** `global/habsburg` | A.J.P. Taylor, *The Habsburg Monarchy 1809–1918* (1948) · Pieter Judson, *The Habsburg Empire: A New History* (2016) · Robin Okey, *The Habsburg Monarchy c.1765–1918* (2001) |
+| **普鲁士** `global/prussia` | Christopher Clark, *Iron Kingdom: The Rise and Downfall of Prussia* (2006) · Peter Paret, *Yorck and the Era of Prussian Reform* (1966) · Hans Rosenberg, *Bureaucracy, Aristocracy, and Autocracy: The Prussian Experience* (1958) |
+| **拿破仑** `global/napoleon` | Andrew Roberts, *Napoleon: A Life* (2014) · Michael Broers, *Napoleon: Soldier of Destiny* (2014) · Jean Tulard, *Napoleon: The Myth of the Saviour* (1984) |
 | **美国联邦制** `global/us-federal` | Alexander Hamilton, James Madison & John Jay, *The Federalist Papers* (1788, 经典) · Robert Dahl, *How Democratic Is the American Constitution?* (2001) · Akhil Reed Amar, *America's Constitution: A Biography* (2005) |
+| **明治日本** `global/meiji` | Andrew Gordon, *A Modern History of Japan* (4th ed., 2019) · Marius Jansen, *The Making of Modern Japan* (2000) · W.G. Beasley, *The Rise of Modern Japan* (3rd ed., 1999) |
 | **苏联** `global/soviet` | Sheila Fitzpatrick, *The Russian Revolution* (4th ed., 2017) · Robert Service, *A History of Modern Russia* (3rd ed., 2009) · Stephen Kotkin, *Stalin: Paradoxes of Power* (2014) |
+| **欧盟** `global/eu` | Desmond Dinan, *Europe Recast: A History of European Union* (2nd ed., 2014) · Mark Gilbert, *European Integration: A Concise History* (2012) · Tony Judt, *Postwar: A History of Europe Since 1945* (2005) |
+| **瑞士联邦** `global/swiss` | Jonathan Steinberg, *Why Switzerland?* (3rd ed., 2015) · Clive Church & Randolph Head, *A Concise History of Switzerland* (2013) · Wolf Linder, *Swiss Democracy* (3rd ed., 2010) |
 | **印加帝国** `global/inca` | Terence D'Altroy, *The Incas* (2nd ed., 2015) · Brian Bauer, *The Development of the Inca State* (1992) · Gary Urton, *Inka History in Knots* (2017) |
 | **阿兹特克** `global/aztec` | Michael Smith, *The Aztecs* (3rd ed., 2012) · Ross Hassig, *Aztec Warfare* (1988) · David Carrasco, *The Aztecs: A Very Short Introduction* (2012) |
+| **祖鲁** `global/zulu` | John Laband, *The Rise and Fall of the Zulu Nation* (1997) · Carolyn Hamilton, *Terrific Majesty: The Powers of Shaka Zulu* (1998) · Jeff Guy, *The Destruction of the Zulu Kingdom* (1979) |
 
 ### 西方政治理论 & 比较政治学
 
@@ -446,6 +573,7 @@ AI 治理天下是 [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tut
 - 🔧 [OpenClaw 框架](https://github.com/openclaw/openclaw)
 - 📖 [OpenClaw 文档](https://docs.openclaw.ai)
 - 📕 [《中国历代政治得失》](https://book.douban.com/subject/1003479/) — 钱穆
+- 🎮 [Sid Meier's Civilization](https://civilization.com/) — 「选择文明」理念的灵感来源
 
 ---
 
