@@ -1,0 +1,14 @@
+{
+  "id": "caliphate",
+  "name": { "zh": "阿拔斯哈里发国", "en": "Abbasid Caliphate" },
+  "era": { "zh": "750-1258年", "en": "750-1258 AD" },
+  "region": "global",
+  "system": { "zh": "哈里发-维齐尔制", "en": "Caliphate-Vizier System" },
+  "description": {
+    "zh": "伊斯兰黄金时代，哈里发与大维齐尔（巴尔马克家族）共治，智慧宫学术中心，卡迪司法体系",
+    "en": "Golden Age of Islam with Caliph and Grand Vizier (Barmakids) governance, Bayt al-Hikma scholarship, and Qadi justice system"
+  },
+  "agentCount": 7,
+  "tags": ["centralized", "caliphate", "golden-age", "house-of-wisdom", "islamic-civilization", "medieval"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

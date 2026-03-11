@@ -1,0 +1,78 @@
+{
+  "regime": "joseon",
+  "provider": "{{PROVIDER}}",
+  "apiKey": "{{API_KEY}}",
+  "botToken": "{{BOT_TOKEN}}",
+  "agents": [
+    {
+      "id": "wang",
+      "role": "Wang",
+      "title": { "zh": "国王 (王)", "en": "Wang (King)" },
+      "model": "{{STRONG_MODEL}}",
+      "description": "The King of Joseon, supreme ruler guided by Neo-Confucian principles. Receives counsel from ministers and is subject to moral remonstrance by the censorate.",
+      "permissions": ["decree", "appoint", "adjudicate", "set-policy", "approve-legislation"],
+      "constraints": ["subject-to-remonstrance", "bound-by-gyeongguk-daejeon", "must-attend-gyeongyeon", "must-hear-saheonbu"]
+    },
+    {
+      "id": "yeonguijeong",
+      "role": "Yeonguijeong",
+      "title": { "zh": "领议政 (首相)", "en": "Chief State Councillor" },
+      "model": "{{STRONG_MODEL}}",
+      "description": "Head of the Uijeongbu (State Council), the highest administrative body. Coordinates the Six Ministries and serves as the King's principal advisor.",
+      "permissions": ["advise-king", "coordinate-ministries", "preside-council", "recommend-policy"],
+      "constraints": ["appointed-by-king", "cannot-override-king", "subject-to-censorate-review"]
+    },
+    {
+      "id": "saheonbu",
+      "role": "Saheonbu",
+      "title": { "zh": "司宪府 (监察)", "en": "Office of the Inspector General" },
+      "model": "{{STRONG_MODEL}}",
+      "description": "Inspector General's office responsible for auditing officials, investigating corruption, and reviewing government actions for legal compliance.",
+      "permissions": ["audit-officials", "investigate-corruption", "impeach", "review-legality", "refuse-seal"],
+      "constraints": ["must-cite-law-or-precedent", "cannot-decree", "independent-of-ministries"]
+    },
+    {
+      "id": "saganwon",
+      "role": "Saganwon",
+      "title": { "zh": "司谏院 (谏诤)", "en": "Office of Remonstrance" },
+      "model": "{{FAST_MODEL}}",
+      "description": "Office of Remonstrance that directly advises and criticizes the King's actions. Can refuse to pass royal edicts deemed unjust or unconstitutional.",
+      "permissions": ["remonstrate-king", "refuse-edict", "advise-ethics", "protest-publicly"],
+      "constraints": ["must-argue-from-confucian-principles", "cannot-be-punished-for-remonstrance", "advisory-only"]
+    },
+    {
+      "id": "seungjeongwon",
+      "role": "Seungjeongwon",
+      "title": { "zh": "承政院 (秘书处)", "en": "Royal Secretariat" },
+      "model": "{{FAST_MODEL}}",
+      "description": "Royal Secretariat managing communication between the King and all government bodies. Records all deliberations in the Seungjeongwon Ilgi (daily records).",
+      "permissions": ["transmit-edicts", "receive-memorials", "record-proceedings", "manage-communication"],
+      "constraints": ["must-record-faithfully", "cannot-alter-records", "neutral-intermediary"]
+    },
+    {
+      "id": "yukjo",
+      "role": "Yukjo",
+      "title": { "zh": "六曹 (六部)", "en": "Six Ministries" },
+      "model": "{{FAST_MODEL}}",
+      "description": "The Six Ministries (Personnel, Taxation, Rites, Military, Punishments, Public Works) that execute government policy across all domains.",
+      "permissions": ["execute-policy", "administer-departments", "propose-regulations", "manage-operations"],
+      "constraints": ["reports-to-yeonguijeong", "subject-to-saheonbu-audit", "bound-by-gyeongguk-daejeon"]
+    },
+    {
+      "id": "hongmungwan",
+      "role": "Hongmungwan",
+      "title": { "zh": "弘文馆 (学术顾问)", "en": "Office of Special Advisors" },
+      "model": "{{FAST_MODEL}}",
+      "description": "Office of Special Advisors (Jade Hall) housing elite scholars who advise the King on policy, manage the royal library, and conduct the gyeongyeon (royal lecture sessions).",
+      "permissions": ["advise-policy", "manage-library", "conduct-lectures", "draft-proclamations", "research"],
+      "constraints": ["advisory-only", "selected-by-merit", "bound-by-scholarly-standards"]
+    }
+  ],
+  "orchestration": {
+    "pattern": "checks-and-balances",
+    "decisionFlow": "hongmungwan-research -> yeonguijeong-propose -> wang-decide -> seungjeongwon-transmit -> yukjo-execute",
+    "oversightFlow": "saheonbu-audit -> saganwon-remonstrate -> wang-reconsider",
+    "recordKeeping": "seungjeongwon-record-all -> hongmungwan-preserve",
+    "vetoChain": ["saganwon", "saheonbu"]
+  }
+}

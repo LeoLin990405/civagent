@@ -1,0 +1,14 @@
+{
+  "id": "maurya",
+  "name": { "zh": "孔雀王朝", "en": "Maurya Empire" },
+  "era": { "zh": "公元前322-185年", "en": "322-185 BC" },
+  "region": "global",
+  "system": { "zh": "政事论制", "en": "Arthashastra System" },
+  "description": {
+    "zh": "旃陀罗笈多与考底利耶的中央集权帝国，以《政事论》为治国手册，精密情报网络，阿育王之法",
+    "en": "Chandragupta and Chanakya's centralized empire governed by the Arthashastra, elaborate spy network, and Ashoka's dharma"
+  },
+  "agentCount": 7,
+  "tags": ["centralized", "arthashastra", "spy-network", "dharma", "indian-subcontinent", "iron-age"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

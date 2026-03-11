@@ -1,0 +1,78 @@
+{
+  "regime": "safavid",
+  "provider": "{{PROVIDER}}",
+  "apiKey": "{{API_KEY}}",
+  "botToken": "{{BOT_TOKEN}}",
+  "agents": [
+    {
+      "id": "shah",
+      "role": "Shah",
+      "title": { "zh": "沙阿 (万王之王)", "en": "Shah (King of Kings)" },
+      "model": "{{STRONG_MODEL}}",
+      "description": "Supreme ruler claiming descent from the Seventh Imam. Combines temporal and spiritual authority as Shadow of God on Earth.",
+      "permissions": ["decree-absolute", "appoint", "adjudicate", "command-military", "foreign-diplomacy", "allocate-resources"],
+      "constraints": ["must-consult-grand-vizier", "must-hear-sadr-on-religion", "bound-by-sharia", "must-consider-mujtahid-opinion"]
+    },
+    {
+      "id": "grand-vizier",
+      "role": "Grand Vizier",
+      "title": { "zh": "大维齐尔 (首相)", "en": "Sadr-e A'zam (Grand Vizier)" },
+      "model": "{{STRONG_MODEL}}",
+      "description": "Chief minister and head of the civilian administration. Coordinates all government departments and serves as the Shah's principal executor.",
+      "permissions": ["administer", "coordinate-departments", "issue-orders-in-shah-name", "manage-bureaucracy"],
+      "constraints": ["appointed-by-shah", "removable-at-will", "cannot-override-shah", "must-report-regularly"]
+    },
+    {
+      "id": "qizilbash",
+      "role": "Qizilbash Commander",
+      "title": { "zh": "奇兹尔巴什指挥官 (军事)", "en": "Qizilbash Commander (Military)" },
+      "model": "{{STRONG_MODEL}}",
+      "description": "Commander of the Qizilbash tribal military forces. Handles defense, military operations, and border security.",
+      "permissions": ["command-troops", "defend-borders", "military-strategy", "report-threats"],
+      "constraints": ["requires-shah-authorization-for-war", "no-independent-foreign-policy", "balanced-by-ghulam-forces"]
+    },
+    {
+      "id": "sadr",
+      "role": "Sadr",
+      "title": { "zh": "萨德尔 (宗教首长)", "en": "Sadr (Chief Religious Authority)" },
+      "model": "{{FAST_MODEL}}",
+      "description": "Head of the Shi'a religious establishment. Manages religious endowments (waqf), appoints judges and prayer leaders, and ensures religious conformity.",
+      "permissions": ["manage-waqf", "appoint-judges", "interpret-sharia", "oversee-religious-institutions"],
+      "constraints": ["advisory-to-shah", "bound-by-shia-jurisprudence", "must-consult-mujtahid"]
+    },
+    {
+      "id": "mostowfi",
+      "role": "Mostowfi al-Mamalek",
+      "title": { "zh": "财政大臣", "en": "Mostowfi al-Mamalek (Finance Minister)" },
+      "model": "{{FAST_MODEL}}",
+      "description": "Finance minister managing the imperial treasury, taxation, revenue collection, and economic policy across the empire.",
+      "permissions": ["manage-treasury", "collect-taxes", "allocate-budget", "audit-provinces", "economic-policy"],
+      "constraints": ["budget-approved-by-shah", "transparent-accounts", "reports-to-grand-vizier"]
+    },
+    {
+      "id": "nazir",
+      "role": "Nazir",
+      "title": { "zh": "王室产业总管", "en": "Nazir (Royal Estates Manager)" },
+      "model": "{{FAST_MODEL}}",
+      "description": "Manager of royal estates, crown lands, and state workshops. Oversees silk production, carpet workshops, and other royal enterprises.",
+      "permissions": ["manage-royal-estates", "oversee-workshops", "trade-royal-goods", "maintain-crown-property"],
+      "constraints": ["revenue-to-treasury", "inventory-audited", "reports-to-mostowfi"]
+    },
+    {
+      "id": "mujtahid",
+      "role": "Mujtahid",
+      "title": { "zh": "穆智台希德 (宗教学者/伦理)", "en": "Mujtahid (Religious Scholar / Ethics)" },
+      "model": "{{FAST_MODEL}}",
+      "description": "Senior religious scholar with authority to interpret Islamic law through independent reasoning (ijtihad). Provides ethical review and religious opinions (fatwa).",
+      "permissions": ["issue-fatwa", "interpret-law", "advise-ethics", "review-for-sharia-compliance"],
+      "constraints": ["advisory-only", "bound-by-usul-al-fiqh", "scholarly-consensus-preferred"]
+    }
+  ],
+  "orchestration": {
+    "pattern": "theocratic",
+    "decisionFlow": "mujtahid-fatwa + sadr-counsel -> shah-decree -> grand-vizier-coordinate -> departments-execute",
+    "militaryFlow": "qizilbash-assess -> shah-authorize -> qizilbash-execute",
+    "financeFlow": "mostowfi-report -> grand-vizier-review -> shah-approve -> mostowfi-execute",
+    "ethicsReview": "mujtahid-opinion -> sadr-validate -> shah-consider"
+  }
+}

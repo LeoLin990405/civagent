@@ -1,0 +1,14 @@
+{
+  "id": "napoleon",
+  "name": { "zh": "拿破仑帝国", "en": "Napoleonic Empire" },
+  "era": { "zh": "1804-1815 功绩制中央集权时期", "en": "1804-1815 Meritocratic Centralization Era" },
+  "region": "global",
+  "system": { "zh": "功绩制中央集权", "en": "Meritocratic Centralization" },
+  "description": {
+    "zh": "拿破仑将大革命理念制度化：以《拿破仑法典》统一法律，以省长（préfet）制度实现中央集权管控，以功绩（才能向所有人开放）取代出身特权，通过国务院（Conseil d'État）立法咨议。",
+    "en": "Napoleon institutionalized Revolutionary ideals: the Code Napoléon unified law, the prefect system imposed centralized control, meritocracy ('careers open to talent') replaced birthright privilege, and the Conseil d'État served as legislative advisory body."
+  },
+  "agentCount": 7,
+  "tags": ["meritocracy", "code-napoleon", "prefect-system", "continental-system", "conseil-detat", "centralization"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

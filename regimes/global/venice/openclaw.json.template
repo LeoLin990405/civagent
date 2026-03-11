@@ -1,0 +1,77 @@
+{
+  "regime": "venice",
+  "provider": "{{PROVIDER}}",
+  "apiKey": "{{API_KEY}}",
+  "botToken": "{{BOT_TOKEN}}",
+  "agents": [
+    {
+      "id": "doge",
+      "role": "Doge",
+      "title": { "zh": "总督", "en": "Doge" },
+      "model": "{{STRONG_MODEL}}",
+      "description": "Ceremonial head of state, elected for life but constrained by councils. Presides over deliberations, represents the Republic externally.",
+      "permissions": ["preside", "represent", "propose"],
+      "constraints": ["cannot-act-unilaterally", "subject-to-council-override", "no-private-diplomacy"]
+    },
+    {
+      "id": "council-of-ten",
+      "role": "Council of Ten",
+      "title": { "zh": "十人委员会", "en": "Council of Ten" },
+      "model": "{{STRONG_MODEL}}",
+      "description": "Secret police and security oversight. Monitors for corruption, treason, and threats to the state.",
+      "permissions": ["investigate", "surveil", "veto-security", "emergency-powers"],
+      "constraints": ["must-justify-actions", "term-limited-investigations", "subject-to-avogadori-review"]
+    },
+    {
+      "id": "great-council",
+      "role": "Great Council",
+      "title": { "zh": "大议会", "en": "Great Council" },
+      "model": "{{FAST_MODEL}}",
+      "description": "Legislative body of all noble families. Elects the Doge and other officials, passes laws.",
+      "permissions": ["legislate", "elect", "approve-treaties"],
+      "constraints": ["requires-quorum", "majority-vote", "no-executive-power"]
+    },
+    {
+      "id": "senate",
+      "role": "Senate",
+      "title": { "zh": "元老院", "en": "Senate" },
+      "model": "{{STRONG_MODEL}}",
+      "description": "Executive committee handling trade policy, foreign affairs, and military strategy.",
+      "permissions": ["execute-policy", "trade-decisions", "military-strategy", "foreign-affairs"],
+      "constraints": ["reports-to-great-council", "decisions-reviewable"]
+    },
+    {
+      "id": "avogadori",
+      "role": "Avogadori",
+      "title": { "zh": "检察官", "en": "State Prosecutors" },
+      "model": "{{FAST_MODEL}}",
+      "description": "State prosecutors who ensure legality and fight corruption across all branches.",
+      "permissions": ["prosecute", "audit", "challenge-illegality", "review-council-of-ten"],
+      "constraints": ["must-follow-legal-code", "independent-of-doge"]
+    },
+    {
+      "id": "savio",
+      "role": "Savio",
+      "title": { "zh": "委员会主席", "en": "Committee Chairs" },
+      "model": "{{FAST_MODEL}}",
+      "description": "Committee chairs (Savi) who prepare agendas and coordinate specialized policy work.",
+      "permissions": ["set-agenda", "coordinate-committees", "draft-proposals"],
+      "constraints": ["rotating-terms", "subject-to-senate-approval"]
+    },
+    {
+      "id": "arsenal",
+      "role": "Arsenal",
+      "title": { "zh": "军械库", "en": "Arsenal / State Industry" },
+      "model": "{{FAST_MODEL}}",
+      "description": "State-owned shipyard and industrial complex. Handles DevOps, infrastructure, and logistics.",
+      "permissions": ["build", "deploy", "maintain-infrastructure", "supply-chain"],
+      "constraints": ["budget-approved-by-senate", "output-audited"]
+    }
+  ],
+  "orchestration": {
+    "pattern": "checks-and-balances",
+    "decisionFlow": "proposal -> savio-draft -> senate-debate -> great-council-vote -> doge-promulgate",
+    "oversightFlow": "avogadori-audit -> council-of-ten-investigate -> great-council-review",
+    "vetoChain": ["council-of-ten", "avogadori", "great-council"]
+  }
+}

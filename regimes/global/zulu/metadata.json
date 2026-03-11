@@ -1,0 +1,14 @@
+{
+  "id": "zulu",
+  "name": { "zh": "祖鲁王国", "en": "Zulu Kingdom" },
+  "era": { "zh": "1816-1897年", "en": "1816-1897" },
+  "region": "global",
+  "system": { "zh": "军事团制", "en": "Military Regimental System" },
+  "description": {
+    "zh": "祖鲁王国由沙卡·祖鲁于1816年创建，通过革命性的军事改革——年龄团制度（ibutho）、军事营地（ikanda）、近战战术——在短短十余年内从一个小部落扩张为南非最强大的帝国。沙卡打破了传统的氏族忠诚，以年龄团取代部落归属，创造了超越血缘的国家认同。被征服的民族被吸纳融合而非消灭。这一高度集中化的军事行政体制在1879年伊散德尔瓦纳战役中击败了英军正规部队，震惊了欧洲。",
+    "en": "The Zulu Kingdom was forged by Shaka Zulu from 1816 through revolutionary military reforms — the age-regiment (ibutho) system, military kraals (ikanda), and close-combat tactics — expanding from a small clan to southern Africa's most powerful empire in barely a decade. Shaka broke traditional clan loyalties, replacing tribal affiliation with age-regiments, creating a national identity that transcended kinship. Conquered peoples were assimilated rather than destroyed. This highly centralized military-administrative system defeated British regulars at Isandlwana in 1879, shocking Europe."
+  },
+  "agentCount": 5,
+  "tags": ["military", "centralized", "regimental", "expansion"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "carthage",
+  "name": { "zh": "迦太基共和国", "en": "Carthaginian Republic" },
+  "era": { "zh": "公元前814-146年", "en": "814-146 BC" },
+  "region": "global",
+  "system": { "zh": "商业寡头制", "en": "Merchant Oligarchy" },
+  "description": {
+    "zh": "双苏菲特执政、百人议会、商业大会，汉尼拔时代的地中海商业帝国",
+    "en": "Dual Suffetes governance, Council of 104, Commercial Assembly, Mediterranean commercial empire of the Hannibal era"
+  },
+  "agentCount": 7,
+  "tags": ["oligarchy", "checks-balances", "merchant-republic", "mediterranean", "phoenician", "commerce"],
+  "orchestrationPattern": "checks-and-balances"
+}

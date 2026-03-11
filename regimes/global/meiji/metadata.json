@@ -1,0 +1,14 @@
+{
+  "id": "meiji",
+  "name": { "zh": "明治日本", "en": "Meiji Japan" },
+  "era": { "zh": "1868-1912年", "en": "1868-1912" },
+  "region": "global",
+  "system": { "zh": "立宪君主制", "en": "Constitutional Monarchy" },
+  "description": {
+    "zh": "明治维新彻底改变了日本：废藩置县、殖产兴业、富国强兵。天皇名义上拥有绝对权力，实际决策由元老（genrō）和内阁主导。伊藤博文起草的大日本帝国宪法(1889)确立了亚洲第一个近代立宪体制，将天皇神圣不可侵犯的地位与议会制度巧妙结合，实现了自上而下的快速现代化。",
+    "en": "The Meiji Restoration fundamentally transformed Japan: abolishing feudal domains, promoting industrialization, and pursuing national wealth and military strength (fukoku kyōhei). While the Emperor nominally held absolute power, real decisions were made by the Genrō (elder statesmen) and cabinet. The Meiji Constitution (1889), drafted by Itō Hirobumi, established Asia's first modern constitutional system, skillfully combining the Emperor's sacred inviolability with parliamentary institutions, achieving rapid top-down modernization."
+  },
+  "agentCount": 7,
+  "tags": ["constitutional", "monarchy", "modernization", "centralized"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

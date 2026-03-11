@@ -1,0 +1,14 @@
+{
+  "id": "joseon",
+  "name": { "zh": "朝鲜王朝", "en": "Joseon Korea" },
+  "era": { "zh": "朝鲜时代 (1392-1897)", "en": "Joseon Period (1392-1897)" },
+  "region": "global",
+  "system": { "zh": "新儒学官僚制", "en": "Neo-Confucian Bureaucracy" },
+  "description": {
+    "zh": "以新儒学为治国理念的朝鲜王朝，世宗大王推动文化繁荣，两班士大夫阶层通过科举入仕，司谏院和司宪府构成独特的言谏制度，《经国大典》为根本法典。",
+    "en": "Neo-Confucian dynasty featuring Sejong the Great's cultural renaissance, yangban scholar-officials selected through gwageo examinations, a unique system of remonstrance through the Saganwon and Saheonbu, and the Gyeongguk Daejeon legal code."
+  },
+  "agentCount": 7,
+  "tags": ["dynasty", "checks-and-balances", "neo-confucian", "meritocracy", "censorate", "east-asia"],
+  "orchestrationPattern": "checks-and-balances"
+}

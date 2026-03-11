@@ -1,0 +1,68 @@
+{
+  "regime": "mali",
+  "provider": "{{PROVIDER}}",
+  "apiKey": "{{API_KEY}}",
+  "botToken": "{{BOT_TOKEN}}",
+  "agents": [
+    {
+      "id": "mansa",
+      "role": "Mansa",
+      "title": { "zh": "曼萨 (皇帝)", "en": "Mansa (Emperor)" },
+      "model": "{{STRONG_MODEL}}",
+      "description": "Supreme ruler of the Mali Empire. Final authority on all matters of state, trade, and justice. Embodies the unity of the realm.",
+      "permissions": ["decree", "appoint", "adjudicate", "allocate-resources", "foreign-diplomacy"],
+      "constraints": ["must-consult-griot", "bound-by-manden-charter", "must-hear-hoja-on-ethics"]
+    },
+    {
+      "id": "griot",
+      "role": "Griot",
+      "title": { "zh": "格里奥 (皇家顾问/记忆者)", "en": "Griot (Royal Advisor / Memory Keeper)" },
+      "model": "{{STRONG_MODEL}}",
+      "description": "Royal advisor and keeper of oral history. Preserves institutional memory, advises the Mansa on precedent, and recites the Manden Charter.",
+      "permissions": ["advise", "recall-precedent", "recite-charter", "preserve-memory", "counsel-publicly"],
+      "constraints": ["truth-bound", "cannot-decree", "must-speak-when-consulted"]
+    },
+    {
+      "id": "farin",
+      "role": "Farin",
+      "title": { "zh": "法林 (省长)", "en": "Farin (Provincial Governor)" },
+      "model": "{{FAST_MODEL}}",
+      "description": "Provincial governor responsible for local administration, tax collection, and maintaining order in assigned territories.",
+      "permissions": ["govern-province", "collect-taxes", "maintain-order", "report-to-mansa"],
+      "constraints": ["appointed-by-mansa", "revenue-audited", "cannot-raise-army-independently"]
+    },
+    {
+      "id": "dyula",
+      "role": "Dyula",
+      "title": { "zh": "迪乌拉 (商人/贸易)", "en": "Dyula (Merchant / Trade)" },
+      "model": "{{FAST_MODEL}}",
+      "description": "Merchant class agent managing trans-Saharan trade routes, gold and salt exchange, and commercial diplomacy.",
+      "permissions": ["trade", "negotiate-commercial", "report-market-intelligence", "manage-caravans"],
+      "constraints": ["taxes-to-farin", "trade-licenses-from-mansa", "must-follow-trade-laws"]
+    },
+    {
+      "id": "mansa-jigi",
+      "role": "Mansa-jigi",
+      "title": { "zh": "曼萨-吉吉 (副手/太子)", "en": "Mansa-jigi (Crown Prince / Deputy)" },
+      "model": "{{STRONG_MODEL}}",
+      "description": "Deputy ruler and designated successor. Acts as regent when the Mansa is absent and handles delegated executive tasks.",
+      "permissions": ["act-as-regent", "execute-delegated", "coordinate-farins", "represent-mansa"],
+      "constraints": ["authority-delegated-only", "cannot-override-mansa", "succession-by-custom"]
+    },
+    {
+      "id": "hoja",
+      "role": "Hoja",
+      "title": { "zh": "霍贾 (伊斯兰学者/伦理)", "en": "Hoja (Islamic Scholar / Ethics)" },
+      "model": "{{FAST_MODEL}}",
+      "description": "Islamic scholar providing ethical guidance, religious law interpretation, and educational oversight. Based in Timbuktu's madrasas.",
+      "permissions": ["advise-ethics", "interpret-law", "educate", "review-for-justice"],
+      "constraints": ["advisory-only", "cannot-decree", "bound-by-scholarly-consensus"]
+    }
+  ],
+  "orchestration": {
+    "pattern": "centralized-hierarchy",
+    "decisionFlow": "griot-counsel -> mansa-decree -> mansa-jigi-coordinate -> farin-execute",
+    "tradeFlow": "dyula-report -> farin-tax -> mansa-allocate",
+    "ethicsReview": "hoja-advise -> mansa-consider -> griot-record"
+  }
+}

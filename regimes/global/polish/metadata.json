@@ -1,0 +1,14 @@
+{
+  "id": "polish",
+  "name": { "zh": "波兰立陶宛联邦", "en": "Polish-Lithuanian Commonwealth" },
+  "era": { "zh": "1569-1795 选举君主制时期", "en": "1569-1795 Elective Monarchy Era" },
+  "region": "global",
+  "system": { "zh": "选举君主制", "en": "Elective Monarchy" },
+  "description": {
+    "zh": "欧洲最大的选举君主制国家，贵族（szlachta）约占人口10%，享有'黄金自由'权利，通过瑟姆（Sejm）议会治国，任何一位贵族均可行使自由否决权（Liberum Veto）阻止立法。",
+    "en": "Europe's largest elective monarchy, where the szlachta (nobility, ~10% of population) enjoyed 'Golden Liberty', governed through the Sejm parliament, and any single noble could invoke the Liberum Veto to block legislation."
+  },
+  "agentCount": 6,
+  "tags": ["elective-monarchy", "liberum-veto", "golden-liberty", "szlachta", "sejm", "noble-republic"],
+  "orchestrationPattern": "democratic-council"
+}

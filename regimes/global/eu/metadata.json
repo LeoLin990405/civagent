@@ -1,0 +1,14 @@
+{
+  "id": "eu",
+  "name": { "zh": "欧盟", "en": "European Union" },
+  "era": { "zh": "1993年至今", "en": "1993-present" },
+  "region": "global",
+  "system": { "zh": "超国家治理", "en": "Supranational Governance" },
+  "description": {
+    "zh": "欧盟是人类历史上独一无二的超国家治理实验：27个主权国家自愿让渡部分主权，建立共同市场、统一货币和共同外交政策。欧盟委员会提出立法，欧盟理事会代表成员国利益，欧洲议会代表公民意志，欧洲法院确保法律统一。辅助性原则（subsidiarity）确保决策在最合适的层级做出。布鲁塞尔官僚机器虽常被批评，却维持了欧洲七十余年的和平与繁荣。",
+    "en": "The European Union is a unique experiment in supranational governance: 27 sovereign nations voluntarily pooling sovereignty to create a common market, single currency, and shared foreign policy. The European Commission proposes legislation, the Council of the EU represents member state interests, the European Parliament represents citizens, and the ECJ ensures legal uniformity. The subsidiarity principle ensures decisions are made at the most appropriate level. Though Brussels bureaucracy is often criticized, it has maintained over seventy years of European peace and prosperity."
+  },
+  "agentCount": 7,
+  "tags": ["supranational", "democratic", "multilateral", "integration"],
+  "orchestrationPattern": "democratic-council"
+}

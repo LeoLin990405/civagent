@@ -1,0 +1,14 @@
+{
+  "id": "khmer",
+  "name": { "zh": "高棉帝国", "en": "Khmer Empire" },
+  "era": { "zh": "古典东南亚 (802-1431)", "en": "Classical Southeast Asia (802-1431)" },
+  "region": "global",
+  "system": { "zh": "神王制 (Devaraja)", "en": "Devaraja System (God-King)" },
+  "description": {
+    "zh": "以吴哥窟闻名的水利文明，神王（Devaraja）制度将统治者神化为湿婆或毗湿奴化身。阇耶跋摩二世宣称宇宙君主，苏耶跋摩二世建造吴哥窟。",
+    "en": "Hydraulic civilization famed for Angkor Wat. The Devaraja system deified the ruler as an incarnation of Shiva or Vishnu. Jayavarman II declared universal monarch; Suryavarman II built Angkor Wat."
+  },
+  "agentCount": 6,
+  "tags": ["empire", "theocratic", "hydraulic-civilization", "devaraja", "southeast-asia", "temple-state"],
+  "orchestrationPattern": "theocratic"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "sumeria",
+  "name": { "zh": "苏美尔城邦", "en": "Sumerian City-States" },
+  "era": { "zh": "约公元前4500-1900年", "en": "c. 4500-1900 BC" },
+  "region": "global",
+  "system": { "zh": "神庙经济制", "en": "Temple Economy" },
+  "description": {
+    "zh": "人类已知最早文明，恩/卢伽尔双重权威，神庙作为经济中心，楔形文字官僚体系",
+    "en": "Earliest known civilization with En/Lugal dual authority, temple as economic center, and cuneiform bureaucracy"
+  },
+  "agentCount": 6,
+  "tags": ["theocratic", "temple-economy", "dual-authority", "cuneiform", "mesopotamia", "bronze-age"],
+  "orchestrationPattern": "theocratic"
+}

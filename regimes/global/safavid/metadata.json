@@ -1,0 +1,14 @@
+{
+  "id": "safavid",
+  "name": { "zh": "萨法维帝国", "en": "Safavid Empire" },
+  "era": { "zh": "近代早期伊朗 (1501-1736)", "en": "Early Modern Iran (1501-1736)" },
+  "region": "global",
+  "system": { "zh": "什叶派神权君主制", "en": "Shi'a Theocratic Monarchy" },
+  "description": {
+    "zh": "将什叶派确立为国教的波斯帝国。沙阿伊斯玛仪一世建国，阿巴斯大帝改革使帝国达到鼎盛，以伊斯法罕为首都，奇兹尔巴什军事力量与宗教权威并重。",
+    "en": "The Persian empire that established Shi'a Islam as state religion. Founded by Shah Ismail I, it reached its zenith under Abbas the Great's reforms, with Isfahan as capital, combining Qizilbash military power with religious authority."
+  },
+  "agentCount": 7,
+  "tags": ["empire", "theocratic", "shia-islam", "persia", "military-religious", "centralization"],
+  "orchestrationPattern": "theocratic"
+}

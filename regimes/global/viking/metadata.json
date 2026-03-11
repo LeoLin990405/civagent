@@ -1,0 +1,14 @@
+{
+  "id": "viking",
+  "name": { "zh": "维京庭议制", "en": "Viking Thing" },
+  "era": { "zh": "800-1100年", "en": "800-1100 AD" },
+  "region": "global",
+  "system": { "zh": "庭议民主制", "en": "Thing Assembly" },
+  "description": {
+    "zh": "阿尔庭（世界最古老议会），法律宣讲人背诵全部法律，决斗裁决争端，共识决策制",
+    "en": "Althing (world's oldest parliament), Lawspeaker who memorized all laws, holmgang dispute resolution, consensus-based governance"
+  },
+  "agentCount": 5,
+  "tags": ["democratic", "assembly", "consensus", "norse", "parliament", "early-medieval"],
+  "orchestrationPattern": "democratic-council"
+}

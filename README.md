@@ -1,13 +1,13 @@
 [English Version](./README_EN.md) | [原始项目 Original Project](https://github.com/wanikua/boluobobo-ai-court-tutorial)
 
-# 🏛️ AI 治理天下 — 以古今中外 39 种政体治理你的 AI 团队
+# 🏛️ AI 治理天下 — 以古今中外 57 种政体治理你的 AI 团队
 
-### 20 个中华朝代 + 19 个世界帝国 · 纯配置切换 · 零代码 · 基于 OpenClaw
+### 20 个中华朝代 + 37 个世界帝国 · 纯配置切换 · 零代码 · 基于 OpenClaw
 
 <p align="center">
-  <img src="https://img.shields.io/badge/政体-39种-gold?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/政体-57种-gold?style=for-the-badge" />
   <img src="https://img.shields.io/badge/中华朝代-20个-red?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/世界帝国-19个-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/世界帝国-37个-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/框架-OpenClaw-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/代码修改-零-orange?style=for-the-badge" />
 </p>
@@ -74,7 +74,7 @@
 
 ## 这个项目是什么？
 
-**AI 治理天下**将人类历史上 39 种经典政体——从夏朝的家族制到美国的三权分立——映射为 AI 多 Agent 协作的组织架构。每种政体是一个纯配置模块（JSON + Markdown），切换政体不需要改任何代码。
+**AI 治理天下**将人类历史上 57 种经典政体——从夏朝的家族制到美国的三权分立——映射为 AI 多 Agent 协作的组织架构。每种政体是一个纯配置模块（JSON + Markdown），切换政体不需要改任何代码。
 
 **核心理念：** 古代治国的智慧 = 现代管理 AI 团队的最佳实践。
 
@@ -107,7 +107,7 @@
 | 19 | `china/western-xia` | [西夏](./regimes/china/western-xia/README.md) | 1038-1227 | 多民族州郡制 | 军事优先 + 宗教辅助 | 5 |
 | 20 | `china/taiping` | [太平天国](./regimes/china/taiping/README.md) | 1851-1864 | 神权专制/天王制 | 天王绝对集权 | 7 |
 
-### 世界帝国（19）
+### 世界帝国（37）
 
 | # | ID | 帝国 | 时代 | 制度 | Agent 模式 | Agent 数 |
 |---|-----|------|------|------|-----------|---------|
@@ -130,6 +130,24 @@
 | 17 | `global/soviet` | [苏联](./regimes/global/soviet/README.md) | 1922-1991 | 政治局制 | 总书记 + 政治局委员会 | 7 |
 | 18 | `global/inca` | [印加帝国](./regimes/global/inca/README.md) | 1438-1533 | 萨帕·印卡四方制 | 太阳之子 + 四方总督 | 6 |
 | 19 | `global/aztec` | [阿兹特克三方联盟](./regimes/global/aztec/README.md) | 1428-1521 | 三方联盟制 | 三城邦议事会 | 6 |
+| 20 | `global/sumeria` | [苏美尔城邦](./regimes/global/sumeria/README.md) | c.4500-1900 BC | 神庙经济制 | 神权 + 王权双轨 | 6 |
+| 21 | `global/carthage` | [迦太基共和国](./regimes/global/carthage/README.md) | 814-146 BC | 商业寡头制 | 双苏非特 + 元老院 | 7 |
+| 22 | `global/maurya` | [孔雀王朝](./regimes/global/maurya/README.md) | 322-185 BC | 政事论制 | 皇帝 + 谍报网 | 7 |
+| 23 | `global/caliphate` | [阿拔斯哈里发国](./regimes/global/caliphate/README.md) | 750-1258 | 哈里发-维齐尔制 | 知识增强型集权 | 7 |
+| 24 | `global/viking` | [维京庭议制](./regimes/global/viking/README.md) | 800-1100 | 庭议民主制 | 全体庭议投票 | 5 |
+| 25 | `global/venice` | [威尼斯共和国](./regimes/global/venice/README.md) | 697-1797 | 总督+大议会 | 反腐制衡体系 | 7 |
+| 26 | `global/mali` | [马里帝国](./regimes/global/mali/README.md) | 1235-1600 | 曼萨制 | 口传传统 + 贸易网 | 6 |
+| 27 | `global/khmer` | [高棉帝国](./regimes/global/khmer/README.md) | 802-1431 | 神王制 | 神王绝对 + 水利 | 6 |
+| 28 | `global/safavid` | [萨法维帝国](./regimes/global/safavid/README.md) | 1501-1736 | 什叶派神权君主制 | 沙阿 + 宗教权威 | 7 |
+| 29 | `global/joseon` | [朝鲜王朝](./regimes/global/joseon/README.md) | 1392-1897 | 新儒学官僚制 | 三司言谏制衡 | 7 |
+| 30 | `global/habsburg` | [哈布斯堡·奥匈帝国](./regimes/global/habsburg/README.md) | 1867-1918 | 二元君主制 | 双轨议会并行 | 7 |
+| 31 | `global/polish` | [波兰立陶宛联邦](./regimes/global/polish/README.md) | 1569-1795 | 选举君主制 | 自由否决权 + 议会 | 6 |
+| 32 | `global/napoleon` | [拿破仑帝国](./regimes/global/napoleon/README.md) | 1804-1815 | 功绩制中央集权 | 能力至上 + 法典 | 7 |
+| 33 | `global/prussia` | [普鲁士王国](./regimes/global/prussia/README.md) | 1701-1918 | 军事官僚制 | 总参谋部体系 | 6 |
+| 34 | `global/meiji` | [明治日本](./regimes/global/meiji/README.md) | 1868-1912 | 立宪君主制 | 元老非正式集权 | 7 |
+| 35 | `global/eu` | [欧盟](./regimes/global/eu/README.md) | 1993-至今 | 超国家治理 | 三方共决民主 | 7 |
+| 36 | `global/swiss` | [瑞士联邦](./regimes/global/swiss/README.md) | 1291-至今 | 直接民主制 | 公投 + 合议制 | 6 |
+| 37 | `global/zulu` | [祖鲁王国](./regimes/global/zulu/README.md) | 1816-1897 | 军事团制 | 国王 + 军团层级 | 5 |
 
 ---
 
@@ -267,7 +285,7 @@ ai-governance/
 ## 常见问题
 
 **Q: 和原始 AI 朝廷项目有什么关系？**
-AI 治理天下是 [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tutorial) 的扩展 fork。原始的唐朝三省六部制配置完整保留在 `regimes/china/tang/`，我们在此基础上增加了 38 种新政体。原始项目的所有功能（安装脚本、GUI、Skills 等）均保持不变。
+AI 治理天下是 [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tutorial) 的扩展 fork。原始的唐朝三省六部制配置完整保留在 `regimes/china/tang/`，我们在此基础上增加了 56 种新政体。原始项目的所有功能（安装脚本、GUI、Skills 等）均保持不变。
 
 **Q: 切换政体需要改代码吗？**
 不需要。每种政体是纯配置文件（JSON + Markdown），运行 `switch-regime.sh` 即可切换。

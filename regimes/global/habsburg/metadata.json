@@ -1,0 +1,14 @@
+{
+  "id": "habsburg",
+  "name": { "zh": "哈布斯堡·奥匈帝国", "en": "Habsburg / Austria-Hungary" },
+  "era": { "zh": "1867-1918 二元君主制时期", "en": "1867-1918 Dual Monarchy Era" },
+  "region": "global",
+  "system": { "zh": "二元君主制", "en": "Dual Monarchy" },
+  "description": {
+    "zh": "基于1867年奥匈折中方案（Ausgleich），一位共同君主统辖两个平等的政治实体——奥地利（内莱塔尼亚）与匈牙利（外莱塔尼亚），共享外交、军事与财政，各自保留独立议会与政府。",
+    "en": "Based on the 1867 Ausgleich (Compromise), a single monarch presides over two equal political entities — Austria (Cisleithania) and Hungary (Transleithania) — sharing foreign affairs, military, and finance while each retains its own parliament and government."
+  },
+  "agentCount": 7,
+  "tags": ["dual-monarchy", "compromise", "multi-ethnic", "shared-sovereignty", "1867-ausgleich", "franz-joseph"],
+  "orchestrationPattern": "dual-power"
+}

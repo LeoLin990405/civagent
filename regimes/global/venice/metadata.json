@@ -1,0 +1,14 @@
+{
+  "id": "venice",
+  "name": { "zh": "威尼斯共和国", "en": "Venetian Republic" },
+  "era": { "zh": "中世纪至近代早期 (697-1797)", "en": "Medieval to Early Modern (697-1797)" },
+  "region": "global",
+  "system": { "zh": "总督+大议会制", "en": "Doge + Great Council System" },
+  "description": {
+    "zh": "至尊共和国，总督终身当选但权力受严格制衡，十人委员会负责安全，大议会由贵族组成，拥有精密的反腐机制。",
+    "en": "The Most Serene Republic, where the Doge was elected for life but heavily constrained by elaborate checks and balances, the Council of Ten served as secret police, and the Great Council comprised the nobility."
+  },
+  "agentCount": 7,
+  "tags": ["republic", "checks-and-balances", "maritime", "oligarchy", "anti-corruption", "trade-empire"],
+  "orchestrationPattern": "checks-and-balances"
+}

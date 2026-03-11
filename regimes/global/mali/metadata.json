@@ -1,0 +1,14 @@
+{
+  "id": "mali",
+  "name": { "zh": "马里帝国", "en": "Mali Empire" },
+  "era": { "zh": "中世纪非洲 (1235-1600)", "en": "Medieval Africa (1235-1600)" },
+  "region": "global",
+  "system": { "zh": "曼萨制", "en": "Mansa System" },
+  "description": {
+    "zh": "西非最强大的帝国之一，以曼萨穆萨的传奇财富闻名。建立在跨撒哈拉贸易基础上，廷巴克图成为学术中心，格里奥口述传统保存历史记忆。",
+    "en": "One of West Africa's mightiest empires, famed for Mansa Musa's legendary wealth. Built on trans-Saharan trade, with Timbuktu as a center of learning and the griot oral tradition preserving historical memory."
+  },
+  "agentCount": 6,
+  "tags": ["empire", "centralized-hierarchy", "trade", "oral-tradition", "islamic-scholarship", "west-africa"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

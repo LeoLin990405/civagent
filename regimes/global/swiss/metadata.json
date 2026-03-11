@@ -1,0 +1,14 @@
+{
+  "id": "swiss",
+  "name": { "zh": "瑞士联邦", "en": "Swiss Confederation" },
+  "era": { "zh": "1291年至今", "en": "1291-present" },
+  "region": "global",
+  "system": { "zh": "直接民主制", "en": "Direct Democracy" },
+  "description": {
+    "zh": "瑞士联邦是世界上最成功的直接民主范例：联邦委员会七人集体领导、轮值主席、州权自治、全民公投决定一切重大事务。从1291年三个森林州结盟开始，瑞士发展出了独特的政治文化——四种官方语言共存、永久武装中立、露天集会（Landsgemeinde）至今仍在部分州延续。这一制度证明了在高度多元化社会中，共识政治和公民直接参与是可行的。",
+    "en": "The Swiss Confederation is the world's most successful example of direct democracy: a seven-member Federal Council with collective leadership, rotating presidency, cantonal autonomy, and referendums on all major issues. From the 1291 alliance of three forest cantons, Switzerland developed a unique political culture — four official languages coexisting, permanent armed neutrality, and open-air assemblies (Landsgemeinde) still practiced in some cantons. This system proves that consensus politics and direct citizen participation are viable in a highly diverse society."
+  },
+  "agentCount": 6,
+  "tags": ["direct-democracy", "federal", "consensus", "neutrality"],
+  "orchestrationPattern": "democratic-council"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "prussia",
+  "name": { "zh": "普鲁士王国", "en": "Kingdom of Prussia" },
+  "era": { "zh": "1701-1918 军事官僚制时期", "en": "1701-1918 Military Bureaucracy Era" },
+  "region": "global",
+  "system": { "zh": "军事官僚制", "en": "Military Bureaucracy" },
+  "description": {
+    "zh": "普鲁士以'带有国家的军队'闻名于世——高效的官僚体系与总参谋部制度相结合，容克贵族阶层提供军官与官僚，腓特烈大帝的开明专制与俾斯麦的现实政治共同锻造了德意志统一的基石。",
+    "en": "Prussia was famously 'an army with a state' — combining efficient bureaucracy with the General Staff system, the Junker class supplying officers and administrators, Frederick the Great's enlightened absolutism and Bismarck's Realpolitik forging the foundation of German unification."
+  },
+  "agentCount": 6,
+  "tags": ["military-bureaucracy", "general-staff", "junker", "realpolitik", "frederick-great", "bismarck"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

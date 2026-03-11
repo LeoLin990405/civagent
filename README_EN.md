@@ -1,13 +1,13 @@
 [中文版](./README.md) | [Original Project](https://github.com/wanikua/boluobobo-ai-court-tutorial)
 
-# 🏛️ AI Governance — Manage Your AI Team with 39 Historical Government Systems
+# 🏛️ AI Governance — Manage Your AI Team with 57 Historical Government Systems
 
-### 20 Chinese Dynasties + 19 Global Empires · Pure Config Switching · Zero Code · Built on OpenClaw
+### 20 Chinese Dynasties + 37 Global Empires · Pure Config Switching · Zero Code · Built on OpenClaw
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Regimes-39-gold?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Regimes-57-gold?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Chinese_Dynasties-20-red?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Global_Empires-19-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Global_Empires-37-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Framework-OpenClaw-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Code_Changes-Zero-orange?style=for-the-badge" />
 </p>
@@ -74,7 +74,7 @@ This project isn't about judging which system is better or worse. It's about exp
 
 ## What Is This Project?
 
-**AI Governance** maps 39 classic government systems from human history — from the Xia Dynasty's clan system to the US separation of powers — onto AI multi-agent collaboration architectures. Each regime is a pure configuration module (JSON + Markdown). Switching regimes requires zero code changes.
+**AI Governance** maps 57 classic government systems from human history — from the Xia Dynasty's clan system to the US separation of powers — onto AI multi-agent collaboration architectures. Each regime is a pure configuration module (JSON + Markdown). Switching regimes requires zero code changes.
 
 **Core idea:** Ancient governance wisdom = modern AI team management best practices.
 
@@ -107,7 +107,7 @@ This project isn't about judging which system is better or worse. It's about exp
 | 19 | `china/western-xia` | [Western Xia](./regimes/china/western-xia/README.md) | 1038-1227 | Multi-ethnic Prefectures | Military-first + religious support | 5 |
 | 20 | `china/taiping` | [Taiping Kingdom](./regimes/china/taiping/README.md) | 1851-1864 | Theocratic Autocracy | Heavenly King absolute power | 7 |
 
-### Global Empires (19)
+### Global Empires (37)
 
 | # | ID | Empire | Era | System | Agent Pattern | Agents |
 |---|-----|--------|-----|--------|--------------|--------|
@@ -130,6 +130,24 @@ This project isn't about judging which system is better or worse. It's about exp
 | 17 | `global/soviet` | [Soviet Union](./regimes/global/soviet/README.md) | 1922-1991 | Politburo System | General Secretary + Politburo | 7 |
 | 18 | `global/inca` | [Inca Empire](./regimes/global/inca/README.md) | 1438-1533 | Sapa Inca + Quarters | Sapa Inca + 4 Suyus | 6 |
 | 19 | `global/aztec` | [Aztec Triple Alliance](./regimes/global/aztec/README.md) | 1428-1521 | Triple Alliance | 3 city-states council | 6 |
+| 20 | `global/sumeria` | [Sumerian City-States](./regimes/global/sumeria/README.md) | c.4500-1900 BC | Temple Economy | Dual priest-king authority | 6 |
+| 21 | `global/carthage` | [Carthaginian Republic](./regimes/global/carthage/README.md) | 814-146 BC | Merchant Oligarchy | Dual Suffetes + Senate | 7 |
+| 22 | `global/maurya` | [Maurya Empire](./regimes/global/maurya/README.md) | 322-185 BC | Arthashastra System | Emperor + spy network | 7 |
+| 23 | `global/caliphate` | [Abbasid Caliphate](./regimes/global/caliphate/README.md) | 750-1258 | Caliphate-Vizier System | Knowledge-enhanced centralization | 7 |
+| 24 | `global/viking` | [Viking Thing](./regimes/global/viking/README.md) | 800-1100 | Thing Assembly | Consensus-based assembly | 5 |
+| 25 | `global/venice` | [Venetian Republic](./regimes/global/venice/README.md) | 697-1797 | Doge + Great Council | Anti-corruption checks | 7 |
+| 26 | `global/mali` | [Mali Empire](./regimes/global/mali/README.md) | 1235-1600 | Mansa System | Oral tradition + trade network | 6 |
+| 27 | `global/khmer` | [Khmer Empire](./regimes/global/khmer/README.md) | 802-1431 | Devaraja System | God-king + hydraulic state | 6 |
+| 28 | `global/safavid` | [Safavid Empire](./regimes/global/safavid/README.md) | 1501-1736 | Shi'a Theocratic Monarchy | Shah + religious authority | 7 |
+| 29 | `global/joseon` | [Joseon Korea](./regimes/global/joseon/README.md) | 1392-1897 | Neo-Confucian Bureaucracy | Three Offices censorial checks | 7 |
+| 30 | `global/habsburg` | [Habsburg Austria-Hungary](./regimes/global/habsburg/README.md) | 1867-1918 | Dual Monarchy | Dual parliaments | 7 |
+| 31 | `global/polish` | [Polish-Lithuanian Commonwealth](./regimes/global/polish/README.md) | 1569-1795 | Elective Monarchy | Liberum veto + Sejm | 6 |
+| 32 | `global/napoleon` | [Napoleonic Empire](./regimes/global/napoleon/README.md) | 1804-1815 | Meritocratic Centralization | Merit-based + Code Napoléon | 7 |
+| 33 | `global/prussia` | [Kingdom of Prussia](./regimes/global/prussia/README.md) | 1701-1918 | Military Bureaucracy | General Staff system | 6 |
+| 34 | `global/meiji` | [Meiji Japan](./regimes/global/meiji/README.md) | 1868-1912 | Constitutional Monarchy | Genrō informal power | 7 |
+| 35 | `global/eu` | [European Union](./regimes/global/eu/README.md) | 1993-present | Supranational Governance | Trilogue co-decision | 7 |
+| 36 | `global/swiss` | [Swiss Confederation](./regimes/global/swiss/README.md) | 1291-present | Direct Democracy | Referendum + collegiality | 6 |
+| 37 | `global/zulu` | [Zulu Kingdom](./regimes/global/zulu/README.md) | 1816-1897 | Military Regimental | King + regimental hierarchy | 5 |
 
 ---
 
@@ -267,7 +285,7 @@ Each regime contains 5 files:
 ## FAQ
 
 **Q: What's the relationship to the original AI Court project?**
-AI Governance is an extended fork of [AI Court](https://github.com/wanikua/boluobobo-ai-court-tutorial). The original Tang Dynasty configuration is fully preserved in `regimes/china/tang/`. We've added 38 new regimes on top. All original features (install scripts, GUI, Skills) remain unchanged.
+AI Governance is an extended fork of [AI Court](https://github.com/wanikua/boluobobo-ai-court-tutorial). The original Tang Dynasty configuration is fully preserved in `regimes/china/tang/`. We've added 56 new regimes on top. All original features (install scripts, GUI, Skills) remain unchanged.
 
 **Q: Do I need to change code to switch regimes?**
 No. Each regime is a pure config module (JSON + Markdown). Just run `switch-regime.sh`.
