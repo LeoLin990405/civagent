@@ -43,17 +43,23 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 
 | 章节 | 说明 |
 |------|------|
-| 📜 [这个项目是什么？](#这个项目是什么) | 项目介绍、核心能力 |
+| 📜 [这个项目是什么？](#这个项目是什么) | 项目介绍、设计理念、核心能力 |
 | 🆚 [为什么选这套方案？](#为什么选这套方案) | 与 ChatGPT / AutoGPT / CrewAI 对比 |
-| 🚀 [**快速开始**](#快速开始) | **← 从这里开始安装（5分钟）** |
-| 🏗️ [技术架构](#️-技术架构) | 三省六部映射、架构图 |
-| 🎬 [效果展示](#-效果展示) | Discord 真实对话示例 |
-| 🍍 [实战案例：菠萝王朝](#-实战案例菠萝王朝) | 14 Agent 真实运行架构 |
-| 🏛️ [朝廷架构详解](#️-朝廷架构三省六部制) | 历史背景、多模型混搭 |
-| ⚙️ [核心能力](#️-核心能力) | 协作、记忆、Skill、Cron |
-| 🖥️ [GUI 管理界面](#️-gui-管理界面) | Web Dashboard + Discord + Notion |
-| 📚 [详细教程](#-详细教程) | 飞书接入、Notion 接入、诊断、FAQ |
-| 🔗 [社区 & 链接](#加入朝会) | 小红书、公众号、微信群 |
+| 🏗️ [技术架构](#技术架构) | 三省六部映射、架构图 |
+| 🎬 [效果展示](#效果展示) | Discord 真实对话示例 |
+| 🚀 [**快速开始**](#快速开始) | **← 从这里开始安装** |
+| ├─ [Linux 服务器安装](#第一步一键部署5-分钟) | 一键脚本，5分钟搞定 |
+| ├─ [macOS 本地安装](#第一步一键部署5-分钟) | Homebrew 自动安装 |
+| ├─ [精简安装（已有 OpenClaw）](#第一步一键部署5-分钟) | 只初始化配置 |
+| ├─ [填 Key 上线](#第二步填-key-上线10-分钟) | API Key + Discord Bot Token |
+| └─ [全六部上线](#第三步全六部上线-自动化15-分钟) | 测试 + 配置自动化 |
+| 🍍 [实战案例：菠萝王朝](#实战案例菠萝王朝) | 14 Agent 真实运行架构 |
+| 🏛️ [朝廷架构详解](#朝廷架构三省六部制) | 历史背景、角色对照、多模型混搭 |
+| ⚙️ [核心能力详解](#核心能力) | 协作、记忆、Skill、Cron、沙箱 |
+| 🖥️ [GUI 管理界面](#gui-管理界面) | Web Dashboard + Discord + Notion |
+| ❓ [常见问题](#常见问题) | 基础 + 技术 FAQ |
+| 🏢 [企业版 Become CEO](#想要企业版) | 同架构的英文企业版 |
+| 🔗 [相关链接 & 社区](#加入朝会) | 小红书、公众号、微信群 |
 
 ---
 
@@ -105,14 +111,6 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 | 刑部 | General Counsel | 法务合规、合同审查 |
 
 > 💡 两个项目基于相同的 [OpenClaw](https://github.com/openclaw/openclaw) 框架，架构完全一致，只是角色命名和文化背景不同。选你喜欢的风格即可！
-
----
-
-> 📌 **关于原创性** — 本项目首次提交于 **2026-02-22**（[commit 记录](https://github.com/wanikua/boluobobo-ai-court-tutorial/commits/main)），是「用中国古代官制隐喻 AI 多 Agent 协作」这一概念的原始实现。我们注意到 [cft0808/edict](https://github.com/cft0808/edict)（首次提交 2026-02-23，晚约 21 小时）在框架选型、SOUL.md 人格文件、部署方式、竞品对比表格等方面与本项目高度一致，详见 [Issue #55](https://github.com/cft0808/edict/issues/55)。
->
-> **欢迎转载，请注明出处。**
->
-> 📕 小红书原创系列：[用AI当上皇帝的第3天，我已经欲罢不能了](https://www.xiaohongshu.com/discovery/item/6998638f000000000d0092fe) | [赛博皇帝的日常：睡前下旨，AI连夜肝完代码](https://www.xiaohongshu.com/discovery/item/69a95dc3000000002801e886)
 
 ---
 
@@ -180,13 +178,11 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 - **身份注入**：Gateway 自动将 SOUL.md + IDENTITY.md + 工作区文件组装为系统提示
 - **消息路由**：通过 `bindings` 配置将 `(channel, accountId)` 映射到 `agentId`，最具体的匹配优先
 
-
 </details>
 
 ---
 
-<details>
-<summary><h2>🎬 效果展示</h2></summary>
+## 效果展示
 
 ### Discord 对话示例
 
@@ -226,9 +222,6 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 🏛️ 礼部：臣收到，将汇总营销数据。
 🏛️ 工部：臣收到，将备好服务器运行报告。
 ```
-
-
-</details>
 
 ---
 
@@ -345,8 +338,7 @@ openclaw cron add \
 
 ---
 
-<details>
-<summary><h2>🍍 实战案例：菠萝王朝</h2></summary>
+## 实战案例：菠萝王朝
 
 > 以下是基于本项目搭建的**真实运行中的 AI 朝廷**——菠萝王朝，展示 14 个 Agent 协同运作的完整架构。
 
@@ -441,14 +433,9 @@ openclaw cron add \
 
 > 💡 **这不是 demo，是每天在用的生产系统。** 菠萝王朝已稳定运行数周，处理过数百个实际任务——从代码开发到内容运营，从数据分析到项目管理。
 
-
-</details>
-
 ---
 
-<details>
-<summary><h2>🏛️ 朝廷架构——三省六部制</h2></summary>
-
+## 朝廷架构——三省六部制
 
 ### 历史背景
 
@@ -510,13 +497,9 @@ openclaw cron add \
 
 > 格式：`provider名/模型id`。支持任何兼容 OpenAI API 格式的服务商（Ollama、通义千问、Gemini 等），详见 [OpenClaw 模型配置文档](https://docs.openclaw.ai/concepts/models)。
 
-
-</details>
-
 ---
 
-<details>
-<summary><h2>⚙️ 核心能力</h2></summary>
+## 核心能力
 
 ### 多 Agent 协作
 每个部门是独立 Bot，@谁谁回复，@everyone 全员响应。大任务自动新建 Thread 保持频道整洁。
@@ -552,14 +535,10 @@ openclaw cron add \
 ### 沙箱隔离
 Agent 可以运行在 Docker 沙箱中，代码执行互不干扰。支持配置网络、文件系统、环境变量的隔离级别。
 
-
-</details>
-
 ---
 
 <details>
 <summary><h2>🖥️ GUI 管理界面</h2></summary>
-
 
 除了 Discord 命令行交互，AI 朝廷还提供多种图形界面（GUI）管理方式：
 
@@ -626,20 +605,21 @@ Discord 本身就是最佳的 GUI 管理界面：
 
 > 💡 三层 GUI 配合使用：**Web Dashboard** 看系统状态 → **Discord** 下达指令 → **Notion** 查看报表和历史数据。
 
+</details>
+
+---
+
+<details>
+<summary><h2>📖 详细教程</h2></summary>
+
+基础篇（服务器申请→安装→配置→跑起来）和进阶篇（tmux、GitHub、Notion、Cron、Discord、Prompt 技巧）见小红书系列笔记。
 
 </details>
 
 ---
 
 <details>
-<summary><h2>📚 详细教程</h2></summary>
-
-
-基础篇（服务器申请→安装→配置→跑起来）和进阶篇（tmux、GitHub、Notion、Cron、Discord、Prompt 技巧）见小红书系列笔记。
-
----
-
-### 📱 接入飞书（Feishu/Lark）
+<summary><h2>📱 接入飞书（Feishu/Lark）</h2></summary>
 
 除了 Discord，AI 朝廷也支持飞书作为交互界面。飞书插件已内置在新版 OpenClaw 中，无需额外安装。
 
@@ -716,9 +696,12 @@ openclaw pairing approve feishu <配对码>
 >
 > 📖 完整飞书文档：[docs.openclaw.ai/channels/feishu](https://docs.openclaw.ai/channels/feishu)
 
+</details>
+
 ---
 
-### 📝 接入 Notion（自动归档）
+<details>
+<summary><h2>📝 接入 Notion（自动归档）</h2></summary>
 
 AI 朝廷可以通过 Notion Skill 自动写日报、归档数据、管理知识库。配置只需 3 步。
 
@@ -774,9 +757,12 @@ curl -s "https://api.notion.com/v1/users/me" \
 >
 > 📖 Notion API 文档：[developers.notion.com](https://developers.notion.com)
 
+</details>
+
 ---
 
-### 🏥 配置诊断（doctor.sh）
+<details>
+<summary><h2>🏥 配置诊断（doctor.sh）</h2></summary>
 
 遇到问题？跑一行命令自动检查配置：
 
@@ -809,9 +795,12 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 
 > ⚠️ 改完 Intent 后需要**重启 Gateway**：`openclaw gateway restart` 或 `systemctl --user restart openclaw-gateway`
 
+</details>
+
 ---
 
-### 常见问题
+<details>
+<summary><h2>❓ 常见问题</h2></summary>
 
 ### 基础问题
 
@@ -886,9 +875,6 @@ openclaw doctor --fix
 **Q: Windows 能用吗？**
 可以！通过 WSL2（Windows Subsystem for Linux）运行。详见 [Windows WSL2 安装指南](./docs/windows-wsl.md)。
 
----
-
-
 </details>
 
 ---
@@ -915,7 +901,15 @@ openclaw doctor --fix
 
 ---
 
-> **⚠️ 维权声明：** 本项目于 **2026年2月22日** 首发（[小红书推广帖更早于2月20日](https://www.xiaohongshu.com/discovery/item/6998638f000000000d0092fe?source=webshare)），是「三省六部制 × AI 多智能体」概念的原创项目。近日发现有项目在 21 小时后创建了 15/15 核心设计决策完全一致的仿品，且不注明来源。完整证据链见 [GitHub Issue](https://github.com/cft0808/edict/issues/55) | [维权文章](https://mp.weixin.qq.com/s/erVkoANrpZQFawMCNn6p9g)。我们欢迎 fork 和二次开发，但请尊重开源精神，注明出处。
+## ⚠️ 维权声明
+
+本项目于 **2026年2月22日** 首发（[小红书推广帖更早于2月20日](https://www.xiaohongshu.com/discovery/item/6998638f000000000d0092fe?source=webshare)），是「三省六部制 × AI 多智能体」概念的原创项目。近日发现有项目在 21 小时后创建了 15/15 核心设计决策完全一致的仿品，且不注明来源。完整证据链见 [GitHub Issue](https://github.com/cft0808/edict/issues/55) | [维权文章](https://mp.weixin.qq.com/s/erVkoANrpZQFawMCNn6p9g)。我们欢迎 fork 和二次开发，但请尊重开源精神，注明出处。
+
+> 📌 **关于原创性** — 本项目首次提交于 **2026-02-22**（[commit 记录](https://github.com/wanikua/boluobobo-ai-court-tutorial/commits/main)），是「用中国古代官制隐喻 AI 多 Agent 协作」这一概念的原始实现。我们注意到 [cft0808/edict](https://github.com/cft0808/edict)（首次提交 2026-02-23，晚约 21 小时）在框架选型、SOUL.md 人格文件、部署方式、竞品对比表格等方面与本项目高度一致，详见 [Issue #55](https://github.com/cft0808/edict/issues/55)。
+>
+> **欢迎转载，请注明出处。**
+>
+> 📕 小红书原创系列：[用AI当上皇帝的第3天，我已经欲罢不能了](https://www.xiaohongshu.com/discovery/item/6998638f000000000d0092fe) | [赛博皇帝的日常：睡前下旨，AI连夜肝完代码](https://www.xiaohongshu.com/discovery/item/69a95dc3000000002801e886)
 
 ---
 
