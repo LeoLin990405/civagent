@@ -15,10 +15,9 @@
 
 <div align="center">
 
-> *"The whole history of the world is summed up in the fact that,*
-> *when nations are strong, they are not always just,*
-> *and when they wish to be just, they are no longer strong."*
-> *— Winston Churchill*
+> *「世界历史可以这样总结：当国家强大时，它们并不总是公正的；*
+> *而当它们希望做到公正时，它们往往已不再强大。」*
+> *— 温斯顿·丘吉尔*
 
 </div>
 
