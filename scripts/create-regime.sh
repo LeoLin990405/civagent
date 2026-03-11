@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# AI 治理天下 — Regime Scaffolder
+# CivAgent — Regime Scaffolder
 # Creates a new regime from the template
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"

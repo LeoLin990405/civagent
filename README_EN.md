@@ -1,5 +1,9 @@
 [Chinese Version](./README.md) | [Original Project](https://github.com/wanikua/boluobobo-ai-court-tutorial)
 
+<p align="center">
+  <img src="./images/civagent-banner.svg" alt="CivAgent Banner" width="100%" />
+</p>
+
 # 🎮 CivAgent — Choose Your Civilization, Command Your AI Team
 
 ### 5,000 Years of Human Governance Wisdom x AI Multi-Agent Collaboration | 57 Civilizations · Pure Config Switching · Zero Code · Built on OpenClaw
@@ -351,7 +355,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 ### 2. Clone CivAgent
 
 ```bash
-git clone https://github.com/LeoLin990405/boluobobo-ai-court-tutorial.git civagent
+git clone https://github.com/LeoLin990405/civagent.git civagent
 cd civagent
 ```
 

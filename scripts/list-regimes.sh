@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# AI 治理天下 — List All Regimes
+# CivAgent — List All Regimes
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
@@ -22,7 +22,7 @@ if [ -f "$OPENCLAW_DIR/.active-regime" ]; then
 fi
 
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${CYAN}  AI 治理天下 — Regime Catalog${NC}"
+echo -e "${CYAN}  CivAgent — Regime Catalog${NC}"
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 
@@ -59,7 +59,7 @@ done
 echo ""
 
 # Global Empires
-echo -e "${GREEN}世界帝国 / Global Empires (19)${NC}"
+echo -e "${GREEN}世界帝国 / Global Empires (37)${NC}"
 echo -e "${DIM}──────────────────────────────────────────────────────────────────────────────${NC}"
 for dir in $(find "$REGIMES_DIR/global" -mindepth 1 -maxdepth 1 -type d | sort); do
     regime_id=$(basename "$dir")

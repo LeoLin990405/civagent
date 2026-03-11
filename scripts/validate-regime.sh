@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# AI 治理天下 — Regime Validator
+# CivAgent — Regime Validator
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"

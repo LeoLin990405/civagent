@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# AI 治理天下 — Regime Switcher
+# CivAgent — Regime Switcher
 # Usage: ./scripts/switch-regime.sh china/qin
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
@@ -16,7 +16,7 @@ CYAN='\033[0;36m'
 NC='\033[0m'
 
 usage() {
-    echo -e "${CYAN}AI 治理天下 — Regime Switcher${NC}"
+    echo -e "${CYAN}CivAgent — Regime Switcher${NC}"
     echo ""
     echo "Usage: $0 <region/regime_id>"
     echo ""
@@ -62,7 +62,7 @@ REGIME_SYSTEM=$(python3 -c "import json; d=json.load(open('$METADATA')); print(d
 AGENT_COUNT=$(python3 -c "import json; d=json.load(open('$METADATA')); print(d['agentCount'])" 2>/dev/null || echo "?")
 
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
-echo -e "${CYAN}  AI 治理天下 — Switching Regime${NC}"
+echo -e "${CYAN}  CivAgent — Switching Regime${NC}"
 echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
 echo -e "  Regime:  ${GREEN}$REGIME_NAME_ZH${NC} ($REGIME_NAME_EN)"
