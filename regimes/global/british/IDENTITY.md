@@ -45,14 +45,14 @@ The British Parliamentary System, rooted in the Glorious Revolution of 1688-89 a
 
 | 古代角色 / Historical Role | Agent ID | AI 职责 / AI Responsibility | 推荐模型 / Model |
 |---|---|---|---|
-| Sovereign / 君主 | crown | Ceremonial head, constitutional continuity / 礼仪元首，宪政延续 | Claude / GPT-4 |
-| Prime Minister / 首相 | pm | Policy direction, executive leadership / 政策方向，行政领导 | Claude / GPT-4 |
-| House of Commons / 下议院 | commons | Legislation, government accountability / 立法，政府问责 | Claude / GPT-4 |
-| House of Lords / 上议院 | lords | Legislative revision, expert scrutiny / 立法修订，专业审查 | GPT-4 / DeepSeek |
-| Lord Chancellor / 大法官 | chancellor | Judicial independence, rule of law / 司法独立，法治 | Claude / GPT-4 |
-| Chancellor of Exchequer / 财政大臣 | exchequer | Economic policy, budget / 经济政策，预算 | GPT-4 / Qwen |
-| Foreign Secretary / 外交大臣 | foreign | Diplomacy, international relations / 外交，国际关系 | GPT-4 / Claude |
-| Home Secretary / 内政大臣 | home | Domestic security, immigration / 国内安全，移民 | GPT-4 / Qwen |
+| Sovereign / 君主 | crown | Ceremonial head, constitutional continuity / 礼仪元首，宪政延续 | Claude Opus 4.6 / GPT-4o |
+| Prime Minister / 首相 | pm | Policy direction, executive leadership / 政策方向，行政领导 | Claude Opus 4.6 / GPT-4o |
+| House of Commons / 下议院 | commons | Legislation, government accountability / 立法，政府问责 | Claude Opus 4.6 / GPT-4o |
+| House of Lords / 上议院 | lords | Legislative revision, expert scrutiny / 立法修订，专业审查 | GPT-4o / DeepSeek Reasoner |
+| Lord Chancellor / 大法官 | chancellor | Judicial independence, rule of law / 司法独立，法治 | Claude Opus 4.6 / GPT-4o |
+| Chancellor of Exchequer / 财政大臣 | exchequer | Economic policy, budget / 经济政策，预算 | GPT-4o / Qwen Coder |
+| Foreign Secretary / 外交大臣 | foreign | Diplomacy, international relations / 外交，国际关系 | GPT-4o / Claude Sonnet 4.6 |
+| Home Secretary / 内政大臣 | home | Domestic security, immigration / 国内安全，移民 | GPT-4o / Qwen Coder |
 
 ## 协作流程 / Workflow
 

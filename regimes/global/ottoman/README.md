@@ -69,12 +69,12 @@ Ottoman governance centered on the Sultan as absolute authority, but execution r
 | Agent | 历史角色 / Historical Role | AI 职责 / AI Responsibility | 推荐模型层级 / Model Tier |
 |---|---|---|---|
 | Sultan / 苏丹 | 绝对最高统治者，信仰的守护者 | 最终决策权，战略方向 | Tier 1 (用户意志的代理) |
-| Grand Vizier / 大维齐尔 | 首席执行官，迪万主席 | 主协调Agent，任务分配，日常管理 | Tier 1 (主模型，如 Claude) |
+| Grand Vizier / 大维齐尔 | 首席执行官，迪万主席 | 主协调Agent，任务分配，日常管理 | Tier 1 (主模型，如 Claude Opus 4.6) |
 | Kazasker / 军事法官 | 伊斯兰法律+世俗法律审判 | 合规审查，法律审计，标准执行 | Tier 2 (审查模型，如 DeepSeek) |
 | Defterdar / 财务总管 | 帝国财政，蒂马尔管理 | 预算管理，资源分配，成本分析 | Tier 3 (快速模型，如 Kimi) |
 | Nisanci / 大法官 | 文件验证，花押签署 | 文档认证，版本控制，签名验证 | Tier 3 (执行模型) |
 | Kapudan Pasha / 海军司令 | 海军指挥，海上力量 | 技术实现，创新研发，新领域探索 | Tier 2 (代码模型，如 Qwen) |
-| Janissary Aga / 禁卫军统领 | 精锐军事，首都安全 | 安全审计，渗透测试，紧急响应 | Tier 2 (安全模型，如 Gemini) |
+| Janissary Aga / 禁卫军统领 | 精锐军事，首都安全 | 安全审计，渗透测试，紧急响应 | Tier 2 (安全模型，如 Gemini 2.5 Pro) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 

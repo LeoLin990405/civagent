@@ -61,9 +61,9 @@ The Qin central administrative system centered on the "Three Lords Nine Minister
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 丞相 | 百官之首·总理万机 | 总体任务调度、协调各部、进度管控 | Tier-1 (Claude Opus/o3) |
+| 丞相 | 百官之首·总理万机 | 总体任务调度、协调各部、进度管控 | Tier-1 (Claude Opus 4.6 / o3) |
 | 太尉 | 军事总管·掌兵权 | 技术架构设计、系统安全、性能优化 | Tier-1 (o3/DeepSeek Reasoner) |
-| 御史大夫 | 监察总管·副丞相 | 代码审查、质量监控、合规检查、审计 | Tier-1 (o3/Claude Opus) |
+| 御史大夫 | 监察总管·副丞相 | 代码审查、质量监控、合规检查、审计 | Tier-1 (o3 / Claude Opus 4.6) |
 | 廷尉 | 司法长官·掌刑狱 | 法务合规、安全审计、风险控制、漏洞扫描 | Tier-2 (o4-mini/Kimi) |
 | 治粟内史 | 财政长官·掌国库 | 成本核算、预算管理、资源调配、性能预算 | Tier-2 (Kimi/Qwen) |
 | 少府 | 内府长官·掌皇室财务 | 内部工具开发、自动化脚本、开发效率工具 | Tier-2 (Qwen/o4-mini) |

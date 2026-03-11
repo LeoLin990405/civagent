@@ -38,13 +38,13 @@ The Achaemenid Empire (550-330 BC), founded by Cyrus the Great, was the largest 
 
 | 古代角色 / Historical Role | Agent ID | AI 职责 / AI Responsibility | 推荐模型 / Model |
 |---|---|---|---|
-| Shahanshah / 万王之王 | shah | Supreme decision-maker, policy direction / 最高决策，政策方向 | Claude / GPT-4 |
-| Hazarapatis / 宰相 | hazarapatis | Court coordination, access control / 宫廷协调，访问控制 | Claude / GPT-4 |
-| Western Satrap / 西部总督 | satrap_w | Western provincial governance / 西部省务治理 | GPT-4 / Qwen |
-| Eastern Satrap / 东部总督 | satrap_e | Eastern provincial governance / 东部省务治理 | GPT-4 / Qwen |
-| Spahbed / 军事统帅 | spahbed | Military strategy and coordination / 军事战略与协调 | GPT-4 / DeepSeek |
-| Royal Eye / 皇帝之眼 | eye | Secret inspection, loyalty verification / 秘密巡察，忠诚核查 | Claude / GPT-4 |
-| Royal Scribe / 文书官 | scribe | Records, communications, archival / 记录，通信，档案 | GPT-4 / Qwen |
+| Shahanshah / 万王之王 | shah | Supreme decision-maker, policy direction / 最高决策，政策方向 | Claude Opus 4.6 / GPT-4o |
+| Hazarapatis / 宰相 | hazarapatis | Court coordination, access control / 宫廷协调，访问控制 | Claude Opus 4.6 / GPT-4o |
+| Western Satrap / 西部总督 | satrap_w | Western provincial governance / 西部省务治理 | GPT-4o / Qwen Coder |
+| Eastern Satrap / 东部总督 | satrap_e | Eastern provincial governance / 东部省务治理 | GPT-4o / Qwen Coder |
+| Spahbed / 军事统帅 | spahbed | Military strategy and coordination / 军事战略与协调 | GPT-4o / DeepSeek Reasoner |
+| Royal Eye / 皇帝之眼 | eye | Secret inspection, loyalty verification / 秘密巡察，忠诚核查 | Claude Opus 4.6 / GPT-4o |
+| Royal Scribe / 文书官 | scribe | Records, communications, archival / 记录，通信，档案 | GPT-4o / Qwen Coder |
 
 ## 协作流程 / Workflow
 

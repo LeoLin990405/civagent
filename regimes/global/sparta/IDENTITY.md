@@ -39,12 +39,12 @@ Sparta's constitution, attributed to the legendary lawgiver Lycurgus, created a 
 
 | 古代角色 / Historical Role | Agent ID | AI 职责 / AI Responsibility | 推荐模型 / Model |
 |---|---|---|---|
-| King (Agiad) / 阿基亚德国王 | king_a | Main coordinator, co-decision-maker / 主协调者，共同决策 | Claude / GPT-4 |
-| King (Eurypontid) / 欧里庞提德国王 | king_b | Co-decision-maker, military leadership / 共同决策，军事领导 | Claude / GPT-4 |
-| Gerousia / 长老院 | gerousia | Legislative review, judicial decisions / 立法审议，司法裁决 | Claude / GPT-4 |
-| Ephors / 监察官 | ephors | Oversight, law enforcement, king accountability / 监察，执法，问责 | Claude / GPT-4 |
-| Polemarch / 军事指挥 | polemarch | Military planning, tactical execution / 军事规划，战术执行 | GPT-4 / DeepSeek |
-| Helot Overseer / 后勤管理 | helot_mgr | Resource allocation, supply management / 资源分配，补给管理 | GPT-4 / Qwen |
+| King (Agiad) / 阿基亚德国王 | king_a | Main coordinator, co-decision-maker / 主协调者，共同决策 | Claude Opus 4.6 / GPT-4o |
+| King (Eurypontid) / 欧里庞提德国王 | king_b | Co-decision-maker, military leadership / 共同决策，军事领导 | Claude Opus 4.6 / GPT-4o |
+| Gerousia / 长老院 | gerousia | Legislative review, judicial decisions / 立法审议，司法裁决 | Claude Opus 4.6 / GPT-4o |
+| Ephors / 监察官 | ephors | Oversight, law enforcement, king accountability / 监察，执法，问责 | Claude Opus 4.6 / GPT-4o |
+| Polemarch / 军事指挥 | polemarch | Military planning, tactical execution / 军事规划，战术执行 | GPT-4o / DeepSeek Reasoner |
+| Helot Overseer / 后勤管理 | helot_mgr | Resource allocation, supply management / 资源分配，补给管理 | GPT-4o / Qwen Coder |
 
 ## 协作流程 / Workflow
 

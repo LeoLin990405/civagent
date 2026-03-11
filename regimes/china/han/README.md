@@ -59,9 +59,9 @@ The Han inherited and perfected the Qin's Three Lords Nine Ministers system. The
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 丞相 | 百官之首·总理政务 | 总体调度、任务分配、进度管控、跨部门协调 | Tier-1 (Claude Opus/o3) |
+| 丞相 | 百官之首·总理政务 | 总体调度、任务分配、进度管控、跨部门协调 | Tier-1 (Claude Opus 4.6 / o3) |
 | 太尉 | 军事总管·掌兵权 | 技术架构、系统安全、性能优化、核心开发 | Tier-1 (o3/DeepSeek Reasoner) |
-| 御史大夫 | 监察总管·副丞相 | 代码审查、质量监控、合规检查、审计报告 | Tier-1 (o3/Claude Opus) |
+| 御史大夫 | 监察总管·副丞相 | 代码审查、质量监控、合规检查、审计报告 | Tier-1 (o3 / Claude Opus 4.6) |
 | 太常 | 礼仪祭祀·掌宗庙 | 技术文档、API文档、知识库维护、规范制定 | Tier-2 (Kimi/GPT-4o) |
 | 光禄勋 | 宿卫安全·掌门禁 | 访问控制、身份认证、权限管理、SSO | Tier-2 (o4-mini/Qwen) |
 | 卫尉 | 宫门警卫·掌巡逻 | 防火墙、网络安全、入侵检测、WAF | Tier-2 (o4-mini/Kimi) |

@@ -66,7 +66,7 @@ The Shang governance architecture operated on the principle of "theocratic decis
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 商王 | 神权决策者·最高祭司 | 最高决策、统领朝政、最终裁断 | Tier-1 (Claude Opus/o3) |
+| 商王 | 神权决策者·最高祭司 | 最高决策、统领朝政、最终裁断 | Tier-1 (Claude Opus 4.6 / o3) |
 | 大巫 | 首席占卜师·解读天意 | 数据分析、趋势预测、风险评估、A/B测试设计 | Tier-1 (DeepSeek Reasoner/o3) |
 | 卿事寮 | 行政长官·政令推行 | 政令执行、任务推进、跨部门协调、项目管理 | Tier-2 (GPT-4o/Kimi) |
 | 太师 | 军事技术长官 | 代码开发、架构设计、技术攻关、性能优化 | Tier-1 (o3/Qwen Coder) |

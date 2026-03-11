@@ -75,9 +75,9 @@ The Jin's institutional core is "military-civil dual track under the Grand Marsh
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 都元帅 (Grand Marshal) | 最高军政统帅 | 总揽全局、战略决策、军-文协调、紧急指挥 | Tier-1: Claude / GPT-4o |
-| 尚书省 (Dept. of State) | 汉制行政中枢 | 行政管理、政令执行、流程规范、需求分析 | Tier-1: Kimi / Claude |
-| 猛安谋克 (Meng'an-Mouke) | 女真军事核心 | 技术攻坚、核心开发、架构设计、性能优化 | Tier-1: Codex o3 / DeepSeek |
+| 都元帅 (Grand Marshal) | 最高军政统帅 | 总揽全局、战略决策、军-文协调、紧急指挥 | Tier-1: Claude Opus 4.6 / GPT-4o |
+| 尚书省 (Dept. of State) | 汉制行政中枢 | 行政管理、政令执行、流程规范、需求分析 | Tier-1: Kimi / Claude Sonnet 4.6 |
+| 猛安谋克 (Meng'an-Mouke) | 女真军事核心 | 技术攻坚、核心开发、架构设计、性能优化 | Tier-1: o3 / DeepSeek |
 | 御史台 (Censorate) | 监察弹劾 | 代码审查、质量监控、安全审计、合规检查 | Tier-1: Codex o3 (reviewer) |
 | 翰林学士 (Hanlin Scholar) | 文书起草 | 技术文档、API 文档、知识库维护、设计文档 | Tier-2: Kimi / Qwen |
 | 提刑司 (Judicial Bureau) | 司法审判 | 法务合规、许可证审查、安全评估、风险分析 | Tier-2: DeepSeek / Codex |

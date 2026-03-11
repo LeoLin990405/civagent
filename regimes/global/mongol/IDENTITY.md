@@ -32,12 +32,12 @@ The Mongol Empire (1206-1368) was the largest contiguous land empire in history,
 
 | 古代角色 / Historical Role | Agent ID | AI 职责 / AI Responsibility | 推荐模型 / Model |
 |---|---|---|---|
-| Great Khan / 大汗 | khan | Supreme command, strategic direction / 最高统帅，战略方向 | Claude / GPT-4 |
-| Kurultai / 忽里勒台 | kurultai | Collective deliberation, succession / 集体议事，继承决策 | Claude / GPT-4 |
-| Western Noyan / 西路统帅 | noyan_w | Western theater operations / 西线军事行动 | GPT-4 / DeepSeek |
-| Eastern Noyan / 东路统帅 | noyan_e | Eastern theater operations / 东线军事行动 | GPT-4 / DeepSeek |
-| Darughachi / 达鲁花赤 | darughachi | Civil administration, census, taxation / 民政，户籍，税收 | GPT-4 / Qwen |
-| Jarghuchi / 断事官 | jarghuchi | Judicial enforcement, Yasa interpretation / 司法执行，雅萨解释 | Claude / GPT-4 |
+| Great Khan / 大汗 | khan | Supreme command, strategic direction / 最高统帅，战略方向 | Claude Opus 4.6 / GPT-4o |
+| Kurultai / 忽里勒台 | kurultai | Collective deliberation, succession / 集体议事，继承决策 | Claude Opus 4.6 / GPT-4o |
+| Western Noyan / 西路统帅 | noyan_w | Western theater operations / 西线军事行动 | GPT-4o / DeepSeek Reasoner |
+| Eastern Noyan / 东路统帅 | noyan_e | Eastern theater operations / 东线军事行动 | GPT-4o / DeepSeek Reasoner |
+| Darughachi / 达鲁花赤 | darughachi | Civil administration, census, taxation / 民政，户籍，税收 | GPT-4o / Qwen Coder |
+| Jarghuchi / 断事官 | jarghuchi | Judicial enforcement, Yasa interpretation / 司法执行，雅萨解释 | Claude Opus 4.6 / GPT-4o |
 
 ## 协作流程 / Workflow
 

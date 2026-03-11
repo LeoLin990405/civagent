@@ -74,7 +74,7 @@ The Five-Power Constitution's core lies in the "distinction between power and ab
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 总统 (President) | 国家元首 | 统筹协调五院、发布总目标、跨院仲裁 | Tier-1: Claude / GPT-4o |
+| 总统 (President) | 国家元首 | 统筹协调五院、发布总目标、跨院仲裁 | Tier-1: Claude Opus 4.6 / GPT-4o |
 | 行政院 (Executive Yuan) | 最高行政机关 | 政策执行、日常运营、任务调度、核心开发 | Tier-1: DeepSeek / Codex o3 |
 | 立法院 (Legislative Yuan) | 最高立法机关 | 标准制定、规则审议、流程规范、预算审查 | Tier-2: Kimi / Claude |
 | 司法院 (Judicial Yuan) | 最高司法机关 | 争议仲裁、法律解释、合规裁决、架构决策 | Tier-2: Codex o3 / DeepSeek |

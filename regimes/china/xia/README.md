@@ -48,7 +48,7 @@ The Xia governance system was a patriarchal structure centered on the clan chief
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 大禹/夏王 | 族长·最高决策者 | 总体决策、任务分配、统领全局、最终裁断 | Tier-1 (o3/Claude Opus) |
+| 大禹/夏王 | 族长·最高决策者 | 总体决策、任务分配、统领全局、最终裁断 | Tier-1 (o3 / Claude Opus 4.6) |
 | 司空 | 工程水利长官 | 代码开发、架构设计、基础设施建设 | Tier-1 (o3/DeepSeek Reasoner) |
 | 司徒 | 教化民政长官 | 文档编撰、知识传承、规范制定、团队教育 | Tier-2 (GPT-4o/Kimi) |
 | 司马 | 军事征伐长官 | 安全审查、风险评估、应急响应、攻防测试 | Tier-2 (o4-mini/Qwen) |

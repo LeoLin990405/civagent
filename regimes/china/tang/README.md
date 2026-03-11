@@ -79,7 +79,7 @@ The six ministries each specialized: **Personnel** (official selection/project m
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 司礼监/中书省 | 大内总管/中书令 | 总管调度、任务分配、起草方案、协调各部 | Tier-1 (Claude Opus/o3) |
+| 司礼监/中书省 | 大内总管/中书令 | 总管调度、任务分配、起草方案、协调各部 | Tier-1 (Claude Opus 4.6 / o3) |
 | 兵部 | 兵部尚书·军政 | 软件工程、核心代码开发、架构设计、技术攻关 | Tier-1 (o3/DeepSeek Reasoner) |
 | 户部 | 户部尚书·赋税 | 财务运营、数据分析、成本管控、预算管理 | Tier-2 (Kimi/Qwen) |
 | 礼部 | 礼部尚书·礼仪 | 品牌营销、文案创作、社媒运营、用户沟通 | Tier-2 (GPT-4o/Kimi) |

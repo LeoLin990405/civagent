@@ -34,13 +34,13 @@ The Ottoman Empire (1299-1922) was one of history's longest-lived empires, gover
 
 | 古代角色 / Historical Role | Agent ID | AI 职责 / AI Responsibility | 推荐模型 / Model |
 |---|---|---|---|
-| Sultan / 苏丹 | sultan | Supreme authority, final decisions / 最高权力，最终决策 | Claude / GPT-4 |
-| Grand Vizier / 大维齐尔 | grand_vizier | Executive coordination, Divan chair / 行政协调，迪万主席 | Claude / GPT-4 |
-| Kazasker / 军事法官 | kazasker | Legal compliance, judicial review / 法律合规，司法审查 | GPT-4 / DeepSeek |
-| Defterdar / 财务总管 | defterdar | Financial management, budget / 财务管理，预算 | GPT-4 / Qwen |
-| Nisanci / 大法官 | nisanci | Document authentication, records / 文件认证，档案 | GPT-4 / Qwen |
-| Kapudan Pasha / 海军司令 | kapudan | Naval operations, maritime tech / 海军行动，海事技术 | GPT-4 / DeepSeek |
-| Janissary Aga / 近卫军统领 | janissary | Security, elite operations / 安全，精锐行动 | Claude / GPT-4 |
+| Sultan / 苏丹 | sultan | Supreme authority, final decisions / 最高权力，最终决策 | Claude Opus 4.6 / GPT-4o |
+| Grand Vizier / 大维齐尔 | grand_vizier | Executive coordination, Divan chair / 行政协调，迪万主席 | Claude Opus 4.6 / GPT-4o |
+| Kazasker / 军事法官 | kazasker | Legal compliance, judicial review / 法律合规，司法审查 | GPT-4o / DeepSeek Reasoner |
+| Defterdar / 财务总管 | defterdar | Financial management, budget / 财务管理，预算 | GPT-4o / Qwen Coder |
+| Nisanci / 大法官 | nisanci | Document authentication, records / 文件认证，档案 | GPT-4o / Qwen Coder |
+| Kapudan Pasha / 海军司令 | kapudan | Naval operations, maritime tech / 海军行动，海事技术 | GPT-4o / DeepSeek Reasoner |
+| Janissary Aga / 近卫军统领 | janissary | Security, elite operations / 安全，精锐行动 | Claude Opus 4.6 / GPT-4o |
 
 ## 协作流程 / Workflow
 

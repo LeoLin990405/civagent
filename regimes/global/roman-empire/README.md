@@ -63,7 +63,7 @@ The post-Diocletian/Constantine imperial administration was the ancient world's 
 | Agent | 历史角色 / Historical Role | AI 职责 / AI Responsibility | 推荐模型层级 / Model Tier |
 |---|---|---|---|
 | Imperator / 皇帝 | 最高统治者，一切权力的源泉 | 最终决策，战略愿景，批准/否决 | Tier 1 (用户意志的代理) |
-| Praetorian Prefect / 近卫军长官 | 首席行政官，日常运营总管 | 主协调Agent，任务分配，进度管理 | Tier 1 (主模型，如 Claude) |
+| Praetorian Prefect / 近卫军长官 | 首席行政官，日常运营总管 | 主协调Agent，任务分配，进度管理 | Tier 1 (主模型，如 Claude Opus 4.6) |
 | Prefect of City / 城市长官 | 城市行政，公共服务 | 本地运维，日常管理，用户服务 | Tier 2 (执行模型) |
 | Master of Offices / 行政总管 | 通信、情报、宫廷管理 | 消息路由，Agent间协调，调度 | Tier 2 (协调模型) |
 | Count of Sacred Largesse / 财务大臣 | 国库、铸币、财政 | 预算管理，资源分配，成本报告 | Tier 3 (快速模型，如 Kimi) |

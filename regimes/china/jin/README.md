@@ -62,7 +62,7 @@ The Jin governance system was characterized by "weak center, strong periphery." 
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 丞相 | 中央协调·弱权 | 斡旋各方、全局调和、争端调解（非命令式） | Tier-1 (Claude Opus) |
+| 丞相 | 中央协调·弱权 | 斡旋各方、全局调和、争端调解（非命令式） | Tier-1 (Claude Opus 4.6) |
 | 中正 | 独立品评官 | 代码审查、质量分级、绩效评估、技术评审 | Tier-1 (o3/DeepSeek Reasoner) |
 | 尚书令 | 行政执行长官 | 政令推行、任务分配、日常管理、流程管控 | Tier-2 (GPT-4o/Kimi) |
 | 中书监 | 起草规划长官 | 方案设计、需求分析、文档编撰、架构规划 | Tier-2 (Kimi/GPT-4o) |

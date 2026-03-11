@@ -65,9 +65,9 @@ Western Xia's institutional core was a trinity of "imperial centralization + mil
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 皇帝 (Emperor) | 最高决策者 | 总揽全局、战略决策、最终裁决、跨域协调 | Tier-1: Claude / GPT-4o |
-| 中书令 (Grand Secretary) | 行政执行首长 | 日常运营、任务调度、政令执行、项目管理 | Tier-1: Kimi / Claude |
-| 枢密使 (Military Commissioner) | 军事机要首长 | 技术攻坚、安全工程、架构设计、性能优化 | Tier-1: Codex o3 / DeepSeek |
+| 皇帝 (Emperor) | 最高决策者 | 总揽全局、战略决策、最终裁决、跨域协调 | Tier-1: Claude Opus 4.6 / GPT-4o |
+| 中书令 (Grand Secretary) | 行政执行首长 | 日常运营、任务调度、政令执行、项目管理 | Tier-1: Kimi / Claude Sonnet 4.6 |
+| 枢密使 (Military Commissioner) | 军事机要首长 | 技术攻坚、安全工程、架构设计、性能优化 | Tier-1: o3 / DeepSeek |
 | 国师 (National Preceptor) | 佛教顾问/知识权威 | 知识库管理、最佳实践顾问、技术选型咨询、长期战略 | Tier-2: DeepSeek Reasoner / Kimi |
 | 蕃汉大学士 (Tangut-Han Academician) | 民族协调翻译 | 多语言支持、跨平台适配、格式转换、国际化 | Tier-2: Kimi / Qwen |
 

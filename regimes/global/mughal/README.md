@@ -185,7 +185,7 @@ A centralized bureaucratic hierarchy with the Emperor as absolute core, ensuring
    奉旨制定方案。各部门评估，四位省督各负责一种语言域。
 
 💰 Diwan: Revenue Minister's assessment:
-   • Base LLM: GPT-4 or Claude — $0.03/1k input tokens
+   • Base LLM: GPT-4o or Claude — $0.03/1k input tokens
    • Fine-tuning: Hindi and Arabic require additional training data ($5k each)
    • Mandarin: Existing models perform well, minimal additional cost
    • Monthly projection: $2,000 for 50k conversations/month

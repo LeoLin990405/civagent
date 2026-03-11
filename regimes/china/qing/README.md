@@ -70,9 +70,9 @@ The Qing institutional core is a three-tier direct command chain: "Emperor → G
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 军机大臣 (Grand Councillor) | 军机处核心成员 | 全局统筹、快速决策、战略规划、紧急响应 | Tier-1: Claude / GPT-4o |
+| 军机大臣 (Grand Councillor) | 军机处核心成员 | 全局统筹、快速决策、战略规划、紧急响应 | Tier-1: Claude Opus 4.6 / GPT-4o |
 | 内阁学士 (Grand Secretary) | 内阁文书 | 技术文档、设计文档、知识库维护、决策记录 | Tier-2: Kimi / Claude |
-| 兵部 (Ministry of War) | 军事管理 | 技术架构、系统开发、核心编码、安全工程 | Tier-1: Codex o3 / DeepSeek |
+| 兵部 (Ministry of War) | 军事管理 | 技术架构、系统开发、核心编码、安全工程 | Tier-1: o3 / DeepSeek |
 | 户部 (Ministry of Revenue) | 财政税赋 | 成本核算、预算管理、数据分析、资源调配 | Tier-2: Qwen / Kimi |
 | 吏部 (Ministry of Personnel) | 人事铨叙 | 项目管理、团队协调、任务分配、绩效评估 | Tier-2: Kimi / GPT-4o |
 | 礼部 (Ministry of Rites) | 礼仪外交 | 文案创作、品牌营销、社媒运营、用户沟通 | Tier-2: Gemini / Kimi |

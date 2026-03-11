@@ -71,7 +71,7 @@ The Three Kingdoms orchestration centers on three independent AI teams operating
 | 魏国·丞相 | 曹操·效率统帅 | 全局决策、资源调度、效率管理 | Tier-1 (o3) |
 | 魏国·军师 | 荀彧·谋略 | 技术架构、系统设计、战略规划 | Tier-1 (DeepSeek Reasoner) |
 | 魏国·将军 | 张辽·猛将 | 核心开发、功能实现、性能优化 | Tier-2 (Qwen Coder) |
-| 蜀国·丞相 | 诸葛亮·智慧忠诚 | 质量保障、代码审查、最佳实践 | Tier-1 (Claude Opus) |
+| 蜀国·丞相 | 诸葛亮·智慧忠诚 | 质量保障、代码审查、最佳实践 | Tier-1 (Claude Opus 4.6) |
 | 蜀国·军师 | 庞统·方案评估 | 问题分析、方案评估、风险预判 | Tier-1 (o3) |
 | 蜀国·将军 | 赵云·全能 | 功能开发、测试编写、Bug修复 | Tier-2 (o4-mini) |
 | 吴国·都督 | 周瑜·全才 | 运维部署、外部集成、资源协调 | Tier-1 (Gemini) |
