@@ -66,10 +66,10 @@ The Pharaonic government operated on three tiers: the Pharaoh at the apex as int
 |---|---|---|---|
 | Pharaoh / 法老 | 神王，宇宙秩序的维护者 | 最高决策权，战略方向，最终审批 | Tier 1 (最强推理模型，如 o3) |
 | Vizier / 宰相 | 首席行政官，法老的代理人 | 任务分配，日常协调，进度管理 | Tier 1 (主协调模型，如 Claude Opus 4.6) |
-| High Priest / 大祭司 | 宗教权威，马阿特的守护者 | 质量标准，伦理审查，价值对齐 | Tier 2 (审查模型，如 Gemini 2.5 Pro) |
+| High Priest / 大祭司 | 宗教权威，马阿特的守护者 | 质量标准，伦理审查，价值对齐 | Tier 2 (审查模型，如 Gemini 3 Pro) |
 | Royal Scribe / 皇家书吏 | 记录官，知识保存者 | 文档编写，日志记录，知识管理 | Tier 3 (快速模型，如 Kimi) |
-| Overseer of Works / 工程总监 | 建筑大师，基础设施建设者 | 技术实现，代码编写，架构设计 | Tier 2 (代码模型，如 Qwen) |
-| Commander / 军事统帅 | 军事领袖，帝国的保卫者 | 安全审计，威胁评估，防御测试 | Tier 2 (安全模型，如 DeepSeek) |
+| Overseer of Works / 工程总监 | 建筑大师，基础设施建设者 | 技术实现，代码编写，架构设计 | Tier 2 (代码模型，如 Qwen Coder) |
+| Commander / 军事统帅 | 军事领袖，帝国的保卫者 | 安全审计，威胁评估，防御测试 | Tier 2 (安全模型，如 DeepSeek Reasoner) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 

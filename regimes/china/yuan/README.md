@@ -71,11 +71,11 @@ The Yuan institutional core was a "centralized authority + local delegation" hie
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
 | 中书省 (Central Secretariat) | 中书令/丞相 | 中央决策、任务分解、全局统筹、标准制定 | Tier-1: Claude Opus 4.6 / GPT-4o |
-| 枢密院 (Military Bureau) | 枢密使 | 技术架构、系统安全、核心工程、性能调优 | Tier-1: o3 / DeepSeek |
-| 御史台 (Censorate) | 御史大夫 | 代码审查、质量监控、合规检查、审计报告 | Tier-1: Codex o3 (reviewer) |
+| 枢密院 (Military Bureau) | 枢密使 | 技术架构、系统安全、核心工程、性能调优 | Tier-1: o3 / DeepSeek Reasoner |
+| 御史台 (Censorate) | 御史大夫 | 代码审查、质量监控、合规检查、审计报告 | Tier-1: o3 (reviewer) |
 | 行省A (Province A) | 行省丞相 | 环境A部署（如生产环境）、区域化运维 | Tier-2: Qwen / Kimi |
-| 行省B (Province B) | 行省丞相 | 环境B部署（如测试环境）、区域化运维 | Tier-2: Kimi / DeepSeek |
-| 宣政院 (Buddhist Commission) | 宣政院使 | 文档管理、国际化、多语言支持、知识库 | Tier-2: Kimi / Claude |
+| 行省B (Province B) | 行省丞相 | 环境B部署（如测试环境）、区域化运维 | Tier-2: Kimi / DeepSeek Reasoner |
+| 宣政院 (Buddhist Commission) | 宣政院使 | 文档管理、国际化、多语言支持、知识库 | Tier-2: Kimi / Claude Sonnet 4.6 |
 | 理问所 (Judicial Office) | 理问 | 法务合规、许可证审查、安全评估、风险分析 | Tier-2: DeepSeek / Codex |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI

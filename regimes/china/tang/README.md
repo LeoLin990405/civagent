@@ -81,9 +81,9 @@ The six ministries each specialized: **Personnel** (official selection/project m
 |---|---|---|---|
 | 司礼监/中书省 | 大内总管/中书令 | 总管调度、任务分配、起草方案、协调各部 | Tier-1 (Claude Opus 4.6 / o3) |
 | 兵部 | 兵部尚书·军政 | 软件工程、核心代码开发、架构设计、技术攻关 | Tier-1 (o3/DeepSeek Reasoner) |
-| 户部 | 户部尚书·赋税 | 财务运营、数据分析、成本管控、预算管理 | Tier-2 (Kimi/Qwen) |
+| 户部 | 户部尚书·赋税 | 财务运营、数据分析、成本管控、预算管理 | Tier-2 (Kimi/Qwen Coder) |
 | 礼部 | 礼部尚书·礼仪 | 品牌营销、文案创作、社媒运营、用户沟通 | Tier-2 (GPT-4o/Kimi) |
-| 工部 | 工部尚书·营造 | 运维部署、DevOps、基础设施、CI/CD | Tier-2 (Kimi/Qwen) |
+| 工部 | 工部尚书·营造 | 运维部署、DevOps、基础设施、CI/CD | Tier-2 (Kimi/Qwen Coder) |
 | 刑部 | 刑部尚书·刑狱 | 法务合规、合同审查、知识产权、安全审计 | Tier-2 (o4-mini/Kimi) |
 | 吏部 | 吏部尚书·铨选 | 项目管理、团队协调、任务追踪、Agent选型 | Tier-2 (Kimi/GPT-4o) |
 

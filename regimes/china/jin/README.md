@@ -67,7 +67,7 @@ The Jin governance system was characterized by "weak center, strong periphery." 
 | 尚书令 | 行政执行长官 | 政令推行、任务分配、日常管理、流程管控 | Tier-2 (GPT-4o/Kimi) |
 | 中书监 | 起草规划长官 | 方案设计、需求分析、文档编撰、架构规划 | Tier-2 (Kimi/GPT-4o) |
 | 都督 | 军事技术长官 | 代码开发、架构实现、技术攻关、核心编码 | Tier-1 (o3/Qwen Coder) |
-| 刺史 | 地方部署长官 | 部署运维、环境管理、地方事务、CI/CD | Tier-2 (Kimi/Qwen) |
+| 刺史 | 地方部署长官 | 部署运维、环境管理、地方事务、CI/CD | Tier-2 (Kimi/Qwen Coder) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 

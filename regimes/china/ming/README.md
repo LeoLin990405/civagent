@@ -66,11 +66,11 @@ The Ming core architecture is a "proposal-approval" dual-track system. The Grand
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
 | 内阁首辅 (Senior Grand Secretary) | 票拟决策 | 需求分析、方案起草、任务分解、统筹六部 | Tier-1: Claude Opus 4.6 / GPT-4o |
-| 司礼监 (Directorate) | 批红审批 | 方案审核、最终批准/否决、合规把关 | Tier-1: Codex o3 (reviewer) |
-| 兵部 (Ministry of War) | 军事 | 技术架构、系统开发、核心编码、性能优化 | Tier-1: DeepSeek / Codex o3 |
-| 户部 (Ministry of Revenue) | 财政 | 成本核算、预算管理、数据分析、资源监控 | Tier-2: Kimi / Qwen |
+| 司礼监 (Directorate) | 批红审批 | 方案审核、最终批准/否决、合规把关 | Tier-1: o3 (reviewer) |
+| 兵部 (Ministry of War) | 军事 | 技术架构、系统开发、核心编码、性能优化 | Tier-1: DeepSeek / o3 |
+| 户部 (Ministry of Revenue) | 财政 | 成本核算、预算管理、数据分析、资源监控 | Tier-2: Kimi / Qwen Coder |
 | 吏部 (Ministry of Personnel) | 人事 | 项目管理、团队协调、任务分配、进度跟踪 | Tier-2: Kimi / GPT-4o |
-| 礼部 (Ministry of Rites) | 礼仪文教 | 文案创作、品牌设计、营销策划、用户体验 | Tier-2: Gemini / Claude |
+| 礼部 (Ministry of Rites) | 礼仪文教 | 文案创作、品牌设计、营销策划、用户体验 | Tier-2: Gemini 3 Pro / Claude Sonnet 4.6 |
 | 刑部 (Ministry of Justice) | 刑法 | 法务合规、安全审计、合同审查、漏洞扫描 | Tier-2: DeepSeek / Codex |
 | 工部 (Ministry of Works) | 工程建设 | 运维部署、DevOps、CI/CD、基础设施管理 | Tier-2: Qwen / Kimi |
 

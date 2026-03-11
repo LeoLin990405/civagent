@@ -65,9 +65,9 @@ The Qin central administrative system centered on the "Three Lords Nine Minister
 | 太尉 | 军事总管·掌兵权 | 技术架构设计、系统安全、性能优化 | Tier-1 (o3/DeepSeek Reasoner) |
 | 御史大夫 | 监察总管·副丞相 | 代码审查、质量监控、合规检查、审计 | Tier-1 (o3 / Claude Opus 4.6) |
 | 廷尉 | 司法长官·掌刑狱 | 法务合规、安全审计、风险控制、漏洞扫描 | Tier-2 (o4-mini/Kimi) |
-| 治粟内史 | 财政长官·掌国库 | 成本核算、预算管理、资源调配、性能预算 | Tier-2 (Kimi/Qwen) |
-| 少府 | 内府长官·掌皇室财务 | 内部工具开发、自动化脚本、开发效率工具 | Tier-2 (Qwen/o4-mini) |
-| 郎中令 | 宫廷长官·掌宿卫 | 消息路由、通知分发、任务分派、请求网关 | Tier-3 (Kimi/Qwen) |
+| 治粟内史 | 财政长官·掌国库 | 成本核算、预算管理、资源调配、性能预算 | Tier-2 (Kimi/Qwen Coder) |
+| 少府 | 内府长官·掌皇室财务 | 内部工具开发、自动化脚本、开发效率工具 | Tier-2 (Qwen Coder/o4-mini) |
+| 郎中令 | 宫廷长官·掌宿卫 | 消息路由、通知分发、任务分派、请求网关 | Tier-3 (Kimi/Qwen Coder) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 

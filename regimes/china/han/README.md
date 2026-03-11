@@ -63,12 +63,12 @@ The Han inherited and perfected the Qin's Three Lords Nine Ministers system. The
 | 太尉 | 军事总管·掌兵权 | 技术架构、系统安全、性能优化、核心开发 | Tier-1 (o3/DeepSeek Reasoner) |
 | 御史大夫 | 监察总管·副丞相 | 代码审查、质量监控、合规检查、审计报告 | Tier-1 (o3 / Claude Opus 4.6) |
 | 太常 | 礼仪祭祀·掌宗庙 | 技术文档、API文档、知识库维护、规范制定 | Tier-2 (Kimi/GPT-4o) |
-| 光禄勋 | 宿卫安全·掌门禁 | 访问控制、身份认证、权限管理、SSO | Tier-2 (o4-mini/Qwen) |
+| 光禄勋 | 宿卫安全·掌门禁 | 访问控制、身份认证、权限管理、SSO | Tier-2 (o4-mini/Qwen Coder) |
 | 卫尉 | 宫门警卫·掌巡逻 | 防火墙、网络安全、入侵检测、WAF | Tier-2 (o4-mini/Kimi) |
-| 太仆 | 车马出行·掌交通 | 运维部署、CI/CD、服务器管理、容器编排 | Tier-2 (Kimi/Qwen) |
+| 太仆 | 车马出行·掌交通 | 运维部署、CI/CD、服务器管理、容器编排 | Tier-2 (Kimi/Qwen Coder) |
 | 廷尉 | 刑狱法令·掌司法 | 法务合规、安全审计、风险控制、GDPR | Tier-2 (o4-mini/Kimi) |
-| 大鸿胪 | 外交礼宾·掌藩属 | API集成、第三方对接、外部SDK、Webhook | Tier-2 (Kimi/Qwen) |
-| 大司农 | 国家财政·掌税赋 | 成本核算、预算管理、资源调配、费用监控 | Tier-3 (Kimi/Qwen) |
+| 大鸿胪 | 外交礼宾·掌藩属 | API集成、第三方对接、外部SDK、Webhook | Tier-2 (Kimi/Qwen Coder) |
+| 大司农 | 国家财政·掌税赋 | 成本核算、预算管理、资源调配、费用监控 | Tier-3 (Kimi/Qwen Coder) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 

@@ -73,11 +73,11 @@ The Song system's essence is "separation of powers with checks and balances." No
 |---|---|---|---|
 | 中书门下 (Secretariat) | 政事堂宰相 | 行政决策、任务分解、统筹协调、方案审议 | Tier-1: Claude Opus 4.6 / GPT-4o |
 | 枢密院 (Military Bureau) | 枢密使（文臣） | 技术架构、系统安全、核心技术决策、性能优化 | Tier-1: o3 / DeepSeek Reasoner |
-| 三司使 (Fiscal Commissioner) | 盐铁+度支+户部 | 成本核算、预算管理、资源调配、Token 消耗监控 | Tier-2: Kimi / Qwen |
-| 御史台 (Censorate) | 御史大夫 | 代码审查、质量监控、合规检查、弹劾低质输出 | Tier-1: Codex o3 (reviewer) |
-| 翰林学士 (Hanlin Scholar) | 翰林院词臣 | 技术文档、设计文档、知识库维护、API 文档 | Tier-2: Kimi / Claude |
+| 三司使 (Fiscal Commissioner) | 盐铁+度支+户部 | 成本核算、预算管理、资源调配、Token 消耗监控 | Tier-2: Kimi / Qwen Coder |
+| 御史台 (Censorate) | 御史大夫 | 代码审查、质量监控、合规检查、弹劾低质输出 | Tier-1: o3 (reviewer) |
+| 翰林学士 (Hanlin Scholar) | 翰林院词臣 | 技术文档、设计文档、知识库维护、API 文档 | Tier-2: Kimi / Claude Sonnet 4.6 |
 | 知制诰 (Regulation Drafter) | 制度起草官 | 编码规范、流程标准、最佳实践制定与维护 | Tier-2: Qwen / Kimi |
-| 转运使 (Fiscal Intendant) | 漕运转运使 | 部署发布、CI/CD 管道、运维管理、日志监控 | Tier-2: Qwen / DeepSeek |
+| 转运使 (Fiscal Intendant) | 漕运转运使 | 部署发布、CI/CD 管道、运维管理、日志监控 | Tier-2: Qwen / DeepSeek Reasoner |
 | 提刑按察使 (Judicial Intendant) | 地方司法监察 | 法务合规、安全审计、许可证审查、漏洞扫描 | Tier-2: DeepSeek / Codex |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI

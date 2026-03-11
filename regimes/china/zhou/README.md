@@ -68,9 +68,9 @@ The Zhou institutional design was the most sophisticated federalized governance 
 | 太宰 | 行政首长·百官考核 | 政令传达、流程管理、Agent 考核与调度 | Tier-2 (GPT-4o/Kimi) |
 | 太师 | 军事技术长·战略 | 代码开发、架构设计、技术攻关 | Tier-1 (o3/DeepSeek Reasoner) |
 | 太保 | 教育文档长·传承 | 文档编撰、知识传承、规范制定、培训 | Tier-2 (Kimi/GPT-4o) |
-| 公爵A | 诸侯团队A·独立封国 | 独立项目全生命周期管理（前端/移动端） | Tier-1 (Gemini/Qwen) |
-| 公爵B | 诸侯团队B·独立封国 | 独立项目全生命周期管理（后端/API） | Tier-1 (o3/DeepSeek) |
-| 侯爵 | 诸侯团队C·边界集成 | 独立项目管理、跨域集成、边界测试 | Tier-2 (o4-mini/Qwen) |
+| 公爵A | 诸侯团队A·独立封国 | 独立项目全生命周期管理（前端/移动端） | Tier-1 (Gemini 3 Pro/Qwen Coder) |
+| 公爵B | 诸侯团队B·独立封国 | 独立项目全生命周期管理（后端/API） | Tier-1 (o3/DeepSeek Reasoner) |
+| 侯爵 | 诸侯团队C·边界集成 | 独立项目管理、跨域集成、边界测试 | Tier-2 (o4-mini/Qwen Coder) |
 | 司寇 | 司法合规·刑狱 | 合规检查、代码审查、安全审计 | Tier-2 (o4-mini/Kimi) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI

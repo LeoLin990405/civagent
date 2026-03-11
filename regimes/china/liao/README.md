@@ -70,10 +70,10 @@ The Liao's institutional core is "one emperor, two systems" — a single emperor
 |---|---|---|---|
 | 北院大王 (Northern Court King) | 北面官之首 | 总调度、接收用户指令、协调南北两面、任务分配 | Tier-1: Claude Opus 4.6 / GPT-4o |
 | 南院大王 (Southern Court King) | 南面官之首 | 汉地行政、文档管理、规范制定、用户界面 | Tier-1: Kimi / Claude Sonnet 4.6 |
-| 北面林牙 (Northern Hanlin) | 契丹军事顾问 | 技术架构、系统安全、核心算法、性能优化 | Tier-1: DeepSeek / Codex o3 |
-| 南面宰相 (Southern Chancellor) | 汉制行政首长 | 政令起草、流程规范、API 设计、接口文档 | Tier-2: Kimi / Qwen |
+| 北面林牙 (Northern Hanlin) | 契丹军事顾问 | 技术架构、系统安全、核心算法、性能优化 | Tier-1: DeepSeek / o3 |
+| 南面宰相 (Southern Chancellor) | 汉制行政首长 | 政令起草、流程规范、API 设计、接口文档 | Tier-2: Kimi / Qwen Coder |
 | 夷离堇 (Tribal Chief) | 部落事务管理 | 资源调配、后勤保障、环境管理、依赖管理 | Tier-2: Qwen / Kimi |
-| 敌烈麻都 (Inspector) | 跨系统巡察 | 跨域审查、一致性检查、集成测试、质量监控 | Tier-2: Codex o3 (reviewer) |
+| 敌烈麻都 (Inspector) | 跨系统巡察 | 跨域审查、一致性检查、集成测试、质量监控 | Tier-2: o3 (reviewer) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 

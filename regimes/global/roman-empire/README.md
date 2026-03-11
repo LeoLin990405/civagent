@@ -67,8 +67,8 @@ The post-Diocletian/Constantine imperial administration was the ancient world's 
 | Prefect of City / 城市长官 | 城市行政，公共服务 | 本地运维，日常管理，用户服务 | Tier 2 (执行模型) |
 | Master of Offices / 行政总管 | 通信、情报、宫廷管理 | 消息路由，Agent间协调，调度 | Tier 2 (协调模型) |
 | Count of Sacred Largesse / 财务大臣 | 国库、铸币、财政 | 预算管理，资源分配，成本报告 | Tier 3 (快速模型，如 Kimi) |
-| Quaestor Sacri Palatii / 法务官 | 法律起草，合规审查 | 法律合规，规范起草，监管审查 | Tier 2 (审查模型，如 DeepSeek) |
-| Magister Militum / 军事长官 | 军队总司令，防御 | 安全架构，性能测试，威胁评估 | Tier 2 (安全模型，如 Qwen) |
+| Quaestor Sacri Palatii / 法务官 | 法律起草，合规审查 | 法律合规，规范起草，监管审查 | Tier 2 (审查模型，如 DeepSeek Reasoner) |
+| Magister Militum / 军事长官 | 军队总司令，防御 | 安全架构，性能测试，威胁评估 | Tier 2 (安全模型，如 Qwen Coder) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 

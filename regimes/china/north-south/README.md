@@ -67,7 +67,7 @@ The Northern and Southern Dynasties governance was a unique "dual-track parallel
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 南朝天子 | 南方文治之主 | 统领文治方向、文案审美决策、UI/UX方向 | Tier-1 (Claude Opus 4.6/Gemini) |
+| 南朝天子 | 南方文治之主 | 统领文治方向、文案审美决策、UI/UX方向 | Tier-1 (Claude Opus 4.6/Gemini 3 Pro) |
 | 北朝天子 | 北方武功之主 | 统领技术方向、架构决策、系统工程决策 | Tier-1 (o3/DeepSeek Reasoner) |
 | 南朝尚书 | 文治执行长官 | 文案策划、UI设计、文档编撰、用户研究 | Tier-2 (GPT-4o/Kimi) |
 | 北朝尚书 | 武功执行长官 | 代码开发、架构设计、系统工程、性能优化 | Tier-1 (o3/Qwen Coder) |

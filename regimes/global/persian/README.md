@@ -68,9 +68,9 @@ The Achaemenid governance architecture was built on a trinity of "central author
 |---|---|---|---|
 | Shahanshah / 万王之王 | 帝国最高统治者，一切权力的源泉 | 最终决策权，战略方向，政策制定 | Tier 1 (用户意志的代理) |
 | Hazarapatis / 宰相 | 宫廷总管，觐见协调 | 主协调Agent，任务路由，优先级管理 | Tier 1 (主模型，如 Claude Opus 4.6) |
-| Satrap_West / 西部总督 | 西部行省自治治理 | 前端/客户端领域Agent，高度自治 | Tier 2 (领域模型，如 Gemini 2.5 Pro) |
-| Satrap_East / 东部总督 | 东部行省自治治理 | 后端/服务端领域Agent，高度自治 | Tier 2 (领域模型，如 Qwen) |
-| Spahbed / 军事统帅 | 帝国军队总指挥，不受总督控制 | 安全、性能、基础架构——跨域权威 | Tier 2 (安全模型，如 DeepSeek) |
+| Satrap_West / 西部总督 | 西部行省自治治理 | 前端/客户端领域Agent，高度自治 | Tier 2 (领域模型，如 Gemini 3 Pro) |
+| Satrap_East / 东部总督 | 东部行省自治治理 | 后端/服务端领域Agent，高度自治 | Tier 2 (领域模型，如 Qwen Coder) |
+| Spahbed / 军事统帅 | 帝国军队总指挥，不受总督控制 | 安全、性能、基础架构——跨域权威 | Tier 2 (安全模型，如 DeepSeek Reasoner) |
 | Royal_Eye / 皇帝之眼 | 秘密巡察员，监督总督忠诚度 | 质量审计，一致性检查，异常检测 | Tier 2 (审查模型) |
 | Royal_Scribe / 皇家文书 | 帝国档案管理，通信系统 | 文档管理，通信记录，知识库维护 | Tier 3 (快速模型，如 Kimi) |
 

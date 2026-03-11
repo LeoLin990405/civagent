@@ -70,7 +70,7 @@ The Shang governance architecture operated on the principle of "theocratic decis
 | 大巫 | 首席占卜师·解读天意 | 数据分析、趋势预测、风险评估、A/B测试设计 | Tier-1 (DeepSeek Reasoner/o3) |
 | 卿事寮 | 行政长官·政令推行 | 政令执行、任务推进、跨部门协调、项目管理 | Tier-2 (GPT-4o/Kimi) |
 | 太师 | 军事技术长官 | 代码开发、架构设计、技术攻关、性能优化 | Tier-1 (o3/Qwen Coder) |
-| 小臣 | 记录官·档案管理 | 文档编撰、日志维护、档案管理、知识库 | Tier-3 (Kimi/Qwen) |
+| 小臣 | 记录官·档案管理 | 文档编撰、日志维护、档案管理、知识库 | Tier-3 (Kimi/Qwen Coder) |
 | 宰 | 内务总管·后勤保障 | 运维部署、环境管理、资源调配、CI/CD | Tier-2 (o4-mini/Kimi) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
