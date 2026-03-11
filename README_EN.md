@@ -67,21 +67,52 @@ See [CREDITS.md](./CREDITS.md) for full attribution.
 
 By day I'm a data professional — writing SQL, running ETL pipelines, staring at dashboards. By night I'm an online part-time history undergraduate and an AI programming enthusiast.
 
+### The Starting Point: Qian Mu and the "Design Patterns" of Political Institutions
+
 This semester I've been studying **World Political History** — from Athenian direct democracy to the Roman Senate, from Persian satrapies to the Mongol Kurultai. Different civilizations across different eras have all been trying to answer the same fundamental question: **How do you organize a group of people (or a group of agents) to collaborate effectively?** As a data person, I'm naturally fascinated by "how systems work" — a government's organizational structure is essentially a distributed system's topology design.
 
-At the same time, I've been reading **"Political Gains and Losses Across Chinese Dynasties"** (《中国历代政治得失》) by **Qian Mu**, one of the most influential historians of modern China. Qian Mu systematically analyzed the political systems of five dynasties — Han, Tang, Song, Ming, and Qing — not simply judging them as good or bad, but seeking to understand why each system was designed the way it was in its historical context, what problems it solved, and what pitfalls it left behind. While reading, a thought kept surfacing: **The design logic behind these political systems is strikingly similar to modern agent orchestration patterns in software architecture.**
+At the same time, I've been reading **"Political Gains and Losses Across Chinese Dynasties"** (《中国历代政治得失》) by **Qian Mu**. This book transformed my understanding of institutional history. Qian Mu systematically analyzed the political systems of five dynasties — Han, Tang, Song, Ming, and Qing — not simply judging them as good or bad, but seeking to understand why each system was designed the way it was in its historical context, what problems it solved, and what pitfalls it left behind. He advances a central argument: **every generation's institutions are a response to the defects of the preceding generation's institutions.** The Han Three Lords and Nine Ministers concentrated too much power, so the Tang used Three Departments to divide and check authority; the Tang Chancellery's veto power grew excessive, so the Song weakened chancellorial authority and established the Two Offices and Three Commissions; the Song civilian checks-and-balances system led to chronic inefficiency, so the Ming created the Grand Secretariat to accelerate decision-making — but then, fearing the Secretariat would grow too powerful, deployed the Directorate of Ceremonial to counterbalance it.
 
-- Qin's Three Lords and Nine Ministers = strict centralized hierarchical scheduling
-- Tang's Three Departments and Six Ministries = multi-node checks & balances
-- Ming's Grand Secretariat + Directorate of Ceremonial = dual-track approval (dual power)
-- Zhou's feudal enfeoffment = loosely federated autonomous units
-- Athenian citizens' assembly = equal-node democratic voting
+This **iterative logic of "problem, institutional response, new problem, new institution"** is, to my eyes, identical to the pattern of architectural evolution in software engineering.
+
+### Institutional Design ≈ Distributed Systems Architecture
+
+While reading this book, a thought kept surfacing: **the design logic behind these political systems is strikingly similar to modern agent orchestration patterns in software architecture.** They confront the same core problems — information asymmetry, the principal-agent dilemma, and the tension between power checks and execution efficiency:
+
+| Ancient Political Institution | Distributed System / Agent Orchestration | Common Problem Addressed |
+|------------------------------|------------------------------------------|--------------------------|
+| Qin Three Lords and Nine Ministers: Chancellor directs all officials | Centralized hierarchical scheduling: single main agent | Rapid decision-making, consistency guarantees |
+| Tang Three Departments and Six Ministries: Secretariat drafts, Chancellery reviews, Department of State Affairs executes | Checks & balances: multi-agent cross-review | Preventing single-point errors, quality control |
+| Ming Grand Secretariat + Directorate of Ceremonial: draft proposals, imperial approval | Dual power: dual main agents with cross-approval | Balancing power checks with decision efficiency |
+| Zhou Patriarchal Enfeoffment: Son of Heaven, feudal lords, ministers | Federated autonomy: independent agent groups | Large-scale parallelism, reducing central bottlenecks |
+| Athenian Citizens' Assembly: one person, one vote | Democratic council: equal-authority agent voting | Collective intelligence, preventing autocracy |
+| Shang Theocratic Politics: diviners decide on Heaven's behalf | Theocratic mode: absolute-authority main agent | Rapid unified action in times of crisis |
+
+This is not a strained analogy. Henry Mintzberg, in his 1979 classic *The Structuring of Organizations*, proposed five basic organizational forms — Simple Structure, Machine Bureaucracy, Professional Bureaucracy, Divisionalized Form, and Adhocracy — which are structurally isomorphic to this project's six orchestration patterns. Political institutions, organizational theory, and distributed systems are fundamentally **the same class of problem expressed in different domains**.
+
+Herbert Simon's concept of "bounded rationality" (*Administrative Behavior*, 1947) perfectly explains why different regimes excel in different contexts — no agent (or human decision-maker) can obtain complete information and reach an optimal decision. Therefore the core of institutional design is **devising the most effective decision-making process under the constraint of incomplete information.** Qin centralization suits scenarios where information flows rapidly and decisions are urgent; Tang checks-and-balances suit scenarios where information is complex and multi-perspective review is required; Zhou federalism suits scenarios where information is dispersed and regional variation is large.
+
+### From "AI Court" to CivAgent
 
 Then I came across wanikua's [AI Court](https://github.com/wanikua/boluobobo-ai-court-tutorial) project — **and it had already built the first step of this idea!** Using the Tang Dynasty's Three Departments and Six Ministries to orchestrate AI agents — genuinely brilliant.
 
-So I thought: if Tang works, **why not implement every classic government system in human history?** Just like Sid Meier's *Civilization* lets you choose different civilizations to experience different tech trees and governance strategies — CivAgent lets you choose different regimes to experience different AI orchestration patterns. From the Xia Dynasty to the Taiping Heavenly Kingdom, from Ancient Egypt to the European Union — every regime is an organizational architecture that was battle-tested by our predecessors over centuries.
+So I thought: if Tang works, **why not implement every classic government system in human history?** Just like Sid Meier's *Civilization* lets you choose different civilizations to experience different tech trees and governance strategies — CivAgent lets you choose different regimes to experience different AI orchestration patterns. From the Xia Dynasty to the Taiping Heavenly Kingdom, from Sumeria to the European Union — every regime is an organizational architecture that our predecessors battle-tested over centuries.
 
-This project isn't about judging which system is better or worse. It's about exploring: **how do different organizational patterns produce different collaboration outcomes in different scenarios?** Centralized hierarchy excels at rapid execution. Checks and balances ensure quality control. Federated autonomy enables parallel teamwork... These lessons, validated by our ancestors through blood and tears, might genuinely help with today's AI orchestration challenges.
+Francis Fukuyama, in *The Origins of Political Order*, argues that effective political order requires three dimensions: **state capacity, rule of law, and democratic accountability.** The trade-offs different regimes make across these three dimensions map precisely to three core tensions in AI orchestration:
+
+- **Execution efficiency** ↔ State capacity: centralized models (Qin, Soviet Union) push this dimension to its extreme
+- **Error prevention** ↔ Rule of law: checks-and-balances models (Tang, United States) guarantee quality through institutionalized review processes
+- **Participation** ↔ Democratic accountability: democratic models (Athens, Viking Thing) give all agents a voice in decision-making
+
+These three cannot be simultaneously maximized — this is precisely the core tension that Samuel Huntington repeatedly emphasized in *Political Order in Changing Societies* (1968). CivAgent's 57 regimes represent 57 different historical answers to this "impossible triangle."
+
+### This Project Is Not Passing Judgment on History
+
+This project isn't about judging which system is better or worse. As Qian Mu wrote: "The establishment of any institution must have been driven by the needs of its time and must have served the intentions of its era. We cannot evaluate the institutions of earlier ages by the standards of later ones." CivAgent's purpose is to **extract the design logic of each institution and transform it into reusable AI collaboration patterns.**
+
+At a deeper level, Douglass North, in *Institutions, Institutional Change and Economic Performance* (1990), observed that **institutions are humanly devised constraints that shape human interaction.** In CivAgent, SOUL.md defines behavioral constraints (analogous to cultural norms), IDENTITY.md defines role permissions (analogous to formal institutions), and openclaw.json defines communication rules (analogous to enforcement mechanisms). Each regime is a complete "institutional design blueprint."
+
+How do different organizational architectures produce different collaboration outcomes in different task scenarios? Centralized hierarchy excels at rapid execution. Checks and balances ensure quality control. Federated autonomy enables parallel teamwork... These lessons, validated by our ancestors through blood and tears, might genuinely help with today's AI orchestration challenges.
 
 **History isn't just the past — it's a living fossil of organizational wisdom.**
 
@@ -93,20 +124,24 @@ This project isn't about judging which system is better or worse. It's about exp
 
 **Core idea:** Ancient governance wisdom = modern AI team management best practices.
 
+This is not a simple "re-skinning" project. Every regime's agent orchestration has been carefully researched against its corresponding historical institution, faithfully reflecting that regime's core institutional logic in terms of information flow, decision-making authority, review mechanisms, and fault tolerance design. For example, the Tang Dynasty's "Secretariat drafts, Chancellery reviews, Department of State Affairs executes" pipeline is mapped as a `sessions_send` review chain among three top-level agents; the Ming Dynasty's "Grand Secretariat drafts proposals, Directorate of Ceremonial grants imperial approval" is mapped as a cross-approval workflow between two main agents. S.N. Eisenstadt, in *The Political Systems of Empires* (1963), systematically compared the political structures of humanity's major empires; CivAgent can be seen as an experimental application of this comparative-politics methodology to the domain of AI system design.
+
 ### Why "CivAgent"?
 
-Just like Sid Meier's *Civilization* lets you choose different civilizations to experience different governance strategies:
+CivAgent's name pays homage to Sid Meier's *Civilization* series — one of the most iconic strategy games in gaming history. The core appeal of *Civilization* is that **the civilization you choose determines how you govern, and how you govern determines the trajectory of your civilization.** CivAgent transplants this philosophy into the field of AI multi-agent orchestration:
 
-| *Civilization* (the game) | CivAgent |
-|---------------------------|----------|
-| Choose a civilization | Choose a regime |
-| Each civ has a unique tech tree | Each regime has a unique Agent orchestration pattern |
-| Different civs have different special abilities | Different regimes have different collaboration strengths |
-| Build wonders to boost capabilities | Configure SOUL.md to define behavioral rules |
-| Combine policy cards | Combine Agent roles and permissions |
-| Diplomacy, trade, warfare strategies | Inter-Agent communication, review, and competition mechanisms |
+| *Civilization* (the game) | CivAgent | Design Thinking Behind It |
+|---------------------------|----------|--------------------------|
+| Choose a civilization | Choose a regime | Different starting points lead to different development paths |
+| Each civ has a unique tech tree | Each regime has a unique Agent orchestration pattern | Technological path dependence |
+| Different civs have different special abilities | Different regimes have different collaboration strengths | Comparative institutional advantage |
+| Build wonders to boost capabilities | Configure SOUL.md to define behavioral rules | The constraining power of cultural norms on behavior |
+| Combine policy cards | Combine Agent roles and permissions | Modularity and composability of institutional design |
+| Diplomacy, trade, warfare strategies | Inter-Agent communication, review, and competition mechanisms | Game theory and mechanism design |
 
 **CivAgent = Civilization + Agent.** Orchestrate your Agents with the wisdom of civilizations.
+
+But CivAgent and *Civilization* differ in one fundamental respect: *Civilization* pursues "winning" — domination victory, science victory, culture victory; CivAgent pursues **"fit"** — there is no best regime, only the regime best suited to the current task scenario. This circles back to Aristotle's core insight in the *Politics*: **the best constitution depends on circumstances.**
 
 ---
 
@@ -219,7 +254,7 @@ Just like Sid Meier's *Civilization* lets you choose different civilizations to 
 
 ## 6 Orchestration Patterns — Your "Governance Tech Tree"
 
-Just like the tech tree in *Civilization* determines your development path, CivAgent's 6 orchestration patterns determine how your AI team collaborates:
+Just like the tech tree in *Civilization* determines your development path, CivAgent's 6 orchestration patterns determine how your AI team collaborates. These 6 patterns are not invented out of thin air — they are a distillation of the 2,400-year tradition of regime classification dating back to Aristotle, and they also align closely with Mintzberg's organizational-form theory and Wooldridge & Jennings's multi-agent system taxonomy. Each pattern occupies a different position within the impossible triangle of "decision speed vs. decision quality vs. breadth of participation":
 
 ```
                         ┌──────────────┐
@@ -264,6 +299,26 @@ Just like the tech tree in *Civilization* determines your development path, CivA
 | **Federated** | Zhou, Three Kingdoms, Five Dynasties, Holy Roman Empire, Persia, Polish-Lithuanian Commonwealth | Independent agent groups self-govern; minimal cross-group coordination | Independent agent groups + minimal communication | Multi-team parallel work, microservice architectures |
 | **Democratic Council** | Athens, Mongol Kurultai, Viking Thing, Swiss, EU | All agents participate equally; decisions by vote | Equal-rank agents + voting `sessions_send` | Brainstorming, collective decision-making |
 | **Theocratic** | Shang, Taiping, Ancient Egypt, Byzantine, Safavid, Khmer | Supreme agent with absolute authority; all other agents fully obey | Absolute authority `main` + obedient subagents | Strong leadership, emergency crisis response |
+
+### Theoretical Logic Behind the Patterns
+
+These six patterns are not arbitrary categories. They correspond to core trade-offs that recur throughout political science and organizational theory:
+
+**1. Centralization vs. Decentralization: The Eternal Efficiency-Quality Paradox**
+
+Charles Tilly, in *Coercion, Capital, and European States*, argued that the evolution of state forms is fundamentally **a contest between the degree of coercive concentration and the complexity of society.** In agent orchestration, this maps to a basic trade-off: centralized control (a single main agent) guarantees consistency and speed, but becomes a bottleneck; distributed control (multiple top-level agents) improves parallelism and fault tolerance, but incurs additional coordination costs. The Qin Dynasty used extreme centralization to unify the six warring states, yet collapsed after only two generations precisely because it lacked error-correction mechanisms — the lesson for AI systems being that **a purely centralized mode suits short-term urgent tasks, but sustained operation requires some form of checks and balances.**
+
+**2. The Transaction Cost of Checks and Balances**
+
+The strength of checks-and-balances patterns (Tang Three Departments, US separation of powers) lies in quality assurance, but the price is **significant interaction overhead.** This is entirely consistent with Ronald Coase's transaction cost theory: the more checks there are, the stricter the review, the higher the "transaction cost" of each decision. The Song Dynasty's Two Offices and Three Commissions system pushed checks to an extreme — civilian officials counter-balanced one another to the point of bureaucratic bloat and redundant armies — such that one of Wang Anshi's core reform objectives was precisely to reduce checks and improve efficiency. For AI orchestration, this means the checks-and-balances pattern suits high-stakes scenarios where "better slow than wrong" (such as code review or financial compliance), but is ill-suited to scenarios demanding rapid iteration.
+
+**3. Federalism and Autonomy: An Ancient Version of the CAP Theorem**
+
+The CAP theorem in distributed systems (consistency, availability, and partition tolerance cannot all be maximized simultaneously) has a perfect counterpart in ancient politics: **central control, local flexibility, and communication efficiency** cannot all be maximized at once. The Zhou Dynasty's enfeoffment system chose "high local flexibility + low central control," at the cost of the eventual fragmentation of the Spring and Autumn and Warring States periods. The Persian Empire's satrap system was a compromise — satraps enjoyed enormous autonomy, but the Royal Road and the "King's Eyes and Ears" maintained a minimum threshold of consistency. This design wisdom remains applicable in today's microservice architectures.
+
+**4. The Democratic Pattern and Arrow's Impossibility Theorem**
+
+Arrow's Impossibility Theorem proves that, with three or more alternatives, no voting rule can simultaneously satisfy all fairness conditions. Athenian democracy, the Mongol Kurultai, and the Viking Thing all confronted this problem and devised different mitigations (sortition, consensus decision-making, veto power). In AI orchestration, the primary value of the democratic pattern lies not in "voting" per se, but in **compelling every agent to articulate its perspective** — an approach analogous to ensemble learning, where a combination of weak classifiers often outperforms any single strong classifier.
 
 ### Choose by Need
 
@@ -405,16 +460,19 @@ Each civilization contains 5 files:
 CivAgent is an extended fork of [AI Court](https://github.com/wanikua/boluobobo-ai-court-tutorial). The original Tang Dynasty Three Departments and Six Ministries configuration is fully preserved in `regimes/china/tang/`. We've added 56 new regimes on top. All original features (install scripts, GUI, Skills) remain unchanged.
 
 **Q: Do I need to change code to switch civilizations?**
-No. Each civilization is a pure config module (JSON + Markdown). Just run `switch-regime.sh` — as simple as choosing a civilization in *Civilization*.
+No. Each civilization is a pure config module (JSON + Markdown). Just run `switch-regime.sh` — as simple as choosing a civilization in *Civilization*. This is also the project's core design philosophy: **architectural decisions should be configuration problems, not code problems.** As North observed, the lower the cost of institutional change, the greater the system's adaptability.
 
 **Q: Can I create my own civilization?**
-Absolutely. Run `create-regime.sh` to scaffold from the template, fill in the 5 config files, and you're done. PRs for new civilizations are welcome! Build your own "mod."
+Absolutely. Run `create-regime.sh` to scaffold from the template, fill in the 5 config files, and you're done. PRs for new civilizations are welcome! Build your own "mod." In fact, the political systems of human history number far more than 57 — the different periods within the Angkor kingdom, the Ottoman Empire before and after the Tanzimat reforms, Japan's transition from the Ritsuryo system to the Bakufu system... every institutional transformation can become a new CivAgent configuration.
 
 **Q: What's the connection to the *Civilization* game?**
-No official affiliation. But the inspiration genuinely comes from the *Civilization* series — different civilizations have different tech trees and governance strategies; CivAgent offers different regimes with different Agent orchestration patterns. The core philosophy is the same: **your choice of civilization determines your style of governance.**
+No official affiliation. But the inspiration genuinely comes from the *Civilization* series — different civilizations have different tech trees and governance strategies; CivAgent offers different regimes with different Agent orchestration patterns. The core philosophy is the same: **your choice of civilization determines your style of governance.** The key difference is that *Civilization* is competitive (pursuing victory), while CivAgent is exploratory (pursuing fit).
 
 **Q: Is the historical content accurate?**
-I've done my best to ensure historical accuracy (I am a history major, after all), and every regime's design is supported by corresponding scholarly literature (see references below). However, this project's core purpose is AI Agent orchestration, not an academic paper. If you spot any historical errors, Issues and PRs are very welcome!
+I've done my best to ensure historical accuracy (I am a history major, after all), and every regime's design is supported by corresponding scholarly literature (see references below). My methodology is: first, read the core academic works on a given regime (e.g., for the Qin system I consulted Lin Jianming, the Shuihudi bamboo slips, and Mark Edward Lewis); then extract the institution's core structure (information flow, decision-making hierarchy, checks-and-balances mechanisms); and finally map these onto OpenClaw's agent configuration. This process inevitably involves simplification and abstraction — a real Tang Three Departments and Six Ministries system was far more complex than 7 agents — but I have strived to preserve the core organizational logic of each institution. If you spot any historical errors, Issues and PRs are very welcome!
+
+**Q: Does this project have practical value for AI orchestration?**
+I believe it does. A longstanding challenge in multi-agent systems (MAS) research is: **how should one design the communication topology and decision protocols among agents?** Most MAS papers assume either central coordination or fully distributed operation — yet real organizational architectures are far richer than these two extremes. CivAgent provides 57 historically tested organizational topologies, each with a clear design intent and known strengths and weaknesses. Even if not used in production, it serves as a valuable "organizational architecture pattern reference manual."
 
 ---
 
