@@ -62,11 +62,11 @@ The core institutions of Athenian democracy included: the Assembly (Ekklesia) as
 | Agent | 历史角色 / Historical Role | AI 职责 / AI Responsibility | 推荐模型层级 / Model Tier |
 |---|---|---|---|
 | Ekklesia / 公民大会 | 最高投票机构，所有公民参与 | 最终决策协调，汇总投票结果 | Tier 1 (协调模型，如 Claude Opus 4.6) |
-| Boule / 议事会 | 500人议事，准备议程 | 提案起草，选项分析，议程设置 | Tier 2 (分析模型，如 Gemini 3 Pro) |
-| Strategos / 将军 | 军事指挥，由选举产生 | 技术架构，性能优化，战略规划 | Tier 2 (代码模型，如 Qwen Coder) |
-| Archon / 执政官 | 行政执行，程序合规 | 执行落地，流程管理，部署操作 | Tier 3 (执行模型，如 Kimi) |
-| Dikasterion / 陪审法庭 | 司法审判，法律执行 | 代码审查，争议裁决，质量仲裁 | Tier 2 (审查模型，如 DeepSeek Reasoner) |
-| Rhetor / 演说家 | 公共辩论，舆论引导 | 方案论证，文档撰写，用户沟通 | Tier 3 (写作模型，如 Kimi) |
+| Boule / 议事会 | 500人议事，准备议程 | 提案起草，选项分析，议程设置 | Tier 2 (分析模型，如 Gemini 3.1 Pro) |
+| Strategos / 将军 | 军事指挥，由选举产生 | 技术架构，性能优化，战略规划 | Tier 2 (代码模型，如 Qwen3-Coder) |
+| Archon / 执政官 | 行政执行，程序合规 | 执行落地，流程管理，部署操作 | Tier 3 (执行模型，如 Kimi K2.5) |
+| Dikasterion / 陪审法庭 | 司法审判，法律执行 | 代码审查，争议裁决，质量仲裁 | Tier 2 (审查模型，如 DeepSeek R2) |
+| Rhetor / 演说家 | 公共辩论，舆论引导 | 方案论证，文档撰写，用户沟通 | Tier 3 (写作模型，如 Kimi K2.5) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 

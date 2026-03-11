@@ -67,12 +67,12 @@ The Northern and Southern Dynasties governance was a unique "dual-track parallel
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 南朝天子 | 南方文治之主 | 统领文治方向、文案审美决策、UI/UX方向 | Tier-1 (Claude Opus 4.6/Gemini 3 Pro) |
-| 北朝天子 | 北方武功之主 | 统领技术方向、架构决策、系统工程决策 | Tier-1 (o3/DeepSeek Reasoner) |
-| 南朝尚书 | 文治执行长官 | 文案策划、UI设计、文档编撰、用户研究 | Tier-2 (GPT-4o/Kimi) |
-| 北朝尚书 | 武功执行长官 | 代码开发、架构设计、系统工程、性能优化 | Tier-1 (o3/Qwen Coder) |
+| 南朝天子 | 南方文治之主 | 统领文治方向、文案审美决策、UI/UX方向 | Tier-1 (Claude Opus 4.6/Gemini 3.1 Pro) |
+| 北朝天子 | 北方武功之主 | 统领技术方向、架构决策、系统工程决策 | Tier-1 (GPT-5.4 Pro/DeepSeek R2) |
+| 南朝尚书 | 文治执行长官 | 文案策划、UI设计、文档编撰、用户研究 | Tier-2 (GPT-5.4/Kimi K2.5) |
+| 北朝尚书 | 武功执行长官 | 代码开发、架构设计、系统工程、性能优化 | Tier-1 (GPT-5.4 Pro/Qwen3-Coder) |
 | 门阀 | 士族家族·实权 | 资源调配、战略咨询、关系协调、技术选型 | Tier-1 (Claude Opus 4.6) |
-| 僧统 | 佛教领袖·智慧 | 知识库管理、哲理分析、文化积累、全局洞察 | Tier-2 (Kimi/GPT-4o) |
+| 僧统 | 佛教领袖·智慧 | 知识库管理、哲理分析、文化积累、全局洞察 | Tier-2 (Kimi K2.5/GPT-5.4) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 

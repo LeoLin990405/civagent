@@ -74,13 +74,13 @@ The Five-Power Constitution's core lies in the "distinction between power and ab
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 总统 (President) | 国家元首 | 统筹协调五院、发布总目标、跨院仲裁 | Tier-1: Claude Opus 4.6 / GPT-4o |
-| 行政院 (Executive Yuan) | 最高行政机关 | 政策执行、日常运营、任务调度、核心开发 | Tier-1: DeepSeek / o3 |
-| 立法院 (Legislative Yuan) | 最高立法机关 | 标准制定、规则审议、流程规范、预算审查 | Tier-2: Kimi / Claude Sonnet 4.6 |
-| 司法院 (Judicial Yuan) | 最高司法机关 | 争议仲裁、法律解释、合规裁决、架构决策 | Tier-2: o3 / DeepSeek Reasoner |
-| 考试院 (Examination Yuan) | 考试铨叙机关 | 质量测试、性能验证、人才评估、模型基准测试 | Tier-2: Qwen / DeepSeek Reasoner |
-| 监察院 (Control Yuan) | 监察弹劾机关 | 代码审查、安全审计、合规监察、审计报告 | Tier-1: o3 (reviewer) |
-| 国民大会 (National Assembly) | 人民代表机关 | 用户需求收集、反馈分析、满意度评估、需求优先级 | Tier-2: Kimi / Gemini 3 Pro |
+| 总统 (President) | 国家元首 | 统筹协调五院、发布总目标、跨院仲裁 | Tier-1: Claude Opus 4.6 / GPT-5.4 |
+| 行政院 (Executive Yuan) | 最高行政机关 | 政策执行、日常运营、任务调度、核心开发 | Tier-1: DeepSeek / GPT-5.4 Pro |
+| 立法院 (Legislative Yuan) | 最高立法机关 | 标准制定、规则审议、流程规范、预算审查 | Tier-2: Kimi K2.5 / Claude Sonnet 4.6 |
+| 司法院 (Judicial Yuan) | 最高司法机关 | 争议仲裁、法律解释、合规裁决、架构决策 | Tier-2: GPT-5.4 Pro / DeepSeek R2 |
+| 考试院 (Examination Yuan) | 考试铨叙机关 | 质量测试、性能验证、人才评估、模型基准测试 | Tier-2: Qwen / DeepSeek R2 |
+| 监察院 (Control Yuan) | 监察弹劾机关 | 代码审查、安全审计、合规监察、审计报告 | Tier-1: GPT-5.4 Pro (reviewer) |
+| 国民大会 (National Assembly) | 人民代表机关 | 用户需求收集、反馈分析、满意度评估、需求优先级 | Tier-2: Kimi K2.5 / Gemini 3.1 Pro |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 
@@ -178,7 +178,7 @@ Step 8: 国民大会验收最终成果
   2. 多语言支持：i18n 框架 + 多语言 embedding
   3. FAQ 知识库：从现有产品文档构建
   4. 人工转接：WebSocket 实时通道 + 排队系统
-  5. 技术栈：Next.js + LangChain + Pinecone + GPT-4o
+  5. 技术栈：Next.js + LangChain + Pinecone + GPT-5.4
   预算：$2,000/月（含 API 调用费）
   工期：2 周
 
@@ -186,13 +186,13 @@ Step 8: 国民大会验收最终成果
 
 [立法院]: 审议意见：
   ✅ 技术方案合理
-  ⚠️ 预算审查：GPT-4o 调用费可能超预算，建议设月度上限
+  ⚠️ 预算审查：GPT-5.4 调用费可能超预算，建议设月度上限
   ⚠️ 数据合规：聊天记录存储需符合 GDPR（欧洲用户）和《个保法》（中国用户）
   ❌ 缺少无障碍访问标准（WCAG 2.1 AA）
   要求补充后通过。
 
 [行政院]: 修订方案：
-  - 添加 API 调用月度上限：$1,500，超限自动降级到 o4-mini
+  - 添加 API 调用月度上限：$1,500，超限自动降级到 GPT-5.3 Instant
   - 添加数据合规方案：聊天记录区域化存储
   - 添加 WCAG 2.1 AA 合规：屏幕阅读器支持 + 键盘导航
   再次提交。
@@ -219,7 +219,7 @@ Step 8: 国民大会验收最终成果
   结论：条件不通过，需修复 8 个失败用例和日语质量问题。
 
 [行政院]: 收到。修复中...
-  - 日语模块切换为 GPT-4o + 日语 system prompt 优化
+  - 日语模块切换为 GPT-5.4 + 日语 system prompt 优化
   - 添加排队超限提示
   - 修复 WCAG 合规问题
   修复完成，再次提交考试院。
