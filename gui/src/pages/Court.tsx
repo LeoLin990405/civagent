@@ -111,6 +111,7 @@ export default function Court() {
   const [categories, setCategories] = useState<Category[]>([])
   const [selectedChannel, setSelectedChannel] = useState<string>('')
   const [botUserIds, setBotUserIds] = useState<Record<string, string>>({})
+  const [senderName, setSenderName] = useState(() => localStorage.getItem('court_sender_name') || '皇上')
   const logRef = useRef<HTMLDivElement>(null)
   const msgRef = useRef<HTMLDivElement>(null)
   const bg = theme === 'light' ? 'bg-white border border-gray-200' : 'bg-[#1a1a2e]'
@@ -175,7 +176,8 @@ export default function Court() {
           channel: activeChannel,
           message: command,
           botId: target,
-          mentionUserId
+          mentionUserId,
+          username: senderName || '皇上'
         })
       })
       const d = await r.json()
@@ -338,17 +340,33 @@ export default function Court() {
           </select>
         </div>
 
-        {/* 提示：选中bot时显示@mention信息 */}
-        {selectedBot && selectedBot !== 'main' && (
-          <div className={`text-[10px] ${sub} mb-2 flex items-center gap-1`}>
-            <span>💡</span>
-            <span>
-              将由司礼监在 #{discordChannels.find(c => c.id === activeChannel)?.name || '...'} 频道
-              @{bots.find(b => b.id === selectedBot)?.displayName} 发送
-              {botUserIds[selectedBot] ? '' : ' ⚠️ 未获取到bot ID，无法@mention'}
-            </span>
-          </div>
-        )}
+        {/* 身份设置 + 提示 */}
+        <div className={`text-[10px] ${sub} mb-2 flex items-center gap-1.5 flex-wrap`}>
+          <span>👤</span>
+          <span>身份：</span>
+          <input
+            type="text"
+            value={senderName}
+            onChange={e => {
+              setSenderName(e.target.value)
+              localStorage.setItem('court_sender_name', e.target.value)
+            }}
+            placeholder="皇上"
+            className={`text-[11px] w-20 px-1.5 py-0.5 rounded border ${
+              theme === 'light' ? 'bg-gray-50 border-gray-200' : 'bg-[#0d0d1a] border-[#d4a574]/20 text-[#e5e5e5]'
+            } focus:outline-none focus:border-[#d4a574]`}
+          />
+          {selectedBot && selectedBot !== 'main' && (
+            <>
+              <span>→</span>
+              <span>
+                将以「{senderName || '皇上'}」身份在 #{discordChannels.find(c => c.id === activeChannel)?.name || '...'}
+                @{bots.find(b => b.id === selectedBot)?.displayName}
+                {botUserIds[selectedBot] ? '' : ' ⚠️ 无法@mention'}
+              </span>
+            </>
+          )}
+        </div>
 
         <div className="flex flex-wrap gap-1.5 mb-3">
           {[
