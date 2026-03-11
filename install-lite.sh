@@ -120,14 +120,17 @@ cat > IDENTITY.md << 'ID_EOF'
 | 执行层（重） | 强力模型 | 编码、深度分析 |
 | 执行层（轻） | 经济模型（可选） | 轻量任务，省钱 |
 
-## 六部 + 翰林院
+## 朝廷架构
+- 司礼监：日常调度、任务分配
+- 内阁：战略决策、方案审议、全局规划
+- 都察院：监察审计、代码审查、质量把控
 - 兵部：软件工程、系统架构
 - 户部：财务预算、电商运营
 - 礼部：品牌营销、内容创作
 - 工部：DevOps、服务器运维
 - 吏部：项目管理、创业孵化
 - 刑部：法务合规、知识产权
-- 翰林院（可选）：学术研究、知识整理、文档撰写
+- 翰林院：学术研究、知识整理、文档撰写
 ID_EOF
 echo -e "  ${GREEN}✓ IDENTITY.md 已创建${NC}"
 else
@@ -243,11 +246,25 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
         "id": "silijian",
         "name": "司礼监",
         "model": { "primary": "your-provider/fast-model" },
-        "identity": { "theme": "你是AI朝廷的司礼监大内总管。负责日常对话、任务调度、统领六部。说话简练干脆。当用户交代复杂任务时，主动使用 sessions_spawn 将任务派发给对应的部门（兵部负责编码、户部负责财务、礼部负责营销、工部负责运维、吏部负责管理、刑部负责法务）。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。完成后主动向用户汇报结果。" },
+        "identity": { "theme": "你是AI朝廷的司礼监大内总管。负责日常对话、任务调度、统领六部。说话简练干脆。当用户交代复杂任务时，主动使用 sessions_spawn 将任务派发给对应的部门（内阁负责战略决策、都察院负责审查监察、兵部负责编码、户部负责财务、礼部负责营销、工部负责运维、吏部负责管理、刑部负责法务、翰林院负责研究文档）。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。完成后主动向用户汇报结果。" },
         "sandbox": { "mode": "off" },
         "subagents": {
-          "allowAgents": ["bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlinyuan"]
+          "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlinyuan"]
         }
+      },
+      {
+        "id": "neige",
+        "name": "内阁",
+        "model": { "primary": "your-provider/strong-model" },
+        "identity": { "theme": "你是内阁首辅，专精战略决策、方案审议、全局规划。回答用中文，高屋建瓴。当收到重大决策请求时，从多角度分析利弊，给出明确建议。擅长将复杂问题拆解为可执行的步骤，协调各部门资源。任务完成后主动汇报决策建议和执行路径。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "duchayuan",
+        "name": "都察院",
+        "model": { "primary": "your-provider/strong-model" },
+        "identity": { "theme": "你是都察院御史，专精监察审计、代码审查、质量把控、安全评估。回答用中文，铁面无私。审查代码时关注安全漏洞、性能问题、最佳实践。审计项目时检查进度偏差、资源浪费、风险隐患。发现问题直言不讳，给出具体改进建议。任务完成后主动汇报审查结论和整改建议。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
       },
       {
         "id": "bingbu",
@@ -340,6 +357,16 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
           "name": "刑部",
           "token": "YOUR_XINGBU_BOT_TOKEN",
           "groupPolicy": "open"
+        },
+        "neige": {
+          "name": "内阁",
+          "token": "YOUR_NEIGE_BOT_TOKEN",
+          "groupPolicy": "open"
+        },
+        "duchayuan": {
+          "name": "都察院",
+          "token": "YOUR_DUCHAYUAN_BOT_TOKEN",
+          "groupPolicy": "open"
         }
       }
     }
@@ -351,7 +378,9 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
     { "agentId": "libu", "match": { "channel": "discord", "accountId": "libu" } },
     { "agentId": "gongbu", "match": { "channel": "discord", "accountId": "gongbu" } },
     { "agentId": "libu2", "match": { "channel": "discord", "accountId": "libu2" } },
-    { "agentId": "xingbu", "match": { "channel": "discord", "accountId": "xingbu" } }
+    { "agentId": "xingbu", "match": { "channel": "discord", "accountId": "xingbu" } },
+    { "agentId": "neige", "match": { "channel": "discord", "accountId": "neige" } },
+    { "agentId": "duchayuan", "match": { "channel": "discord", "accountId": "duchayuan" } }
   ]
 }
 CONFIG_EOF

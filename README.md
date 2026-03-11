@@ -1,6 +1,6 @@
 [English Version](./README_EN.md) | [🏢 企业版 Become CEO (English)](https://github.com/wanikua/become-ceo)
 
-<!-- SEO 关键词 / Keywords：三省六部、明朝、六部制、中书省、门下省、尚书省、司礼监、兵部、户部、礼部、工部、刑部、吏部、AI朝廷、AI Agent、多Agent协作、人工智能管理、古代治国、现代管理、组织架构、OpenClaw、multi-agent、ancient-china -->
+<!-- SEO 关键词 / Keywords：三省六部、明朝、六部制、中书省、门下省、尚书省、司礼监、内阁、都察院、翰林院、兵部、户部、礼部、工部、刑部、吏部、AI朝廷、AI Agent、多Agent协作、人工智能管理、古代治国、现代管理、组织架构、OpenClaw、multi-agent、ancient-china -->
 
 # 🏛️ 三省六部 ✖️ OpenClaw — 当皇上需要几步？一键部署你的 AI 朝廷
 
@@ -12,7 +12,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/架构灵感-三省六部制-gold?style=for-the-badge" />
   <img src="https://img.shields.io/badge/框架-OpenClaw-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Agent数-7+-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Agent数-10+-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/内置Skill-60+-orange?style=for-the-badge" />
   <img src="https://img.shields.io/badge/部署-5分钟-red?style=for-the-badge" />
 </p>
@@ -65,7 +65,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 
 ## 这个项目是什么？
 
-**AI 朝廷**是一个开箱即用的多 AI Agent 协作系统，将中国古代的**三省六部制**（中书省 · 门下省 · 尚书省 → 吏部 · 户部 · 礼部 · 兵部 · 刑部 · 工部）映射为现代 AI Agent 的组织架构。
+**AI 朝廷**是一个开箱即用的多 AI Agent 协作系统，将中国古代的**三省六部制**（中书省 · 门下省 · 尚书省 → 吏部 · 户部 · 礼部 · 兵部 · 刑部 · 工部）及**内阁 · 都察院 · 翰林院**映射为现代 AI Agent 的组织架构。
 
 **简单来说：** 你是皇帝，AI 是你的大臣。每位大臣各司其职——写代码的、管财务的、搞营销的、做运维的——你只需要在 Discord 里下一道「圣旨」（@某个 Agent），大臣们就会立刻执行。
 
@@ -84,7 +84,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 
 | 能力 | 描述 |
 |------|------|
-| **多 Agent 协作** | 7 个独立 AI Agent（六部 + 司礼监），各有专长，协同工作 |
+| **多 Agent 协作** | 10 个独立 AI Agent（六部 + 司礼监 + 内阁 + 都察院 + 翰林院），各有专长，协同工作 |
 | **独立记忆** | 每个 Agent 有独立工作区和 memory 文件，越用越懂你 |
 | **60+ 内置 Skill** | GitHub、Notion、浏览器、Cron、TTS 等开箱即用 |
 | **自动化任务** | Cron 定时任务 + 心跳自检，7×24 无人值守 |
@@ -103,12 +103,15 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 |:---:|:---:|:---:|
 | 皇帝 | CEO | 最高决策者 |
 | 司礼监 | COO / 首席运营官 | 日常调度、任务分配 |
+| 内阁 | CSO / 战略VP | 战略决策、方案审议 |
+| 都察院 | QA VP / 审计总监 | 监察审计、代码审查、质量把控 |
 | 兵部 | CTO / 工程VP | 软件工程、技术架构 |
 | 户部 | CFO / 财务VP | 财务分析、成本管控 |
 | 礼部 | CMO / 营销VP | 品牌营销、内容策划 |
 | 工部 | VP Infra / SRE | DevOps、基础设施 |
 | 吏部 | VP Product / PMO | 项目管理、团队协调 |
 | 刑部 | General Counsel | 法务合规、合同审查 |
+| 翰林院 | 首席知识官 CKO | 学术研究、文档撰写、技术调研 |
 
 > 💡 两个项目基于相同的 [OpenClaw](https://github.com/openclaw/openclaw) 框架，架构完全一致，只是角色命名和文化背景不同。选你喜欢的风格即可！
 
