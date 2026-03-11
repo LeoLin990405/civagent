@@ -1,52 +1,57 @@
 {
   "id": "inca",
-  "name": "Inca Empire / \u5370\u52a0\u5e1d\u56fd",
-  "era": "1438\u20131533",
-  "system": "Sapa Inca + Tahuantinsuyu / \u8428\u5e15\u00b7\u5370\u5361\u56db\u65b9\u5236",
+  "name": { "zh": "印加帝国", "en": "Inca Empire" },
+  "era": { "zh": "1438年-1533年", "en": "1438-1533" },
+  "region": "global",
+  "system": { "zh": "萨帕·印卡四方制", "en": "Sapa Inca with Tahuantinsuyu" },
+  "description": {
+    "zh": "印加帝国（塔万廷苏尤）是南美洲最大的帝国，以萨帕·印卡（太阳之子）为至高统治者，将领土划分为四个苏尤（方位省区），各由一位总督（Apu）管辖。帝国以劳役税（mit'a）而非货币维持运转，通过绳结记录（Quipu）系统管理人口普查、税收和行政记录，展现了高度中央集权的治理模式。",
+    "en": "The Inca Empire (Tahuantinsuyu) was South America's largest empire, ruled by the Sapa Inca (Son of the Sun) as divine sovereign. The territory was divided into four Suyus (quarters), each governed by an Apu. The empire operated on labor tax (mit'a) rather than currency, and maintained census, taxation, and administrative records through the Quipu knot-recording system, exemplifying a highly centralized governance model."
+  },
   "agentCount": 6,
   "tags": ["sapa-inca", "four-quarters", "labor-tax", "quipu"],
-  "pattern": "centralized-hierarchy",
+  "orchestrationPattern": "centralized-hierarchy",
   "agents": [
     {
       "name": "Sapa_Inca",
       "id": "sapa_inca",
       "role": "main",
-      "title": "Son of the Sun / \u592a\u9633\u4e4b\u5b50",
+      "title": "Son of the Sun / 太阳之子",
       "description": "Divine sovereign, sole ruler of Tahuantinsuyu"
     },
     {
       "name": "Apu_Chinchaysuyu",
       "id": "apu_north",
       "role": "advisor",
-      "title": "Governor of North / \u5317\u65b9\u603b\u7763",
+      "title": "Governor of North / 北方总督",
       "description": "Governor of Chinchaysuyu, the northwestern quarter"
     },
     {
       "name": "Apu_Antisuyu",
       "id": "apu_east",
       "role": "advisor",
-      "title": "Governor of East / \u4e1c\u65b9\u603b\u7763",
+      "title": "Governor of East / 东方总督",
       "description": "Governor of Antisuyu, the northeastern quarter"
     },
     {
       "name": "Apu_Collasuyu",
       "id": "apu_south",
       "role": "advisor",
-      "title": "Governor of South / \u5357\u65b9\u603b\u7763",
+      "title": "Governor of South / 南方总督",
       "description": "Governor of Collasuyu, the southeastern quarter"
     },
     {
       "name": "Apu_Cuntisuyu",
       "id": "apu_west",
       "role": "advisor",
-      "title": "Governor of West / \u897f\u65b9\u603b\u7763",
+      "title": "Governor of West / 西方总督",
       "description": "Governor of Cuntisuyu, the southwestern quarter"
     },
     {
       "name": "Quipucamayoc",
       "id": "quipu",
       "role": "advisor",
-      "title": "Record Keeper / \u7ef3\u7ed3\u8bb0\u5f55\u5b98",
+      "title": "Record Keeper / 绳结记录官",
       "description": "Keeper of the quipu, master of records, census, and accounts"
     }
   ]

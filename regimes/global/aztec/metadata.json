@@ -1,52 +1,57 @@
 {
   "id": "aztec",
-  "name": "Aztec Triple Alliance / \u963f\u5179\u7279\u514b\u4e09\u65b9\u8054\u76df",
-  "era": "1428\u20131521",
-  "system": "Triple Alliance / \u4e09\u65b9\u8054\u76df\u5236",
+  "name": { "zh": "阿兹特克三方联盟", "en": "Aztec Triple Alliance" },
+  "era": { "zh": "1428年-1521年", "en": "1428-1521" },
+  "region": "global",
+  "system": { "zh": "三方联盟制", "en": "Triple Alliance" },
+  "description": {
+    "zh": "阿兹特克三方联盟由特诺奇蒂特兰、特斯科科和特拉科潘三个城邦组成，是中美洲最强大的政治联盟。大议长（Huey Tlatoani）作为联盟领袖，与蛇女神官（Cihuacoatl）共同执政。三城各有自治权但在军事和贡赋上协调一致，通过贸易商兼间谍（Pochteca）网络维持情报和经济体系。",
+    "en": "The Aztec Triple Alliance was formed by the city-states of Tenochtitlan, Texcoco, and Tlacopan, constituting Mesoamerica's most powerful political coalition. The Huey Tlatoani (Great Speaker) led the alliance alongside the Cihuacoatl as co-ruler managing domestic affairs. Each city retained autonomy while coordinating military campaigns and tribute collection, supported by the Pochteca merchant-spy network for intelligence and trade."
+  },
   "agentCount": 6,
   "tags": ["triple-alliance", "mesoamerican", "warrior", "tribute"],
-  "pattern": "federated-autonomy",
+  "orchestrationPattern": "democratic-council",
   "agents": [
     {
       "name": "Huey_Tlatoani",
       "id": "tlatoani",
       "role": "main",
-      "title": "Great Speaker of Tenochtitlan / \u5927\u8bae\u957f",
+      "title": "Great Speaker of Tenochtitlan / 大议长",
       "description": "Supreme ruler of the Mexica and first among the Triple Alliance"
     },
     {
       "name": "Cihuacoatl",
       "id": "cihuacoatl",
       "role": "advisor",
-      "title": "Internal Affairs / \u5185\u653f\u603b\u7ba1 (\u86c7\u5973\u795e)",
+      "title": "Internal Affairs / 内政总管 (蛇女神)",
       "description": "Co-ruler managing domestic affairs, taxation, and judiciary"
     },
     {
       "name": "Tlatoani_Texcoco",
       "id": "texcoco",
       "role": "advisor",
-      "title": "Ruler of Texcoco / \u7279\u65af\u79d1\u79d1\u738b",
+      "title": "Ruler of Texcoco / 特斯科科王",
       "description": "Tlatoani of Texcoco, second city of the Alliance, patron of law and arts"
     },
     {
       "name": "Tlatoani_Tlacopan",
       "id": "tlacopan",
       "role": "advisor",
-      "title": "Ruler of Tlacopan / \u7279\u62c9\u79d1\u6f58\u738b",
+      "title": "Ruler of Tlacopan / 特拉科潘王",
       "description": "Tlatoani of Tlacopan, third and junior partner of the Alliance"
     },
     {
       "name": "Tlacochcalcatl",
       "id": "warrior",
       "role": "advisor",
-      "title": "Supreme Warrior / \u6700\u9ad8\u6b66\u58eb (\u519b\u4e8b)",
+      "title": "Supreme Warrior / 最高武士 (军事)",
       "description": "Commander of armies, overseer of the warrior orders"
     },
     {
       "name": "Pochteca",
       "id": "pochteca",
       "role": "advisor",
-      "title": "Merchant-Spy / \u5546\u4eba\u95f4\u8c0d (\u60c5\u62a5)",
+      "title": "Merchant-Spy / 商人间谍 (情报)",
       "description": "Long-distance traders who double as intelligence gatherers"
     }
   ]
