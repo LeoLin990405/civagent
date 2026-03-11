@@ -338,6 +338,10 @@ CivAgent 的命名致敬了 Sid Meier 的《文明》(Civilization) 系列——
 
 ## 快速开始
 
+<p align="center">
+  <img src="./images/demo-terminal.svg" alt="CivAgent Demo" width="100%" />
+</p>
+
 ### 1. 安装 OpenClaw
 
 ```bash
