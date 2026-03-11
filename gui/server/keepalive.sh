@@ -1,6 +1,6 @@
 #!/bin/bash
 # Boluo GUI Server Keepalive
-# Ensures node server/index.js stays running on port 18790
+# Ensures node server/index.js stays running on port 18795
 
 SERVER_DIR="/home/ubuntu/clawd/projects/boluo-gui-frontend/server"
 LOG_FILE="/tmp/boluo-gui.log"
@@ -17,8 +17,8 @@ start_server() {
 }
 
 is_running() {
-  # Check if port 18790 is listening
-  ss -tlnp 2>/dev/null | grep -q ':18790 ' && return 0
+  # Check if port 18795 is listening
+  ss -tlnp 2>/dev/null | grep -q ':18795 ' && return 0
   return 1
 }
 
@@ -39,7 +39,7 @@ while true; do
   if ! is_running; then
     echo "$(date): Server not running, restarting..." >> "$LOG_FILE"
     # Kill any zombie processes on the port
-    lsof -i :18790 -t 2>/dev/null | xargs kill 2>/dev/null
+    lsof -i :18795 -t 2>/dev/null | xargs kill 2>/dev/null
     sleep 1
     start_server
     sleep 3

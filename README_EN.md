@@ -410,11 +410,11 @@ Features include:
 # Build the frontend
 cd gui && npm install && npm run build
 
-# Start the backend API server (default port 18790)
+# Start the backend API server (default port 18795)
 cd server && npm install && node index.js
 ```
 
-Access at: `http://your-server-ip:18790`
+Access at: `http://your-server-ip:18795`
 
 > 💡 For production, use Nginx reverse proxy + HTTPS instead of exposing the port directly.
 

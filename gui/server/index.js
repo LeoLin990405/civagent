@@ -14,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-const PORT = 18790;
+const PORT = process.env.BOLUO_GUI_PORT || 18795;
 
 // AUTH_TOKEN 管理：优先使用环境变量，否则从文件读取或生成新 token
 function getOrCreateAuthToken() {
