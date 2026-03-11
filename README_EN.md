@@ -50,9 +50,9 @@ See [CREDITS.md](./CREDITS.md) for full attribution.
 
 ## About the Author & How This Project Came to Be
 
-I'm an undergraduate history major and an AI programming enthusiast.
+By day I'm a data professional — writing SQL, running ETL pipelines, staring at dashboards. By night I'm an online part-time history undergraduate and an AI programming enthusiast.
 
-This semester I've been studying **World Political History** — from Athenian direct democracy to the Roman Senate, from Persian satrapies to the Mongol Kurultai. Different civilizations across different eras have all been trying to answer the same fundamental question: **How do you organize a group of people (or a group of agents) to collaborate effectively?**
+This semester I've been studying **World Political History** — from Athenian direct democracy to the Roman Senate, from Persian satrapies to the Mongol Kurultai. Different civilizations across different eras have all been trying to answer the same fundamental question: **How do you organize a group of people (or a group of agents) to collaborate effectively?** As a data person, I'm naturally fascinated by "how systems work" — a government's organizational structure is essentially a distributed system's topology design.
 
 At the same time, I've been reading **"Political Gains and Losses Across Chinese Dynasties"** (《中国历代政治得失》) by **Qian Mu**, one of the most influential historians of modern China. Qian Mu systematically analyzed the political systems of five dynasties — Han, Tang, Song, Ming, and Qing — not simply judging them as good or bad, but seeking to understand why each system was designed the way it was in its historical context, what problems it solved, and what pitfalls it left behind. While reading, a thought kept surfacing: **The design logic behind these political systems is strikingly similar to modern agent orchestration patterns in software architecture.**
 
@@ -298,47 +298,122 @@ I've done my best to ensure historical accuracy (I am a history major, after all
 - [AI 朝廷 (AI Court)](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua) — the original concept and Tang Dynasty implementation that sparked this entire project
 - [OpenClaw](https://github.com/openclaw/openclaw) — the underlying multi-agent framework
 
-### Chinese Political Institutional History
+### Chinese Political Institutional History — General
 
 These works helped me understand the design logic behind each dynasty's system — not simple good-vs-bad judgments, but rational choices under specific historical conditions:
 
-- **Qian Mu, *Political Gains and Losses Across Chinese Dynasties*** (《中国历代政治得失》) — The core inspiration for this project. Qian Mu's comparative analysis of Han, Tang, Song, Ming, and Qing institutions revealed the design logic behind "three-department checks," "Grand Secretariat drafting," and "Grand Council rapid decisions"
-- **Qian Mu, *Outline of National History*** (《国史大纲》) — Institutional evolution from a general history perspective; understanding why each dynasty reformed the way it did
-- **Lü Simian, *History of Chinese Institutions*** (《中国制度史》) — Systematic thematic survey of official, military, legal, and fiscal systems — key reference for designing agent roles across dynasties
-- **Bai Gang (ed.), *History of Chinese Political Institutions*** (《中国政治制度史》) — Comprehensive institutional history from pre-Qin to modern era, covering all 20 Chinese dynasties in this project
-- **Yan Buke, *Rank and Office: The Bureaucratic Ranking System from Qin-Han to Wei-Jin-Southern & Northern Dynasties*** (《品位与职位》) — Deep analysis of how the Nine-Rank system shaped bureaucratic selection; directly inspired the Jin and N&S Dynasties agent designs
-- **Tian Yuqing, *Aristocratic Politics in the Eastern Jin*** (《东晋门阀政治》) — How aristocratic clans hollowed out imperial authority to create a "weak center + strong regions" pattern; inspired the federated autonomy model
-- **Ray Huang, *1587, A Year of No Significance*** (《万历十五年》) — Micro-level view of how the Ming dual-track system (Grand Secretariat + Eunuch Directorate) operated and malfunctioned; directly shaped the Ming dual-power design
-- **Yang Kuan, *History of the Warring States*** (《战国史》) — Understanding the institutional transition from enfeoffment to commandery-county, inspiring the Zhou→Qin orchestration pattern shift
-- **Yao Dali, *The Wisdom of Reading History*** (《读史的智慧》) — Governance logic of multi-ethnic empires (Yuan, Qing); understanding the "govern by local customs" approach of the Liao-Jin-Yuan-Qing models
+- **Qian Mu, *Political Gains and Losses Across Chinese Dynasties*** (《中国历代政治得失》) — The core inspiration for this project
+- **Qian Mu, *Outline of National History*** (《国史大纲》) — Institutional evolution from a general history perspective
+- **Lü Simian, *History of Chinese Institutions*** (《中国制度史》) — Thematic survey of official, military, legal, and fiscal systems
+- **Bai Gang (ed.), *History of Chinese Political Institutions*** (《中国政治制度史》) — Comprehensive institutional history covering all 20 Chinese dynasties
+- **Yan Buke, *Rank and Office*** (《品位与职位》) — How the Nine-Rank system shaped bureaucratic selection; inspired Jin and N&S Dynasties agent designs
+- **Tian Yuqing, *Aristocratic Politics in the Eastern Jin*** (《东晋门阀政治》) — "Weak center + strong regions" pattern; inspired federated autonomy
+- **Ray Huang, *1587, A Year of No Significance*** (《万历十五年》) — The Ming dual-track system in micro-level detail; shaped the dual-power design
+- **Yang Kuan, *History of the Warring States*** (《战国史》) — Institutional transition from enfeoffment to commandery-county
+- **Yao Dali, *The Wisdom of Reading History*** (《读史的智慧》) — Multi-ethnic empire governance (Yuan, Qing)
+
+### Per-Regime Academic References
+
+Each regime module is backed by specific scholarly works. Listed by region:
+
+#### Chinese Dynasties
+
+| Regime | Core References |
+|--------|----------------|
+| **Xia** `china/xia` | Xu Hong 许宏, *The Earliest China* · Li Xueqin, *Xia-Shang-Zhou Chronology Notes* · Li Liu & Chen Xingcan, *The Archaeology of China* (Cambridge, 2012) |
+| **Shang** `china/shang` | Chen Mengjia, *Comprehensive Study of Yinxu Oracle Bone Inscriptions* · Song Zhenhao (ed.), *History of the Shang Dynasty* (11 vols.) · David Keightley, *Sources of Shang History* (1978) |
+| **Zhou** `china/zhou` | Xu Zhuoyun, *History of the Western Zhou* · Li Feng, *Bureaucracy and the State in Early China* (Cambridge, 2008) · Zhao Dingxin, *The Confucian-Legalist State* |
+| **Qin** `china/qin` | Lin Jianming, *History of Qin and Han* · Shuihudi Qin Bamboo Texts · Mark Edward Lewis, *The Early Chinese Empires: Qin and Han* (Harvard, 2007) |
+| **Han** `china/han` | Qian Mu, *History of Qin and Han* · Michael Loewe, *The Government of the Qin and Han Empires* (Hackett, 2006) · An Zuozhang & Xiong Tieji, *Draft History of Qin-Han Official System* |
+| **Three Kingdoms** `china/three-kingdoms` | Tian Yuqing, *Explorations in Qin-Han and Wei-Jin History* · Chen Shou, *Records of the Three Kingdoms* (Pei Songzhi annotations) · Rafe de Crespigny, *Generals of the South* (1990) |
+| **Jin** `china/jin` | Tian Yuqing, *Aristocratic Politics in the Eastern Jin* · Yan Buke, *Rank and Office* · Tang Changru, *Essays on Wei-Jin and N&S Dynasties* |
+| **N&S Dynasties** `china/north-south` | Tang Changru, *Essays on Wei-Jin and N&S Dynasties* (sequel) · Kawakatsu Yoshio, *Studies on Six Dynasties Aristocratic Society* · Chen Yinke, *Origins of Sui-Tang Institutions* |
+| **Sui** `china/sui` | Han Sheng, *Biography of Emperor Wen of Sui* · Chen Yinke, *Origins of Sui-Tang Institutions* · Arthur Wright, *The Sui Dynasty* (1978) |
+| **Tang** ⭐ `china/tang` | Chen Yinke, *Political History of the Tang Dynasty* · Denis Twitchett (ed.), *Cambridge History of China, Vol. 3* (1979) · Huang Yongnian, *Twelve Lectures on Tang History* |
+| **Five Dynasties** `china/five-dynasties` | Wang Gungwu, *The Structure of Power in North China during the Five Dynasties* (1963) · Ouyang Xiu, *New History of the Five Dynasties* |
+| **Song** `china/song` | Deng Xiaonan, *Ancestral Law* (祖宗之法) · Deng Guangming, *Wang Anshi* · Dieter Kuhn, *The Age of Confucian Rule* (Harvard, 2009) |
+| **Liao** `china/liao` | Liu Pujiang, *Essays on Liao and Jin History* · Karl Wittfogel & Feng Jiasheng, *History of Chinese Society: Liao* (1949) |
+| **Jin (Jurchen)** `china/jin-jurchen` | Liu Pujiang, *Essays on Liao and Jin History* · Herbert Franke & Denis Twitchett (eds.), *Cambridge History of China, Vol. 6* (1994) |
+| **Western Xia** `china/western-xia` | Shi Jinbo, *Tangut Society* · Ruth Dunnell, *The Great State of White and High* (1996) |
+| **Yuan** `china/yuan` | Xiao Qiqing, *New Studies on Mongol-Yuan History* · David Morgan, *The Mongols* (2nd ed., 2007) · Yao Dali, *Mongol-Yuan Institutions and Political Culture* |
+| **Ming** `china/ming` | Ray Huang, *1587, A Year of No Significance* · Timothy Brook, *The Troubled Empire* (Harvard, 2010) · Fang Zhiyuan, *Ming State Power Structure* |
+| **Qing** `china/qing` | William Rowe, *China's Last Empire: The Great Qing* (Harvard, 2009) · Philip Kuhn, *Soulstealers* (1990) · Mao Haijian, *The Collapse of the Heavenly Dynasty* |
+| **Taiping** `china/taiping` | Luo Ergang, *History of the Taiping Heavenly Kingdom* · Jonathan Spence, *God's Chinese Son* (1996) |
+| **ROC** `china/roc` | John King Fairbank (ed.), *Cambridge History of China, Vols. 12–13* · Wang Qisheng, *Party Members, Party Power, and Party Struggles: 1924–1949* |
+
+#### Global Empires
+
+| Regime | Core References |
+|--------|----------------|
+| **Ancient Egypt** `global/egypt` | Ian Shaw (ed.), *The Oxford History of Ancient Egypt* (2000) · Barry Kemp, *Ancient Egypt: Anatomy of a Civilization* (3rd ed., 2018) · Toby Wilkinson, *The Rise and Fall of Ancient Egypt* (2010) |
+| **Athenian Democracy** `global/athens` | Josiah Ober, *Mass and Elite in Democratic Athens* (1989) · Mogens Hansen, *The Athenian Democracy in the Age of Demosthenes* (1991) · Donald Kagan, *Pericles of Athens* (1991) |
+| **Sparta** `global/sparta` | Paul Cartledge, *Sparta and Lakonia* (2nd ed., 2002) & *The Spartans* (2003) · W.G. Forrest, *A History of Sparta 950–192 BC* (1968) |
+| **Roman Republic** `global/roman-republic` | Mary Beard, *SPQR* (2015) · Harriet Flower (ed.), *Cambridge Companion to the Roman Republic* (2014) · Ronald Syme, *The Roman Revolution* (1939) |
+| **Roman Empire** `global/roman-empire` | Peter Heather, *The Fall of the Roman Empire* (2006) · Fergus Millar, *The Emperor in the Roman World* (1977) · Edward Gibbon, *The Decline and Fall* (classic) |
+| **Byzantine** `global/byzantine` | Cyril Mango (ed.), *Oxford History of Byzantium* (2002) · John Haldon, *Byzantium in the Seventh Century* (1990) · Judith Herrin, *Byzantium* (2007) |
+| **Persian Achaemenid** `global/persian` | Pierre Briant, *From Cyrus to Alexander* (2002) · Amélie Kuhrt, *The Persian Empire* (2007) · Josef Wiesehöfer, *Ancient Persia* (2001) |
+| **Ottoman** `global/ottoman` | Halil İnalcık, *The Ottoman Empire: The Classical Age* (1973) · Caroline Finkel, *Osman's Dream* (2005) · Suraiya Faroqhi, *The Ottoman Empire and the World Around It* (2004) |
+| **Mongol** `global/mongol` | Jack Weatherford, *Genghis Khan and the Making of the Modern World* (2004) · David Morgan, *The Mongols* (2007) · Timothy May, *The Mongol Empire* (2018) |
+| **Holy Roman Empire** `global/hre` | Peter Wilson, *Heart of Europe* (2016) · Joachim Whaley, *Germany and the Holy Roman Empire* (2 vols., 2012) |
+| **British Parliament** `global/british` | Robert Tombs, *The English and Their History* (2014) · David Starkey, *Crown and Country* (2010) · A.V. Dicey, *Introduction to the Study of the Law of the Constitution* (1885) |
+| **French Absolutism** `global/french` | John Lynn, *The Wars of Louis XIV* (1999) · Peter Burke, *The Fabrication of Louis XIV* (1992) · William Beik, *Absolutism and Society in 17th-Century France* (1985) |
+| **Russian Tsardom** `global/russian` | Orlando Figes, *A People's Tragedy* (1996) · Geoffrey Hosking, *Russia: People and Empire* (1997) · Richard Pipes, *Russia under the Old Regime* (1974) |
+| **Japanese Shogunate** `global/shogunate` | Conrad Totman, *Tokugawa Ieyasu: Shogun* (1983) · Marius Jansen, *The Making of Modern Japan* (2000) · 朝尾直弘 et al., *Iwanami Japanese History* |
+| **Mughal India** `global/mughal` | John Richards, *The Mughal Empire* (New Cambridge History of India, 1993) · Abraham Eraly, *The Mughal Throne* (2003) · Ruby Lal, *Empress* (2018) |
+| **US Federal** `global/us-federal` | Hamilton, Madison & Jay, *The Federalist Papers* (1788) · Robert Dahl, *How Democratic Is the American Constitution?* (2001) · Akhil Reed Amar, *America's Constitution* (2005) |
+| **Soviet Union** `global/soviet` | Sheila Fitzpatrick, *The Russian Revolution* (4th ed., 2017) · Robert Service, *A History of Modern Russia* (2009) · Stephen Kotkin, *Stalin: Paradoxes of Power* (2014) |
+| **Inca Empire** `global/inca` | Terence D'Altroy, *The Incas* (2nd ed., 2015) · Brian Bauer, *The Development of the Inca State* (1992) · Gary Urton, *Inka History in Knots* (2017) |
+| **Aztec Triple Alliance** `global/aztec` | Michael Smith, *The Aztecs* (3rd ed., 2012) · Ross Hassig, *Aztec Warfare* (1988) · David Carrasco, *The Aztecs: A Very Short Introduction* (2012) |
 
 ### Western Political Theory & Comparative Politics
 
-Different civilizations gave radically different answers to the same question. These comparative perspectives helped me design the global empires' agent orchestration:
-
-- **Aristotle, *Politics*** — The earliest systematic classification of regimes: monarchy, aristocracy, polity and their corrupted forms. This project's 6 orchestration patterns are, in a sense, Aristotle's taxonomy rewritten for AI
-- **Montesquieu, *The Spirit of the Laws*** (1748) — Foundation of separation of powers theory; directly maps to the US Federal and checks-and-balances pattern designs
-- **Max Weber, *Economy and Society*** (1922) — Classic analysis of rational bureaucracy: hierarchy, specialization, rule-orientation. Weber's comparison of Chinese traditional bureaucracy vs. Western legal-rational authority helped me understand agent hierarchy design across regimes
-- **S.N. Eisenstadt, *The Political Systems of Empires*** (1963) — Systematic comparison of political structures across history's major empires; the theoretical framework for designing global empire orchestration patterns
-- **Francis Fukuyama, *The Origins of Political Order*** (2011) — Analyzing political development through state-building, rule of law, and accountability; helps explain why some regimes tend toward centralization while others toward checks and balances
-- **Charles Tilly, *Coercion, Capital, and European States*** (1990) — Explains the diversity of European state forms (from city-states to empires); inspired differentiated designs for the HRE and British parliamentary system
-- **Samuel Huntington, *Political Order in Changing Societies*** (1968) — Theory of political institutionalization; explains why some regimes are stable while others collapse
-- **Douglass North, *Institutions, Institutional Change and Economic Performance*** (1990) — Foundational work of new institutional economics; how institutions constrain and incentivize behavior — which is precisely what SOUL.md and IDENTITY.md do
-- **Mancur Olson, *The Logic of Collective Action*** (1965) — Why democratic council patterns (Athens, Kurultai) need special incentive mechanisms to function effectively
-- **Karl Wittfogel, *Oriental Despotism*** (1957) — Controversial, but his thesis on hydraulic empires and centralized institutions remains a useful reference for understanding Qin-Han, Egyptian, and Inca centralized regimes
+- **Aristotle, *Politics*** — The earliest regime taxonomy; this project's 6 patterns are Aristotle's classification rewritten for AI
+- **Montesquieu, *The Spirit of the Laws*** (1748) — Separation of powers; maps to US Federal and checks-and-balances designs
+- **Max Weber, *Economy and Society*** (1922) — Rational bureaucracy: hierarchy, specialization, rule-orientation
+- **S.N. Eisenstadt, *The Political Systems of Empires*** (1963) — Comparative political structures across history's empires
+- **Francis Fukuyama, *The Origins of Political Order*** (2011) — State-building, rule of law, and accountability
+- **Charles Tilly, *Coercion, Capital, and European States*** (1990) — Diversity of European state forms
+- **Samuel Huntington, *Political Order in Changing Societies*** (1968) — Political institutionalization theory
+- **Douglass North, *Institutions, Institutional Change and Economic Performance*** (1990) — How institutions constrain and incentivize behavior — precisely what SOUL.md and IDENTITY.md do
+- **Mancur Olson, *The Logic of Collective Action*** (1965) — Why democratic council patterns need incentive mechanisms
+- **Karl Wittfogel, *Oriental Despotism*** (1957) — Hydraulic empires and centralization
+- **Perry Anderson, *Lineages of the Absolutist State*** (1974) — Comparing Eastern and Western absolutism
 
 ### Organizational Theory & Multi-Agent Systems
 
-The bridge between ancient political institutions and modern organizational/AI architecture:
+- **Herbert Simon, *Administrative Behavior*** (1947) — Bounded rationality and hierarchical organization
+- **Wooldridge & Jennings, "Intelligent Agents: Theory and Practice"** (*The Knowledge Engineering Review*, 1995) — Classic MAS survey
+- **Dorri, Kanhere & Jurdak, "Multi-Agent Systems: A Survey"** (*IEEE Access*, 2018) — Modern MAS architecture taxonomy
+- **Henry Mintzberg, *The Structuring of Organizations*** (1979) — Five basic organizational forms closely match this project's six orchestration patterns
 
-- **Herbert Simon, *Administrative Behavior*** (1947) — Bounded rationality and hierarchical organization theory; explains why centralized hierarchy can actually be efficient under limited information
-- **Wooldridge & Jennings, "Intelligent Agents: Theory and Practice"** (*The Knowledge Engineering Review*, 1995) — Classic survey of multi-agent systems; agent properties (autonomy, social ability, reactivity) map onto ancient bureaucratic role characteristics
-- **Dorri, Kanhere & Jurdak, "Multi-Agent Systems: A Survey"** (*IEEE Access*, 2018) — Modern MAS architecture taxonomy; hierarchical, flat, and hybrid categories correspond closely to this project's 6 orchestration patterns
+### Courses & MOOCs
 
-### Courses & General
+| Course | Platform | Instructor | Relevance |
+|--------|----------|------------|-----------|
+| **Ancient Greek History** | [Yale Open Courses](https://oyc.yale.edu/classics/clcv-205) | Donald Kagan | Athenian democracy & Spartan dual kingship firsthand lectures |
+| **Intro to Political Philosophy** | [Yale Open Courses](https://oyc.yale.edu/political-science/plsc-114) | Steven B. Smith | Regime theory from Plato to Locke; inspired the 6 pattern taxonomy |
+| **ChinaX** (China's First Empires) | [edX / HarvardX](https://www.edx.org/learn/history/harvard-university-china-history) | Peter K. Bol | Qin-Han imperial institutions in English |
+| **Chinese Ancient History** | [MOOC China / Peking Univ.](https://www.icourse163.org/) | Yan Buke, Deng Xiaonan | Rank & Office; Song Ancestral Law |
+| **Global History** | [MOOC China / Peking Univ.](https://www.icourse163.org/) | Qian Chengdan et al. | Comparative global empire institutions |
+| **The Fall and Rise of China** | [The Great Courses](https://www.thegreatcourses.com/) | Richard Baum | Qing, Taiping, ROC institutional transitions |
+| **The Early Middle Ages** | [Yale Open Courses](https://oyc.yale.edu/history/hist-210) | Paul Freedman | Late Roman Empire, Byzantine, Frankish institutions |
+| **European Civilization, 1648–1945** | [Yale Open Courses](https://oyc.yale.edu/history/hist-202) | John Merriman | French absolutism, British parliamentarism, Russian autocracy |
 
-- World Political History coursework — A systematic look at institutional design wisdom from Ancient Egypt to the Cold War
-- [Crash Course: World History](https://www.youtube.com/playlist?list=PLBDA2E52FB1EF80C9) by John Green — Introductory but uniquely cross-civilizational perspective that inspired many comparative insights
+### Documentaries
+
+| Title | Producer | Relevance |
+|-------|----------|-----------|
+| **The Story of China** (2016) | BBC · Michael Wood | 6 episodes spanning Shang to modern era — best English-language Chinese dynasty overview |
+| **中国通史** (2016) | CCTV · 100 episodes | Panoramic institutional history from antiquity to Qing |
+| **大明王朝 1566** (2007) | Hunan TV · Dir. Zhang Li | Drama, but exceptionally precise depiction of Ming Cabinet-Eunuch dual-track system |
+| **从秦始皇到汉武帝** (2016) | CCTV | Qin-Han institutional transitions in detail |
+| **河西走廊** (2015) | CCTV | Multi-ethnic empire governance — Liao, Jin, Western Xia, Yuan perspectives |
+| **Empires** series | PBS | Covers Roman Empire, Ottoman Empire, Napoleon, etc. |
+| **Ancient Egypt: Life and Death** (2013) | BBC · Joann Fletcher | Pharaoh theocracy and Vizier bureaucratic system |
+| **Japan: Memoirs of a Secret Empire** (2004) | PBS | Tokugawa Bakufu: Shogun, Daimyo, Emperor triangle |
+| **The Ottomans: Europe's Muslim Emperors** (2013) | BBC · Rageh Omaar | Sultan-Divan system, devshirme, Janissaries |
+| **Civilization** (2018) | BBC/PBS · Simon Schama et al. | Cross-civilizational art-politics interaction |
+| **Extra History** series | YouTube · Extra Credits | High-quality animated history covering multiple empires |
 
 ---
 
