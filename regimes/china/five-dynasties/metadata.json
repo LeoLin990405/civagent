@@ -1,0 +1,14 @@
+{
+  "id": "five-dynasties",
+  "name": { "zh": "五代十国", "en": "Five Dynasties and Ten Kingdoms" },
+  "era": { "zh": "907年-960年", "en": "907-960 AD" },
+  "region": "china",
+  "system": { "zh": "分裂军阀制", "en": "Fragmented Warlord System" },
+  "description": {
+    "zh": "唐末藩镇割据演变而来的乱世。中原五朝更迭（后梁、后唐、后晋、后汉、后周），南方十国并立。名义上有朝廷，实际各节度使拥兵自重、各自为政。武将称帝、政权频繁更替，是中国历史上最混乱的时期之一。",
+    "en": "An era of fragmentation following the Tang collapse. Five successive dynasties ruled the Central Plains while ten kingdoms coexisted in the south. Nominally unified under a court, regional warlords (jiedushi) held real power. Military strongmen seized thrones frequently, making this one of China's most chaotic periods."
+  },
+  "agentCount": 5,
+  "tags": ["fragmented", "competitive", "warlord", "chaotic"],
+  "orchestrationPattern": "federated-autonomy"
+}

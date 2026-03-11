@@ -1,0 +1,14 @@
+{
+  "id": "hre",
+  "name": { "zh": "神圣罗马帝国", "en": "Holy Roman Empire" },
+  "era": { "zh": "962-1806年", "en": "962-1806 AD" },
+  "region": "global",
+  "system": { "zh": "选帝侯制", "en": "Electoral System" },
+  "description": {
+    "zh": "神圣罗马帝国是欧洲中世纪至近代延续最久的政治实体之一，历时844年。皇帝由七位选帝侯选举产生，权力受到诸侯、帝国议会和教会的多重制约。帝国内部高度分权，数百个邦国、自由城市和教会领地各自为政，形成了复杂的封建联邦体系。伏尔泰评价其'既不神圣，也不罗马，更不是帝国'。",
+    "en": "The Holy Roman Empire was one of the longest-lasting political entities in European history, enduring 844 years. The Emperor was elected by seven Prince-Electors, with power constrained by princes, the Imperial Diet, and the Church. Internally highly decentralized, hundreds of principalities, free cities, and ecclesiastical territories governed themselves, forming a complex feudal federation. As Voltaire remarked, it was 'neither Holy, nor Roman, nor an Empire.'"
+  },
+  "agentCount": 7,
+  "tags": ["electoral", "decentralized", "feudal", "complex"],
+  "orchestrationPattern": "federated-autonomy"
+}

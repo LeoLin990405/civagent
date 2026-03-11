@@ -1,0 +1,14 @@
+{
+  "id": "roman-empire",
+  "name": { "zh": "罗马帝国", "en": "Roman Empire" },
+  "era": { "zh": "公元前27年-公元476年", "en": "27 BC - 476 AD" },
+  "region": "global",
+  "system": { "zh": "帝制官僚", "en": "Imperial Bureaucracy" },
+  "description": {
+    "zh": "罗马帝国由奥古斯都建立，以皇帝为绝对权威，通过专业官僚体系管理横跨三大洲的庞大帝国。近卫军长官为首席大臣，城市行政长官管理罗马城，行政总管协调通讯，财务大臣管理国库，法务官主持立法，军事长官指挥军团。罗马和平（Pax Romana）时期实现了前所未有的稳定与繁荣。",
+    "en": "The Roman Empire, established by Augustus, placed absolute authority in the Emperor, governing a vast realm spanning three continents through a professional bureaucracy. The Praetorian Prefect served as chief minister, the Urban Prefect administered Rome, the Master of Offices coordinated communications, the Count of Sacred Largesse managed the treasury, the Quaestor drafted laws, and the Master of Soldiers commanded the legions. The Pax Romana achieved unprecedented stability and prosperity."
+  },
+  "agentCount": 7,
+  "tags": ["imperial", "bureaucratic", "hierarchical", "pax-romana"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

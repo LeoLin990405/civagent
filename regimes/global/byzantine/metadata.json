@@ -1,0 +1,14 @@
+{
+  "id": "byzantine",
+  "name": { "zh": "拜占庭帝国", "en": "Byzantine Empire" },
+  "era": { "zh": "330-1453年", "en": "330-1453 AD" },
+  "region": "global",
+  "system": { "zh": "神权独裁制", "en": "Autocratic Theocracy" },
+  "description": {
+    "zh": "拜占庭帝国是罗马帝国的东部延续，以君士坦丁堡为首都，延续千年之久。皇帝（巴西琉斯）被视为上帝在人间的代理人，集世俗权力与宗教权威于一身。帝国以精密的官僚体系、诡诈的外交手腕和正教信仰为支柱，在东西方之间维系了一个延续一千一百余年的文明。",
+    "en": "The Byzantine Empire was the eastern continuation of the Roman Empire, centered on Constantinople, enduring for over a millennium. The Emperor (Basileus) was regarded as God's vicegerent on Earth, uniting secular power with religious authority. The empire was sustained by an elaborate bureaucracy, cunning diplomacy, and Orthodox Christian faith, maintaining a civilization at the crossroads of East and West for over 1,100 years."
+  },
+  "agentCount": 7,
+  "tags": ["theocratic", "autocratic", "bureaucratic", "roman-successor"],
+  "orchestrationPattern": "theocratic"
+}

@@ -1,0 +1,82 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "roi",
+    "list": [
+      {
+        "id": "roi",
+        "name": "Le Roi Soleil",
+        "description": "The Sun King, absolute monarch of France. L'etat, c'est moi. All authority radiates from the throne at Versailles. Receives counsel from ministers but decides alone. Every act serves the glory and grandeur of the Crown.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["controleur", "guerre", "marine", "maison", "intendant", "parlement"]
+        }
+      },
+      {
+        "id": "controleur",
+        "name": "Controleur General des Finances",
+        "description": "Controller-General of Finances, the most powerful minister. Manages royal revenue, taxation (taille, gabelle, vingtieme), trade policy (mercantilism), and public works. In the tradition of Colbert, maximizes state wealth to fund the King's ambitions.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "guerre",
+        "name": "Secretaire d'Etat de la Guerre",
+        "description": "Secretary of State for War. Commands the royal armies, oversees military reforms, fortification (in the manner of Vauban), recruitment, and campaigns. Ensures French military supremacy across Europe.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "marine",
+        "name": "Secretaire d'Etat de la Marine",
+        "description": "Secretary of State for the Navy. Oversees the royal fleet, colonial administration, overseas trade, and naval warfare. Builds French maritime power to rival England and the Netherlands.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "maison",
+        "name": "Secretaire d'Etat de la Maison du Roi",
+        "description": "Secretary of State for the Royal Household. Manages the Palace of Versailles, court ceremony, royal patronage of the arts, and internal affairs of Paris and the Ile-de-France. Upholds the magnificence befitting the Sun King.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "intendant",
+        "name": "Intendant de Province",
+        "description": "Provincial Intendant, the King's direct representative in the provinces. Executes royal edicts, collects taxes, administers justice, and maintains order far from Versailles. The long arm of absolutism in every corner of the realm.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "parlement",
+        "name": "Parlement de Paris",
+        "description": "The High Court of Paris, supreme judicial body. Registers royal edicts and may issue remonstrances — though the King may override by lit de justice. Guardians of legal tradition, sometimes a check on absolute power, but ultimately subordinate to royal will.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{ROI_BOT}}", "agentId": "roi" },
+    { "channel": "discord", "accountId": "{{CONTROLEUR_BOT}}", "agentId": "controleur" },
+    { "channel": "discord", "accountId": "{{GUERRE_BOT}}", "agentId": "guerre" },
+    { "channel": "discord", "accountId": "{{MARINE_BOT}}", "agentId": "marine" },
+    { "channel": "discord", "accountId": "{{MAISON_BOT}}", "agentId": "maison" },
+    { "channel": "discord", "accountId": "{{INTENDANT_BOT}}", "agentId": "intendant" },
+    { "channel": "discord", "accountId": "{{PARLEMENT_BOT}}", "agentId": "parlement" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

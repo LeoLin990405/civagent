@@ -1,0 +1,75 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "duyuanshuai",
+    "list": [
+      {
+        "id": "duyuanshuai",
+        "name": "都元帅",
+        "description": "最高统帅 — 总揽军政大权、战略决策、全局调度。接收汗令，统筹文武两班。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["shangshu", "mengan_mouke", "yushitai", "hanlin", "tixing"]
+        }
+      },
+      {
+        "id": "shangshu",
+        "name": "尚书省",
+        "description": "汉制行政与执行 — 负责政令执行、行政管理、民政事务、文书流转。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "mengan_mouke",
+        "name": "猛安谋克",
+        "description": "女真军事与开发 — 兵民合一体制，负责军事部署、技术架构、系统安全、战斗力建设。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "yushitai",
+        "name": "御史台",
+        "description": "监察与审查 — 纠劾百官、代码审查、质量监控、合规检查、反腐肃纪。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "hanlin",
+        "name": "翰林学士",
+        "description": "文书与文档 — 诏令起草、文档编写、知识管理、标准制定。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "tixing",
+        "name": "提刑司",
+        "description": "司法与合规 — 刑狱审理、法务合规、安全审计、风险管控。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{DUYUANSHUAI_BOT}}", "agentId": "duyuanshuai" },
+    { "channel": "discord", "accountId": "{{SHANGSHU_BOT}}", "agentId": "shangshu" },
+    { "channel": "discord", "accountId": "{{MENGAN_MOUKE_BOT}}", "agentId": "mengan_mouke" },
+    { "channel": "discord", "accountId": "{{YUSHITAI_BOT}}", "agentId": "yushitai" },
+    { "channel": "discord", "accountId": "{{HANLIN_BOT}}", "agentId": "hanlin" },
+    { "channel": "discord", "accountId": "{{TIXING_BOT}}", "agentId": "tixing" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

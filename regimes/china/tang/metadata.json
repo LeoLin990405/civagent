@@ -1,0 +1,15 @@
+{
+  "id": "tang",
+  "name": { "zh": "唐朝", "en": "Tang Dynasty" },
+  "era": { "zh": "618年-907年", "en": "618-907 AD" },
+  "region": "china",
+  "system": { "zh": "三省六部制（完善）", "en": "Three Departments and Six Ministries (perfected)" },
+  "description": {
+    "zh": "唐朝将三省六部制发展到巅峰，成为中国古代最成熟的中央官制体系。三省（中书省起草、门下省审核、尚书省执行）实现权力制衡，六部（吏、户、礼、兵、刑、工）各司其职。",
+    "en": "The Tang Dynasty perfected the Three Departments and Six Ministries system, the most mature central government structure in ancient China. Three Departments (Zhongshu drafts, Menxia reviews, Shangshu executes) achieved checks and balances, while Six Ministries each managed distinct domains."
+  },
+  "agentCount": 7,
+  "tags": ["checks-and-balances", "confucian", "meritocratic", "original"],
+  "orchestrationPattern": "checks-and-balances",
+  "_attribution": "Original regime by @wanikua (菠萝菠菠). Preserved unchanged."
+}

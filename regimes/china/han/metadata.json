@@ -1,0 +1,14 @@
+{
+  "id": "han",
+  "name": { "zh": "汉朝", "en": "Han Dynasty" },
+  "era": { "zh": "公元前206年-公元220年", "en": "206 BC - 220 AD" },
+  "region": "china",
+  "system": { "zh": "三公九卿制（完善）", "en": "Three Lords Nine Ministers System (refined)" },
+  "description": {
+    "zh": "汉朝继承并完善了秦制，以三公（丞相、太尉、御史大夫）为核心，九卿分掌具体事务。外儒内法，以德治为表、法治为里，建立了延续四百余年的大一统帝国。独尊儒术，察举选才，形成了士大夫阶层主导的治理体系。",
+    "en": "The Han Dynasty inherited and refined the Qin system, with Three Lords (Chancellor, Grand Commandant, Imperial Censor) at the core and Nine Ministers managing specific affairs. It practiced Confucianism outwardly and Legalism internally, building a unified empire lasting over 400 years. Confucian orthodoxy and the recommendation system created a scholar-official-led governance."
+  },
+  "agentCount": 10,
+  "tags": ["confucian", "centralized", "meritocratic"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

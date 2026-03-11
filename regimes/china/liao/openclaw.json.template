@@ -1,0 +1,75 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "beiyuan",
+    "list": [
+      {
+        "id": "beiyuan",
+        "name": "北院大王",
+        "description": "北面官之首 — 统管游牧事务、全局调度。接收汗令、协调南北两面官、分派任务。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["nanyuan", "beimian_linya", "nanmian_zaixiang", "yilijin", "diliemadu"]
+        }
+      },
+      {
+        "id": "nanyuan",
+        "name": "南院大王",
+        "description": "南面官之首 — 统管汉地事务。负责农耕地区行政、税赋管理、民政事务。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "beimian_linya",
+        "name": "北面林牙",
+        "description": "契丹军事与技术 — 负责军事部署、技术架构、系统安全、骑射战术（性能优化）。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "nanmian_zaixiang",
+        "name": "南面宰相",
+        "description": "汉制行政与文档 — 负责汉制政令起草、文书管理、档案维护、流程规范。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "yilijin",
+        "name": "夷离堇",
+        "description": "部落管理与资源 — 负责部落事务、资源调配、牧场管理、后勤保障。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "diliemadu",
+        "name": "敌烈麻都",
+        "description": "监察与审查 — 负责巡视百官、纠举不法、代码审查、质量监控、合规检查。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{BEIYUAN_BOT}}", "agentId": "beiyuan" },
+    { "channel": "discord", "accountId": "{{NANYUAN_BOT}}", "agentId": "nanyuan" },
+    { "channel": "discord", "accountId": "{{BEIMIAN_LINYA_BOT}}", "agentId": "beimian_linya" },
+    { "channel": "discord", "accountId": "{{NANMIAN_ZAIXIANG_BOT}}", "agentId": "nanmian_zaixiang" },
+    { "channel": "discord", "accountId": "{{YILIJIN_BOT}}", "agentId": "yilijin" },
+    { "channel": "discord", "accountId": "{{DILIEMADU_BOT}}", "agentId": "diliemadu" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "id": "aztec",
+  "name": "Aztec Triple Alliance / \u963f\u5179\u7279\u514b\u4e09\u65b9\u8054\u76df",
+  "era": "1428\u20131521",
+  "system": "Triple Alliance / \u4e09\u65b9\u8054\u76df\u5236",
+  "agentCount": 6,
+  "tags": ["triple-alliance", "mesoamerican", "warrior", "tribute"],
+  "pattern": "federated-autonomy",
+  "agents": [
+    {
+      "name": "Huey_Tlatoani",
+      "id": "tlatoani",
+      "role": "main",
+      "title": "Great Speaker of Tenochtitlan / \u5927\u8bae\u957f",
+      "description": "Supreme ruler of the Mexica and first among the Triple Alliance"
+    },
+    {
+      "name": "Cihuacoatl",
+      "id": "cihuacoatl",
+      "role": "advisor",
+      "title": "Internal Affairs / \u5185\u653f\u603b\u7ba1 (\u86c7\u5973\u795e)",
+      "description": "Co-ruler managing domestic affairs, taxation, and judiciary"
+    },
+    {
+      "name": "Tlatoani_Texcoco",
+      "id": "texcoco",
+      "role": "advisor",
+      "title": "Ruler of Texcoco / \u7279\u65af\u79d1\u79d1\u738b",
+      "description": "Tlatoani of Texcoco, second city of the Alliance, patron of law and arts"
+    },
+    {
+      "name": "Tlatoani_Tlacopan",
+      "id": "tlacopan",
+      "role": "advisor",
+      "title": "Ruler of Tlacopan / \u7279\u62c9\u79d1\u6f58\u738b",
+      "description": "Tlatoani of Tlacopan, third and junior partner of the Alliance"
+    },
+    {
+      "name": "Tlacochcalcatl",
+      "id": "warrior",
+      "role": "advisor",
+      "title": "Supreme Warrior / \u6700\u9ad8\u6b66\u58eb (\u519b\u4e8b)",
+      "description": "Commander of armies, overseer of the warrior orders"
+    },
+    {
+      "name": "Pochteca",
+      "id": "pochteca",
+      "role": "advisor",
+      "title": "Merchant-Spy / \u5546\u4eba\u95f4\u8c0d (\u60c5\u62a5)",
+      "description": "Long-distance traders who double as intelligence gatherers"
+    }
+  ]
+}

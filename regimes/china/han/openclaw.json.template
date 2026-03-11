@@ -1,0 +1,103 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "chengxiang",
+    "list": [
+      {
+        "id": "chengxiang",
+        "name": "丞相",
+        "description": "百官之首，总理政务。统管一切朝政，协调三公九卿，直接向皇帝负责。外儒内法，以德服人。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["taiwei", "yushidafu", "taichang", "guangluxun", "weiwei", "taipu", "tingwei", "dahonglu", "dasinong"]
+        }
+      },
+      {
+        "id": "taiwei",
+        "name": "太尉",
+        "description": "掌军事武备。负责技术架构、系统安全、性能优化等核心技术任务。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "yushidafu",
+        "name": "御史大夫",
+        "description": "监察百官，纠举不法。负责代码审查、质量监控、合规检查，副丞相之职。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "taichang",
+        "name": "太常",
+        "description": "掌宗庙礼仪、教育文化。负责技术文档、API文档、知识库维护。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "guangluxun",
+        "name": "光禄勋",
+        "description": "掌宿卫侍从。负责系统安全、访问控制、身份认证。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "weiwei",
+        "name": "卫尉",
+        "description": "掌宫门警卫。负责防火墙、网络安全、入侵检测。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "taipu",
+        "name": "太仆",
+        "description": "掌车马出行。负责运维部署、CI/CD、服务器管理、基础设施。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "tingwei",
+        "name": "廷尉",
+        "description": "掌刑狱法令。负责法务合规、安全审计、风控管理、许可证检查。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "dahonglu",
+        "name": "大鸿胪",
+        "description": "掌外交礼宾。负责API集成、第三方对接、外部服务协调。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "dasinong",
+        "name": "大司农",
+        "description": "掌国家财政。负责成本核算、预算管理、资源调配、账单分析。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{CHENGXIANG_BOT}}", "agentId": "chengxiang" },
+    { "channel": "discord", "accountId": "{{TAIWEI_BOT}}", "agentId": "taiwei" },
+    { "channel": "discord", "accountId": "{{YUSHIDAFU_BOT}}", "agentId": "yushidafu" },
+    { "channel": "discord", "accountId": "{{TAICHANG_BOT}}", "agentId": "taichang" },
+    { "channel": "discord", "accountId": "{{GUANGLUXUN_BOT}}", "agentId": "guangluxun" },
+    { "channel": "discord", "accountId": "{{WEIWEI_BOT}}", "agentId": "weiwei" },
+    { "channel": "discord", "accountId": "{{TAIPU_BOT}}", "agentId": "taipu" },
+    { "channel": "discord", "accountId": "{{TINGWEI_BOT}}", "agentId": "tingwei" },
+    { "channel": "discord", "accountId": "{{DAHONGLU_BOT}}", "agentId": "dahonglu" },
+    { "channel": "discord", "accountId": "{{DASINONG_BOT}}", "agentId": "dasinong" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

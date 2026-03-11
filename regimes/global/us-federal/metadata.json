@@ -1,0 +1,14 @@
+{
+  "id": "us-federal",
+  "name": { "zh": "美国联邦制", "en": "US Federal System" },
+  "era": { "zh": "1789年至今", "en": "1789-present" },
+  "region": "global",
+  "system": { "zh": "三权分立", "en": "Three Branches / Separation of Powers" },
+  "description": {
+    "zh": "美国联邦制是现代三权分立制度的典范。总统领导行政分支，国会（众议院和参议院）掌握立法权，最高法院行使司法审查权。内阁执行具体政策，参谋长联席会议负责军事技术，监察长提供独立监督。宪法通过精巧的制衡机制防止任何一个分支独大。",
+    "en": "The US Federal System is the modern paradigm of separation of powers. The President leads the executive branch, Congress (House and Senate) holds legislative power, and the Supreme Court exercises judicial review. The Cabinet executes policy, the Joint Chiefs handle military/technical matters, and the Inspector General provides independent oversight. The Constitution prevents any single branch from becoming supreme through an intricate system of checks and balances."
+  },
+  "agentCount": 7,
+  "tags": ["federal", "separation-of-powers", "constitutional", "modern"],
+  "orchestrationPattern": "checks-and-balances"
+}

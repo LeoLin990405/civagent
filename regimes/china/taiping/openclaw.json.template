@@ -1,0 +1,82 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "tianwang",
+    "list": [
+      {
+        "id": "tianwang",
+        "name": "天王",
+        "description": "绝对集权 — 天父之子，太平天国最高领袖。一切决策皆出天王，不可违逆。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["dongwang", "xiwang", "nanwang", "beiwang", "yiwang", "tianguan"]
+        }
+      },
+      {
+        "id": "dongwang",
+        "name": "东王",
+        "description": "军政总管 / 首席执行 — 代天父传言，总理朝政军务。首席执行官，统筹全局。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "xiwang",
+        "name": "西王",
+        "description": "军事技术 — 前线作战指挥，对应软件工程、架构设计、技术攻坚。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "nanwang",
+        "name": "南王",
+        "description": "外交营销 — 对外联络、宣传鼓动，对应市场营销、品牌传播、外部合作。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "beiwang",
+        "name": "北王",
+        "description": "刑法合规 — 执掌刑法、肃清内奸，对应合规检查、安全审计、纪律执行。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "yiwang",
+        "name": "翼王",
+        "description": "参谋分析 — 运筹帷幄、战略谋划，对应数据分析、技术调研、方案评估。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "tianguan",
+        "name": "天官",
+        "description": "行政运维 — 天朝日常行政、后勤保障，对应运维部署、基础设施、DevOps。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{TIANWANG_BOT}}", "agentId": "tianwang" },
+    { "channel": "discord", "accountId": "{{DONGWANG_BOT}}", "agentId": "dongwang" },
+    { "channel": "discord", "accountId": "{{XIWANG_BOT}}", "agentId": "xiwang" },
+    { "channel": "discord", "accountId": "{{NANWANG_BOT}}", "agentId": "nanwang" },
+    { "channel": "discord", "accountId": "{{BEIWANG_BOT}}", "agentId": "beiwang" },
+    { "channel": "discord", "accountId": "{{YIWANG_BOT}}", "agentId": "yiwang" },
+    { "channel": "discord", "accountId": "{{TIANGUAN_BOT}}", "agentId": "tianguan" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

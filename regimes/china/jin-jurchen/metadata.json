@@ -1,0 +1,14 @@
+{
+  "id": "jin-jurchen",
+  "name": { "zh": "金朝", "en": "Jin Dynasty (Jurchen)" },
+  "era": { "zh": "1115年-1234年", "en": "1115-1234 AD" },
+  "region": "china",
+  "system": { "zh": "女真汉分治", "en": "Jurchen-Han Divided Governance" },
+  "description": {
+    "zh": "金朝由女真族完颜阿骨打建立，灭辽后入主中原。军政上以猛安谋克制为核心，兵民合一；行政上逐步采用汉制尚书省六部。女真尚武精神与汉制文治并行，形成独特的双重治理模式。",
+    "en": "Founded by Wanyan Aguda of the Jurchen people, the Jin Dynasty conquered the Liao and ruled northern China. Its military-political core was the Meng'an-Mouke system combining soldiers and civilians. Administration gradually adopted Chinese-style Six Ministries under the Department of State Affairs, blending Jurchen martial tradition with Chinese civil governance."
+  },
+  "agentCount": 6,
+  "tags": ["jurchen", "dual-ethnic", "military-merit"],
+  "orchestrationPattern": "dual-power"
+}

@@ -1,0 +1,53 @@
+{
+  "id": "inca",
+  "name": "Inca Empire / \u5370\u52a0\u5e1d\u56fd",
+  "era": "1438\u20131533",
+  "system": "Sapa Inca + Tahuantinsuyu / \u8428\u5e15\u00b7\u5370\u5361\u56db\u65b9\u5236",
+  "agentCount": 6,
+  "tags": ["sapa-inca", "four-quarters", "labor-tax", "quipu"],
+  "pattern": "centralized-hierarchy",
+  "agents": [
+    {
+      "name": "Sapa_Inca",
+      "id": "sapa_inca",
+      "role": "main",
+      "title": "Son of the Sun / \u592a\u9633\u4e4b\u5b50",
+      "description": "Divine sovereign, sole ruler of Tahuantinsuyu"
+    },
+    {
+      "name": "Apu_Chinchaysuyu",
+      "id": "apu_north",
+      "role": "advisor",
+      "title": "Governor of North / \u5317\u65b9\u603b\u7763",
+      "description": "Governor of Chinchaysuyu, the northwestern quarter"
+    },
+    {
+      "name": "Apu_Antisuyu",
+      "id": "apu_east",
+      "role": "advisor",
+      "title": "Governor of East / \u4e1c\u65b9\u603b\u7763",
+      "description": "Governor of Antisuyu, the northeastern quarter"
+    },
+    {
+      "name": "Apu_Collasuyu",
+      "id": "apu_south",
+      "role": "advisor",
+      "title": "Governor of South / \u5357\u65b9\u603b\u7763",
+      "description": "Governor of Collasuyu, the southeastern quarter"
+    },
+    {
+      "name": "Apu_Cuntisuyu",
+      "id": "apu_west",
+      "role": "advisor",
+      "title": "Governor of West / \u897f\u65b9\u603b\u7763",
+      "description": "Governor of Cuntisuyu, the southwestern quarter"
+    },
+    {
+      "name": "Quipucamayoc",
+      "id": "quipu",
+      "role": "advisor",
+      "title": "Record Keeper / \u7ef3\u7ed3\u8bb0\u5f55\u5b98",
+      "description": "Keeper of the quipu, master of records, census, and accounts"
+    }
+  ]
+}

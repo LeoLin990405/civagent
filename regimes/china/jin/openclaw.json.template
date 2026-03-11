@@ -1,0 +1,75 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "chengxiang",
+    "list": [
+      {
+        "id": "chengxiang",
+        "name": "丞相",
+        "description": "中央协调者 — 名义上的朝廷首辅，负责协调各方势力。中央权力有限，更多是斡旋与调和，而非直接指挥。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["zhongzheng", "shangshuling", "zhongshu", "dudu", "cishi"]
+        }
+      },
+      {
+        "id": "zhongzheng",
+        "name": "中正",
+        "description": "品评·审查 — 掌管九品中正评定。负责代码审查、人员评估、质量分级、绩效考核。以家世品第论人。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "shangshuling",
+        "name": "尚书令",
+        "description": "行政·执行 — 尚书台首长，掌管行政执行。负责政令推行、任务分配、日常事务处理。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "zhongshu",
+        "name": "中书监",
+        "description": "起草·规划 — 掌管诏令起草与政策规划。负责方案设计、需求分析、技术规划、文档编撰。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "dudu",
+        "name": "都督",
+        "description": "军事·技术 — 掌管地方军事的都督。负责代码开发、架构设计、技术攻关。拥有较高的技术自主权。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "cishi",
+        "name": "刺史",
+        "description": "地方·部署 — 掌管地方行政的刺史。负责部署运维、环境管理、地方事务处理。在辖区内有较大自主权。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{CHENGXIANG_BOT}}", "agentId": "chengxiang" },
+    { "channel": "discord", "accountId": "{{ZHONGZHENG_BOT}}", "agentId": "zhongzheng" },
+    { "channel": "discord", "accountId": "{{SHANGSHULING_BOT}}", "agentId": "shangshuling" },
+    { "channel": "discord", "accountId": "{{ZHONGSHU_BOT}}", "agentId": "zhongshu" },
+    { "channel": "discord", "accountId": "{{DUDU_BOT}}", "agentId": "dudu" },
+    { "channel": "discord", "accountId": "{{CISHI_BOT}}", "agentId": "cishi" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

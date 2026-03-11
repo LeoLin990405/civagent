@@ -1,0 +1,14 @@
+{
+  "id": "roman-republic",
+  "name": { "zh": "罗马共和国", "en": "Roman Republic" },
+  "era": { "zh": "公元前509年-公元前27年", "en": "509-27 BC" },
+  "region": "global",
+  "system": { "zh": "元老院+执政官", "en": "Senate + Consuls" },
+  "description": {
+    "zh": "罗马共和国采用双执政官制，两位执政官共同执政、互相制衡。元老院提供建议，护民官代表平民利益并拥有否决权，裁判官主持司法，监察官维护道德标准，财务官管理国库，营造官负责基础设施。SPQR（元老院与罗马人民）体现了精英与平民之间的权力平衡。",
+    "en": "The Roman Republic employed a dual-consul system where two Consuls ruled jointly, checking each other's power. The Senate advised, Tribunes represented the plebeians with veto power, Praetors administered justice, Censors maintained moral standards, Quaestors managed the treasury, and Aediles oversaw infrastructure. SPQR (Senatus Populusque Romanus) embodied the balance between elite and popular power."
+  },
+  "agentCount": 8,
+  "tags": ["republican", "senate", "dual-consul", "civic-virtue"],
+  "orchestrationPattern": "checks-and-balances"
+}

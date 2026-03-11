@@ -1,0 +1,14 @@
+{
+  "id": "athens",
+  "name": { "zh": "雅典民主制", "en": "Athenian Democracy" },
+  "era": { "zh": "公元前508年-公元前322年", "en": "508-322 BC" },
+  "region": "global",
+  "system": { "zh": "直接民主制", "en": "Direct Democracy" },
+  "description": {
+    "zh": "雅典民主制是人类历史上第一个民主制度。公民通过公民大会（Ekklesia）直接投票决策，五百人议事会（Boule）准备议案，十将军（Strategos）领导军事，执政官（Archon）主持行政，陪审法庭（Dikasterion）司法审判。所有公民享有平等发言权（Isegoria），决策通过多数表决。",
+    "en": "Athenian Democracy was humanity's first democratic system. Citizens voted directly in the Assembly (Ekklesia), the Council of 500 (Boule) prepared legislation, Generals (Strategoi) led military affairs, the Chief Magistrate (Archon) administered governance, and the People's Courts (Dikasterion) dispensed justice. All citizens enjoyed equal right to speak (Isegoria), with decisions made by majority vote."
+  },
+  "agentCount": 6,
+  "tags": ["democratic", "direct-democracy", "philosophical", "civic"],
+  "orchestrationPattern": "democratic-council"
+}

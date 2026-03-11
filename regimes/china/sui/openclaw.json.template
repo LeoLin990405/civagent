@@ -1,0 +1,82 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "neishi",
+    "list": [
+      {
+        "id": "neishi",
+        "name": "内史省",
+        "description": "起草决策 — 接收圣旨、草拟方案、制定策略。相当于中书省前身。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["menxia", "shangshu", "libu", "hubu", "bingbu", "gongbu"]
+        }
+      },
+      {
+        "id": "menxia",
+        "name": "门下省",
+        "description": "审核驳回 — 审查内史省草案，纠错把关，有权封驳不当决策。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "shangshu",
+        "name": "尚书省",
+        "description": "执行落实 — 将批准的决策分派六部执行，统筹协调。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "libu",
+        "name": "吏部",
+        "description": "人事管理 — 科举选才、官员考核、项目管理、团队协调。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "hubu",
+        "name": "户部",
+        "description": "财政运营 — 预算管控、成本分析、资源调配、数据统计。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "bingbu",
+        "name": "兵部",
+        "description": "军事技术 — 软件工程、架构设计、代码开发、技术攻坚。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "gongbu",
+        "name": "工部",
+        "description": "工程运维 — DevOps、CI/CD、基础设施建设、大型工程管理。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{NEISHI_BOT}}", "agentId": "neishi" },
+    { "channel": "discord", "accountId": "{{MENXIA_BOT}}", "agentId": "menxia" },
+    { "channel": "discord", "accountId": "{{SHANGSHU_BOT}}", "agentId": "shangshu" },
+    { "channel": "discord", "accountId": "{{LIBU_BOT}}", "agentId": "libu" },
+    { "channel": "discord", "accountId": "{{HUBU_BOT}}", "agentId": "hubu" },
+    { "channel": "discord", "accountId": "{{BINGBU_BOT}}", "agentId": "bingbu" },
+    { "channel": "discord", "accountId": "{{GONGBU_BOT}}", "agentId": "gongbu" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "qin",
+  "name": { "zh": "秦朝", "en": "Qin Dynasty" },
+  "era": { "zh": "公元前221年-公元前206年", "en": "221-206 BC" },
+  "region": "china",
+  "system": { "zh": "郡县制·三公九卿", "en": "Commandery-County System with Three Lords Nine Ministers" },
+  "description": {
+    "zh": "秦始皇统一六国后建立了中国第一个中央集权制国家。废分封、行郡县，以三公（丞相、太尉、御史大夫）为核心行政架构，九卿分管具体事务。法家思想治国，令行禁止，赏罚分明。",
+    "en": "After unifying the six states, Qin Shi Huang established China's first centralized imperial state. Abolished feudalism for commandery-county system, with Three Lords (Chancellor, Grand Commandant, Imperial Censor) as core administration and Nine Ministers managing specific affairs. Governed by Legalist principles with strict enforcement."
+  },
+  "agentCount": 7,
+  "tags": ["centralized", "legalist", "strict-hierarchy", "first-empire"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

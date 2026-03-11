@@ -1,0 +1,14 @@
+{
+  "id": "shang",
+  "name": { "zh": "商朝", "en": "Shang Dynasty" },
+  "era": { "zh": "约公元前1600年-前1046年", "en": "c. 1600-1046 BC" },
+  "region": "china",
+  "system": { "zh": "神权贵族制", "en": "Theocratic Aristocracy" },
+  "description": {
+    "zh": "商朝以神权政治为核心，王权与神权合一。商王既是政治领袖也是最高祭司，凡军国大事必先占卜问天。甲骨文记录了大量占卜内容，形成了独特的神权决策体系。贵族等级森严，以血缘和宗教地位划分权力。",
+    "en": "The Shang Dynasty centered on theocratic governance, unifying royal and divine authority. The Shang King served as both political leader and supreme priest, consulting oracle bones before all major state decisions. Oracle bone inscriptions document this extensive divination system. A rigid aristocratic hierarchy distributed power based on bloodline and religious status."
+  },
+  "agentCount": 6,
+  "tags": ["theocratic", "divination", "oracle-bones"],
+  "orchestrationPattern": "theocratic"
+}

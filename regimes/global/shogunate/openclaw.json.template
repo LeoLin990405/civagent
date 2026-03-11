@@ -1,0 +1,82 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "shogun",
+    "list": [
+      {
+        "id": "shogun",
+        "name": "Shogun",
+        "description": "Sei-i Taishogun, the actual ruler of Japan. Commands the Bakufu government from Edo Castle. The Emperor in Kyoto reigns in name, but the Shogun governs in fact. All daimyo, samurai, and commoners are subject to the Shogun's authority.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["tenno", "roju", "wakadoshiyori", "metsuke", "bugyo", "daimyo"]
+        }
+      },
+      {
+        "id": "tenno",
+        "name": "Emperor",
+        "description": "The Tenno, ceremonial sovereign and living symbol of Japan's divine heritage. Descended from Amaterasu, the Emperor bestows legitimacy upon the Shogun but holds no political power. Presides over court rituals, poetry, and the preservation of imperial tradition in Kyoto.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "roju",
+        "name": "Roju",
+        "description": "Council of Elders, the highest administrative body of the Bakufu. Four to five senior daimyo who manage national affairs including diplomacy, relations with the imperial court, and supervision of all daimyo. Reports directly to the Shogun.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "wakadoshiyori",
+        "name": "Wakadoshiyori",
+        "description": "Junior Council of Elders. Oversees hatamoto (direct retainers) and lower-ranking samurai affairs. Handles internal personnel management, minor administrative matters, and serves as a training ground for future Roju members.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "metsuke",
+        "name": "Metsuke",
+        "description": "Inspector and intelligence officer of the Bakufu. Monitors the conduct of officials, investigates disloyalty, enforces compliance with the Buke Shohatto (Laws for the Military Houses), and ensures no daimyo grows powerful enough to threaten the Shogunate.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "bugyo",
+        "name": "Bugyo",
+        "description": "Magistrate responsible for urban administration, judicial matters, and local governance. The Machi-bugyo governs Edo's townspeople, the Kanjo-bugyo manages finances, and the Jisha-bugyo oversees temples and shrines. Efficient, methodical, and incorruptible.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "daimyo",
+        "name": "Daimyo",
+        "description": "Domain Lord governing a han (feudal domain) with considerable autonomy. Commands local samurai, collects taxes, and administers justice within the domain. Subject to sankin-kotai (alternate attendance) — must spend every other year in Edo as a pledge of loyalty to the Shogun.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{SHOGUN_BOT}}", "agentId": "shogun" },
+    { "channel": "discord", "accountId": "{{TENNO_BOT}}", "agentId": "tenno" },
+    { "channel": "discord", "accountId": "{{ROJU_BOT}}", "agentId": "roju" },
+    { "channel": "discord", "accountId": "{{WAKADOSHIYORI_BOT}}", "agentId": "wakadoshiyori" },
+    { "channel": "discord", "accountId": "{{METSUKE_BOT}}", "agentId": "metsuke" },
+    { "channel": "discord", "accountId": "{{BUGYO_BOT}}", "agentId": "bugyo" },
+    { "channel": "discord", "accountId": "{{DAIMYO_BOT}}", "agentId": "daimyo" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

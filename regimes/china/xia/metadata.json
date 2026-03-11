@@ -1,0 +1,14 @@
+{
+  "id": "xia",
+  "name": { "zh": "夏朝", "en": "Xia Dynasty" },
+  "era": { "zh": "约公元前2070年-前1600年", "en": "c. 2070-1600 BC" },
+  "region": "china",
+  "system": { "zh": "分封制/家族制", "en": "Enfeoffment-Clan System" },
+  "description": {
+    "zh": "夏朝是中国历史上第一个世袭王朝，标志着从部落联盟到家天下的转变。大禹治水建立威望后传位于子启，开启了王位世袭制。政治体制以氏族血缘为纽带，重视水利工程与农牧生产。",
+    "en": "The Xia Dynasty was China's first hereditary dynasty, marking the transition from tribal confederation to dynastic rule. After Yu the Great earned prestige through flood control, his son Qi inherited the throne, initiating hereditary succession. Governance was bound by clan blood ties, emphasizing hydraulic engineering and agro-pastoral production."
+  },
+  "agentCount": 5,
+  "tags": ["clan", "earliest", "patriarchal"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

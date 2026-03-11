@@ -1,0 +1,89 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "zhongshu",
+    "list": [
+      {
+        "id": "zhongshu",
+        "name": "中书门下",
+        "description": "二府之首，掌行政决策。合并中书省与门下省之权，总理文官政务，统筹全局。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["shumi", "sansi", "yushitai", "hanlin", "zhizhigao", "zhuanyunshi", "tixing"]
+        }
+      },
+      {
+        "id": "shumi",
+        "name": "枢密院",
+        "description": "掌军事机要。负责技术架构、系统安全、核心技术决策，与中书门下分治文武。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "sansi",
+        "name": "三司使",
+        "description": "掌盐铁、度支、户部三司财政。负责成本核算、预算管理、资源调配、财务分析。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "yushitai",
+        "name": "御史台",
+        "description": "掌监察纠弹。负责代码审查、质量监控、流程合规检查，独立于二府之外。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "hanlin",
+        "name": "翰林学士",
+        "description": "掌起草诏令、学术顾问。负责技术文档、设计文档、知识库维护。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "zhizhigao",
+        "name": "知制诰",
+        "description": "掌制度拟定。负责流程规范、编码标准、最佳实践制定与维护。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "zhuanyunshi",
+        "name": "转运使",
+        "description": "掌物流转运、地方监察。负责部署发布、CI/CD、服务器运维、资源分配。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "tixing",
+        "name": "提刑按察使",
+        "description": "掌司法审查。负责法务合规、安全审计、许可证审查、风控管理。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{ZHONGSHU_BOT}}", "agentId": "zhongshu" },
+    { "channel": "discord", "accountId": "{{SHUMI_BOT}}", "agentId": "shumi" },
+    { "channel": "discord", "accountId": "{{SANSI_BOT}}", "agentId": "sansi" },
+    { "channel": "discord", "accountId": "{{YUSHITAI_BOT}}", "agentId": "yushitai" },
+    { "channel": "discord", "accountId": "{{HANLIN_BOT}}", "agentId": "hanlin" },
+    { "channel": "discord", "accountId": "{{ZHIZHIGAO_BOT}}", "agentId": "zhizhigao" },
+    { "channel": "discord", "accountId": "{{ZHUANYUNSHI_BOT}}", "agentId": "zhuanyunshi" },
+    { "channel": "discord", "accountId": "{{TIXING_BOT}}", "agentId": "tixing" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

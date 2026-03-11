@@ -1,0 +1,14 @@
+{
+  "id": "sparta",
+  "name": { "zh": "斯巴达", "en": "Sparta" },
+  "era": { "zh": "公元前900年-公元前192年", "en": "900-192 BC" },
+  "region": "global",
+  "system": { "zh": "双王制", "en": "Dual Kingship" },
+  "description": {
+    "zh": "斯巴达是古希腊最强大的军事城邦。实行独特的双王制，两位国王分别来自阿基亚德和欧里庞提德家族，共同执政。长老院（Gerousia）由28名60岁以上长老和两位国王组成，监察官（Ephors）五人拥有制衡王权的实权。整个社会围绕军事训练（agoge）和集体生活运转，以简朴、纪律和服从闻名于世。",
+    "en": "Sparta was the most powerful military city-state in ancient Greece. It practiced a unique dual kingship with two kings from the Agiad and Eurypontid dynasties ruling jointly. The Gerousia (Council of Elders) comprised 28 elders over 60 plus both kings, while five Ephors held real power to check royal authority. The entire society revolved around military training (agoge) and communal living, famed for austerity, discipline, and obedience."
+  },
+  "agentCount": 6,
+  "tags": ["dual-kingship", "military", "austere", "oligarchic"],
+  "orchestrationPattern": "dual-power"
+}

@@ -1,0 +1,89 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "consul_a",
+    "list": [
+      {
+        "id": "consul_a",
+        "name": "Consul A",
+        "description": "Co-Consul of Rome. Shares supreme executive power with Consul B. Neither may act unilaterally on major decisions — both must concur or the Senate must arbitrate.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["consul_b", "senate", "tribune", "praetor", "censor", "quaestor", "aedile"]
+        }
+      },
+      {
+        "id": "consul_b",
+        "name": "Consul B",
+        "description": "Co-Consul of Rome. Equal in authority to Consul A. Provides a check on executive power. May veto Consul A's actions (intercessio).",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "senate",
+        "name": "Senate",
+        "description": "The advisory council of Rome's senior statesmen. Issues senatus consulta (advisory decrees). Manages foreign policy, finances, and long-term strategy. The voice of collective wisdom.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "tribune",
+        "name": "Tribune of the Plebs",
+        "description": "Voice of the people. Holds sacrosanct veto power (intercessio) over any action that harms the common good. Protects user interests and advocates for accessibility.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "praetor",
+        "name": "Praetor",
+        "description": "Chief judicial officer. Administers justice, interprets laws, resolves disputes, and ensures legal compliance across all operations.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "censor",
+        "name": "Censor",
+        "description": "Guardian of public morals and standards. Conducts reviews of code quality, enforces best practices, maintains the citizen rolls (registry), and upholds dignitas.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "quaestor",
+        "name": "Quaestor",
+        "description": "Treasurer of the Republic. Manages the aerarium (treasury), tracks resources, handles budgets, cost analysis, and financial reporting.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "aedile",
+        "name": "Aedile",
+        "description": "Commissioner of public works. Manages infrastructure, maintenance, build systems, CI/CD pipelines, and operational reliability.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{CONSUL_A_BOT}}", "agentId": "consul_a" },
+    { "channel": "discord", "accountId": "{{CONSUL_B_BOT}}", "agentId": "consul_b" },
+    { "channel": "discord", "accountId": "{{SENATE_BOT}}", "agentId": "senate" },
+    { "channel": "discord", "accountId": "{{TRIBUNE_BOT}}", "agentId": "tribune" },
+    { "channel": "discord", "accountId": "{{PRAETOR_BOT}}", "agentId": "praetor" },
+    { "channel": "discord", "accountId": "{{CENSOR_BOT}}", "agentId": "censor" },
+    { "channel": "discord", "accountId": "{{QUAESTOR_BOT}}", "agentId": "quaestor" },
+    { "channel": "discord", "accountId": "{{AEDILE_BOT}}", "agentId": "aedile" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

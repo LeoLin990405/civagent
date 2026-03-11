@@ -1,0 +1,83 @@
+{
+  "_attribution": "Original configuration by @wanikua. Preserved from boluobobo-ai-court-tutorial.",
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "silijian",
+    "list": [
+      {
+        "id": "silijian",
+        "name": "司礼监",
+        "description": "大内总管 — 批红·调度·统领。接收圣旨、分派任务、协调各部。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["bingbu", "hubu", "libu_ritual", "gongbu", "xingbu", "libu_personnel"]
+        }
+      },
+      {
+        "id": "bingbu",
+        "name": "兵部",
+        "description": "软件工程 — 写代码、架构设计、代码审查、Bug修复。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "hubu",
+        "name": "户部",
+        "description": "财务运营 — 成本分析、预算管控、数据分析。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "libu_ritual",
+        "name": "礼部",
+        "description": "品牌营销 — 文案创作、社媒运营、内容策划。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "gongbu",
+        "name": "工部",
+        "description": "运维部署 — DevOps、CI/CD、服务器管理、基础设施。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "xingbu",
+        "name": "刑部",
+        "description": "法务合规 — 合同审查、知识产权、合规检查。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "libu_personnel",
+        "name": "吏部",
+        "description": "项目管理 — 创业孵化、任务追踪、团队协调。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{SILIJIAN_BOT}}", "agentId": "silijian" },
+    { "channel": "discord", "accountId": "{{BINGBU_BOT}}", "agentId": "bingbu" },
+    { "channel": "discord", "accountId": "{{HUBU_BOT}}", "agentId": "hubu" },
+    { "channel": "discord", "accountId": "{{LIBU_RITUAL_BOT}}", "agentId": "libu_ritual" },
+    { "channel": "discord", "accountId": "{{GONGBU_BOT}}", "agentId": "gongbu" },
+    { "channel": "discord", "accountId": "{{XINGBU_BOT}}", "agentId": "xingbu" },
+    { "channel": "discord", "accountId": "{{LIBU_PERSONNEL_BOT}}", "agentId": "libu_personnel" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

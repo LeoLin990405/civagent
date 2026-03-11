@@ -1,0 +1,68 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "xixia_emperor",
+    "list": [
+      {
+        "id": "xixia_emperor",
+        "name": "皇帝",
+        "description": "最高决策者 — 总揽军政、战略决策、全局统帅。兼任党项族大首领与国家元首。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["zhongshuling", "shumishi", "guoshi", "fanhan_daxueshi"]
+        }
+      },
+      {
+        "id": "zhongshuling",
+        "name": "中书令",
+        "description": "行政与执行 — 总理政务、政令起草与执行、官员管理、日常行政事务。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "shumishi",
+        "name": "枢密使",
+        "description": "军事与技术 — 掌军事机密、兵马调度、技术架构、系统安全、边防战略。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "guoshi",
+        "name": "国师",
+        "description": "佛教与知识管理 — 佛法顾问、知识库管理、文化政策、教育事务、精神指导。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "fanhan_daxueshi",
+        "name": "蕃汉大学士",
+        "description": "民族事务与翻译协调 — 蕃汉文翻译、多民族协调、文化沟通、西夏文字管理。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{XIXIA_EMPEROR_BOT}}", "agentId": "xixia_emperor" },
+    { "channel": "discord", "accountId": "{{ZHONGSHULING_BOT}}", "agentId": "zhongshuling" },
+    { "channel": "discord", "accountId": "{{SHUMISHI_BOT}}", "agentId": "shumishi" },
+    { "channel": "discord", "accountId": "{{GUOSHI_BOT}}", "agentId": "guoshi" },
+    { "channel": "discord", "accountId": "{{FANHAN_DAXUESHI_BOT}}", "agentId": "fanhan_daxueshi" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

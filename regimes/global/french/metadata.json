@@ -1,0 +1,14 @@
+{
+  "id": "french",
+  "name": { "zh": "法国绝对君主制", "en": "French Absolutism" },
+  "era": { "zh": "1643-1789年", "en": "1643-1789 AD" },
+  "region": "global",
+  "system": { "zh": "朕即国家", "en": "L'état c'est moi" },
+  "description": {
+    "zh": "法国绝对君主制以路易十四'太阳王'为代表，将王权推至极致。国王以凡尔赛宫为权力中心，通过财务总监、军事大臣和地方总督体系实现对全国的直接控制。繁复的宫廷礼仪、辉煌的艺术文化和高度集权的行政体系构成了这一时代的鲜明特征。一切权力归于国王一人，'朕即国家'。",
+    "en": "French Absolutism, epitomized by Louis XIV the 'Sun King,' pushed royal authority to its zenith. The King ruled from the Palace of Versailles, exercising direct control over the nation through the Controller-General of Finances, war secretaries, and a system of provincial intendants. Elaborate court protocol, magnificent arts and culture, and a highly centralized administration defined this era. All power resided in the King alone — 'L'état, c'est moi.'"
+  },
+  "agentCount": 7,
+  "tags": ["absolutist", "centralized", "versailles", "sun-king"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

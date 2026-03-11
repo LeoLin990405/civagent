@@ -1,0 +1,14 @@
+{
+  "id": "liao",
+  "name": { "zh": "辽朝", "en": "Liao Dynasty" },
+  "era": { "zh": "907年-1125年", "en": "907-1125 AD" },
+  "region": "china",
+  "system": { "zh": "双重行政制", "en": "Dual Administration System" },
+  "description": {
+    "zh": "辽朝由契丹族耶律阿保机建立，首创南北面官双轨行政制度。北面官以契丹旧制治理游牧民族事务，南面官以汉制治理汉地农耕事务。因俗而治、灵活务实，是中国历史上民族融合治理的典范。",
+    "en": "Founded by Yelü Abaoji of the Khitan people, the Liao Dynasty pioneered a dual administration system. Northern officials governed nomadic affairs using Khitan traditions, while Southern officials administered settled Han regions using Chinese bureaucratic methods. This pragmatic 'govern according to customs' approach became a model for multi-ethnic governance."
+  },
+  "agentCount": 6,
+  "tags": ["dual-system", "khitan", "nomadic-sedentary"],
+  "orchestrationPattern": "dual-power"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "shogunate",
+  "name": { "zh": "日本幕府制", "en": "Japanese Shogunate" },
+  "era": { "zh": "1603-1868年", "en": "1603-1868 AD" },
+  "region": "global",
+  "system": { "zh": "幕府制", "en": "Bakufu System" },
+  "description": {
+    "zh": "德川幕府是日本历史上最后也是最稳定的武家政权，延续二百六十五年。将军（征夷大将军）掌握实际统治权，天皇仅为名义上的最高权威。幕府实行锁国政策，严格控制对外接触；国内维持士农工商的严格等级制度。老中作为最高行政机构辅佐将军，目付负责监察，奉行管理地方行政，大名在各藩保有一定自治权。武士道精神贯穿治理始终。",
+    "en": "The Tokugawa Shogunate was the last and most stable warrior government in Japanese history, enduring 265 years. The Shogun (Sei-i Taishogun) held actual governing power while the Emperor remained a ceremonial figurehead. The Bakufu enforced sakoku (national isolation), strictly controlling foreign contact; domestically it maintained a rigid class system (shi-no-ko-sho). The Roju (Council of Elders) assisted the Shogun as the supreme administrative body, the Metsuke served as inspectors, Bugyo administered local affairs, and Daimyo retained autonomy within their domains. Bushido pervaded all aspects of governance."
+  },
+  "agentCount": 7,
+  "tags": ["bakufu", "dual-authority", "samurai", "isolationist"],
+  "orchestrationPattern": "dual-power"
+}

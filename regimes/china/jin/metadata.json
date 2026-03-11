@@ -1,0 +1,14 @@
+{
+  "id": "jin",
+  "name": { "zh": "晋朝", "en": "Jin Dynasty" },
+  "era": { "zh": "266年-420年", "en": "266-420 AD" },
+  "region": "china",
+  "system": { "zh": "九品中正制", "en": "Nine-Rank System" },
+  "description": {
+    "zh": "晋朝以九品中正制选拔官员，由中正官按家世、行状、才能品评人物，分为九等授官。实际运行中逐渐演变为「上品无寒门，下品无士族」的门阀政治。中央权力孱弱，地方都督、刺史各据一方，清谈玄学之风盛行。",
+    "en": "The Jin Dynasty selected officials through the Nine-Rank System, where Arbiter officials assessed candidates based on family background, conduct, and talent across nine grades. In practice, this devolved into aristocratic gate-clan politics where elite families monopolized high offices. Central authority was weak while regional military governors held real power. Xuanxue (Neo-Daoist) philosophical discourse flourished."
+  },
+  "agentCount": 6,
+  "tags": ["aristocratic", "weak-center", "rank-based"],
+  "orchestrationPattern": "federated-autonomy"
+}

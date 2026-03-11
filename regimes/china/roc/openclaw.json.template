@@ -1,0 +1,82 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "zongtong",
+    "list": [
+      {
+        "id": "zongtong",
+        "name": "总统",
+        "description": "国家元首 — 统筹协调五院，发布政令，代表国家。最高决策与调度中枢。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["xingzheng", "lifa", "sifa", "kaoshi", "jiancha", "guomindahui"]
+        }
+      },
+      {
+        "id": "xingzheng",
+        "name": "行政院",
+        "description": "行政执行 — 最高行政机关，负责政策执行、日常运营、项目推进。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "lifa",
+        "name": "立法院",
+        "description": "立法规则 — 制定法律法规，对应规则制定、标准制定、流程规范。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "sifa",
+        "name": "司法院",
+        "description": "司法合规 — 解释法律、裁判争议，对应合规审查、争议仲裁。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "kaoshi",
+        "name": "考试院",
+        "description": "考核质保 — 公务员考试与铨叙，对应质量保证、测试、人才评估。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "jiancha",
+        "name": "监察院",
+        "description": "监察审查 — 弹劾纠举、审计监察，对应代码审查、安全审计、合规检查。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "guomindahui",
+        "name": "国民大会",
+        "description": "代表需求 — 代表全体国民行使政权，对应需求收集、用户反馈、民意调查。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{ZONGTONG_BOT}}", "agentId": "zongtong" },
+    { "channel": "discord", "accountId": "{{XINGZHENG_BOT}}", "agentId": "xingzheng" },
+    { "channel": "discord", "accountId": "{{LIFA_BOT}}", "agentId": "lifa" },
+    { "channel": "discord", "accountId": "{{SIFA_BOT}}", "agentId": "sifa" },
+    { "channel": "discord", "accountId": "{{KAOSHI_BOT}}", "agentId": "kaoshi" },
+    { "channel": "discord", "accountId": "{{JIANCHA_BOT}}", "agentId": "jiancha" },
+    { "channel": "discord", "accountId": "{{GUOMINDAHUI_BOT}}", "agentId": "guomindahui" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

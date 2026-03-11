@@ -1,0 +1,75 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "ekklesia",
+    "list": [
+      {
+        "id": "ekklesia",
+        "name": "Ekklesia",
+        "description": "The Assembly of all citizens. Supreme decision-making body that votes on all major matters. Coordinates democratic deliberation via sessions_send and tallies votes.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["boule", "strategos", "archon", "dikasterion", "rhetor"]
+        }
+      },
+      {
+        "id": "boule",
+        "name": "Boule",
+        "description": "Council of 500. Prepares the agenda (probouleuma), drafts proposals, and manages day-to-day administration. The deliberative engine of democracy.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "strategos",
+        "name": "Strategos",
+        "description": "Elected General. Leads military and technical strategy. One of the few elected (not allotted) positions, chosen for expertise. Handles architecture, security, and performance.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "archon",
+        "name": "Archon",
+        "description": "Chief Magistrate. Oversees administrative execution, manages state ceremonies, and ensures procedural compliance. The administrative backbone.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "dikasterion",
+        "name": "Dikasterion",
+        "description": "People's Court. Conducts judicial review, resolves disputes, audits decisions for legality and fairness. Protects against tyranny through accountability.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "rhetor",
+        "name": "Rhetor",
+        "description": "Public Orator and communicator. Crafts persuasive arguments, presents proposals, manages communications, and articulates decisions to the public.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{EKKLESIA_BOT}}", "agentId": "ekklesia" },
+    { "channel": "discord", "accountId": "{{BOULE_BOT}}", "agentId": "boule" },
+    { "channel": "discord", "accountId": "{{STRATEGOS_BOT}}", "agentId": "strategos" },
+    { "channel": "discord", "accountId": "{{ARCHON_BOT}}", "agentId": "archon" },
+    { "channel": "discord", "accountId": "{{DIKASTERION_BOT}}", "agentId": "dikasterion" },
+    { "channel": "discord", "accountId": "{{RHETOR_BOT}}", "agentId": "rhetor" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

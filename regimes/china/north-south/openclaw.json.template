@@ -1,0 +1,75 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "nan_tianzi",
+    "list": [
+      {
+        "id": "nan_tianzi",
+        "name": "南朝天子",
+        "description": "南方协调者 — 南朝天子，统领江南。偏重文治，协调南方各势力。与北朝天子并立，各管一方。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["bei_tianzi", "nan_shangshu", "bei_shangshu", "menfa", "sengtong"]
+        }
+      },
+      {
+        "id": "bei_tianzi",
+        "name": "北朝天子",
+        "description": "北方协调者 — 北朝天子，统领中原。崇尚武功，协调北方各势力。推行汉化改革，促进民族融合。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "nan_shangshu",
+        "name": "南朝尚书",
+        "description": "南方执行 — 南朝尚书台，负责南方行政执行。擅长文案策划、UI设计、文档编撰等文治类任务。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "bei_shangshu",
+        "name": "北朝尚书",
+        "description": "北方执行 — 北朝尚书台，负责北方行政执行。擅长代码开发、架构设计、系统工程等技术类任务。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "menfa",
+        "name": "门阀",
+        "description": "家族势力·资源 — 门阀士族代表，掌握核心资源与人脉。负责资源调配、关系协调、利益分配、战略咨询。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "sengtong",
+        "name": "僧统",
+        "description": "佛教·文化知识 — 僧官之首，掌管佛教事务。负责知识库管理、文化积累、哲理分析、跨文化沟通。以佛法智慧启发思路。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{NAN_TIANZI_BOT}}", "agentId": "nan_tianzi" },
+    { "channel": "discord", "accountId": "{{BEI_TIANZI_BOT}}", "agentId": "bei_tianzi" },
+    { "channel": "discord", "accountId": "{{NAN_SHANGSHU_BOT}}", "agentId": "nan_shangshu" },
+    { "channel": "discord", "accountId": "{{BEI_SHANGSHU_BOT}}", "agentId": "bei_shangshu" },
+    { "channel": "discord", "accountId": "{{MENFA_BOT}}", "agentId": "menfa" },
+    { "channel": "discord", "accountId": "{{SENGTONG_BOT}}", "agentId": "sengtong" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

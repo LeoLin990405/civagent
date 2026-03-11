@@ -1,0 +1,96 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "wei_chengxiang",
+    "list": [
+      {
+        "id": "wei_chengxiang",
+        "name": "魏国·丞相",
+        "description": "曹魏统帅，务实高效。负责全局统筹、核心决策、资源调度。继承汉制，唯才是举。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["wei_junshi", "wei_jiangjun", "shu_chengxiang", "wu_dudu"]
+        }
+      },
+      {
+        "id": "wei_junshi",
+        "name": "魏国·军师",
+        "description": "曹魏谋主，运筹帷幄。负责技术架构、系统设计、战略规划。以效率为先。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "wei_jiangjun",
+        "name": "魏国·将军",
+        "description": "曹魏战将，攻城略地。负责核心开发、功能实现、性能优化。执行力至上。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "shu_chengxiang",
+        "name": "蜀国·丞相",
+        "description": "蜀汉统帅，鞠躬尽瘁。负责质量保障、代码审查、最佳实践。以仁义忠信为本。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "shu_junshi",
+        "name": "蜀国·军师",
+        "description": "蜀汉谋士，深谋远虑。负责问题分析、方案评估、风险预判。谨慎周密。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "shu_jiangjun",
+        "name": "蜀国·将军",
+        "description": "蜀汉猛将，忠义无双。负责功能开发、测试编写、Bug修复。忠于职守。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "wu_dudu",
+        "name": "吴国·都督",
+        "description": "东吴统帅，灵活多变。负责运维部署、外部集成、资源协调。善于因势利导。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "wu_moushi",
+        "name": "吴国·谋士",
+        "description": "东吴智囊，奇策百出。负责策划方案、文档撰写、创意设计。擅长另辟蹊径。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "wu_jiangjun",
+        "name": "吴国·将军",
+        "description": "东吴战将，水战无敌。负责前端开发、UI实现、用户体验优化。灵活应变。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{WEI_CHENGXIANG_BOT}}", "agentId": "wei_chengxiang" },
+    { "channel": "discord", "accountId": "{{WEI_JUNSHI_BOT}}", "agentId": "wei_junshi" },
+    { "channel": "discord", "accountId": "{{WEI_JIANGJUN_BOT}}", "agentId": "wei_jiangjun" },
+    { "channel": "discord", "accountId": "{{SHU_CHENGXIANG_BOT}}", "agentId": "shu_chengxiang" },
+    { "channel": "discord", "accountId": "{{SHU_JUNSHI_BOT}}", "agentId": "shu_junshi" },
+    { "channel": "discord", "accountId": "{{SHU_JIANGJUN_BOT}}", "agentId": "shu_jiangjun" },
+    { "channel": "discord", "accountId": "{{WU_DUDU_BOT}}", "agentId": "wu_dudu" },
+    { "channel": "discord", "accountId": "{{WU_MOUSHI_BOT}}", "agentId": "wu_moushi" },
+    { "channel": "discord", "accountId": "{{WU_JIANGJUN_BOT}}", "agentId": "wu_jiangjun" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

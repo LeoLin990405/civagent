@@ -1,0 +1,82 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "chengxiang",
+    "list": [
+      {
+        "id": "chengxiang",
+        "name": "丞相",
+        "description": "百官之首，总理万机。统管一切政务，协调六卿，直接向皇帝负责。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["taiwei", "yushidafu", "tingwei", "zhisuneshi", "shaofu", "langzhongling"]
+        }
+      },
+      {
+        "id": "taiwei",
+        "name": "太尉",
+        "description": "掌军事武备。负责技术架构、系统安全、性能优化等「硬实力」任务。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "yushidafu",
+        "name": "御史大夫",
+        "description": "监察百官，纠举不法。负责代码审查、质量监控、合规检查。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "tingwei",
+        "name": "廷尉",
+        "description": "掌刑狱法令。负责法务合规、安全审计、风控管理。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "zhisuneshi",
+        "name": "治粟内史",
+        "description": "掌国家财政。负责成本核算、预算管理、资源调配。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "shaofu",
+        "name": "少府",
+        "description": "掌皇室财政与手工制造。负责工具开发、内部系统、自动化流程。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "langzhongling",
+        "name": "郎中令",
+        "description": "掌宫殿守卫与传达。负责消息路由、通知分发、日程管理。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{CHENGXIANG_BOT}}", "agentId": "chengxiang" },
+    { "channel": "discord", "accountId": "{{TAIWEI_BOT}}", "agentId": "taiwei" },
+    { "channel": "discord", "accountId": "{{YUSHIDAFU_BOT}}", "agentId": "yushidafu" },
+    { "channel": "discord", "accountId": "{{TINGWEI_BOT}}", "agentId": "tingwei" },
+    { "channel": "discord", "accountId": "{{ZHISUNESHI_BOT}}", "agentId": "zhisuneshi" },
+    { "channel": "discord", "accountId": "{{SHAOFU_BOT}}", "agentId": "shaofu" },
+    { "channel": "discord", "accountId": "{{LANGZHONGLING_BOT}}", "agentId": "langzhongling" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

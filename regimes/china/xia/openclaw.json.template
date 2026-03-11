@@ -1,0 +1,68 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "xia_wang",
+    "list": [
+      {
+        "id": "xia_wang",
+        "name": "大禹/夏王",
+        "description": "族长·决策者 — 部落联盟首领，最高决策权。统领全族，分派任务，裁决争端。治水精神，身先士卒。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["sikong", "situ", "sima", "muzheng"]
+        }
+      },
+      {
+        "id": "sikong",
+        "name": "司空",
+        "description": "工程·开发 — 掌管土木水利工程。负责代码开发、架构设计、基础设施建设。传承大禹治水之技艺。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "situ",
+        "name": "司徒",
+        "description": "教化·文档 — 掌管教化与民政。负责文档编撰、知识传承、团队培训、规范制定。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "sima",
+        "name": "司马",
+        "description": "军事·安全 — 掌管军事与防御。负责安全审查、风险评估、威胁防护、应急响应。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "muzheng",
+        "name": "牧正",
+        "description": "畜牧·资源管理 — 掌管牲畜与资源。负责资源调配、成本管控、资产盘点、运维保障。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{XIA_WANG_BOT}}", "agentId": "xia_wang" },
+    { "channel": "discord", "accountId": "{{SIKONG_BOT}}", "agentId": "sikong" },
+    { "channel": "discord", "accountId": "{{SITU_BOT}}", "agentId": "situ" },
+    { "channel": "discord", "accountId": "{{SIMA_BOT}}", "agentId": "sima" },
+    { "channel": "discord", "accountId": "{{MUZHENG_BOT}}", "agentId": "muzheng" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "qing",
+  "name": { "zh": "清朝", "en": "Qing Dynasty" },
+  "era": { "zh": "1644年-1912年", "en": "1644-1912 AD" },
+  "region": "china",
+  "system": { "zh": "军机处+满汉合作", "en": "Grand Council + Manchu-Han Cooperation" },
+  "description": {
+    "zh": "清朝以军机处为核心决策机构，军机大臣由皇帝亲选，直接承旨办事，决策迅速高效。实行满汉合作，六部设满汉双尚书，以满人为主导、汉人为辅助。总督巡抚制管理地方，都察院负责监察，形成了中央集权与地方治理并重的体系。",
+    "en": "The Qing Dynasty centered on the Grand Council as its core decision-making body, with councilors personally selected by the emperor for rapid, efficient governance. It practiced Manchu-Han cooperation with dual ministers in Six Ministries. Governors-General managed provinces while the Censorate provided oversight, balancing centralized power with provincial administration."
+  },
+  "agentCount": 8,
+  "tags": ["elite-council", "rapid-decision", "manchu-han"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

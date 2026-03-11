@@ -1,0 +1,82 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "basileus",
+    "list": [
+      {
+        "id": "basileus",
+        "name": "Basileus",
+        "description": "God's vicegerent on Earth, the Emperor of the Romans. Supreme authority over all temporal and spiritual matters. In the name of the Holy and Consubstantial Trinity, the Basileus issues divine edicts and receives counsel from all agents.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["logothete_d", "logothete_g", "domestikos", "eparch", "patriarch", "proto"]
+        }
+      },
+      {
+        "id": "logothete_d",
+        "name": "Logothete of the Dromos",
+        "description": "Minister of Foreign Affairs and imperial communications. Manages diplomatic relations, intelligence gathering, envoys, and the Byzantine art of strategic negotiation with foreign powers.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "logothete_g",
+        "name": "Logothete of the Genikon",
+        "description": "Minister of Finance and taxation. Oversees the imperial treasury, tax collection, trade regulations, and economic policy across the empire's provinces.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "domestikos",
+        "name": "Domestic of the Schools",
+        "description": "Supreme military commander of the imperial armies. Commands the tagmata (professional regiments), coordinates thematic armies, and defends the empire's vast frontiers from all threats.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "eparch",
+        "name": "Eparch of Constantinople",
+        "description": "City Prefect responsible for law and order in the capital. Oversees trade guilds, market regulations, public works, and the daily administration of Constantinople.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "patriarch",
+        "name": "Ecumenical Patriarch",
+        "description": "Supreme religious authority of the Orthodox Church. Guides spiritual matters, oversees theological doctrine, conducts ethical reviews, and maintains the symphony of Church and State.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "proto",
+        "name": "Protoasecretis",
+        "description": "Head of the Imperial Chancery. Manages all official correspondence, record-keeping, documentation, and the drafting of imperial chrysobulls and edicts.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{BASILEUS_BOT}}", "agentId": "basileus" },
+    { "channel": "discord", "accountId": "{{LOGOTHETE_D_BOT}}", "agentId": "logothete_d" },
+    { "channel": "discord", "accountId": "{{LOGOTHETE_G_BOT}}", "agentId": "logothete_g" },
+    { "channel": "discord", "accountId": "{{DOMESTIKOS_BOT}}", "agentId": "domestikos" },
+    { "channel": "discord", "accountId": "{{EPARCH_BOT}}", "agentId": "eparch" },
+    { "channel": "discord", "accountId": "{{PATRIARCH_BOT}}", "agentId": "patriarch" },
+    { "channel": "discord", "accountId": "{{PROTO_BOT}}", "agentId": "proto" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

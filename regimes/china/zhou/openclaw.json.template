@@ -1,0 +1,89 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "tianzi",
+    "list": [
+      {
+        "id": "tianzi",
+        "name": "天子",
+        "description": "天下共主 — 象征性协调者。受命于天，分封诸侯，维系天下秩序。以礼乐教化统领全局，不直接干预封国事务。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["taizai", "taishi", "taibao", "gong_a", "gong_b", "hou", "sikou"]
+        }
+      },
+      {
+        "id": "taizai",
+        "name": "太宰",
+        "description": "行政首长 — 百官之长，辅佐天子治理天下。负责行政管理、政令传达、百官考核、流程规范。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "taishi",
+        "name": "太师",
+        "description": "军事·技术 — 三公之首，掌管军事与技术。负责代码开发、架构设计、技术攻关、系统防御。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "taibao",
+        "name": "太保",
+        "description": "教育·文档 — 三公之一，掌管教育与礼仪。负责文档编撰、知识传承、培训教化、规范制定。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "gong_a",
+        "name": "公爵A",
+        "description": "诸侯·独立团队A — 受封一方，在封国内享有高度自治。负责独立项目/模块的全生命周期管理。定期朝贡（汇报）。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "gong_b",
+        "name": "公爵B",
+        "description": "诸侯·独立团队B — 受封一方，在封国内享有高度自治。负责独立项目/模块的全生命周期管理。定期朝贡（汇报）。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "hou",
+        "name": "侯爵",
+        "description": "诸侯·独立团队C — 受封边疆，守卫一方。负责独立项目/模块管理，兼顾边界安全与外部集成。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "sikou",
+        "name": "司寇",
+        "description": "司法·合规 — 掌管刑狱与司法。负责合规检查、代码审查、质量保障、安全审计。以周礼为准绳。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{TIANZI_BOT}}", "agentId": "tianzi" },
+    { "channel": "discord", "accountId": "{{TAIZAI_BOT}}", "agentId": "taizai" },
+    { "channel": "discord", "accountId": "{{TAISHI_BOT}}", "agentId": "taishi" },
+    { "channel": "discord", "accountId": "{{TAIBAO_BOT}}", "agentId": "taibao" },
+    { "channel": "discord", "accountId": "{{GONG_A_BOT}}", "agentId": "gong_a" },
+    { "channel": "discord", "accountId": "{{GONG_B_BOT}}", "agentId": "gong_b" },
+    { "channel": "discord", "accountId": "{{HOU_BOT}}", "agentId": "hou" },
+    { "channel": "discord", "accountId": "{{SIKOU_BOT}}", "agentId": "sikou" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "chaoting",
+    "list": [
+      {
+        "id": "chaoting",
+        "name": "朝廷",
+        "description": "名义中央 — 名义上的最高权力中枢，协调各方势力，发布政令。实际控制力有限。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["jiedushi_a", "jiedushi_b", "jiedushi_c", "zhangshji"]
+        }
+      },
+      {
+        "id": "jiedushi_a",
+        "name": "节度使A",
+        "description": "军阀A / 团队A — 独立运作的地方势力，拥有自己的军队和地盘。擅长某一技术领域。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "jiedushi_b",
+        "name": "节度使B",
+        "description": "军阀B / 团队B — 独立运作的地方势力，与其他节度使竞争。擅长另一技术领域。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "jiedushi_c",
+        "name": "节度使C",
+        "description": "军阀C / 团队C — 独立运作的地方势力，割据一方。拥有独特技术专长。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "zhangshji",
+        "name": "掌书记",
+        "description": "文书协调 — 各方之间的文书传递与协调沟通，记录会议与决策。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{CHAOTING_BOT}}", "agentId": "chaoting" },
+    { "channel": "discord", "accountId": "{{JIEDUSHI_A_BOT}}", "agentId": "jiedushi_a" },
+    { "channel": "discord", "accountId": "{{JIEDUSHI_B_BOT}}", "agentId": "jiedushi_b" },
+    { "channel": "discord", "accountId": "{{JIEDUSHI_C_BOT}}", "agentId": "jiedushi_c" },
+    { "channel": "discord", "accountId": "{{ZHANGSHJI_BOT}}", "agentId": "zhangshji" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

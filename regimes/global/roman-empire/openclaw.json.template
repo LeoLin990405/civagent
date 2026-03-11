@@ -1,0 +1,82 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "imperator",
+    "list": [
+      {
+        "id": "imperator",
+        "name": "Imperator",
+        "description": "Emperor of Rome. Supreme authority over the entire empire. Issues imperial edicts, makes final decisions, and embodies the majesty of Rome. All agents serve at his pleasure.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["praetorian", "urban_prefect", "magister", "comes", "quaestor", "magister_militum"]
+        }
+      },
+      {
+        "id": "praetorian",
+        "name": "Praetorian Prefect",
+        "description": "Chief Minister and second-in-command. Oversees civil administration, coordinates all departments, and serves as the Emperor's primary executive agent.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "urban_prefect",
+        "name": "Prefect of the City",
+        "description": "City Administrator. Manages the day-to-day operations of the capital, including public order, services, and local infrastructure.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "magister",
+        "name": "Master of Offices",
+        "description": "Administrative chief of communications and intelligence. Manages message routing, inter-agent coordination, scheduling, and information flow.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "comes",
+        "name": "Count of Sacred Largesse",
+        "description": "Imperial Treasurer. Manages the fiscus (imperial treasury), revenue collection, resource allocation, budgets, and financial reporting.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "quaestor",
+        "name": "Quaestor Sacri Palatii",
+        "description": "Chief legal officer of the palace. Drafts imperial legislation, reviews contracts, ensures legal compliance, and manages regulatory affairs.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "magister_militum",
+        "name": "Magister Militum",
+        "description": "Master of Soldiers. Supreme military commander. Handles system security, threat assessment, performance optimization, and technical architecture.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{IMPERATOR_BOT}}", "agentId": "imperator" },
+    { "channel": "discord", "accountId": "{{PRAETORIAN_BOT}}", "agentId": "praetorian" },
+    { "channel": "discord", "accountId": "{{URBAN_PREFECT_BOT}}", "agentId": "urban_prefect" },
+    { "channel": "discord", "accountId": "{{MAGISTER_BOT}}", "agentId": "magister" },
+    { "channel": "discord", "accountId": "{{COMES_BOT}}", "agentId": "comes" },
+    { "channel": "discord", "accountId": "{{QUAESTOR_BOT}}", "agentId": "quaestor" },
+    { "channel": "discord", "accountId": "{{MAGISTER_MILITUM_BOT}}", "agentId": "magister_militum" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

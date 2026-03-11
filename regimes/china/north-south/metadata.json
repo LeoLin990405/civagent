@@ -1,0 +1,14 @@
+{
+  "id": "north-south",
+  "name": { "zh": "南北朝", "en": "Northern and Southern Dynasties" },
+  "era": { "zh": "420年-589年", "en": "420-589 AD" },
+  "region": "china",
+  "system": { "zh": "门阀士族制", "en": "Aristocratic Clan System" },
+  "description": {
+    "zh": "南北朝是中国历史上南北对峙的分裂时期。南朝（宋齐梁陈）偏安江南，重文轻武，门阀士族把控政治；北朝（北魏、东西魏、北齐北周）由鲜卑等少数民族建立，尚武崇实。南北文化碰撞融合，佛教在此时期空前兴盛，「南朝四百八十寺」成为时代标志。",
+    "en": "The Northern and Southern Dynasties was a period of north-south division in Chinese history. The Southern Dynasties (Song, Qi, Liang, Chen) held the Jiangnan region, favoring literary culture with aristocratic clans dominating politics. The Northern Dynasties (Northern Wei, Eastern/Western Wei, Northern Qi/Zhou), established by Xianbei and other non-Han peoples, valued martial prowess. Cultural fusion between north and south occurred alongside unprecedented Buddhist flourishing."
+  },
+  "agentCount": 6,
+  "tags": ["divided", "aristocratic", "clan-politics"],
+  "orchestrationPattern": "federated-autonomy"
+}

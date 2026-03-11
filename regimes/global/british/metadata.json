@@ -1,0 +1,14 @@
+{
+  "id": "british",
+  "name": { "zh": "英国议会制", "en": "British Parliamentary System" },
+  "era": { "zh": "1689年至今", "en": "1689-present" },
+  "region": "global",
+  "system": { "zh": "君主立宪制", "en": "Constitutional Monarchy" },
+  "description": {
+    "zh": "英国议会制是现代民主制度的母体，源于1689年光荣革命后的《权利法案》。君主统而不治，首相作为下议院多数党领袖掌握实权。议会由下议院（民选）和上议院（贵族及任命）组成，享有立法主权。普通法传统、忠诚反对派、质询时间等制度构成了独特的宪政文化。",
+    "en": "The British Parliamentary System is the mother of modern democracies, originating from the Bill of Rights after the Glorious Revolution of 1689. The Crown reigns but does not rule; the Prime Minister, as leader of the Commons majority, holds real power. Parliament comprises the House of Commons (elected) and House of Lords (hereditary and appointed), exercising legislative sovereignty. Common law tradition, loyal opposition, and Question Time form a unique constitutional culture."
+  },
+  "agentCount": 8,
+  "tags": ["parliamentary", "constitutional", "monarchy", "common-law"],
+  "orchestrationPattern": "checks-and-balances"
+}

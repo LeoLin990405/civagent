@@ -1,0 +1,14 @@
+{
+  "id": "mongol",
+  "name": { "zh": "蒙古帝国", "en": "Mongol Empire" },
+  "era": { "zh": "1206年-1368年", "en": "1206-1368" },
+  "region": "global",
+  "system": { "zh": "汗国-忽里勒台", "en": "Khanate-Kurultai" },
+  "description": {
+    "zh": "蒙古帝国是人类历史上最大的连续陆地帝国，由成吉思汗于1206年建立。忽里勒台（大会）选举大汗，那颜（将领）凭军功而非血统获得权力。帝国以雅萨（大法典）为最高法律，实行宗教宽容和唯才是举，通过驿站制度（站赤）连接横跨欧亚的庞大疆域。",
+    "en": "The Mongol Empire was the largest contiguous land empire in human history, founded by Genghis Khan in 1206. The Kurultai (grand assembly) elected the Great Khan, and noyans (commanders) earned power through merit, not birth. The empire upheld the Yasa (Great Law Code) as supreme law, practiced religious tolerance and meritocracy, and connected its vast Eurasian domain through the yam (postal relay) system."
+  },
+  "agentCount": 6,
+  "tags": ["kurultai", "steppe", "meritocratic", "conquest"],
+  "orchestrationPattern": "democratic-council"
+}

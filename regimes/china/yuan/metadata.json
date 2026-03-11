@@ -1,0 +1,14 @@
+{
+  "id": "yuan",
+  "name": { "zh": "元朝", "en": "Yuan Dynasty" },
+  "era": { "zh": "1271年-1368年", "en": "1271-1368 AD" },
+  "region": "china",
+  "system": { "zh": "行省制", "en": "Provincial System" },
+  "description": {
+    "zh": "蒙古人建立的大一统王朝，疆域横跨欧亚。忽必烈以中书省为中央决策机构，枢密院掌军事，御史台主监察，各行省分治地方。行省制度影响深远，奠定了中国此后的省级行政区划。多民族帝国的治理模式，融合草原与中原制度。",
+    "en": "A Mongol-founded unified dynasty spanning Eurasia. Kublai Khan centralized power through the Zhongshu Secretariat, the Bureau of Military Affairs, and the Censorate. Provincial administrations governed vast territories. The provincial system profoundly shaped China's administrative geography. A multi-ethnic empire blending steppe and Chinese governance traditions."
+  },
+  "agentCount": 7,
+  "tags": ["mongol", "centralized", "provincial", "multi-ethnic"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

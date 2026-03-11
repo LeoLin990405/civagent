@@ -1,0 +1,14 @@
+{
+  "id": "ottoman",
+  "name": { "zh": "奥斯曼帝国", "en": "Ottoman Empire" },
+  "era": { "zh": "1299年-1922年", "en": "1299-1922" },
+  "region": "global",
+  "system": { "zh": "苏丹-迪万制", "en": "Sultan-Divan System" },
+  "description": {
+    "zh": "奥斯曼帝国横跨六个世纪，统治三大洲，是伊斯兰世界最持久的帝国。苏丹作为安拉在世间之影统治一切，通过迪万（御前会议）和大维齐尔体系治理国家。独特的德夫希尔梅（少年征募）制度从基督教臣民中选拔精英，培养为忠于苏丹的行政官员和近卫军。米勒特制度允许各宗教社群自治。",
+    "en": "The Ottoman Empire spanned six centuries across three continents, the most enduring empire in the Islamic world. The Sultan ruled as the Shadow of God on Earth through the Divan (Imperial Council) and Grand Vizier system. The unique devshirme (youth levy) recruited elites from Christian subjects, training them as loyal administrators and Janissaries. The millet system granted religious communities self-governance."
+  },
+  "agentCount": 7,
+  "tags": ["sultan", "divan", "devshirme", "millet"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

@@ -1,0 +1,89 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "junji",
+    "list": [
+      {
+        "id": "junji",
+        "name": "军机大臣",
+        "description": "军机处首席大臣，直接承旨办事。核心决策、统筹全局、协调六部与地方。清代权力中枢。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["neige", "bingbu", "hubu", "libu", "libu_ritual", "zongdu", "duchayuan"]
+        }
+      },
+      {
+        "id": "neige",
+        "name": "内阁学士",
+        "description": "掌文书拟定。负责技术文档、设计文档、知识库维护、公文起草。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "bingbu",
+        "name": "兵部",
+        "description": "六部之一，掌军事武备。负责技术架构、系统开发、核心编码、架构设计。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "hubu",
+        "name": "户部",
+        "description": "六部之一，掌户籍财政。负责成本核算、预算管理、数据分析、资源调配。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "libu",
+        "name": "吏部",
+        "description": "六部之一，掌官员铨选。负责人事管理、项目管理、团队协调、任务分配。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "libu_ritual",
+        "name": "礼部",
+        "description": "六部之一，掌礼仪科举。负责文案创作、品牌营销、社媒运营、对外传播。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "zongdu",
+        "name": "总督",
+        "description": "掌地方军政。负责部署发布、运维管理、区域化部署、边缘节点管理。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "duchayuan",
+        "name": "都察院",
+        "description": "掌监察纠弹。负责代码审查、质量监控、合规检查、风险评估。独立监察权。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{JUNJI_BOT}}", "agentId": "junji" },
+    { "channel": "discord", "accountId": "{{NEIGE_BOT}}", "agentId": "neige" },
+    { "channel": "discord", "accountId": "{{BINGBU_BOT}}", "agentId": "bingbu" },
+    { "channel": "discord", "accountId": "{{HUBU_BOT}}", "agentId": "hubu" },
+    { "channel": "discord", "accountId": "{{LIBU_BOT}}", "agentId": "libu" },
+    { "channel": "discord", "accountId": "{{LIBU_RITUAL_BOT}}", "agentId": "libu_ritual" },
+    { "channel": "discord", "accountId": "{{ZONGDU_BOT}}", "agentId": "zongdu" },
+    { "channel": "discord", "accountId": "{{DUCHAYUAN_BOT}}", "agentId": "duchayuan" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

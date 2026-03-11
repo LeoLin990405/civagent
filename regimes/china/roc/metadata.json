@@ -1,0 +1,14 @@
+{
+  "id": "roc",
+  "name": { "zh": "中华民国", "en": "Republic of China" },
+  "era": { "zh": "1912年-1949年", "en": "1912-1949 AD" },
+  "region": "china",
+  "system": { "zh": "五权分立", "en": "Five-Power Constitution" },
+  "description": {
+    "zh": "亚洲第一个民主共和国。孙中山先生在西方三权分立基础上，融合中国传统的考试和监察制度，创立五权宪法：行政、立法、司法、考试、监察五院分权制衡。国民大会代表全体国民行使政权。三民主义（民族、民权、民生）为建国纲领。",
+    "en": "Asia's first democratic republic. Dr. Sun Yat-sen augmented Western separation of powers with traditional Chinese examination and censorate systems, creating the Five-Power Constitution: Executive, Legislative, Judicial, Examination, and Control Yuans. The National Assembly represented the people's sovereignty. The Three Principles of the People guided nation-building."
+  },
+  "agentCount": 7,
+  "tags": ["republican", "five-powers", "modern", "democratic"],
+  "orchestrationPattern": "checks-and-balances"
+}

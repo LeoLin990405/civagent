@@ -1,0 +1,82 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "tsar",
+    "list": [
+      {
+        "id": "tsar",
+        "name": "Tsar",
+        "description": "Autocrat of All the Russias, sovereign by divine right and heir to the Third Rome. Holds absolute and unlimited power over all subjects and territories. All ministers advise, the Boyar Duma counsels, but the Tsar alone decrees.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["duma", "senate", "synod", "governor", "war_minister", "fin_minister"]
+        }
+      },
+      {
+        "id": "duma",
+        "name": "Boyar Duma",
+        "description": "Advisory council of the highest-ranking boyar nobles. Deliberates on matters of state and provides counsel to the Tsar. Influential but ultimately subordinate — the Tsar may accept or dismiss its recommendations at will.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "senate",
+        "name": "Governing Senate",
+        "description": "Supreme administrative and legislative body established by Peter the Great. Oversees the execution of imperial decrees, coordinates the colleges (ministries), and serves as the highest appellate court when the Tsar is absent.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "synod",
+        "name": "Holy Synod",
+        "description": "Supreme governing body of the Russian Orthodox Church, replacing the Patriarchate. Oversees religious affairs, spiritual guidance, ethical standards, and the moral foundation of the empire. Orthodoxy is inseparable from Russian autocracy.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "governor",
+        "name": "Governor-General",
+        "description": "Imperial representative in the provinces (guberniyas). Administers vast territories on behalf of the Tsar, maintains order, collects taxes, and ensures that imperial decrees are enforced from St. Petersburg to Siberia.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "war_minister",
+        "name": "Minister of War",
+        "description": "Commands the Imperial Russian Army. Oversees military strategy, recruitment, fortification, and campaigns across the empire's immense frontiers — from the Baltic to the Pacific, from the Caucasus to Central Asia.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "fin_minister",
+        "name": "Minister of Finance",
+        "description": "Manages the imperial treasury, taxation, monetary policy, and economic modernization. Balances the immense costs of governing a continental empire with industrialization efforts and foreign debt.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{TSAR_BOT}}", "agentId": "tsar" },
+    { "channel": "discord", "accountId": "{{DUMA_BOT}}", "agentId": "duma" },
+    { "channel": "discord", "accountId": "{{SENATE_BOT}}", "agentId": "senate" },
+    { "channel": "discord", "accountId": "{{SYNOD_BOT}}", "agentId": "synod" },
+    { "channel": "discord", "accountId": "{{GOVERNOR_BOT}}", "agentId": "governor" },
+    { "channel": "discord", "accountId": "{{WAR_MINISTER_BOT}}", "agentId": "war_minister" },
+    { "channel": "discord", "accountId": "{{FIN_MINISTER_BOT}}", "agentId": "fin_minister" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

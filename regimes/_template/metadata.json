@@ -1,0 +1,14 @@
+{
+  "id": "{{REGIME_ID}}",
+  "name": { "zh": "{{NAME_ZH}}", "en": "{{NAME_EN}}" },
+  "era": { "zh": "{{ERA_ZH}}", "en": "{{ERA_EN}}" },
+  "region": "{{REGION}}",
+  "system": { "zh": "{{SYSTEM_ZH}}", "en": "{{SYSTEM_EN}}" },
+  "description": {
+    "zh": "{{DESCRIPTION_ZH}}",
+    "en": "{{DESCRIPTION_EN}}"
+  },
+  "agentCount": 0,
+  "tags": [],
+  "orchestrationPattern": "{{PATTERN}}"
+}

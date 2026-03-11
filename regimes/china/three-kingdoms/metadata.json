@@ -1,0 +1,14 @@
+{
+  "id": "three-kingdoms",
+  "name": { "zh": "三国", "en": "Three Kingdoms" },
+  "era": { "zh": "220年-280年", "en": "220-280 AD" },
+  "region": "china",
+  "system": { "zh": "三国并立", "en": "Three Rival Kingdoms" },
+  "description": {
+    "zh": "三国时期，魏、蜀、吴三国鼎立，各自为政。魏国（曹魏）务实高效，继承汉制；蜀国（蜀汉）以仁义忠信为本，丞相诸葛亮鞠躬尽瘁；吴国（东吴）灵活多变，善于水战外交。三方竞争博弈，亦有联盟合作，是中国历史上最经典的多方博弈格局。",
+    "en": "During the Three Kingdoms period, Wei, Shu, and Wu coexisted as rival states. Wei (Cao Wei) was pragmatic and efficient; Shu (Shu Han) upheld righteousness with Zhuge Liang's devoted service; Wu (Eastern Wu) was flexible and adept at diplomacy. The three competed yet sometimes allied—the most classic multi-party strategic dynamic in Chinese history."
+  },
+  "agentCount": 9,
+  "tags": ["competitive", "federated", "rival-states"],
+  "orchestrationPattern": "federated-autonomy"
+}

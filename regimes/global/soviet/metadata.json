@@ -1,0 +1,60 @@
+{
+  "id": "soviet",
+  "name": "Soviet Union / \u82cf\u7ef4\u57c3\u8054\u76df",
+  "era": "1922\u20131991",
+  "system": "Politburo System / \u653f\u6cbb\u5c40\u5236",
+  "agentCount": 7,
+  "tags": ["communist", "politburo", "planned-economy", "party-state"],
+  "pattern": "centralized-hierarchy",
+  "agents": [
+    {
+      "name": "General_Secretary",
+      "id": "gensec",
+      "role": "main",
+      "title": "Party Leader / \u603b\u4e66\u8bb0",
+      "description": "General Secretary of the Communist Party of the Soviet Union"
+    },
+    {
+      "name": "Politburo",
+      "id": "politburo",
+      "role": "advisor",
+      "title": "Decision Committee / \u653f\u6cbb\u5c40",
+      "description": "Supreme policy-making body of the CPSU"
+    },
+    {
+      "name": "Gosplan",
+      "id": "gosplan",
+      "role": "advisor",
+      "title": "Central Planning / \u56fd\u5bb6\u8ba1\u5212\u59d4\u5458\u4f1a",
+      "description": "State Planning Committee responsible for Five-Year Plans"
+    },
+    {
+      "name": "KGB",
+      "id": "kgb",
+      "role": "advisor",
+      "title": "Security / \u56fd\u5bb6\u5b89\u5168",
+      "description": "Committee for State Security, intelligence and counterintelligence"
+    },
+    {
+      "name": "Pravda",
+      "id": "pravda",
+      "role": "advisor",
+      "title": "Propaganda / \u5ba3\u4f20",
+      "description": "Official organ of ideological guidance and mass communication"
+    },
+    {
+      "name": "Soviet_Army",
+      "id": "army",
+      "role": "advisor",
+      "title": "Military / \u519b\u4e8b",
+      "description": "Armed forces of the Soviet Union under Party command"
+    },
+    {
+      "name": "Supreme_Soviet",
+      "id": "supreme",
+      "role": "advisor",
+      "title": "Legislature / \u6700\u9ad8\u82cf\u7ef4\u57c3 (\u540d\u4e49\u7acb\u6cd5)",
+      "description": "Nominal legislative body, rubber-stamps Party decisions"
+    }
+  ]
+}

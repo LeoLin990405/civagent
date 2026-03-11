@@ -1,0 +1,14 @@
+{
+  "id": "ming",
+  "name": { "zh": "明朝", "en": "Ming Dynasty" },
+  "era": { "zh": "1368年-1644年", "en": "1368-1644 AD" },
+  "region": "china",
+  "system": { "zh": "内阁制+司礼监", "en": "Grand Secretariat + Directorate of Ceremonial" },
+  "description": {
+    "zh": "明朝废除丞相制度，皇权空前强化。内阁负责票拟（起草建议），司礼监负责批红（代行批准），形成文臣与宦官的双轨决策体系。六部直接对皇帝负责，内阁与司礼监相互制约又相互依存，是中国历史上独特的双权力中心制度。",
+    "en": "The Ming Dynasty abolished the chancellorship, concentrating imperial power. The Grand Secretariat drafted proposals (ticket-writing) while the Directorate of Ceremonial approved them (vermillion-marking), creating a dual civil-eunuch decision track. Six Ministries reported directly to the emperor, with Secretariat and Directorate balancing each other—a unique dual-power center in Chinese history."
+  },
+  "agentCount": 8,
+  "tags": ["dual-power", "eunuch-politics", "autocratic"],
+  "orchestrationPattern": "dual-power"
+}

@@ -1,0 +1,14 @@
+{
+  "id": "persian",
+  "name": { "zh": "波斯阿契美尼德帝国", "en": "Persian Achaemenid Empire" },
+  "era": { "zh": "公元前550年-公元前330年", "en": "550-330 BC" },
+  "region": "global",
+  "system": { "zh": "总督制", "en": "Satrap System" },
+  "description": {
+    "zh": "阿契美尼德帝国是人类历史上第一个真正的世界帝国，疆域从埃及延伸至印度河。万王之王（Shahanshah）通过总督（Satrap）制度管理庞大领土，允许各民族保留宗教和习俗。皇帝之眼（Royal Eye）秘密巡视各省确保忠诚。以宗教宽容、高效行政和多元文化治理闻名。",
+    "en": "The Achaemenid Empire was history's first true world empire, stretching from Egypt to the Indus River. The Shahanshah (King of Kings) governed vast territories through the Satrap system, allowing subject peoples to retain their religions and customs. The Royal Eye secretly inspected provinces to ensure loyalty. Renowned for religious tolerance, administrative efficiency, and multicultural governance."
+  },
+  "agentCount": 7,
+  "tags": ["satrapy", "king-of-kings", "tolerant", "multi-ethnic"],
+  "orchestrationPattern": "federated-autonomy"
+}

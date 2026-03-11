@@ -1,0 +1,14 @@
+{
+  "id": "russian",
+  "name": { "zh": "俄罗斯沙皇制", "en": "Russian Tsardom" },
+  "era": { "zh": "1547-1917年", "en": "1547-1917 AD" },
+  "region": "global",
+  "system": { "zh": "专制+贵族杜马", "en": "Autocracy + Boyar Council" },
+  "description": {
+    "zh": "俄罗斯沙皇制自伊凡四世加冕沙皇始，历经三百七十年，直至1917年革命终结。沙皇自称'全俄罗斯的专制君主'，以'第三罗马'自居，继承拜占庭的东正教传统与罗马的帝国遗产。贵族杜马名义上辅佐沙皇，但最终决策权始终在沙皇一人。幅员辽阔的帝国依靠强大的中央集权和总督体系治理。",
+    "en": "The Russian Tsardom began with Ivan IV's coronation as Tsar and endured for 370 years until the 1917 Revolution. The Tsar styled himself 'Autocrat of All the Russias,' claiming the mantle of the 'Third Rome' and inheriting Byzantine Orthodox tradition and Roman imperial legacy. The Boyar Duma nominally advised the Tsar, but ultimate authority always rested with the sovereign alone. The vast empire was governed through a powerful central authority and a system of governors-general."
+  },
+  "agentCount": 7,
+  "tags": ["autocratic", "vast-empire", "orthodox", "reform-reaction"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

@@ -1,0 +1,75 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "shang_wang",
+    "list": [
+      {
+        "id": "shang_wang",
+        "name": "商王",
+        "description": "神权决策者 — 天命所归，王权神授。统领朝政，凡重大决策必先问卜于天，再行裁断。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["dawu", "qingshiliao", "taishi", "xiaochen", "zai"]
+        }
+      },
+      {
+        "id": "dawu",
+        "name": "大巫",
+        "description": "占卜·分析预测 — 沟通天地鬼神，掌管甲骨占卜。负责数据分析、趋势预测、风险评估、可行性论证。凡事先卜后决。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "qingshiliao",
+        "name": "卿事寮",
+        "description": "行政·执行 — 朝廷行政机构，负责政令执行、任务推进、跨部门协调、流程管理。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "taishi",
+        "name": "太师",
+        "description": "军事·技术 — 掌管军事与技术。负责代码开发、架构设计、技术攻关、青铜器（核心技术）铸造。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "xiaochen",
+        "name": "小臣",
+        "description": "记录·文档 — 掌管甲骨刻辞与档案记录。负责文档编撰、会议记录、知识库维护、日志管理。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "zai",
+        "name": "宰",
+        "description": "内务·运维 — 掌管王室内务与后勤。负责运维部署、环境管理、资源调配、日常维护。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{SHANG_WANG_BOT}}", "agentId": "shang_wang" },
+    { "channel": "discord", "accountId": "{{DAWU_BOT}}", "agentId": "dawu" },
+    { "channel": "discord", "accountId": "{{QINGSHILIAO_BOT}}", "agentId": "qingshiliao" },
+    { "channel": "discord", "accountId": "{{TAISHI_BOT}}", "agentId": "taishi" },
+    { "channel": "discord", "accountId": "{{XIAOCHEN_BOT}}", "agentId": "xiaochen" },
+    { "channel": "discord", "accountId": "{{ZAI_BOT}}", "agentId": "zai" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

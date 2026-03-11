@@ -1,0 +1,82 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "zhongshu",
+    "list": [
+      {
+        "id": "zhongshu",
+        "name": "中书省",
+        "description": "中央决策 — 大汗之下的最高行政机构，总理政务，统筹调度各院各省。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["shumi", "yushitai", "xingsheng_a", "xingsheng_b", "xuanzheng", "liwen"]
+        }
+      },
+      {
+        "id": "shumi",
+        "name": "枢密院",
+        "description": "军事技术 — 掌军机要务，对应软件工程、架构设计、技术攻坚。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "yushitai",
+        "name": "御史台",
+        "description": "监察审查 — 纠察百官、代码审查、质量把关、合规检查。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "xingsheng_a",
+        "name": "行省A",
+        "description": "地方部署A — 负责特定区域/环境的部署运维，独立运作，定期向中书省汇报。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "xingsheng_b",
+        "name": "行省B",
+        "description": "地方部署B — 负责另一区域/环境的部署运维，与行省A平级，各管辖区。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "xuanzheng",
+        "name": "宣政院",
+        "description": "宗教文化 — 管理多元文化事务，对应文档、国际化、多语言支持。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "liwen",
+        "name": "理问所",
+        "description": "司法合规 — 审理案件、法务审查、合规检查、安全评估。",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{ZHONGSHU_BOT}}", "agentId": "zhongshu" },
+    { "channel": "discord", "accountId": "{{SHUMI_BOT}}", "agentId": "shumi" },
+    { "channel": "discord", "accountId": "{{YUSHITAI_BOT}}", "agentId": "yushitai" },
+    { "channel": "discord", "accountId": "{{XINGSHENG_A_BOT}}", "agentId": "xingsheng_a" },
+    { "channel": "discord", "accountId": "{{XINGSHENG_B_BOT}}", "agentId": "xingsheng_b" },
+    { "channel": "discord", "accountId": "{{XUANZHENG_BOT}}", "agentId": "xuanzheng" },
+    { "channel": "discord", "accountId": "{{LIWEN_BOT}}", "agentId": "liwen" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

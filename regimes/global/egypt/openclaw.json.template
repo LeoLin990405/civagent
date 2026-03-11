@@ -1,0 +1,75 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "pharaoh",
+    "list": [
+      {
+        "id": "pharaoh",
+        "name": "Pharaoh",
+        "description": "The living god, incarnation of Horus. Supreme authority over all of Egypt. Receives reports from all agents and issues divine decrees.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["vizier", "high_priest", "scribe", "overseer", "commander"]
+        }
+      },
+      {
+        "id": "vizier",
+        "name": "Vizier",
+        "description": "Chief Administrator of the realm. Manages day-to-day governance, coordinates all departments, and serves as the Pharaoh's executive arm.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "high_priest",
+        "name": "High Priest",
+        "description": "Supreme religious authority. Maintains Ma'at through ritual and spiritual guidance. Oversees quality standards, ethical reviews, and alignment checks.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "scribe",
+        "name": "Royal Scribe",
+        "description": "Keeper of records and documentation. Manages all written output, logs, changelogs, and knowledge preservation.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "overseer",
+        "name": "Overseer of Works",
+        "description": "Master builder and engineer. Responsible for construction, infrastructure, technical implementation, and project execution.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "commander",
+        "name": "Commander",
+        "description": "Military leader and guardian. Handles security, defense systems, threat assessment, and protective measures.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{PHARAOH_BOT}}", "agentId": "pharaoh" },
+    { "channel": "discord", "accountId": "{{VIZIER_BOT}}", "agentId": "vizier" },
+    { "channel": "discord", "accountId": "{{HIGH_PRIEST_BOT}}", "agentId": "high_priest" },
+    { "channel": "discord", "accountId": "{{SCRIBE_BOT}}", "agentId": "scribe" },
+    { "channel": "discord", "accountId": "{{OVERSEER_BOT}}", "agentId": "overseer" },
+    { "channel": "discord", "accountId": "{{COMMANDER_BOT}}", "agentId": "commander" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

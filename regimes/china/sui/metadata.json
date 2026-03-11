@@ -1,0 +1,14 @@
+{
+  "id": "sui",
+  "name": { "zh": "隋朝", "en": "Sui Dynasty" },
+  "era": { "zh": "581年-618年", "en": "581-618 AD" },
+  "region": "china",
+  "system": { "zh": "三省六部制（初创）", "en": "Three Departments Six Ministries (Proto)" },
+  "description": {
+    "zh": "隋文帝杨坚结束南北朝分裂，开创三省六部制原型和科举制度。内史省起草、门下省审核、尚书省执行的分权架构影响此后一千三百年。隋炀帝修大运河、建东都，展现大工程精神，但急功近利导致二世而亡。",
+    "en": "Emperor Wen of Sui ended centuries of division, establishing the proto Three Departments system and the imperial examination. The separation of drafting (Neishi), review (Menxia), and execution (Shangshu) influenced governance for 1,300 years. Emperor Yang's grand projects like the Grand Canal showcased ambition but led to the dynasty's rapid collapse."
+  },
+  "agentCount": 7,
+  "tags": ["proto-bureaucracy", "reunification", "grand-projects"],
+  "orchestrationPattern": "checks-and-balances"
+}

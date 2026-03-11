@@ -1,0 +1,14 @@
+{
+  "id": "song",
+  "name": { "zh": "宋朝", "en": "Song Dynasty" },
+  "era": { "zh": "960年-1279年", "en": "960-1279 AD" },
+  "region": "china",
+  "system": { "zh": "二府三司制", "en": "Two Offices Three Commissions System" },
+  "description": {
+    "zh": "宋朝实行二府三司制，中书门下掌行政，枢密院掌军事，三司掌财政，三权分立、互不统属。崇文抑武，以文驭武，建立了中国历史上文官治国最彻底的政治体系。理学兴盛，注重程序正义，决策讲求论证。",
+    "en": "The Song Dynasty implemented the Two Offices Three Commissions system: Zhongshu-Menxia for administration, Privy Council for military, and Three Commissions for finance—three powers separated and independent. It established the most thorough civilian-supremacy system in Chinese history, with Neo-Confucianism emphasizing procedural justice and evidence-based decisions."
+  },
+  "agentCount": 8,
+  "tags": ["civilian-supremacy", "checks-and-balances", "bureaucratic"],
+  "orchestrationPattern": "checks-and-balances"
+}

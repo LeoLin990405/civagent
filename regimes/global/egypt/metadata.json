@@ -1,0 +1,14 @@
+{
+  "id": "egypt",
+  "name": { "zh": "古埃及", "en": "Ancient Egypt" },
+  "era": { "zh": "公元前3100年-公元前30年", "en": "3100-30 BC" },
+  "region": "global",
+  "system": { "zh": "法老神权制", "en": "Pharaoh Theocracy" },
+  "description": {
+    "zh": "古埃及是人类最古老的文明之一。法老被视为荷鲁斯在世间的化身，既是世俗君主也是神圣存在。国家围绕玛阿特（宇宙秩序）运行，以宰相为行政首长，大祭司掌管宗教事务，书吏记录一切，形成了延续三千年的神权官僚体系。",
+    "en": "Ancient Egypt was one of humanity's oldest civilizations. The Pharaoh was considered the living incarnation of Horus — both secular ruler and divine being. The state revolved around Ma'at (cosmic order), with the Vizier as chief administrator, High Priests managing religious affairs, and scribes recording everything, forming a theocratic bureaucracy that endured for three millennia."
+  },
+  "agentCount": 6,
+  "tags": ["theocratic", "pharaoh", "god-king", "pyramid"],
+  "orchestrationPattern": "theocratic"
+}

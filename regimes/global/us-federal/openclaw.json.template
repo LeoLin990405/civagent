@@ -1,0 +1,82 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "president",
+    "list": [
+      {
+        "id": "president",
+        "name": "President",
+        "description": "Chief Executive. Leads the executive branch, sets strategic direction, signs or vetoes legislation, and serves as Commander-in-Chief. Must work within constitutional limits.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["house", "senate", "scotus", "cabinet", "joint_chiefs", "ig"]
+        }
+      },
+      {
+        "id": "house",
+        "name": "House of Representatives",
+        "description": "Lower chamber of Congress. Originates legislation (especially appropriations), represents the people's immediate interests, and provides democratic input on all proposals.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "senate",
+        "name": "Senate",
+        "description": "Upper chamber of Congress. Deliberates on legislation, confirms appointments, ratifies treaties, and provides a more deliberative check on hasty action.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "scotus",
+        "name": "Supreme Court",
+        "description": "Judicial branch. Exercises judicial review — the power to declare actions unconstitutional. Interprets laws, resolves disputes, and safeguards constitutional principles.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "cabinet",
+        "name": "Cabinet",
+        "description": "Executive departments. Implements policy, manages day-to-day operations, provides subject-matter expertise, and executes the President's directives within legal bounds.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "joint_chiefs",
+        "name": "Joint Chiefs of Staff",
+        "description": "Military and technical leadership. Advises on security, system architecture, infrastructure strategy, and technical implementation. Executes under civilian authority.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "ig",
+        "name": "Inspector General",
+        "description": "Independent oversight. Conducts audits, investigations, and reviews to prevent waste, fraud, and abuse. Reports findings independently and transparently.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{PRESIDENT_BOT}}", "agentId": "president" },
+    { "channel": "discord", "accountId": "{{HOUSE_BOT}}", "agentId": "house" },
+    { "channel": "discord", "accountId": "{{SENATE_BOT}}", "agentId": "senate" },
+    { "channel": "discord", "accountId": "{{SCOTUS_BOT}}", "agentId": "scotus" },
+    { "channel": "discord", "accountId": "{{CABINET_BOT}}", "agentId": "cabinet" },
+    { "channel": "discord", "accountId": "{{JOINT_CHIEFS_BOT}}", "agentId": "joint_chiefs" },
+    { "channel": "discord", "accountId": "{{IG_BOT}}", "agentId": "ig" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}

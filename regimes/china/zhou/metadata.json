@@ -1,0 +1,14 @@
+{
+  "id": "zhou",
+  "name": { "zh": "周朝", "en": "Zhou Dynasty" },
+  "era": { "zh": "约公元前1046年-前256年", "en": "c. 1046-256 BC" },
+  "region": "china",
+  "system": { "zh": "宗法分封制", "en": "Patriarchal Enfeoffment" },
+  "description": {
+    "zh": "周朝实行宗法分封制，天子分封诸侯、诸侯再分封卿大夫，形成层层分封的封建体系。以嫡长子继承制为核心的宗法制维系政治秩序，以周礼规范一切行为准则。天子为天下共主但实权有限，诸侯在封国内享有高度自治。",
+    "en": "The Zhou Dynasty implemented a patriarchal enfeoffment system where the Son of Heaven enfeoffed lords, who further enfeoffed ministers, forming a layered feudal hierarchy. The patriarchal clan system centered on primogeniture maintained political order, with Zhou Rites governing all conduct. The Son of Heaven was nominal ruler while feudal lords enjoyed substantial autonomy in their domains."
+  },
+  "agentCount": 8,
+  "tags": ["feudal", "decentralized", "ritual"],
+  "orchestrationPattern": "federated-autonomy"
+}

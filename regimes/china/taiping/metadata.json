@@ -1,0 +1,14 @@
+{
+  "id": "taiping",
+  "name": { "zh": "太平天国", "en": "Taiping Heavenly Kingdom" },
+  "era": { "zh": "1851年-1864年", "en": "1851-1864 AD" },
+  "region": "china",
+  "system": { "zh": "神权专制·天王制", "en": "Theocratic Autocracy" },
+  "description": {
+    "zh": "洪秀全以拜上帝教起事，自称天父之子、天王，建立太平天国。定都天京（南京），封东西南北翼五王分掌军政。推行天朝田亩制度，主张土地平均分配。以宗教狂热驱动组织，等级森严，天王拥有绝对权威。是中国历史上规模最大的农民起义政权。",
+    "en": "Hong Xiuquan founded the Taiping Heavenly Kingdom claiming to be the son of God, establishing a theocratic state in Nanjing. Five kings (East, West, South, North, Wing) governed military and civil affairs. The Land System of the Heavenly Dynasty advocated equal distribution. Religious fervor drove organization with strict hierarchy and absolute royal authority. It was the largest peasant uprising regime in Chinese history."
+  },
+  "agentCount": 7,
+  "tags": ["theocratic", "absolutist", "religious", "revolutionary"],
+  "orchestrationPattern": "theocratic"
+}

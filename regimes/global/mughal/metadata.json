@@ -1,0 +1,60 @@
+{
+  "id": "mughal",
+  "name": "Mughal Empire / \u83ab\u5367\u513f\u5e1d\u56fd",
+  "era": "1526\u20131857",
+  "system": "Mansabdar System / \u66fc\u8428\u5e03\u8fbe\u5c14\u5236",
+  "agentCount": 7,
+  "tags": ["mansabdar", "indo-islamic", "ranked-officials", "syncretic"],
+  "pattern": "centralized-hierarchy",
+  "agents": [
+    {
+      "name": "Padshah",
+      "id": "padshah",
+      "role": "main",
+      "title": "Emperor / \u7687\u5e1d",
+      "description": "Shadow of God on Earth, supreme sovereign of Hindustan"
+    },
+    {
+      "name": "Diwan",
+      "id": "diwan",
+      "role": "advisor",
+      "title": "Finance Minister / \u8d22\u52a1\u5927\u81e3",
+      "description": "Head of revenue administration and imperial treasury"
+    },
+    {
+      "name": "Mir_Bakshi",
+      "id": "bakshi",
+      "role": "advisor",
+      "title": "Military Paymaster / \u519b\u4e8b\u603b\u76d1",
+      "description": "Head of military administration, maintains mansabdar rolls"
+    },
+    {
+      "name": "Sadr",
+      "id": "sadr",
+      "role": "advisor",
+      "title": "Religious Affairs / \u5b97\u6559\u5927\u81e3",
+      "description": "Oversees religious endowments, charitable grants, and ecclesiastical matters"
+    },
+    {
+      "name": "Qazi",
+      "id": "qazi",
+      "role": "advisor",
+      "title": "Chief Justice / \u9996\u5e2d\u6cd5\u5b98",
+      "description": "Administers Islamic law, arbitrates disputes, upholds justice"
+    },
+    {
+      "name": "Subedar",
+      "id": "subedar",
+      "role": "advisor",
+      "title": "Provincial Governor / \u7701\u7763",
+      "description": "Governs a subah (province) on behalf of the Padshah"
+    },
+    {
+      "name": "Wazir",
+      "id": "wazir",
+      "role": "advisor",
+      "title": "Prime Minister / \u5bb0\u76f8",
+      "description": "Chief minister coordinating all departments of state"
+    }
+  ]
+}

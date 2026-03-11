@@ -1,0 +1,14 @@
+{
+  "id": "western-xia",
+  "name": { "zh": "西夏", "en": "Western Xia" },
+  "era": { "zh": "1038年-1227年", "en": "1038-1227 AD" },
+  "region": "china",
+  "system": { "zh": "多民族州郡制", "en": "Multi-ethnic Prefecture System" },
+  "description": {
+    "zh": "西夏由党项族李元昊建立，地处河西走廊要冲。政治上仿唐宋官制设中书、枢密等机构，军事优先、佛教辅政。创制独立的西夏文字，注重文化自主。在宋、辽、金的夹缝中存续近两百年，展现了卓越的外交与生存智慧。",
+    "en": "Founded by Li Yuanhao of the Tangut people, Western Xia controlled the strategic Hexi Corridor. Its government modeled Tang-Song institutions with Secretariat and Bureau of Military Affairs. Military-first policy with Buddhist advisory role. Created an independent Tangut script, emphasizing cultural autonomy. Survived nearly two centuries between Song, Liao, and Jin through exceptional diplomacy."
+  },
+  "agentCount": 5,
+  "tags": ["tangut", "multi-ethnic", "military-first", "buddhist"],
+  "orchestrationPattern": "centralized-hierarchy"
+}

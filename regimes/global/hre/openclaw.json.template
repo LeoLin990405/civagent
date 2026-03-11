@@ -1,0 +1,82 @@
+{
+  "models": {
+    "providers": {
+      "{{PROVIDER}}": {
+        "baseUrl": "{{BASE_URL}}",
+        "apiKey": "{{API_KEY}}",
+        "api": "{{API_FORMAT}}",
+        "models": [
+          { "id": "{{STRONG_MODEL}}", "name": "Strong Model", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 },
+          { "id": "{{FAST_MODEL}}", "name": "Fast Model", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "main": "emperor",
+    "list": [
+      {
+        "id": "emperor",
+        "name": "Emperor",
+        "description": "Elected Emperor of the Holy Roman Empire. First among equals, constrained by the Golden Bull and the will of the Electors. Presides over the Imperial Diet but cannot override princely autonomy. Seeks consensus while maintaining imperial dignity.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["elector_m", "elector_s", "elector_b", "diet", "chamber", "free_city"]
+        }
+      },
+      {
+        "id": "elector_m",
+        "name": "Elector of Mainz",
+        "description": "Archbishop of Mainz and Arch-Chancellor of the Empire. Senior Prince-Elector who convenes imperial elections and presides over the Electoral College. Bridges ecclesiastical and secular authority.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "elector_s",
+        "name": "Elector of Saxony",
+        "description": "Secular Prince-Elector and Arch-Marshal of the Empire. Represents the interests of the major secular principalities. Holds significant military and territorial power in the north.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "elector_b",
+        "name": "Elector of Brandenburg",
+        "description": "Secular Prince-Elector and Arch-Chamberlain of the Empire. Commands influence over the eastern territories. A rising power whose ambitions often test the limits of imperial unity.",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "diet",
+        "name": "Imperial Diet",
+        "description": "The Reichstag — deliberative assembly of the Empire comprising the College of Electors, College of Princes, and College of Cities. Debates imperial legislation, taxation, and matters of war and peace. Decisions require complex negotiation among estates.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "chamber",
+        "name": "Imperial Chamber Court",
+        "description": "The Reichskammergericht — supreme judicial authority of the Empire. Adjudicates disputes between imperial estates, interprets imperial law, and enforces the Landfrieden (public peace). Independent of the Emperor.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      },
+      {
+        "id": "free_city",
+        "name": "Free Imperial City",
+        "description": "Representative of the autonomous Free Imperial Cities. Subject only to the Emperor (not local princes), self-governing through city councils. Centers of trade, craft, and burgher culture. Fiercely protective of chartered liberties.",
+        "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
+      }
+    ]
+  },
+  "bindings": [
+    { "channel": "discord", "accountId": "{{EMPEROR_BOT}}", "agentId": "emperor" },
+    { "channel": "discord", "accountId": "{{ELECTOR_M_BOT}}", "agentId": "elector_m" },
+    { "channel": "discord", "accountId": "{{ELECTOR_S_BOT}}", "agentId": "elector_s" },
+    { "channel": "discord", "accountId": "{{ELECTOR_B_BOT}}", "agentId": "elector_b" },
+    { "channel": "discord", "accountId": "{{DIET_BOT}}", "agentId": "diet" },
+    { "channel": "discord", "accountId": "{{CHAMBER_BOT}}", "agentId": "chamber" },
+    { "channel": "discord", "accountId": "{{FREE_CITY_BOT}}", "agentId": "free_city" }
+  ],
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": false,
+      "accounts": {}
+    }
+  }
+}
