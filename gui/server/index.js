@@ -16,6 +16,9 @@ const __dirname = dirname(__filename);
 const app = express();
 const PORT = process.env.BOLUO_GUI_PORT || 18795;
 
+// 必须在 getOrCreateAuthToken 之前定义 HOME，否则会导致变量初始化错误
+const HOME = process.env.HOME || '/home/ubuntu';
+
 // AUTH_TOKEN 管理：优先使用环境变量，否则从文件读取或生成新 token
 function getOrCreateAuthToken() {
   // 1. 检查环境变量
@@ -68,7 +71,6 @@ const AGENT_DEPT_MAP = {
   'yushanfang': '御膳房'
 };
 
-const HOME = process.env.HOME || '/home/ubuntu';
 const AGENTS_DIR = join(HOME, '.openclaw/agents');
 const CONFIG_PATH = join(HOME, '.openclaw/openclaw.json');
 
