@@ -61,13 +61,13 @@ The Taiping institutional design was fundamentally theocratic: Heavenly King Hon
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 天王 | 洪秀全·天父之子·万岁 | 最高决策、战略方向、最终裁决（神圣权威不可质疑） | Tier-1 (Claude Opus 4.6 / o3) |
-| 东王 | 杨秀清·九千岁·军政总管 | 首席执行官、任务调度、统筹全局、代天王行令 | Tier-1 (o3/DeepSeek Reasoner) |
-| 西王 | 萧朝贵·八千岁·前军统帅 | 软件工程、技术攻坚、核心代码编写、架构实现 | Tier-1 (Claude Opus 4.6 / o3) |
-| 南王 | 冯云山·七千岁·创教元勋 | 外交营销、品牌传播、文案创作、外部合作 | Tier-2 (Kimi/Qwen Coder) |
-| 北王 | 韦昌辉·六千岁·掌刑法 | 安全审计、合规检查、纪律执行、代码审查 | Tier-2 (o4-mini/Kimi) |
-| 翼王 | 石达开·五千岁·军事谋略 | 数据分析、方案评估、战略参谋、替代方案设计 | Tier-2 (DeepSeek Reasoner/Kimi) |
-| 天官 | 正丞相·行政总管 | DevOps、基础设施、部署运维、CI/CD 管理 | Tier-3 (Qwen Coder/o4-mini) |
+| 天王 | 洪秀全·天父之子·万岁 | 最高决策、战略方向、最终裁决（神圣权威不可质疑） | Tier-1 (Claude Opus 4.6 / GPT-5.4 Pro) |
+| 东王 | 杨秀清·九千岁·军政总管 | 首席执行官、任务调度、统筹全局、代天王行令 | Tier-1 (GPT-5.4 Pro/DeepSeek R2) |
+| 西王 | 萧朝贵·八千岁·前军统帅 | 软件工程、技术攻坚、核心代码编写、架构实现 | Tier-1 (Claude Opus 4.6 / GPT-5.4 Pro) |
+| 南王 | 冯云山·七千岁·创教元勋 | 外交营销、品牌传播、文案创作、外部合作 | Tier-2 (Kimi K2.5/Qwen3-Coder) |
+| 北王 | 韦昌辉·六千岁·掌刑法 | 安全审计、合规检查、纪律执行、代码审查 | Tier-2 (GPT-5.3 Instant/Kimi K2.5) |
+| 翼王 | 石达开·五千岁·军事谋略 | 数据分析、方案评估、战略参谋、替代方案设计 | Tier-2 (DeepSeek R2/Kimi K2.5) |
+| 天官 | 正丞相·行政总管 | DevOps、基础设施、部署运维、CI/CD 管理 | Tier-3 (Qwen3-Coder/GPT-5.3 Instant) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 

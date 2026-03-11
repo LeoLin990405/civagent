@@ -65,13 +65,13 @@ The Zhou institutional design was the most sophisticated federalized governance 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
 | 天子 | 天下共主·象征性协调 | 全局统筹、争端仲裁、方向指引 | Tier-1 (Claude Opus 4.6) |
-| 太宰 | 行政首长·百官考核 | 政令传达、流程管理、Agent 考核与调度 | Tier-2 (GPT-4o/Kimi) |
-| 太师 | 军事技术长·战略 | 代码开发、架构设计、技术攻关 | Tier-1 (o3/DeepSeek Reasoner) |
-| 太保 | 教育文档长·传承 | 文档编撰、知识传承、规范制定、培训 | Tier-2 (Kimi/GPT-4o) |
-| 公爵A | 诸侯团队A·独立封国 | 独立项目全生命周期管理（前端/移动端） | Tier-1 (Gemini 3 Pro/Qwen Coder) |
-| 公爵B | 诸侯团队B·独立封国 | 独立项目全生命周期管理（后端/API） | Tier-1 (o3/DeepSeek Reasoner) |
-| 侯爵 | 诸侯团队C·边界集成 | 独立项目管理、跨域集成、边界测试 | Tier-2 (o4-mini/Qwen Coder) |
-| 司寇 | 司法合规·刑狱 | 合规检查、代码审查、安全审计 | Tier-2 (o4-mini/Kimi) |
+| 太宰 | 行政首长·百官考核 | 政令传达、流程管理、Agent 考核与调度 | Tier-2 (GPT-5.4/Kimi K2.5) |
+| 太师 | 军事技术长·战略 | 代码开发、架构设计、技术攻关 | Tier-1 (GPT-5.4 Pro/DeepSeek R2) |
+| 太保 | 教育文档长·传承 | 文档编撰、知识传承、规范制定、培训 | Tier-2 (Kimi K2.5/GPT-5.4) |
+| 公爵A | 诸侯团队A·独立封国 | 独立项目全生命周期管理（前端/移动端） | Tier-1 (Gemini 3.1 Pro/Qwen3-Coder) |
+| 公爵B | 诸侯团队B·独立封国 | 独立项目全生命周期管理（后端/API） | Tier-1 (GPT-5.4 Pro/DeepSeek R2) |
+| 侯爵 | 诸侯团队C·边界集成 | 独立项目管理、跨域集成、边界测试 | Tier-2 (GPT-5.3 Instant/Qwen3-Coder) |
+| 司寇 | 司法合规·刑狱 | 合规检查、代码审查、安全审计 | Tier-2 (GPT-5.3 Instant/Kimi K2.5) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 

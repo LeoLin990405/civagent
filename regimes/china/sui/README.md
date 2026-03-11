@@ -64,13 +64,13 @@ The Sui's Three Departments Six Ministries was the first systematized "draft-rev
 
 | Agent 名称 | 历史角色 | AI 职责 | 推荐模型层级 |
 |---|---|---|---|
-| 内史省 | 内史令·起草决策 | 起草决策、拟定方案、制定策略、需求分析 | Tier-1 (Claude Opus 4.6 / o3) |
-| 门下省 | 纳言·审核把关 | 审核草案、纠错把关、封驳不当、质量控制 | Tier-1 (o3/DeepSeek Reasoner) |
-| 尚书省 | 尚书令·分派执行 | 分派任务、统筹协调、进度管控 | Tier-1 (Claude Opus 4.6/GPT-4o) |
-| 吏部 | 吏部尚书·人事 | 人事管理、Agent选型、项目管理、任务分配 | Tier-2 (Kimi/GPT-4o) |
-| 户部 | 户部尚书·财政 | 财政运营、预算管控、资源调配、成本监控 | Tier-2 (Kimi/Qwen Coder) |
-| 兵部 | 兵部尚书·军事 | 软件工程、核心开发、架构设计、技术攻关 | Tier-1 (o3/Qwen Coder) |
-| 工部 | 工部尚书·工程 | 工程运维、DevOps、基础设施、CI/CD | Tier-2 (Kimi/Qwen Coder) |
+| 内史省 | 内史令·起草决策 | 起草决策、拟定方案、制定策略、需求分析 | Tier-1 (Claude Opus 4.6 / GPT-5.4 Pro) |
+| 门下省 | 纳言·审核把关 | 审核草案、纠错把关、封驳不当、质量控制 | Tier-1 (GPT-5.4 Pro/DeepSeek R2) |
+| 尚书省 | 尚书令·分派执行 | 分派任务、统筹协调、进度管控 | Tier-1 (Claude Opus 4.6/GPT-5.4) |
+| 吏部 | 吏部尚书·人事 | 人事管理、Agent选型、项目管理、任务分配 | Tier-2 (Kimi K2.5/GPT-5.4) |
+| 户部 | 户部尚书·财政 | 财政运营、预算管控、资源调配、成本监控 | Tier-2 (Kimi K2.5/Qwen3-Coder) |
+| 兵部 | 兵部尚书·军事 | 软件工程、核心开发、架构设计、技术攻关 | Tier-1 (GPT-5.4 Pro/Qwen3-Coder) |
+| 工部 | 工部尚书·工程 | 工程运维、DevOps、基础设施、CI/CD | Tier-2 (Kimi K2.5/Qwen3-Coder) |
 
 ### 设计理念：从历史到 AI / Design Philosophy: From History to AI
 
