@@ -1,4 +1,4 @@
-[Chinese Version](./README.md) | [Original Project](https://github.com/wanikua/boluobobo-ai-court-tutorial)
+[Chinese Version](./README.md) | [Original Project](https://github.com/wanikua/boluobobo-ai-court-tutorial) | [🌐 Live Demo](https://leolin990405.github.io/civagent/)
 
 <p align="center">
   <img src="./images/civagent-banner.svg" alt="CivAgent Banner" width="100%" />

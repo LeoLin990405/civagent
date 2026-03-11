@@ -1,4 +1,4 @@
-[English Version](./README_EN.md) | [原始项目 Original Project](https://github.com/wanikua/boluobobo-ai-court-tutorial)
+[English Version](./README_EN.md) | [原始项目 Original Project](https://github.com/wanikua/boluobobo-ai-court-tutorial) | [🌐 在线浏览 Live Demo](https://leolin990405.github.io/civagent/)
 
 <p align="center">
   <img src="./images/civagent-banner.svg" alt="CivAgent Banner" width="100%" />
