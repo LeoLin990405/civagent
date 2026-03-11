@@ -1,0 +1,83 @@
+name: Validate All Regimes
+
+on:
+  push:
+    paths:
+      - 'regimes/**'
+  pull_request:
+    paths:
+      - 'regimes/**'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Validate all regime configurations
+        run: |
+          ERRORS=0
+          TOTAL=0
+          PASSED=0
+
+          echo "🎮 CivAgent — Regime Validation"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
+
+          for metadata in $(find regimes -name "metadata.json" -not -path "*/\_template/*" | sort); do
+            regime_dir=$(dirname "$metadata")
+            regime_path=${regime_dir#regimes/}
+            TOTAL=$((TOTAL + 1))
+            regime_errors=0
+
+            # Check all 5 required files
+            for file in metadata.json openclaw.json.template SOUL.md IDENTITY.md README.md; do
+              if [ ! -f "$regime_dir/$file" ]; then
+                echo "  ✖ $regime_path: missing $file"
+                regime_errors=$((regime_errors + 1))
+              fi
+            done
+
+            # Validate JSON files
+            for json_file in metadata.json openclaw.json.template; do
+              if [ -f "$regime_dir/$json_file" ]; then
+                if ! python3 -c "import json; json.load(open('$regime_dir/$json_file'))" 2>/dev/null; then
+                  echo "  ✖ $regime_path: $json_file is invalid JSON"
+                  regime_errors=$((regime_errors + 1))
+                fi
+              fi
+            done
+
+            # Validate metadata required fields
+            if [ -f "$metadata" ]; then
+              for field in id name era region system agentCount tags orchestrationPattern; do
+                if ! python3 -c "import json; d=json.load(open('$metadata')); assert '$field' in d" 2>/dev/null; then
+                  echo "  ✖ $regime_path: metadata.json missing field '$field'"
+                  regime_errors=$((regime_errors + 1))
+                fi
+              done
+            fi
+
+            if [ $regime_errors -eq 0 ]; then
+              PASSED=$((PASSED + 1))
+            else
+              ERRORS=$((ERRORS + regime_errors))
+            fi
+          done
+
+          echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Results: $PASSED/$TOTAL regimes passed"
+
+          if [ $ERRORS -gt 0 ]; then
+            echo "✖ $ERRORS error(s) found"
+            exit 1
+          else
+            echo "✓ All regimes valid!"
+          fi

@@ -342,6 +342,10 @@ Arrow's Impossibility Theorem proves that, with three or more alternatives, no v
 
 ## Quick Start
 
+<p align="center">
+  <img src="./images/demo-terminal.svg" alt="CivAgent Demo" width="100%" />
+</p>
+
 ### 1. Install OpenClaw
 
 ```bash
