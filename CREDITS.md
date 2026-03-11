@@ -15,8 +15,8 @@ We extend our deepest gratitude for this creative and inspiring open-source cont
 
 ## Extended Project / 扩展项目
 
-**AI 治理天下** (AI Governance) extends the original concept to cover 20 Chinese dynasties
-and 19 global empires, creating a universal multi-regime governance platform.
+**CivAgent** (AI 文明) extends the original concept to cover 20 Chinese dynasties
+and 37 global empires, creating a universal multi-regime governance platform.
 
 - Fork maintained by [@LeoLin990405](https://github.com/LeoLin990405) — a data professional & online part-time history undergraduate & AI programming enthusiast
 - Original concept and Tang Dynasty implementation: [@wanikua](https://github.com/wanikua)
@@ -24,6 +24,7 @@ and 19 global empires, creating a universal multi-regime governance platform.
 ## Inspirations & Key References / 灵感来源 & 主要参考
 
 - **[@wanikua](https://github.com/wanikua)** — The original [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tutorial) project that started it all
+- **[Sid Meier's *Civilization*](https://civilization.com/)** — The "choose your civilization" concept that inspired CivAgent's core interaction model
 
 ### Chinese Political History / 中国政治制度史
 - 钱穆《中国历代政治得失》 — 五代政治制度的经典对比分析，本项目最核心的灵感
@@ -52,7 +53,7 @@ and 19 global empires, creating a universal multi-regime governance platform.
 - HarvardX ChinaX · 中国大学 MOOC 北京大学 (阎步克、邓小南)
 - BBC *The Story of China* (Michael Wood) · CCTV《中国通史》· PBS *Empires* series
 
-Full reference list (with per-regime citations): see [README.md](./README.md#灵感来源--参考文献)
+Full reference list (with per-regime citations): see [灵感来源 & 参考文献](./README.md#灵感来源--参考文献) in README
 
 ## Framework
 
