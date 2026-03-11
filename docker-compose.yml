@@ -7,7 +7,8 @@ services:
     container_name: ai-court
     restart: unless-stopped
     ports:
-      - "18789:18789"   # Gateway WebUI
+      - "18789:18789"   # Gateway Dashboard
+      - "18795:18795"   # 菠萝 GUI（可选，需另行启动）
     volumes:
       # 配置文件（必须挂载）
       - ./openclaw.json:/root/.openclaw/openclaw.json

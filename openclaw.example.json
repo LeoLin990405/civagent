@@ -1,0 +1,128 @@
+{
+  "models": {
+    "providers": {
+      "your-provider": {
+        "baseUrl": "https://your-llm-provider-api-url",
+        "apiKey": "YOUR_LLM_API_KEY",
+        "api": "openai",
+        "models": [
+          {
+            "id": "fast-model",
+            "name": "快速模型",
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          },
+          {
+            "id": "strong-model",
+            "name": "强力模型",
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "/root/clawd",
+      "model": { "primary": "your-provider/fast-model" },
+      "sandbox": { "mode": "non-main" }
+    },
+    "list": [
+      {
+        "id": "silijian",
+        "name": "司礼监",
+        "model": { "primary": "your-provider/fast-model" },
+        "sandbox": { "mode": "off" },
+        "subagents": {
+          "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlinyuan"]
+        }
+      },
+      {
+        "id": "neige",
+        "name": "内阁",
+        "model": { "primary": "your-provider/strong-model" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "duchayuan",
+        "name": "都察院",
+        "model": { "primary": "your-provider/strong-model" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "bingbu",
+        "name": "兵部",
+        "model": { "primary": "your-provider/strong-model" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "hubu",
+        "name": "户部",
+        "model": { "primary": "your-provider/strong-model" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "libu",
+        "name": "礼部",
+        "model": { "primary": "your-provider/fast-model" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "gongbu",
+        "name": "工部",
+        "model": { "primary": "your-provider/fast-model" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "libu2",
+        "name": "吏部",
+        "model": { "primary": "your-provider/fast-model" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "xingbu",
+        "name": "刑部",
+        "model": { "primary": "your-provider/fast-model" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "hanlinyuan",
+        "name": "翰林院",
+        "model": { "primary": "your-provider/strong-model" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      }
+    ]
+  },
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": true,
+      "accounts": {
+        "silijian": { "name": "司礼监", "token": "YOUR_SILIJIAN_BOT_TOKEN", "groupPolicy": "open" },
+        "neige": { "name": "内阁", "token": "YOUR_NEIGE_BOT_TOKEN", "groupPolicy": "open" },
+        "duchayuan": { "name": "都察院", "token": "YOUR_DUCHAYUAN_BOT_TOKEN", "groupPolicy": "open" },
+        "bingbu": { "name": "兵部", "token": "YOUR_BINGBU_BOT_TOKEN", "groupPolicy": "open" },
+        "hubu": { "name": "户部", "token": "YOUR_HUBU_BOT_TOKEN", "groupPolicy": "open" },
+        "libu": { "name": "礼部", "token": "YOUR_LIBU_BOT_TOKEN", "groupPolicy": "open" },
+        "gongbu": { "name": "工部", "token": "YOUR_GONGBU_BOT_TOKEN", "groupPolicy": "open" },
+        "libu2": { "name": "吏部", "token": "YOUR_LIBU2_BOT_TOKEN", "groupPolicy": "open" },
+        "xingbu": { "name": "刑部", "token": "YOUR_XINGBU_BOT_TOKEN", "groupPolicy": "open" }
+      }
+    }
+  },
+  "bindings": [
+    { "agentId": "silijian", "match": { "channel": "discord", "accountId": "silijian" } },
+    { "agentId": "neige", "match": { "channel": "discord", "accountId": "neige" } },
+    { "agentId": "duchayuan", "match": { "channel": "discord", "accountId": "duchayuan" } },
+    { "agentId": "bingbu", "match": { "channel": "discord", "accountId": "bingbu" } },
+    { "agentId": "hubu", "match": { "channel": "discord", "accountId": "hubu" } },
+    { "agentId": "libu", "match": { "channel": "discord", "accountId": "libu" } },
+    { "agentId": "gongbu", "match": { "channel": "discord", "accountId": "gongbu" } },
+    { "agentId": "libu2", "match": { "channel": "discord", "accountId": "libu2" } },
+    { "agentId": "xingbu", "match": { "channel": "discord", "accountId": "xingbu" } }
+  ]
+}

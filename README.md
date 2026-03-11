@@ -291,6 +291,33 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 > ```
 > 支持 Intel 和 Apple Silicon (M1/M2/M3/M4)，自动检测架构。
 
+> 🐳 **Docker 用户？** 一行命令启动，不污染系统环境：
+> ```bash
+> # 1. 克隆项目
+> git clone https://github.com/wanikua/boluobobo-ai-court-tutorial.git
+> cd boluobobo-ai-court-tutorial
+>
+> # 2. 准备配置文件（复制模板，填入 API Key 和 Bot Token）
+> cp openclaw.example.json openclaw.json
+> nano openclaw.json
+>
+> # 3. 一键启动
+> docker compose up -d
+>
+> # 查看日志
+> docker compose logs -f
+>
+> # 停止
+> docker compose down
+> ```
+> 容器内已预装 OpenClaw + Chromium + GitHub CLI + Python。工作区和配置通过 volume 持久化，升级只需 `docker compose pull && docker compose up -d`。
+>
+> **Docker 端口说明：**
+> | 端口 | 用途 |
+> |------|------|
+> | 18789 | Gateway Dashboard |
+> | 18795 | 菠萝 GUI（可选） |
+
 ### 第二步：填 Key 上线（10 分钟）
 
 跑完脚本，你只需要填两样东西：
