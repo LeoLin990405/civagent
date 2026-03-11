@@ -291,12 +291,54 @@ I've done my best to ensure historical accuracy (I am a history major, after all
 
 ---
 
-## Inspirations
+## Inspirations & References
 
-- [AI 朝廷 (AI Court)](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua) — the original concept and Tang Dynasty implementation
-- [*Political Gains and Losses Across Chinese Dynasties*](https://book.douban.com/subject/1003479/) (《中国历代政治得失》) by **Qian Mu** — classic analysis of Chinese political systems
+### Direct Inspirations
+
+- [AI 朝廷 (AI Court)](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua) — the original concept and Tang Dynasty implementation that sparked this entire project
 - [OpenClaw](https://github.com/openclaw/openclaw) — the underlying multi-agent framework
-- World Political History coursework — opened my eyes to the institutional design wisdom of different civilizations
+
+### Chinese Political Institutional History
+
+These works helped me understand the design logic behind each dynasty's system — not simple good-vs-bad judgments, but rational choices under specific historical conditions:
+
+- **Qian Mu, *Political Gains and Losses Across Chinese Dynasties*** (《中国历代政治得失》) — The core inspiration for this project. Qian Mu's comparative analysis of Han, Tang, Song, Ming, and Qing institutions revealed the design logic behind "three-department checks," "Grand Secretariat drafting," and "Grand Council rapid decisions"
+- **Qian Mu, *Outline of National History*** (《国史大纲》) — Institutional evolution from a general history perspective; understanding why each dynasty reformed the way it did
+- **Lü Simian, *History of Chinese Institutions*** (《中国制度史》) — Systematic thematic survey of official, military, legal, and fiscal systems — key reference for designing agent roles across dynasties
+- **Bai Gang (ed.), *History of Chinese Political Institutions*** (《中国政治制度史》) — Comprehensive institutional history from pre-Qin to modern era, covering all 20 Chinese dynasties in this project
+- **Yan Buke, *Rank and Office: The Bureaucratic Ranking System from Qin-Han to Wei-Jin-Southern & Northern Dynasties*** (《品位与职位》) — Deep analysis of how the Nine-Rank system shaped bureaucratic selection; directly inspired the Jin and N&S Dynasties agent designs
+- **Tian Yuqing, *Aristocratic Politics in the Eastern Jin*** (《东晋门阀政治》) — How aristocratic clans hollowed out imperial authority to create a "weak center + strong regions" pattern; inspired the federated autonomy model
+- **Ray Huang, *1587, A Year of No Significance*** (《万历十五年》) — Micro-level view of how the Ming dual-track system (Grand Secretariat + Eunuch Directorate) operated and malfunctioned; directly shaped the Ming dual-power design
+- **Yang Kuan, *History of the Warring States*** (《战国史》) — Understanding the institutional transition from enfeoffment to commandery-county, inspiring the Zhou→Qin orchestration pattern shift
+- **Yao Dali, *The Wisdom of Reading History*** (《读史的智慧》) — Governance logic of multi-ethnic empires (Yuan, Qing); understanding the "govern by local customs" approach of the Liao-Jin-Yuan-Qing models
+
+### Western Political Theory & Comparative Politics
+
+Different civilizations gave radically different answers to the same question. These comparative perspectives helped me design the global empires' agent orchestration:
+
+- **Aristotle, *Politics*** — The earliest systematic classification of regimes: monarchy, aristocracy, polity and their corrupted forms. This project's 6 orchestration patterns are, in a sense, Aristotle's taxonomy rewritten for AI
+- **Montesquieu, *The Spirit of the Laws*** (1748) — Foundation of separation of powers theory; directly maps to the US Federal and checks-and-balances pattern designs
+- **Max Weber, *Economy and Society*** (1922) — Classic analysis of rational bureaucracy: hierarchy, specialization, rule-orientation. Weber's comparison of Chinese traditional bureaucracy vs. Western legal-rational authority helped me understand agent hierarchy design across regimes
+- **S.N. Eisenstadt, *The Political Systems of Empires*** (1963) — Systematic comparison of political structures across history's major empires; the theoretical framework for designing global empire orchestration patterns
+- **Francis Fukuyama, *The Origins of Political Order*** (2011) — Analyzing political development through state-building, rule of law, and accountability; helps explain why some regimes tend toward centralization while others toward checks and balances
+- **Charles Tilly, *Coercion, Capital, and European States*** (1990) — Explains the diversity of European state forms (from city-states to empires); inspired differentiated designs for the HRE and British parliamentary system
+- **Samuel Huntington, *Political Order in Changing Societies*** (1968) — Theory of political institutionalization; explains why some regimes are stable while others collapse
+- **Douglass North, *Institutions, Institutional Change and Economic Performance*** (1990) — Foundational work of new institutional economics; how institutions constrain and incentivize behavior — which is precisely what SOUL.md and IDENTITY.md do
+- **Mancur Olson, *The Logic of Collective Action*** (1965) — Why democratic council patterns (Athens, Kurultai) need special incentive mechanisms to function effectively
+- **Karl Wittfogel, *Oriental Despotism*** (1957) — Controversial, but his thesis on hydraulic empires and centralized institutions remains a useful reference for understanding Qin-Han, Egyptian, and Inca centralized regimes
+
+### Organizational Theory & Multi-Agent Systems
+
+The bridge between ancient political institutions and modern organizational/AI architecture:
+
+- **Herbert Simon, *Administrative Behavior*** (1947) — Bounded rationality and hierarchical organization theory; explains why centralized hierarchy can actually be efficient under limited information
+- **Wooldridge & Jennings, "Intelligent Agents: Theory and Practice"** (*The Knowledge Engineering Review*, 1995) — Classic survey of multi-agent systems; agent properties (autonomy, social ability, reactivity) map onto ancient bureaucratic role characteristics
+- **Dorri, Kanhere & Jurdak, "Multi-Agent Systems: A Survey"** (*IEEE Access*, 2018) — Modern MAS architecture taxonomy; hierarchical, flat, and hybrid categories correspond closely to this project's 6 orchestration patterns
+
+### Courses & General
+
+- World Political History coursework — A systematic look at institutional design wisdom from Ancient Egypt to the Cold War
+- [Crash Course: World History](https://www.youtube.com/playlist?list=PLBDA2E52FB1EF80C9) by John Green — Introductory but uniquely cross-civilizational perspective that inspired many comparative insights
 
 ---
 

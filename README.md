@@ -291,12 +291,54 @@ AI 治理天下是 [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tut
 
 ---
 
-## 灵感来源
+## 灵感来源 & 参考文献
 
-- [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua) — 原始创意和唐朝实现
-- [《中国历代政治得失》](https://book.douban.com/subject/1003479/) — 钱穆 — 中国政治制度史的经典分析
+### 直接灵感
+
+- [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua) — 原始创意和唐朝实现，点燃了整个项目
 - [OpenClaw](https://github.com/openclaw/openclaw) — 底层多 Agent 框架
-- 世界政治史课程 — 让我看到了不同文明的制度设计智慧
+
+### 中国政治制度史
+
+这些著作帮助我理解了每个朝代制度设计背后的逻辑——不是简单的好坏，而是特定历史条件下的理性选择：
+
+- **钱穆《中国历代政治得失》** — 本项目最核心的灵感来源。钱穆先生对汉、唐、宋、明、清五代制度的对比分析，让我看到了「三省制衡」「内阁票拟」「军机处速决」等不同模式的设计逻辑
+- **钱穆《国史大纲》** — 通史视角下的制度演变脉络，理解每个朝代为什么在前朝基础上做了那样的改革
+- **吕思勉《中国制度史》** — 按专题系统梳理了官制、兵制、刑法、财政等制度的演变，是设计各朝代 Agent 角色时的重要参考
+- **白钢 主编《中国政治制度史》** — 从先秦到近代的全面制度史，覆盖了本项目所有 20 个中华朝代
+- **阎步克《品位与职位：秦汉魏晋南北朝官阶制度研究》** — 深入分析了九品中正制等品位制度如何影响官僚选拔，直接启发了晋朝和南北朝的 Agent 设计
+- **田余庆《东晋门阀政治》** — 门阀士族如何架空皇权形成「弱中央+强地方」格局，启发了晋朝和南北朝的联邦自治模式
+- **黄仁宇《万历十五年》** (*1587, A Year of No Significance*) — 从微观视角展示了明朝内阁与司礼监的双轨制如何运作（和失灵），直接影响了明朝 dual-power 模式的设计
+- **杨宽《战国史》** — 理解从分封到郡县的制度转型，启发了周→秦的编排模式差异
+- **姚大力《读史的智慧》** — 蒙元和清代多民族帝国的治理逻辑，帮助理解「因俗而治」的辽金元清模式
+
+### 西方政治理论 & 比较政治学
+
+不同文明对同一个问题给出了截然不同的答案，这些比较视角帮助我设计全球帝国的 Agent 编排：
+
+- **亚里士多德《政治学》** (*Aristotle, Politics*) — 最早的政体分类学：君主制、贵族制、共和制及其变体。本项目的 6 种编排模式在某种意义上是亚里士多德分类的 AI 版本
+- **孟德斯鸠《论法的精神》** (*Montesquieu, The Spirit of the Laws*, 1748) — 三权分立理论的奠基之作，直接对应了 US Federal 和 checks-and-balances 模式的设计
+- **马克斯·韦伯「官僚制理论」** (*Max Weber, Economy and Society*, 1922) — 理性官僚制的经典分析：层级、专业化、规则导向。韦伯对中国传统官僚制和西方法理型权威的对比，帮助我理解不同政体的 Agent 层级设计
+- **S.N. 艾森施塔特《帝国的政治体系》** (*S.N. Eisenstadt, The Political Systems of Empires*, 1963) — 系统比较了人类历史上主要帝国的政治结构，是设计全球帝国编排模式的理论框架
+- **弗朗西斯·福山《政治秩序的起源》** (*Francis Fukuyama, The Origins of Political Order*, 2011) — 从国家建构、法治、问责三个维度分析政治发展，帮助理解为什么有些政体倾向集权，有些倾向制衡
+- **查尔斯·蒂利《强制、资本与欧洲国家》** (*Charles Tilly, Coercion, Capital, and European States*, 1990) — 解释了欧洲国家形态的多样性（从城邦到帝国），启发了神圣罗马帝国和英国议会制等差异化设计
+- **塞缪尔·亨廷顿《变化社会中的政治秩序》** (*Samuel Huntington, Political Order in Changing Societies*, 1968) — 政治制度化理论，解释了为什么有些政体稳定而有些崩溃
+- **道格拉斯·诺斯《制度、制度变迁与经济绩效》** (*Douglass North, Institutions, Institutional Change and Economic Performance*, 1990) — 新制度经济学的奠基作品，制度如何约束和激励行为——这恰恰就是 SOUL.md 和 IDENTITY.md 在做的事
+- **曼瑟·奥尔森《集体行动的逻辑》** (*Mancur Olson, The Logic of Collective Action*, 1965) — 为什么民主议会模式（雅典、忽里勒台）需要特殊的激励机制才能有效运作
+- **卡尔·魏特夫《东方专制主义》** (*Karl Wittfogel, Oriental Despotism*, 1957) — 虽然争议很大，但他关于水利帝国和集权制度关系的论述，对理解秦汉-埃及-印加等集权政体仍有参考价值
+
+### 组织理论 & 多 Agent 系统
+
+古代政治制度和现代组织/AI 架构之间的桥梁：
+
+- **赫伯特·西蒙《管理行为》** (*Herbert Simon, Administrative Behavior*, 1947) — 有限理性和层级组织理论，解释了为什么中央集权模式在信息有限时反而高效
+- **Wooldridge & Jennings, "Intelligent Agents: Theory and Practice"** (*The Knowledge Engineering Review*, 1995) — 多 Agent 系统的经典综述，Agent 的自主性、社会性、反应性映射到古代官僚的角色特征
+- **Dorri, Kanhere & Jurdak, "Multi-Agent Systems: A Survey"** (*IEEE Access*, 2018) — 现代多 Agent 系统架构分类，其中的层级式、扁平式、混合式与本项目的 6 种编排模式高度对应
+
+### 课程 & 通识
+
+- 世界政治史课程 — 让我系统地看到了从古埃及到冷战时期，不同文明的制度设计智慧
+- [Crash Course: World History](https://www.youtube.com/playlist?list=PLBDA2E52FB1EF80C9) — John Green 的世界史系列，虽然是入门级但视角独特，启发了不少跨文明对比的想法
 
 ---
 

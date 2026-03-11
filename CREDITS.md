@@ -21,11 +21,28 @@ and 19 global empires, creating a universal multi-regime governance platform.
 - Fork maintained by [@LeoLin990405](https://github.com/LeoLin990405) — a history undergraduate and AI programming enthusiast
 - Original concept and Tang Dynasty implementation: [@wanikua](https://github.com/wanikua)
 
-## Inspirations / 灵感来源
+## Inspirations & Key References / 灵感来源 & 主要参考
 
 - **[@wanikua](https://github.com/wanikua)** — The original [AI 朝廷](https://github.com/wanikua/boluobobo-ai-court-tutorial) project that started it all
-- **钱穆《中国历代政治得失》** — Qian Mu's systematic analysis of Chinese political institutions across dynasties, which revealed how ancient governance design maps to modern agent orchestration patterns
-- **World Political History coursework** — Studying governance systems from Athens to the Mongol Empire, each answering the same question: how to organize effective collaboration
+
+### Chinese Political History / 中国政治制度史
+- 钱穆《中国历代政治得失》 — 五代政治制度的经典对比分析，本项目最核心的灵感
+- 钱穆《国史大纲》 · 吕思勉《中国制度史》 · 白钢 主编《中国政治制度史》
+- 阎步克《品位与职位》 · 田余庆《东晋门阀政治》 · 黄仁宇《万历十五年》
+- 杨宽《战国史》 · 姚大力《读史的智慧》
+
+### Western Political Theory / 西方政治理论
+- Aristotle, *Politics* · Montesquieu, *The Spirit of the Laws*
+- Max Weber, *Economy and Society* · S.N. Eisenstadt, *The Political Systems of Empires*
+- Francis Fukuyama, *The Origins of Political Order*
+- Charles Tilly, *Coercion, Capital, and European States*
+- Douglass North, *Institutions, Institutional Change and Economic Performance*
+
+### Multi-Agent Systems / 多 Agent 系统
+- Wooldridge & Jennings, "Intelligent Agents: Theory and Practice" (1995)
+- Dorri et al., "Multi-Agent Systems: A Survey" (2018)
+
+Full reference list: see [README.md](./README.md#灵感来源--参考文献)
 
 ## Framework
 
