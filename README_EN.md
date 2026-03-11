@@ -86,50 +86,50 @@ This project isn't about judging which system is better or worse. It's about exp
 
 | # | ID | Dynasty | Era | System | Agent Pattern | Agents |
 |---|-----|---------|-----|--------|--------------|--------|
-| 1 | `china/xia` | Xia | c.2070-1600 BC | Clan Enfeoffment | Patriarch + loose tribes | 5 |
-| 2 | `china/shang` | Shang | c.1600-1046 BC | Theocratic Aristocracy | Divine decision + noble execution | 6 |
-| 3 | `china/zhou` | Zhou | c.1046-256 BC | Patriarchal Enfeoffment | Federated autonomy | 8 |
-| 4 | `china/qin` | Qin | 221-206 BC | Three Lords Nine Ministers | Strict centralized hierarchy | 7 |
-| 5 | `china/han` | Han | 206 BC-220 AD | Three Lords Nine Ministers | Tripartite division + specialized ministers | 10 |
-| 6 | `china/three-kingdoms` | Three Kingdoms | 220-280 | Three Rival States | 3 independent courts competing | 9 |
-| 7 | `china/jin` | Jin | 266-420 | Nine-Rank System | Weak center + strong regions | 6 |
-| 8 | `china/north-south` | N&S Dynasties | 420-589 | Aristocratic Clans | Clan faction autonomy | 6 |
-| 9 | `china/sui` | Sui | 581-618 | Three Depts Six Min (proto) | Checks & balances (prototype) | 7 |
-| 10 | `china/tang` | **Tang** ⭐ | 618-907 | **Three Depts Six Min (perfected)** | **ORIGINAL by @wanikua** | 7 |
-| 11 | `china/five-dynasties` | Five Dynasties | 907-960 | Fragmented Warlords | Competing units | 5 |
-| 12 | `china/song` | Song | 960-1279 | Two Offices Three Commissions | Civilian checks + rotation | 8 |
-| 13 | `china/yuan` | Yuan | 1271-1368 | Provincial System | Mongol centralization + provincial agents | 7 |
-| 14 | `china/ming` | Ming | 1368-1644 | Grand Secretariat + Eunuch Dir. | Dual-track decision-making | 8 |
-| 15 | `china/qing` | Qing | 1644-1912 | Grand Council | Elite council rapid decisions | 8 |
-| 16 | `china/roc` | Republic of China | 1912-1949 | Five-Power Constitution | Five Yuans mutual oversight | 7 |
-| 17 | `china/liao` | Liao | 907-1125 | Dual Administration | North-South dual tracks | 6 |
-| 18 | `china/jin-jurchen` | Jin (Jurchen) | 1115-1234 | Jurchen-Han Divided Gov. | Ethnic division of labor | 6 |
-| 19 | `china/western-xia` | Western Xia | 1038-1227 | Multi-ethnic Prefectures | Military-first + religious support | 5 |
-| 20 | `china/taiping` | Taiping Kingdom | 1851-1864 | Theocratic Autocracy | Heavenly King absolute power | 7 |
+| 1 | `china/xia` | [Xia](./regimes/china/xia/README.md) | c.2070-1600 BC | Clan Enfeoffment | Patriarch + loose tribes | 5 |
+| 2 | `china/shang` | [Shang](./regimes/china/shang/README.md) | c.1600-1046 BC | Theocratic Aristocracy | Divine decision + noble execution | 6 |
+| 3 | `china/zhou` | [Zhou](./regimes/china/zhou/README.md) | c.1046-256 BC | Patriarchal Enfeoffment | Federated autonomy | 8 |
+| 4 | `china/qin` | [Qin](./regimes/china/qin/README.md) | 221-206 BC | Three Lords Nine Ministers | Strict centralized hierarchy | 7 |
+| 5 | `china/han` | [Han](./regimes/china/han/README.md) | 206 BC-220 AD | Three Lords Nine Ministers | Tripartite division + specialized ministers | 10 |
+| 6 | `china/three-kingdoms` | [Three Kingdoms](./regimes/china/three-kingdoms/README.md) | 220-280 | Three Rival States | 3 independent courts competing | 9 |
+| 7 | `china/jin` | [Jin](./regimes/china/jin/README.md) | 266-420 | Nine-Rank System | Weak center + strong regions | 6 |
+| 8 | `china/north-south` | [N&S Dynasties](./regimes/china/north-south/README.md) | 420-589 | Aristocratic Clans | Clan faction autonomy | 6 |
+| 9 | `china/sui` | [Sui](./regimes/china/sui/README.md) | 581-618 | Three Depts Six Min (proto) | Checks & balances (prototype) | 7 |
+| 10 | `china/tang` | [**Tang** ⭐](./regimes/china/tang/README.md) | 618-907 | **Three Depts Six Min (perfected)** | **ORIGINAL by @wanikua** | 7 |
+| 11 | `china/five-dynasties` | [Five Dynasties](./regimes/china/five-dynasties/README.md) | 907-960 | Fragmented Warlords | Competing units | 5 |
+| 12 | `china/song` | [Song](./regimes/china/song/README.md) | 960-1279 | Two Offices Three Commissions | Civilian checks + rotation | 8 |
+| 13 | `china/yuan` | [Yuan](./regimes/china/yuan/README.md) | 1271-1368 | Provincial System | Mongol centralization + provincial agents | 7 |
+| 14 | `china/ming` | [Ming](./regimes/china/ming/README.md) | 1368-1644 | Grand Secretariat + Eunuch Dir. | Dual-track decision-making | 8 |
+| 15 | `china/qing` | [Qing](./regimes/china/qing/README.md) | 1644-1912 | Grand Council | Elite council rapid decisions | 8 |
+| 16 | `china/roc` | [Republic of China](./regimes/china/roc/README.md) | 1912-1949 | Five-Power Constitution | Five Yuans mutual oversight | 7 |
+| 17 | `china/liao` | [Liao](./regimes/china/liao/README.md) | 907-1125 | Dual Administration | North-South dual tracks | 6 |
+| 18 | `china/jin-jurchen` | [Jin (Jurchen)](./regimes/china/jin-jurchen/README.md) | 1115-1234 | Jurchen-Han Divided Gov. | Ethnic division of labor | 6 |
+| 19 | `china/western-xia` | [Western Xia](./regimes/china/western-xia/README.md) | 1038-1227 | Multi-ethnic Prefectures | Military-first + religious support | 5 |
+| 20 | `china/taiping` | [Taiping Kingdom](./regimes/china/taiping/README.md) | 1851-1864 | Theocratic Autocracy | Heavenly King absolute power | 7 |
 
 ### Global Empires (19)
 
 | # | ID | Empire | Era | System | Agent Pattern | Agents |
 |---|-----|--------|-----|--------|--------------|--------|
-| 1 | `global/egypt` | Ancient Egypt | 3100-30 BC | Pharaoh Theocracy | God-King + Vizier delegation | 6 |
-| 2 | `global/athens` | Athenian Democracy | 508-322 BC | Direct Democracy | All agents vote, no single leader | 6 |
-| 3 | `global/sparta` | Sparta | 900-192 BC | Dual Kingship | Two co-leaders + Ephors oversight | 6 |
-| 4 | `global/roman-republic` | Roman Republic | 509-27 BC | Senate + Consuls | Dual consuls + Senate voting | 8 |
-| 5 | `global/roman-empire` | Roman Empire | 27 BC-476 AD | Imperial Bureaucracy | Emperor + Prefects hierarchy | 7 |
-| 6 | `global/byzantine` | Byzantine Empire | 330-1453 | Autocratic Theocracy | Basileus + Logothetes | 7 |
-| 7 | `global/persian` | Persian Achaemenid | 550-330 BC | Satrap System | King of Kings + autonomous Satraps | 7 |
-| 8 | `global/ottoman` | Ottoman Empire | 1299-1922 | Sultan + Divan | Grand Vizier dispatches | 7 |
-| 9 | `global/mongol` | Mongol Empire | 1206-1368 | Khanate Kurultai | Great Khan + Kurultai council | 6 |
-| 10 | `global/hre` | Holy Roman Empire | 962-1806 | Electoral System | Electors + autonomous Princes | 7 |
-| 11 | `global/british` | British Parliament | 1689-present | Constitutional Monarchy | PM governs, Crown ceremonial | 8 |
-| 12 | `global/french` | French Absolutism | 1643-1789 | L'etat c'est moi | Sun King absolute | 7 |
-| 13 | `global/russian` | Russian Tsardom | 1547-1917 | Autocracy + Council | Tsar absolute + Senate advisory | 7 |
-| 14 | `global/shogunate` | Japanese Shogunate | 1603-1868 | Bakufu System | Shogun rules, Emperor ceremonial | 7 |
-| 15 | `global/mughal` | Mughal India | 1526-1857 | Mansabdar System | Emperor + ranked officials | 7 |
-| 16 | `global/us-federal` | US Federal System | 1789-present | Three Branches | Separation of powers | 7 |
-| 17 | `global/soviet` | Soviet Union | 1922-1991 | Politburo System | General Secretary + Politburo | 7 |
-| 18 | `global/inca` | Inca Empire | 1438-1533 | Sapa Inca + Quarters | Sapa Inca + 4 Suyus | 6 |
-| 19 | `global/aztec` | Aztec Triple Alliance | 1428-1521 | Triple Alliance | 3 city-states council | 6 |
+| 1 | `global/egypt` | [Ancient Egypt](./regimes/global/egypt/README.md) | 3100-30 BC | Pharaoh Theocracy | God-King + Vizier delegation | 6 |
+| 2 | `global/athens` | [Athenian Democracy](./regimes/global/athens/README.md) | 508-322 BC | Direct Democracy | All agents vote, no single leader | 6 |
+| 3 | `global/sparta` | [Sparta](./regimes/global/sparta/README.md) | 900-192 BC | Dual Kingship | Two co-leaders + Ephors oversight | 6 |
+| 4 | `global/roman-republic` | [Roman Republic](./regimes/global/roman-republic/README.md) | 509-27 BC | Senate + Consuls | Dual consuls + Senate voting | 8 |
+| 5 | `global/roman-empire` | [Roman Empire](./regimes/global/roman-empire/README.md) | 27 BC-476 AD | Imperial Bureaucracy | Emperor + Prefects hierarchy | 7 |
+| 6 | `global/byzantine` | [Byzantine Empire](./regimes/global/byzantine/README.md) | 330-1453 | Autocratic Theocracy | Basileus + Logothetes | 7 |
+| 7 | `global/persian` | [Persian Achaemenid](./regimes/global/persian/README.md) | 550-330 BC | Satrap System | King of Kings + autonomous Satraps | 7 |
+| 8 | `global/ottoman` | [Ottoman Empire](./regimes/global/ottoman/README.md) | 1299-1922 | Sultan + Divan | Grand Vizier dispatches | 7 |
+| 9 | `global/mongol` | [Mongol Empire](./regimes/global/mongol/README.md) | 1206-1368 | Khanate Kurultai | Great Khan + Kurultai council | 6 |
+| 10 | `global/hre` | [Holy Roman Empire](./regimes/global/hre/README.md) | 962-1806 | Electoral System | Electors + autonomous Princes | 7 |
+| 11 | `global/british` | [British Parliament](./regimes/global/british/README.md) | 1689-present | Constitutional Monarchy | PM governs, Crown ceremonial | 8 |
+| 12 | `global/french` | [French Absolutism](./regimes/global/french/README.md) | 1643-1789 | L'etat c'est moi | Sun King absolute | 7 |
+| 13 | `global/russian` | [Russian Tsardom](./regimes/global/russian/README.md) | 1547-1917 | Autocracy + Council | Tsar absolute + Senate advisory | 7 |
+| 14 | `global/shogunate` | [Japanese Shogunate](./regimes/global/shogunate/README.md) | 1603-1868 | Bakufu System | Shogun rules, Emperor ceremonial | 7 |
+| 15 | `global/mughal` | [Mughal India](./regimes/global/mughal/README.md) | 1526-1857 | Mansabdar System | Emperor + ranked officials | 7 |
+| 16 | `global/us-federal` | [US Federal System](./regimes/global/us-federal/README.md) | 1789-present | Three Branches | Separation of powers | 7 |
+| 17 | `global/soviet` | [Soviet Union](./regimes/global/soviet/README.md) | 1922-1991 | Politburo System | General Secretary + Politburo | 7 |
+| 18 | `global/inca` | [Inca Empire](./regimes/global/inca/README.md) | 1438-1533 | Sapa Inca + Quarters | Sapa Inca + 4 Suyus | 6 |
+| 19 | `global/aztec` | [Aztec Triple Alliance](./regimes/global/aztec/README.md) | 1428-1521 | Triple Alliance | 3 city-states council | 6 |
 
 ---
 

@@ -86,50 +86,50 @@
 
 | # | ID | 朝代 | 时代 | 制度 | Agent 模式 | Agent 数 |
 |---|-----|------|------|------|-----------|---------|
-| 1 | `china/xia` | 夏 | c.2070-1600 BC | 分封制/家族制 | 族长集权 + 松散部落 | 5 |
-| 2 | `china/shang` | 商 | c.1600-1046 BC | 神权贵族制 | 神权决策 + 贵族执行 | 6 |
-| 3 | `china/zhou` | 周 | c.1046-256 BC | 宗法分封制 | 联邦自治 | 8 |
-| 4 | `china/qin` | 秦 | 221-206 BC | 郡县制·三公九卿 | 严格中央集权 | 7 |
-| 5 | `china/han` | 汉 | 206 BC-220 AD | 三公九卿制 | 三公分权 + 九卿专职 | 10 |
-| 6 | `china/three-kingdoms` | 三国 | 220-280 | 三国并立 | 3 独立朝廷竞争协作 | 9 |
-| 7 | `china/jin` | 晋 | 266-420 | 九品中正制 | 弱中央 + 强地方 | 6 |
-| 8 | `china/north-south` | 南北朝 | 420-589 | 门阀士族制 | 家族派系自治 | 6 |
-| 9 | `china/sui` | 隋 | 581-618 | 三省六部制(初创) | 三省制衡(原型) | 7 |
-| 10 | `china/tang` | **唐** ⭐ | 618-907 | **三省六部制(完善)** | **原版 ORIGINAL** | 7 |
-| 11 | `china/five-dynasties` | 五代十国 | 907-960 | 分裂军阀制 | 竞争体 | 5 |
-| 12 | `china/song` | 宋 | 960-1279 | 二府三司制 | 文官制衡 + 轮岗 | 8 |
-| 13 | `china/yuan` | 元 | 1271-1368 | 行省制 | 蒙古集权 + 行省代理 | 7 |
-| 14 | `china/ming` | 明 | 1368-1644 | 内阁制+司礼监 | 双轨决策 | 8 |
-| 15 | `china/qing` | 清 | 1644-1912 | 军机处+满汉合作 | 精英小组快速决策 | 8 |
-| 16 | `china/roc` | 中华民国 | 1912-1949 | 五权分立 | 五院互制 | 7 |
-| 17 | `china/liao` | 辽 | 907-1125 | 双重行政制 | 南北双轨并行 | 6 |
-| 18 | `china/jin-jurchen` | 金 | 1115-1234 | 女真汉分治 | 民族分工协作 | 6 |
-| 19 | `china/western-xia` | 西夏 | 1038-1227 | 多民族州郡制 | 军事优先 + 宗教辅助 | 5 |
-| 20 | `china/taiping` | 太平天国 | 1851-1864 | 神权专制/天王制 | 天王绝对集权 | 7 |
+| 1 | `china/xia` | [夏](./regimes/china/xia/README.md) | c.2070-1600 BC | 分封制/家族制 | 族长集权 + 松散部落 | 5 |
+| 2 | `china/shang` | [商](./regimes/china/shang/README.md) | c.1600-1046 BC | 神权贵族制 | 神权决策 + 贵族执行 | 6 |
+| 3 | `china/zhou` | [周](./regimes/china/zhou/README.md) | c.1046-256 BC | 宗法分封制 | 联邦自治 | 8 |
+| 4 | `china/qin` | [秦](./regimes/china/qin/README.md) | 221-206 BC | 郡县制·三公九卿 | 严格中央集权 | 7 |
+| 5 | `china/han` | [汉](./regimes/china/han/README.md) | 206 BC-220 AD | 三公九卿制 | 三公分权 + 九卿专职 | 10 |
+| 6 | `china/three-kingdoms` | [三国](./regimes/china/three-kingdoms/README.md) | 220-280 | 三国并立 | 3 独立朝廷竞争协作 | 9 |
+| 7 | `china/jin` | [晋](./regimes/china/jin/README.md) | 266-420 | 九品中正制 | 弱中央 + 强地方 | 6 |
+| 8 | `china/north-south` | [南北朝](./regimes/china/north-south/README.md) | 420-589 | 门阀士族制 | 家族派系自治 | 6 |
+| 9 | `china/sui` | [隋](./regimes/china/sui/README.md) | 581-618 | 三省六部制(初创) | 三省制衡(原型) | 7 |
+| 10 | `china/tang` | [**唐** ⭐](./regimes/china/tang/README.md) | 618-907 | **三省六部制(完善)** | **原版 ORIGINAL** | 7 |
+| 11 | `china/five-dynasties` | [五代十国](./regimes/china/five-dynasties/README.md) | 907-960 | 分裂军阀制 | 竞争体 | 5 |
+| 12 | `china/song` | [宋](./regimes/china/song/README.md) | 960-1279 | 二府三司制 | 文官制衡 + 轮岗 | 8 |
+| 13 | `china/yuan` | [元](./regimes/china/yuan/README.md) | 1271-1368 | 行省制 | 蒙古集权 + 行省代理 | 7 |
+| 14 | `china/ming` | [明](./regimes/china/ming/README.md) | 1368-1644 | 内阁制+司礼监 | 双轨决策 | 8 |
+| 15 | `china/qing` | [清](./regimes/china/qing/README.md) | 1644-1912 | 军机处+满汉合作 | 精英小组快速决策 | 8 |
+| 16 | `china/roc` | [中华民国](./regimes/china/roc/README.md) | 1912-1949 | 五权分立 | 五院互制 | 7 |
+| 17 | `china/liao` | [辽](./regimes/china/liao/README.md) | 907-1125 | 双重行政制 | 南北双轨并行 | 6 |
+| 18 | `china/jin-jurchen` | [金](./regimes/china/jin-jurchen/README.md) | 1115-1234 | 女真汉分治 | 民族分工协作 | 6 |
+| 19 | `china/western-xia` | [西夏](./regimes/china/western-xia/README.md) | 1038-1227 | 多民族州郡制 | 军事优先 + 宗教辅助 | 5 |
+| 20 | `china/taiping` | [太平天国](./regimes/china/taiping/README.md) | 1851-1864 | 神权专制/天王制 | 天王绝对集权 | 7 |
 
 ### 世界帝国（19）
 
 | # | ID | 帝国 | 时代 | 制度 | Agent 模式 | Agent 数 |
 |---|-----|------|------|------|-----------|---------|
-| 1 | `global/egypt` | 古埃及 | 3100-30 BC | 法老神权制 | 神王 + 维齐尔代理 | 6 |
-| 2 | `global/athens` | 雅典民主 | 508-322 BC | 直接民主制 | 全体 Agent 投票 | 6 |
-| 3 | `global/sparta` | 斯巴达 | 900-192 BC | 双王制 | 双王协调 + 监察官监督 | 6 |
-| 4 | `global/roman-republic` | 罗马共和国 | 509-27 BC | 元老院 + 执政官 | 双执政官 + 元老院投票 | 8 |
-| 5 | `global/roman-empire` | 罗马帝国 | 27 BC-476 AD | 帝制官僚 | 皇帝 + 行省长官层级 | 7 |
-| 6 | `global/byzantine` | 拜占庭帝国 | 330-1453 | 神权独裁制 | 皇帝-上帝代理人 + 大臣 | 7 |
-| 7 | `global/persian` | 波斯帝国 | 550-330 BC | 总督制 | 万王之王 + 自治总督 | 7 |
-| 8 | `global/ottoman` | 奥斯曼帝国 | 1299-1922 | 苏丹-迪万制 | 大维齐尔调度 | 7 |
-| 9 | `global/mongol` | 蒙古帝国 | 1206-1368 | 汗国-忽里勒台 | 大汗 + 忽里勒台议事 | 6 |
-| 10 | `global/hre` | 神圣罗马帝国 | 962-1806 | 选帝侯制 | 选帝侯选举 + 诸侯自治 | 7 |
-| 11 | `global/british` | 英国议会制 | 1689-至今 | 君主立宪制 | 首相执政，君主象征 | 8 |
-| 12 | `global/french` | 法国绝对君主制 | 1643-1789 | 朕即国家 | 太阳王绝对权力 | 7 |
-| 13 | `global/russian` | 俄罗斯沙皇制 | 1547-1917 | 专制 + 贵族杜马 | 沙皇专制 + 参政院 | 7 |
-| 14 | `global/shogunate` | 日本幕府制 | 1603-1868 | 幕府制 | 将军实权，天皇象征 | 7 |
-| 15 | `global/mughal` | 莫卧儿帝国 | 1526-1857 | 曼萨布达尔制 | 皇帝 + 品级官僚 | 7 |
-| 16 | `global/us-federal` | 美国联邦制 | 1789-至今 | 三权分立 | 立法/行政/司法分权 | 7 |
-| 17 | `global/soviet` | 苏联 | 1922-1991 | 政治局制 | 总书记 + 政治局委员会 | 7 |
-| 18 | `global/inca` | 印加帝国 | 1438-1533 | 萨帕·印卡四方制 | 太阳之子 + 四方总督 | 6 |
-| 19 | `global/aztec` | 阿兹特克三方联盟 | 1428-1521 | 三方联盟制 | 三城邦议事会 | 6 |
+| 1 | `global/egypt` | [古埃及](./regimes/global/egypt/README.md) | 3100-30 BC | 法老神权制 | 神王 + 维齐尔代理 | 6 |
+| 2 | `global/athens` | [雅典民主](./regimes/global/athens/README.md) | 508-322 BC | 直接民主制 | 全体 Agent 投票 | 6 |
+| 3 | `global/sparta` | [斯巴达](./regimes/global/sparta/README.md) | 900-192 BC | 双王制 | 双王协调 + 监察官监督 | 6 |
+| 4 | `global/roman-republic` | [罗马共和国](./regimes/global/roman-republic/README.md) | 509-27 BC | 元老院 + 执政官 | 双执政官 + 元老院投票 | 8 |
+| 5 | `global/roman-empire` | [罗马帝国](./regimes/global/roman-empire/README.md) | 27 BC-476 AD | 帝制官僚 | 皇帝 + 行省长官层级 | 7 |
+| 6 | `global/byzantine` | [拜占庭帝国](./regimes/global/byzantine/README.md) | 330-1453 | 神权独裁制 | 皇帝-上帝代理人 + 大臣 | 7 |
+| 7 | `global/persian` | [波斯帝国](./regimes/global/persian/README.md) | 550-330 BC | 总督制 | 万王之王 + 自治总督 | 7 |
+| 8 | `global/ottoman` | [奥斯曼帝国](./regimes/global/ottoman/README.md) | 1299-1922 | 苏丹-迪万制 | 大维齐尔调度 | 7 |
+| 9 | `global/mongol` | [蒙古帝国](./regimes/global/mongol/README.md) | 1206-1368 | 汗国-忽里勒台 | 大汗 + 忽里勒台议事 | 6 |
+| 10 | `global/hre` | [神圣罗马帝国](./regimes/global/hre/README.md) | 962-1806 | 选帝侯制 | 选帝侯选举 + 诸侯自治 | 7 |
+| 11 | `global/british` | [英国议会制](./regimes/global/british/README.md) | 1689-至今 | 君主立宪制 | 首相执政，君主象征 | 8 |
+| 12 | `global/french` | [法国绝对君主制](./regimes/global/french/README.md) | 1643-1789 | 朕即国家 | 太阳王绝对权力 | 7 |
+| 13 | `global/russian` | [俄罗斯沙皇制](./regimes/global/russian/README.md) | 1547-1917 | 专制 + 贵族杜马 | 沙皇专制 + 参政院 | 7 |
+| 14 | `global/shogunate` | [日本幕府制](./regimes/global/shogunate/README.md) | 1603-1868 | 幕府制 | 将军实权，天皇象征 | 7 |
+| 15 | `global/mughal` | [莫卧儿帝国](./regimes/global/mughal/README.md) | 1526-1857 | 曼萨布达尔制 | 皇帝 + 品级官僚 | 7 |
+| 16 | `global/us-federal` | [美国联邦制](./regimes/global/us-federal/README.md) | 1789-至今 | 三权分立 | 立法/行政/司法分权 | 7 |
+| 17 | `global/soviet` | [苏联](./regimes/global/soviet/README.md) | 1922-1991 | 政治局制 | 总书记 + 政治局委员会 | 7 |
+| 18 | `global/inca` | [印加帝国](./regimes/global/inca/README.md) | 1438-1533 | 萨帕·印卡四方制 | 太阳之子 + 四方总督 | 6 |
+| 19 | `global/aztec` | [阿兹特克三方联盟](./regimes/global/aztec/README.md) | 1428-1521 | 三方联盟制 | 三城邦议事会 | 6 |
 
 ---
 
