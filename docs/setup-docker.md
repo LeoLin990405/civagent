@@ -33,7 +33,7 @@ docker compose pull && docker compose up -d
 
 - Docker Hub：`boluobobo/ai-court:latest`（国内推荐，可配镜像加速）
 - GitHub：`ghcr.io/wanikua/boluobobo-ai-court-tutorial:latest`
-- 架构：linux/arm64（amd64 计划中）
+- 架构：linux/amd64 + linux/arm64
 - 内含：Node.js 22 + OpenClaw + Chromium + GitHub CLI + Python + OpenViking
 - 工作区和配置通过 volume 持久化，升级不丢数据
 
@@ -94,7 +94,7 @@ docker compose up -d          # 启动
 docker compose down           # 停止
 docker compose logs -f        # 查看日志
 docker compose pull && docker compose up -d  # 升级
-docker compose exec openclaw bash            # 进入容器
+docker compose exec court bash               # 进入容器
 ```
 
 ---
