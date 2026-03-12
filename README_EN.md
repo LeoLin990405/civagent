@@ -709,6 +709,10 @@ Besides Discord, the AI Court also supports Feishu (Lark) as an interaction inte
       "im:message:send_as_bot",
       "im:resource",
       "im:chat.members:bot_access",
+      "im:chat.access_event.bot_p2p_chat:read",
+      "contact:user.employee_id:readonly"
+    ],
+    "user": [
       "im:chat.access_event.bot_p2p_chat:read"
     ]
   }

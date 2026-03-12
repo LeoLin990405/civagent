@@ -11,7 +11,7 @@ interface Bot {
 
 const COLORS: Record<string, { bg: string; hat: string }> = {
   silijian:   { bg: '#d4a574', hat: '#b8894d' },
-  neige:      { bg: '#ef4444', hat: '#b91c1c' },
+  neige:      { bg: '#dc2626', hat: '#7f1d1d' },
   duchayuan:  { bg: '#22c55e', hat: '#15803d' },
   gongbu:     { bg: '#3b82f6', hat: '#1d4ed8' },
   hubu:       { bg: '#eab308', hat: '#a16207' },
