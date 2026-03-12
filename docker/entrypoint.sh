@@ -61,8 +61,16 @@ mkdir -p "$WORKSPACE/memory"
 # ---- OpenViking 初始化（如果配置了）----
 if [ -f "/root/.openviking/ov.conf" ] || [ -n "$OPENVIKING_CONFIG_FILE" ]; then
     echo "✓ OpenViking 配置已检测到"
-    # 确保 OpenViking 数据目录存在
     mkdir -p /root/.openviking/data
+fi
+
+# ---- GUI Dashboard 自动启动（如果存在）----
+if [ -f "/opt/gui/server/index.js" ]; then
+    echo "✓ 朝堂 Dashboard 已检测到，启动中..."
+    cd /opt/gui && node server/index.js &
+    GUI_PID=$!
+    cd "$WORKSPACE"
+    echo "✓ Dashboard 已启动 (PID: $GUI_PID, 端口: 18795)"
 fi
 
 # ---- 提示信息 ----
@@ -72,24 +80,26 @@ if [ ! -f "$CONFIG_DIR/openclaw.json" ]; then
     echo "⚠ 配置文件不存在"
     echo "================================"
     echo ""
-    echo "请挂载配置文件或设置环境变量："
+    echo "请选择一种方式初始化："
     echo ""
-    echo "  方式一：挂载配置文件"
+    echo "  方式一：交互式初始化（推荐）"
+    echo "    docker exec -it ai-court /init-docker.sh"
+    echo ""
+    echo "  方式二：OpenClaw 配置向导"
+    echo "    docker exec -it ai-court openclaw onboard"
+    echo ""
+    echo "  方式三：挂载已有配置文件"
     echo "    docker run -v ./openclaw.json:/root/.openclaw/openclaw.json ..."
-    echo ""
-    echo "  方式二：交互式配置"
-    echo "    docker exec -it <容器名> openclaw onboard"
-    echo ""
-    echo "  方式三：添加单个渠道"
-    echo "    docker exec -it <容器名> openclaw channels add"
     echo ""
 fi
 
 echo ""
 echo "🏛️ AI 朝廷 Docker 启动中..."
-echo "  工作区: $WORKSPACE"
-echo "  配置: $CONFIG_DIR/openclaw.json"
-echo "  WebUI: http://localhost:18789"
+echo "  工作区:    $WORKSPACE"
+echo "  配置:      $CONFIG_DIR/openclaw.json"
+echo "  Gateway:   http://localhost:18789"
+echo "  Dashboard: http://localhost:18795"
+echo "  初始化:    docker exec -it ai-court /init-docker.sh"
 echo ""
 
 exec "$@"

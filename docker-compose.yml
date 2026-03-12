@@ -1,26 +1,22 @@
 services:
   court:
-    image: ghcr.io/wanikua/boluobobo-ai-court-tutorial:latest
+    image: boluobobo/ai-court:latest
     build: .   # 本地构建备选（无预构建镜像时自动 build）
     container_name: ai-court
     restart: unless-stopped
     ports:
-      # SEC-11: 仅绑定 localhost，防止端口暴露到公网
       - "127.0.0.1:18789:18789"   # Gateway Dashboard
-      - "127.0.0.1:18795:18795"   # 菠萝 GUI（可选，需另行启动）
+      - "127.0.0.1:18795:18795"   # 菠萝 GUI（可选）
     volumes:
-      # 配置文件（必须挂载；如果用 clawdbot 改为 .clawdbot/clawdbot.json）
+      # 配置文件（必须挂载）
       - ./openclaw.json:${OPENCLAW_CONFIG_PATH:-/root/.openclaw/openclaw.json}
       # 工作区持久化（记忆、日志等）
       - court-workspace:${OPENCLAW_WORKSPACE:-/root/clawd}
       # OpenViking 数据持久化（可选）
       - court-openviking:/root/.openviking
     environment:
-      # LLM API Key（也可以写在 openclaw.json 里）
       - LLM_API_KEY=${LLM_API_KEY:-}
-      # OpenViking 配置（可选）
       - OPENVIKING_CONFIG_FILE=${OPENVIKING_CONFIG_FILE:-}
-    # 健康检查
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:18789/health"]
       interval: 30s

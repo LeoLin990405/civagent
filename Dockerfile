@@ -37,12 +37,18 @@ ARG WORKSPACE=/root/clawd
 RUN mkdir -p ${WORKSPACE}/memory ${WORKSPACE}/skills /root/.openclaw
 WORKDIR ${WORKSPACE}
 
-# 复制朝廷模板文件
+# 复制朝廷模板文件和初始化脚本
 COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY docker/init-docker.sh /init-docker.sh
+RUN chmod +x /entrypoint.sh /init-docker.sh
 
 # 复制 skill 和模板
 COPY skills/ ${WORKSPACE}/skills/
+
+# 复制并构建 GUI Dashboard
+COPY gui/ /opt/gui/
+RUN cd /opt/gui && npm install --loglevel=error 2>/dev/null || true && \
+    cd /opt/gui/server && npm install --loglevel=error 2>/dev/null || true
 
 # 端口：Gateway WebUI + 菠萝 GUI（可选）
 EXPOSE 18789 18795

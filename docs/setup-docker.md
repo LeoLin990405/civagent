@@ -15,12 +15,14 @@
 git clone https://github.com/wanikua/boluobobo-ai-court-tutorial.git
 cd boluobobo-ai-court-tutorial
 
-# 2. 准备配置文件（复制模板，填入 API Key 和 Bot Token）
-cp openclaw.example.json openclaw.json
-nano openclaw.json
-
-# 3. 一键启动
+# 2. 启动容器
 docker compose up -d
+
+# 3. 交互式初始化（选模式、填 Key、配平台，一步到位）
+docker exec -it ai-court /init-docker.sh
+
+# 4. 重启使配置生效
+docker compose restart
 
 # 查看日志
 docker compose logs -f
@@ -28,6 +30,8 @@ docker compose logs -f
 # 升级
 docker compose pull && docker compose up -d
 ```
+
+> 💡 也可以跳过初始化脚本，手动编辑配置：`cp openclaw.example.json openclaw.json && nano openclaw.json`
 
 ## 镜像信息
 
