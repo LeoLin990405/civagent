@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useTheme } from "../theme"
-import { getAuthToken } from '../auth'
+import { getAuthToken } from "../utils/auth"
 
 interface CronJob {
   id: string
@@ -12,6 +12,7 @@ interface CronJob {
   status: string
   agent: string
 }
+
 
 function relTime(ts: string) {
   if (!ts) return '未运行'
@@ -63,7 +64,7 @@ export default function CronJobs() {
   const handleRun = async (jobId: string, jobName: string) => {
     setActionLoading(jobId)
     try {
-      const r = await fetch(`/api/cron/${jobId}/run`, {
+      const r = await fetch(`/api/cron/run/${encodeURIComponent(jobId)}`, {
         method: 'POST',
         headers: { Authorization: `Bearer ${getAuthToken()}` },
       })
@@ -82,8 +83,8 @@ export default function CronJobs() {
   const handleToggle = async (jobId: string, jobName: string, currentEnabled: boolean) => {
     setActionLoading(jobId)
     try {
-      const r = await fetch(`/api/cron/${jobId}/toggle`, {
-        method: 'POST',
+      const r = await fetch(`/api/cron/jobs/${encodeURIComponent(jobId)}`, {
+        method: 'PATCH',
         headers: { Authorization: `Bearer ${getAuthToken()}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: !currentEnabled }),
       })

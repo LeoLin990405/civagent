@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useTheme } from "../theme"
-import { getAuthToken } from '../auth'
+import { getAuthToken } from "../utils/auth"
 
 interface PendingItem {
   id: string
@@ -15,6 +15,7 @@ interface ProcessedItem extends PendingItem {
   action: 'approved' | 'rejected' | 'ignored'
   processedAt: string
 }
+
 
 export default function MemorialHall() {
   const [pending, setPending] = useState<PendingItem[]>([])
@@ -116,29 +117,13 @@ export default function MemorialHall() {
 
       setPending(pendingItems)
       
-      // 模拟已处理记录
-      setProcessed([
-        {
-          id: 'proc-1',
-          type: 'cron',
-          title: 'Cron 任务恢复: gui-iter',
-          description: '任务已自动恢复',
-          timestamp: new Date(Date.now() - 3600000).toISOString(),
-          priority: 'normal',
-          action: 'approved',
-          processedAt: new Date(Date.now() - 3500000).toISOString()
-        },
-        {
-          id: 'proc-2',
-          type: 'node',
-          title: '节点重启: test-node',
-          description: '已重启节点服务',
-          timestamp: new Date(Date.now() - 7200000).toISOString(),
-          priority: 'high',
-          action: 'approved',
-          processedAt: new Date(Date.now() - 7100000).toISOString()
+      // Load processed items from localStorage
+      try {
+        const stored = localStorage.getItem('boluo_processed_memorials')
+        if (stored) {
+          setProcessed(JSON.parse(stored))
         }
-      ])
+      } catch { /* ignore */ }
       
     } catch (e) {
       console.error('Failed to fetch memorial data:', e)
@@ -160,7 +145,11 @@ export default function MemorialHall() {
       action,
       processedAt: new Date().toISOString()
     }
-    setProcessed(prev => [processedItem, ...prev])
+    setProcessed(prev => {
+      const updated = [processedItem, ...prev].slice(0, 50) // Keep last 50
+      try { localStorage.setItem('boluo_processed_memorials', JSON.stringify(updated)) } catch { /* ignore */ }
+      return updated
+    })
   }
 
   const getTypeIcon = (type: string) => {
@@ -219,13 +208,13 @@ export default function MemorialHall() {
       </div>
 
       {/* Tab 切换 */}
-      <div className="flex gap-2 border-b border-[#d4a574]/30 pb-2">
+      <div className={`flex gap-2 border-b pb-2 ${theme === 'light' ? 'border-gray-200' : 'border-[#d4a574]/30'}`}>
         <button
           onClick={() => setActiveTab('pending')}
           className={`px-4 py-2 text-sm rounded-t transition-all ${
             activeTab === 'pending'
               ? 'bg-[#d4a574]/20 text-[#d4a574] border-b-2 border-[#d4a574]'
-              : 'text-[#a3a3a3] hover:text-[#e5e5e5]'
+              : `${theme === 'light' ? 'text-gray-500 hover:text-gray-700' : 'text-[#a3a3a3] hover:text-[#e5e5e5]'}`
           }`}
         >
           ⏳ 待处理 ({pending.length})
@@ -235,7 +224,7 @@ export default function MemorialHall() {
           className={`px-4 py-2 text-sm rounded-t transition-all ${
             activeTab === 'processed'
               ? 'bg-[#d4a574]/20 text-[#d4a574] border-b-2 border-[#d4a574]'
-              : 'text-[#a3a3a3] hover:text-[#e5e5e5]'
+              : `${theme === 'light' ? 'text-gray-500 hover:text-gray-700' : 'text-[#a3a3a3] hover:text-[#e5e5e5]'}`
           }`}
         >
           ✅ 已处理 ({processed.length})

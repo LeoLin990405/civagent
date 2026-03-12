@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react"
 import type { SystemStatus, BotAccount } from "../types"
 import { useTheme } from "../theme"
-import { getAuthToken } from '../auth'
+import { getAuthToken } from "../utils/auth"
 
 interface Props { data: SystemStatus }
+
 
 function fmt(n: number): string {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + "M"

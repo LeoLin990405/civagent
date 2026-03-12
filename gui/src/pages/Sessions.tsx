@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts"
 import { useTheme } from "../theme"
-import { getAuthToken } from '../auth'
+import { getAuthToken } from "../utils/auth"
 
 interface Session {
   id: string; agentId: string; agentName: string; channel: string
@@ -27,6 +27,7 @@ interface Message { id: string; role: string; content: string; timestamp: string
 interface Props {
   initialFilter?: string
 }
+
 
 function fmt(n: number): string {
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(2) + "M"

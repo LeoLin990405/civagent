@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react"
 import { useTheme } from "../theme"
-import { getAuthToken } from '../auth'
 
 interface WeatherData {
   location: string
@@ -14,6 +13,7 @@ interface WeatherData {
   timestamp: string
 }
 
+const AUTH_TOKEN = localStorage.getItem('boluo_auth_token') || ''
 const DEFAULT_LOCATIONS = ['Beijing', 'Shanghai', 'Guangzhou', 'Shenzhen', 'Hangzhou', 'Chengdu']
 
 export default function WeatherWidget() {
@@ -33,7 +33,7 @@ export default function WeatherWidget() {
   const fetchWeather = async (loc: string) => {
     try {
       const res = await fetch(`/api/weather?location=${encodeURIComponent(loc)}`, {
-        headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
       })
       if (res.ok) {
         const data = await res.json()

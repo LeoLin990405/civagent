@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { useTheme } from "../theme"
-import { getAuthToken } from '../auth'
+import { getAuthToken } from "../utils/auth"
 
 type SearchType = 'all' | 'logs' | 'messages' | 'sessions'
 
@@ -11,6 +11,7 @@ interface SearchResult {
   timestamp: string
   source?: string
 }
+
 
 export default function Search() {
   const [query, setQuery] = useState('')

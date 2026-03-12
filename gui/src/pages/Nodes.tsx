@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useTheme } from "../theme"
-import { getAuthToken } from '../auth'
+import { getAuthToken } from "../utils/auth"
 
 interface Node {
   id: string
@@ -10,6 +10,7 @@ interface Node {
   os: string
   uptime: number
 }
+
 
 export default function Nodes() {
   const [nodes, setNodes] = useState<Node[]>([])

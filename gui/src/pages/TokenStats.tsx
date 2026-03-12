@@ -5,7 +5,7 @@ import {
 } from "recharts"
 import type { SystemStatus } from "../types"
 import { useTheme } from "../theme"
-import { getAuthToken } from '../auth'
+import { getAuthToken } from "../utils/auth"
 
 interface Props { data: SystemStatus }
 
@@ -23,7 +23,7 @@ interface TrendPoint { date: string; tokens: number }
 export default function TokenStats({ data }: Props) {
   const { theme } = useTheme()
   const [deptTokens, setDeptTokens] = useState<DeptTokens[]>([])
-  const [_trend, setTrend] = useState<TrendPoint[]>([])
+  const [, setTrend] = useState<TrendPoint[]>([])
   const [tokenPrice, setTokenPrice] = useState(0.3)
   const [totalApiTokens, setTotalApiTokens] = useState(0)
   const [loading, setLoading] = useState(true)

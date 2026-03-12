@@ -1,8 +1,11 @@
 import { useState, useEffect, useCallback } from "react"
 import type { SystemStatus } from "../types"
-import { getAuthToken } from '../auth'
 
 const REFRESH_INTERVAL = 30000
+
+function getAuthToken(): string {
+  return localStorage.getItem('boluo_auth_token') || ''
+}
 
 export function useStatus() {
   const [data, setData] = useState<SystemStatus | null>(null)

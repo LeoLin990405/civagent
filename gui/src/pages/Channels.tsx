@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useTheme } from "../theme"
-import { getAuthToken } from '../auth'
+import { getAuthToken } from "../utils/auth"
 
 interface Platform {
   name: string; status: 'connected' | 'disconnected'; channels: number; accounts?: number
@@ -8,7 +8,39 @@ interface Platform {
 
 interface BotChannel {
   id: string; name: string; displayName: string; status: string
-  sessions: number; model: string; channel: string
+  sessions: number; model: string; channel: string; platforms: string[]
+}
+
+
+const PLATFORM_ICONS: Record<string, string> = {
+  discord: '💬',
+  telegram: '✈️',
+  signal: '🔒',
+  whatsapp: '📱',
+  slack: '💼',
+  feishu: '🐦',
+  lark: '🐦',
+}
+
+function platformDisplayName(key: string): string {
+  const map: Record<string, string> = {
+    discord: 'Discord',
+    telegram: 'Telegram',
+    signal: 'Signal',
+    whatsapp: 'WhatsApp',
+    slack: 'Slack',
+    feishu: '飞书',
+    lark: '飞书',
+  }
+  return map[key?.toLowerCase()] || key || 'Unknown'
+}
+
+function platformIcon(name: string): string {
+  const key = name.toLowerCase()
+  for (const [k, v] of Object.entries(PLATFORM_ICONS)) {
+    if (key.includes(k) || platformDisplayName(k).toLowerCase() === key) return v
+  }
+  return '🌐'
 }
 
 export default function Channels() {
@@ -34,14 +66,15 @@ export default function Channels() {
 
       const statusData = await statusRes.json()
       const bots = statusData.botAccounts || []
-      setBotChannels(bots.map((b: { name: string; displayName: string; status: string; sessions: number; model: string }) => ({
+      setBotChannels(bots.map((b: { name: string; displayName: string; status: string; sessions: number; model: string; platform?: string; platforms?: string[] }) => ({
         id: b.name,
         name: b.name,
         displayName: b.displayName || b.name,
         status: b.status,
         sessions: b.sessions || 0,
         model: b.model || '',
-        channel: 'Discord'
+        channel: platformDisplayName(b.platform || 'discord'),
+        platforms: (b.platforms || [b.platform || 'discord']).map((p: string) => platformDisplayName(p)),
       })))
     } catch { }
     setLoading(false)
@@ -76,7 +109,7 @@ export default function Channels() {
             p.status === 'connected' ? 'border-l-green-500' : 'border-l-gray-500'
           }`}>
             <div className="flex items-center justify-between mb-1">
-              <span className="text-sm font-medium">{p.name}</span>
+              <span className="text-sm font-medium">{platformIcon(p.name)} {p.name}</span>
               <span className={`w-2 h-2 rounded-full ${p.status === 'connected' ? 'bg-green-500' : 'bg-red-500'}`} />
             </div>
             <div className={`text-xs ${sub}`}>
@@ -111,7 +144,7 @@ export default function Channels() {
                 ? 'bg-[#d4a574]/20 text-[#d4a574] border-[#d4a574]'
                 : `border-[#d4a574]/20 ${sub} hover:border-[#d4a574]/50`
             }`}>
-            {p === 'all' ? '全部' : p}
+            {p === 'all' ? '🌐 全部' : `${platformIcon(p)} ${p}`}
           </button>
         ))}
       </div>
@@ -128,7 +161,7 @@ export default function Channels() {
             theme === 'light' ? 'border-gray-100 hover:bg-gray-50' : 'border-[#d4a574]/10 hover:bg-[#16213e]'
           }`}>
             <div className="font-medium text-[#d4a574]">{ch.displayName}</div>
-            <div className={sub}>{ch.channel}</div>
+            <div className={sub}>{platformIcon(ch.channel)} {ch.channel}</div>
             <div>
               <span className={`px-2 py-0.5 text-xs rounded ${
                 ch.status === 'online' ? 'bg-green-500/20 text-green-500' : 'bg-gray-500/20 text-gray-500'

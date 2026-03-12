@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react"
 import { useTheme } from "../theme"
-import { getAuthToken } from '../auth'
 
 interface LogEntry {
   id: number
@@ -9,6 +8,8 @@ interface LogEntry {
   message: string
   source: string
 }
+
+const AUTH_TOKEN = localStorage.getItem('boluo_auth_token') || ''
 
 export default function LogViewer() {
   const [logs, setLogs] = useState<LogEntry[]>([])
@@ -29,7 +30,7 @@ export default function LogViewer() {
       params.set('limit', '500')
       
       const res = await fetch(`/api/logs/list?${params}`, {
-        headers: { 'Authorization': `Bearer ${getAuthToken()}` }
+        headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` }
       })
       if (res.ok) {
         const data = await res.json()

@@ -5,9 +5,10 @@ import {
 } from "recharts"
 import type { SystemStatus } from "../types"
 import { useTheme } from "../theme"
-import { getAuthToken } from '../auth'
+import { getAuthToken } from "../utils/auth"
 
 interface Props { data: SystemStatus }
+
 
 interface MetricPoint {
   timestamp: string

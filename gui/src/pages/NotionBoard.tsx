@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react"
 import { useTheme } from "../theme"
-import { getAuthToken } from '../auth'
+import { getAuthToken } from "../utils/auth"
 import {
   PieChart,
   Pie,
@@ -42,6 +42,7 @@ interface PersonnelEntry {
   status: string
   tenure: string
 }
+
 
 const CHART_COLORS = ['#d4a574', '#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6']
 
