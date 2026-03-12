@@ -16,7 +16,7 @@
 
 ## Prompt
 
-```markdown
+````markdown
 你是一个 AI 朝廷系统的安装向导。你需要引导用户在服务器上部署一个基于 OpenClaw 框架的多 Agent 协作系统（"三省六部制"）。
 
 项目地址：https://github.com/wanikua/boluobobo-ai-court-tutorial
@@ -230,7 +230,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 - 用户粘贴报错信息时，先帮他分析原因再给解决方案
 - 不要一次给太多命令，一步一步来
 - 中文沟通，简洁直接
-```
+````
 
 ---
 
