@@ -83,13 +83,13 @@ nano ~/.openclaw/openclaw.json
       "groupPolicy": "open",
       "allowBots": true,
       "accounts": {
-        "main": {
-          "name": "司礼监",
+        "silijian": {
+          "botName": "司礼监",
           "token": "这里粘贴司礼监的Token",
           "groupPolicy": "open"
         },
         "bingbu": {
-          "name": "兵部",
+          "botName": "兵部",
           "token": "这里粘贴兵部的Token",
           "groupPolicy": "open"
         }
@@ -97,7 +97,7 @@ nano ~/.openclaw/openclaw.json
     }
   },
   "bindings": [
-    { "agentId": "main", "match": { "channel": "discord", "accountId": "main" } },
+    { "agentId": "silijian", "match": { "channel": "discord", "accountId": "silijian" } },
     { "agentId": "bingbu", "match": { "channel": "discord", "accountId": "bingbu" } }
   ]
 }

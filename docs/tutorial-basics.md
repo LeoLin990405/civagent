@@ -301,7 +301,7 @@ nano ~/.openclaw/openclaw.json
     },
     "list": [
       {
-        "id": "main",
+        "id": "silijian",
         "name": "司礼监",
         "model": { "primary": "your-provider/fast-model" },
         "sandbox": { "mode": "off" }
@@ -335,15 +335,15 @@ nano ~/.openclaw/openclaw.json
       "groupPolicy": "open",
       "allowBots": true,
       "accounts": {
-        "main": { "name": "司礼监", "token": "司礼监的Bot Token", "groupPolicy": "open" },
-        "bingbu": { "name": "兵部", "token": "兵部的Bot Token", "groupPolicy": "open" },
-        "hubu": { "name": "户部", "token": "户部的Bot Token", "groupPolicy": "open" },
-        "libu": { "name": "礼部", "token": "礼部的Bot Token", "groupPolicy": "open" }
+        "silijian": { "botName": "司礼监", "token": "司礼监的Bot Token", "groupPolicy": "open" },
+        "bingbu": { "botName": "兵部", "token": "兵部的Bot Token", "groupPolicy": "open" },
+        "hubu": { "botName": "户部", "token": "户部的Bot Token", "groupPolicy": "open" },
+        "libu": { "botName": "礼部", "token": "礼部的Bot Token", "groupPolicy": "open" }
       }
     }
   },
   "bindings": [
-    { "agentId": "main", "match": { "channel": "discord", "accountId": "main" } },
+    { "agentId": "silijian", "match": { "channel": "discord", "accountId": "silijian" } },
     { "agentId": "bingbu", "match": { "channel": "discord", "accountId": "bingbu" } },
     { "agentId": "hubu", "match": { "channel": "discord", "accountId": "hubu" } },
     { "agentId": "libu", "match": { "channel": "discord", "accountId": "libu" } }

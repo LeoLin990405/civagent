@@ -32,8 +32,24 @@ docker compose pull && docker compose up -d
 ## 镜像信息
 
 - 镜像：`ghcr.io/wanikua/boluobobo-ai-court-tutorial:latest`
-- 内含：OpenClaw + Chromium + GitHub CLI + Python + OpenViking
+- 架构：linux/arm64（amd64 计划中）
+- 内含：Node.js 22 + OpenClaw + Chromium + GitHub CLI + Python + OpenViking
 - 工作区和配置通过 volume 持久化，升级不丢数据
+
+### 🔒 镜像安全说明
+
+镜像是干净的运行环境，**不含任何隐私数据**：
+
+| 包含 ✅ | 不包含 ❌ |
+|---------|----------|
+| Node.js 22 运行时 | API Key / Bot Token |
+| OpenClaw 框架 | 个人配置文件 |
+| Chromium 浏览器 | Git 历史 / commit 记录 |
+| GitHub CLI + Python | memory 文件 / 对话记录 |
+| 通用 Skill 模板（天气、GitHub、Notion 等） | 项目图片 / 证据文件 |
+| 初始化脚本（创建 SOUL.md 等模板） | 任何用户数据 |
+
+> 💡 你的 API Key、Bot Token、对话记录等全部通过 volume 挂载，不会打包进镜像。
 
 ## 端口
 
@@ -63,7 +79,7 @@ docker compose pull && docker compose up -d
       "enabled": true,
       "groupPolicy": "open",
       "accounts": {
-        "main": { "name": "司礼监", "token": "你的Bot_Token", "groupPolicy": "open" }
+        "silijian": { "botName": "司礼监", "token": "你的Bot_Token", "groupPolicy": "open" }
       }
     }
   }
