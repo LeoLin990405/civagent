@@ -560,19 +560,32 @@ openclaw cron add \
 ### 独立记忆系统
 每个 Agent 有独立的工作区和 `memory/` 目录。对话积累的项目知识会持久化到文件，跨会话保留。Agent 越用越懂你的项目。
 
-### 60+ 内置 Skill（基于 OpenClaw 生态）
-不只是聊天——内置的工具覆盖开发全流程，且可通过 [OpenClaw Hub](https://github.com/openclaw/openclaw) 扩展更多 Skill：
+### 60+ Skill 生态（基于 OpenClaw 框架）
+不只是聊天——OpenClaw 框架内置 60+ Skill 覆盖开发全流程，且可通过 [OpenClaw Hub](https://github.com/openclaw/openclaw) 扩展更多：
 
 | 类别 | Skill |
 |------|-------|
 | 开发 | GitHub（Issue/PR/CI）、Coding Agent（代码生成与重构） |
 | 文档 | Notion（数据库/页面/自动汇报） |
-| 信息 | 浏览器自动化、Web 搜索、Web 抓取 |
+| 信息 | 浏览器自动化、Web 搜索、Web 抓取、Hacker News |
 | 自动化 | Cron 定时任务、心跳自检 |
 | 媒体 | TTS 语音、截图、视频帧提取 |
-| 运维 | tmux 远程控制、Shell 命令执行 |
+| 运维 | tmux 远程控制、Shell 命令执行、天气查询 |
 | 通信 | Discord、Slack、飞书（Lark）、Telegram、WhatsApp、Signal… |
 | 扩展 | OpenClaw Hub 社区 Skill、自定义 Skill |
+
+#### 📦 本项目预装 Skill（`skills/` 目录）
+
+| Skill | 说明 | 需要 API Key |
+|-------|------|:---:|
+| `weather` | 天气查询（wttr.in / Open-Meteo） | ❌ |
+| `github` | GitHub 操作（gh CLI） | ❌（需 `gh auth login`） |
+| `notion` | Notion 页面/数据库管理 | ✅ |
+| `hacker-news` | Hacker News 浏览和搜索 | ❌ |
+| `quadrants` | 四象限任务管理（quadrants.ch） | ✅ |
+| `openviking` | 向量知识库（火山引擎开源） | ✅ |
+
+> 💡 这些只是起步包。通过 `clawdhub install <skill名>` 可以随时从社区安装更多 Skill。
 
 ### 定时任务（Cron）
 内置 Cron 调度器，让 Agent 定时自动执行：
