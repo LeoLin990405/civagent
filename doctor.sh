@@ -2,6 +2,7 @@
 # ============================================
 # AI 朝廷配置诊断脚本（doctor.sh）
 # 检查常见配置问题，帮助排查故障
+# 支持 Discord + 飞书双频道诊断
 # ============================================
 
 RED='\033[0;31m'
@@ -20,13 +21,71 @@ warn() { echo -e "  ${YELLOW}⚠${NC} $1"; ((WARN++)); }
 fail() { echo -e "  ${RED}✗${NC} $1"; ((FAIL++)); }
 info() { echo -e "  ${CYAN}ℹ${NC} $1"; }
 
+# JSON 值提取辅助（用 python3 或 node）
+json_get() {
+    local file="$1" path="$2"
+    if command -v python3 &>/dev/null; then
+        python3 -c "
+import json, sys
+try:
+    d = json.load(open('$file'))
+    keys = '$path'.split('.')
+    for k in keys:
+        if isinstance(d, dict):
+            d = d.get(k)
+        else:
+            d = None
+            break
+    if d is not None:
+        if isinstance(d, (dict, list)):
+            print(json.dumps(d))
+        else:
+            print(d)
+except: pass
+" 2>/dev/null
+    elif command -v node &>/dev/null; then
+        node -e "
+try {
+    const d = require('$file');
+    const v = '$path'.split('.').reduce((o,k) => o && o[k], d);
+    if (v !== undefined) console.log(typeof v === 'object' ? JSON.stringify(v) : v);
+} catch(e) {}
+" 2>/dev/null
+    fi
+}
+
+# 列出 JSON 对象的 key
+json_keys() {
+    local file="$1" path="$2"
+    if command -v python3 &>/dev/null; then
+        python3 -c "
+import json
+try:
+    d = json.load(open('$file'))
+    for k in '$path'.split('.'):
+        d = d.get(k, {})
+    if isinstance(d, dict):
+        for k in d: print(k)
+except: pass
+" 2>/dev/null
+    elif command -v node &>/dev/null; then
+        node -e "
+try {
+    let d = require('$file');
+    for (const k of '$path'.split('.')) d = d && d[k];
+    if (d && typeof d === 'object') Object.keys(d).forEach(k => console.log(k));
+} catch(e) {}
+" 2>/dev/null
+    fi
+}
+
 echo ""
 echo -e "${BLUE}🏥 AI 朝廷配置诊断${NC}"
 echo "================================"
 echo ""
 
-# ---- 检测 CLI ----
-echo -e "${YELLOW}[1/8] 检查安装...${NC}"
+# ---- [1/9] 检测 CLI ----
+echo -e "${YELLOW}[1/9] 检查安装...${NC}"
 
 if command -v openclaw &>/dev/null; then
     CLI_CMD="openclaw"
@@ -42,7 +101,7 @@ else
 fi
 
 NODE_VER=$(node -v 2>/dev/null || echo "none")
-if [[ "$NODE_VER" == v22* ]] || [[ "$NODE_VER" == v23* ]] || [[ "$NODE_VER" == v24* ]]; then
+if [[ "$NODE_VER" == v22* ]] || [[ "$NODE_VER" == v23* ]] || [[ "$NODE_VER" == v24* ]] || [[ "$NODE_VER" == v25* ]]; then
     pass "Node.js $NODE_VER"
 elif [[ "$NODE_VER" == "none" ]]; then
     fail "Node.js 未安装"
@@ -50,11 +109,10 @@ else
     warn "Node.js $NODE_VER — 推荐 v22+"
 fi
 
-# ---- 检测配置文件 ----
+# ---- [2/9] 检测配置文件 ----
 echo ""
-echo -e "${YELLOW}[2/8] 检查配置文件...${NC}"
+echo -e "${YELLOW}[2/9] 检查配置文件...${NC}"
 
-# 查找配置文件
 CONFIG_FILE=""
 if [ -f "$HOME/.openclaw/openclaw.json" ]; then
     CONFIG_FILE="$HOME/.openclaw/openclaw.json"
@@ -82,11 +140,10 @@ else
     info "用这个工具检查: https://jsonlint.com"
 fi
 
-# ---- 检测 API Key ----
+# ---- [3/9] 检测 API Key ----
 echo ""
-echo -e "${YELLOW}[3/8] 检查模型配置...${NC}"
+echo -e "${YELLOW}[3/9] 检查模型配置...${NC}"
 
-# 检查是否有placeholder
 if grep -q "YOUR_LLM_API_KEY\|YOUR_API_KEY\|your-api-key\|sk-xxx\|your-provider" "$CONFIG_FILE" 2>/dev/null; then
     fail "API Key 未填写 — 配置文件中仍有占位符"
     info "编辑 $CONFIG_FILE，把 YOUR_LLM_API_KEY 替换成真实的 Key"
@@ -94,7 +151,6 @@ else
     pass "API Key 已填写（未检测到占位符）"
 fi
 
-# 检查 providers 是否存在
 if grep -q '"providers"' "$CONFIG_FILE" 2>/dev/null; then
     PROVIDER_COUNT=$(grep -o '"baseUrl"' "$CONFIG_FILE" | wc -l)
     pass "模型 Provider 已配置（$PROVIDER_COUNT 个）"
@@ -102,65 +158,200 @@ else
     fail "未找到 models.providers 配置"
 fi
 
-# ---- 检测 Discord 配置 ----
+# ---- [4/9] 检测 Discord 配置 ----
 echo ""
-echo -e "${YELLOW}[4/8] 检查 Discord 配置...${NC}"
+echo -e "${YELLOW}[4/9] 检查 Discord 配置...${NC}"
+
+DISCORD_ENABLED=$(json_get "$CONFIG_FILE" "channels.discord.enabled")
 
 if grep -q '"discord"' "$CONFIG_FILE" 2>/dev/null; then
-    # 检查是否启用
-    if grep -q '"enabled": true' "$CONFIG_FILE" 2>/dev/null || grep -q '"enabled":true' "$CONFIG_FILE" 2>/dev/null; then
+    if [ "$DISCORD_ENABLED" = "true" ]; then
         pass "Discord 已启用"
-    else
-        warn "Discord 可能未启用 — 检查 channels.discord.enabled"
-    fi
 
-    # 检查 Bot Token 占位符
-    BOT_PLACEHOLDER=$(grep -c "YOUR_.*BOT_TOKEN\|YOUR_.*_TOKEN" "$CONFIG_FILE" 2>/dev/null)
-    if [ "$BOT_PLACEHOLDER" -gt 0 ]; then
-        fail "有 $BOT_PLACEHOLDER 个 Bot Token 未填写"
-        info "去 https://discord.com/developers/applications 创建 Bot 并复制 Token"
-    else
-        BOT_COUNT=$(grep -c '"token":' "$CONFIG_FILE" 2>/dev/null || echo 0)
-        pass "Bot Token 已填写（$BOT_COUNT 个 Bot）"
-    fi
+        # 检查 Bot Token 占位符
+        BOT_PLACEHOLDER=$(grep -c "YOUR_.*BOT_TOKEN\|YOUR_.*_TOKEN" "$CONFIG_FILE" 2>/dev/null)
+        if [ "$BOT_PLACEHOLDER" -gt 0 ]; then
+            fail "有 $BOT_PLACEHOLDER 个 Bot Token 未填写"
+            info "去 https://discord.com/developers/applications 创建 Bot 并复制 Token"
+        else
+            BOT_COUNT=$(grep -c '"token":' "$CONFIG_FILE" 2>/dev/null || echo 0)
+            pass "Bot Token 已填写（$BOT_COUNT 个 Bot）"
+        fi
 
-    # 检查 allowBots
-    if grep -q '"allowBots": true\|"allowBots":true' "$CONFIG_FILE" 2>/dev/null; then
-        pass "allowBots: true（Bot 之间可以互相触发）"
-    else
-        warn "allowBots 未开启 — Bot 之间无法互相对话"
-        info "在 channels.discord 中添加 \"allowBots\": true"
-    fi
+        # 检查 allowBots
+        DISCORD_ALLOW_BOTS=$(json_get "$CONFIG_FILE" "channels.discord.allowBots")
+        if [ "$DISCORD_ALLOW_BOTS" = "true" ]; then
+            pass "allowBots: true（Bot 之间可以互相触发）"
+        else
+            warn "allowBots 未开启 — Bot 之间无法互相对话"
+            info "在 channels.discord 中添加 \"allowBots\": true"
+        fi
 
-    # 检查 groupPolicy
-    if grep -q '"groupPolicy": "open"\|"groupPolicy":"open"' "$CONFIG_FILE" 2>/dev/null; then
-        pass "groupPolicy: open（群聊消息已放行）"
-    else
-        warn "groupPolicy 可能不是 open — @everyone 可能不触发"
-        info "确保 channels.discord.groupPolicy 和每个 account 的 groupPolicy 都设为 \"open\""
-    fi
+        # 检查 groupPolicy
+        DISCORD_GP=$(json_get "$CONFIG_FILE" "channels.discord.groupPolicy")
+        if [ "$DISCORD_GP" = "open" ]; then
+            pass "groupPolicy: open（群聊消息已放行）"
+        else
+            warn "groupPolicy 不是 open（当前: ${DISCORD_GP:-未设置}）— @everyone 可能不触发"
+            info "确保 channels.discord.groupPolicy 设为 \"open\""
+        fi
 
-    echo ""
-    echo -e "${CYAN}  📋 Discord @everyone 不触发？逐项检查：${NC}"
-    echo -e "     1. Discord Developer Portal → 每个 Bot 开启 ${YELLOW}Message Content Intent${NC}"
-    echo -e "     2. Discord Developer Portal → 每个 Bot 开启 ${YELLOW}Server Members Intent${NC}"
-    echo -e "     3. Discord Developer Portal → 每个 Bot 开启 ${YELLOW}Presence Intent${NC}（可选）"
-    echo -e "     4. 服务器设置 → 每个 Bot 角色有 ${YELLOW}View Channels${NC} 权限"
-    echo -e "     5. 配置文件 → channels.discord.${YELLOW}groupPolicy: \"open\"${NC}"
-    echo -e "     6. 配置文件 → 每个 account 的 ${YELLOW}groupPolicy: \"open\"${NC}"
-    echo -e "     7. 配置文件 → channels.discord.${YELLOW}\"allowBots\": true${NC}（Bot互触发需要）"
-    echo ""
+        echo ""
+        echo -e "${CYAN}  📋 Discord @everyone 不触发？逐项检查：${NC}"
+        echo -e "     1. Discord Developer Portal → 每个 Bot 开启 ${YELLOW}Message Content Intent${NC}"
+        echo -e "     2. Discord Developer Portal → 每个 Bot 开启 ${YELLOW}Server Members Intent${NC}"
+        echo -e "     3. Discord Developer Portal → 每个 Bot 开启 ${YELLOW}Presence Intent${NC}（可选）"
+        echo -e "     4. 服务器设置 → 每个 Bot 角色有 ${YELLOW}View Channels${NC} 权限"
+        echo -e "     5. 配置文件 → channels.discord.${YELLOW}groupPolicy: \"open\"${NC}"
+        echo -e "     6. 配置文件 → 每个 account 的 ${YELLOW}groupPolicy: \"open\"${NC}"
+        echo -e "     7. 配置文件 → channels.discord.${YELLOW}\"allowBots\": true${NC}（Bot互触发需要）"
+        echo ""
+    elif [ "$DISCORD_ENABLED" = "false" ]; then
+        info "Discord 已配置但未启用（enabled: false）— 如果使用飞书可忽略"
+    else
+        warn "Discord 配置存在但 enabled 状态不明确"
+    fi
 else
     info "Discord 未配置（如果不用 Discord 可忽略）"
 fi
 
-# ---- 检测 Docker / Sandbox 权限 ----
+# ---- [5/9] 检测飞书配置 ----
 echo ""
-echo -e "${YELLOW}[5/8] 检查 Docker / Sandbox 权限...${NC}"
+echo -e "${YELLOW}[5/9] 检查飞书配置...${NC}"
+
+FEISHU_ENABLED=$(json_get "$CONFIG_FILE" "channels.feishu.enabled")
+
+if grep -q '"feishu"' "$CONFIG_FILE" 2>/dev/null; then
+    # 5a. 启用状态
+    if [ "$FEISHU_ENABLED" = "true" ]; then
+        pass "飞书已启用（enabled: true）"
+    elif [ "$FEISHU_ENABLED" = "false" ]; then
+        fail "飞书已配置但未启用 — 设置 channels.feishu.enabled 为 true"
+    else
+        warn "飞书 enabled 状态不明确 — 请确认 channels.feishu.enabled: true"
+    fi
+
+    # 5b. allowBots
+    FEISHU_ALLOW_BOTS=$(json_get "$CONFIG_FILE" "channels.feishu.allowBots")
+    if [ "$FEISHU_ALLOW_BOTS" = "true" ]; then
+        pass "飞书 allowBots: true（Bot 之间可以互相触发）"
+    else
+        warn "飞书 allowBots 未开启 — 多 Bot 模式下 Bot 之间无法互相对话"
+        info "在 channels.feishu 中添加 \"allowBots\": true"
+    fi
+
+    # 5c. 检查 accounts
+    FEISHU_ACCOUNTS=$(json_keys "$CONFIG_FILE" "channels.feishu.accounts")
+    FEISHU_ACCOUNT_COUNT=$(echo "$FEISHU_ACCOUNTS" | grep -c . 2>/dev/null || echo 0)
+
+    if [ "$FEISHU_ACCOUNT_COUNT" -gt 0 ]; then
+        pass "飞书已配置 $FEISHU_ACCOUNT_COUNT 个 Bot 账户"
+
+        if [ "$FEISHU_ACCOUNT_COUNT" -gt 1 ]; then
+            info "多 Bot 模式（六部架构）— 确保每个 Bot 在飞书开放平台都是独立应用"
+        fi
+
+        # 逐个检查 account
+        FEISHU_ISSUES=0
+        while IFS= read -r acct; do
+            [ -z "$acct" ] && continue
+
+            ACCT_APPID=$(json_get "$CONFIG_FILE" "channels.feishu.accounts.$acct.appId")
+            ACCT_SECRET=$(json_get "$CONFIG_FILE" "channels.feishu.accounts.$acct.appSecret")
+            ACCT_GP=$(json_get "$CONFIG_FILE" "channels.feishu.accounts.$acct.groupPolicy")
+            ACCT_NAME=$(json_get "$CONFIG_FILE" "channels.feishu.accounts.$acct.name")
+
+            DISPLAY_NAME="${ACCT_NAME:-$acct}"
+
+            # 检查 appId
+            if [ -z "$ACCT_APPID" ] || [ "$ACCT_APPID" = "cli_xxx" ] || [ "$ACCT_APPID" = "YOUR_APP_ID" ]; then
+                fail "[$DISPLAY_NAME] appId 未填写或仍是占位符"
+                ((FEISHU_ISSUES++))
+            elif [[ "$ACCT_APPID" == cli_* ]]; then
+                pass "[$DISPLAY_NAME] appId 格式正确 (${ACCT_APPID:0:12}...)"
+            else
+                warn "[$DISPLAY_NAME] appId 格式异常（应以 cli_ 开头，当前: ${ACCT_APPID:0:12}...）"
+                ((FEISHU_ISSUES++))
+            fi
+
+            # 检查 appSecret
+            if [ -z "$ACCT_SECRET" ] || [ "$ACCT_SECRET" = "YOUR_APP_SECRET" ] || [ "$ACCT_SECRET" = "xxx" ]; then
+                fail "[$DISPLAY_NAME] appSecret 未填写或仍是占位符"
+                ((FEISHU_ISSUES++))
+            else
+                pass "[$DISPLAY_NAME] appSecret 已填写"
+            fi
+
+            # 检查 groupPolicy
+            if [ "$ACCT_GP" = "open" ]; then
+                pass "[$DISPLAY_NAME] groupPolicy: open ✓"
+            elif [ -n "$ACCT_GP" ]; then
+                warn "[$DISPLAY_NAME] groupPolicy: $ACCT_GP — 如需群聊消息请设为 \"open\""
+            else
+                warn "[$DISPLAY_NAME] groupPolicy 未设置 — 群消息可能不响应"
+                info "在该 account 中添加 \"groupPolicy\": \"open\""
+            fi
+
+        done <<< "$FEISHU_ACCOUNTS"
+
+        # 5d. 检查 bindings 中飞书路由
+        FEISHU_BINDING_COUNT=$(grep -c '"channel": "feishu"\|"channel":"feishu"' "$CONFIG_FILE" 2>/dev/null || echo 0)
+        if [ "$FEISHU_BINDING_COUNT" -gt 0 ]; then
+            pass "Bindings 中有 $FEISHU_BINDING_COUNT 条飞书路由"
+            if [ "$FEISHU_ACCOUNT_COUNT" -gt 1 ] && [ "$FEISHU_BINDING_COUNT" -lt "$FEISHU_ACCOUNT_COUNT" ]; then
+                warn "飞书 account ($FEISHU_ACCOUNT_COUNT) 多于飞书 binding ($FEISHU_BINDING_COUNT) — 部分 Bot 可能没有绑定到 Agent"
+            fi
+        else
+            if [ "$FEISHU_ACCOUNT_COUNT" -gt 1 ]; then
+                fail "多 Bot 模式但没有飞书 binding — Bot 无法路由到对应 Agent"
+                info "在 bindings 数组中为每个飞书 account 添加路由规则"
+            else
+                info "单 Bot 模式，无需飞书 binding（使用默认 Agent）"
+            fi
+        fi
+
+        if [ "$FEISHU_ISSUES" -eq 0 ]; then
+            echo ""
+            pass "飞书配置基本完整 ✓"
+        fi
+
+    else
+        fail "飞书 accounts 为空 — 至少需要配置一个 Bot 账户"
+        info "在 channels.feishu.accounts 中添加飞书应用的 appId 和 appSecret"
+    fi
+
+    # 5e. 飞书排查清单
+    echo ""
+    echo -e "${CYAN}  📋 飞书机器人不响应？逐项检查：${NC}"
+    echo -e "     1. 飞书开放平台 → 应用已${YELLOW}发布${NC}（版本管理中创建并发布）"
+    echo -e "     2. 飞书开放平台 → 事件订阅中添加了 ${YELLOW}im.message.receive_v1${NC}"
+    echo -e "     3. 飞书开放平台 → 事件接收方式选择 ${YELLOW}WebSocket 长连接${NC}"
+    echo -e "     4. 飞书开放平台 → 权限管理中 ${YELLOW}im:message${NC} 等权限全部已审批通过"
+    echo -e "     5. 飞书开放平台 → 应用能力中已开启${YELLOW}机器人${NC}能力"
+    echo -e "     6. 飞书群聊 → 机器人已${YELLOW}添加到群聊${NC}中"
+    echo -e "     7. 配置文件 → channels.feishu.${YELLOW}enabled: true${NC}"
+    echo -e "     8. 配置文件 → 每个 account 的 ${YELLOW}appId${NC} 以 cli_ 开头"
+    echo -e "     9. 配置文件 → 每个 account 的 ${YELLOW}appSecret${NC} 已正确填写"
+    echo -e "    10. 配置文件 → 每个 account 的 ${YELLOW}groupPolicy: \"open\"${NC}（群消息需要）"
+    echo -e "    11. 配置文件 → ${YELLOW}allowBots: true${NC}（多 Bot 互触发需要）"
+    echo -e "    12. 多 Bot → 每个 Bot 的 ${YELLOW}bindings${NC} 路由到正确的 Agent"
+    echo ""
+    echo -e "${CYAN}  🔍 进一步诊断：${NC}"
+    echo -e "     • 查看 Gateway 日志: ${YELLOW}$CLI_CMD gateway logs${NC} 或 ${YELLOW}$CLI_CMD logs --follow${NC}"
+    echo -e "     • 飞书开放平台 → 事件订阅 → ${YELLOW}近期事件${NC}（查看是否有事件推送记录）"
+    echo -e "     • 飞书开放平台 → 开发者后台 → ${YELLOW}日志查询${NC}（查看 API 调用日志）"
+    echo ""
+else
+    info "飞书未配置（如果不用飞书可忽略）"
+    info "飞书配置指南: https://github.com/wanikua/boluobobo-ai-court-tutorial/blob/main/飞书配置指南.md"
+fi
+
+# ---- [6/9] 检测 Docker / Sandbox 权限 ----
+echo ""
+echo -e "${YELLOW}[6/9] 检查 Docker / Sandbox 权限...${NC}"
 
 if command -v docker &>/dev/null; then
     pass "Docker 已安装"
-    # 检查当前用户是否有 docker.sock 权限
     if docker info &>/dev/null 2>&1; then
         pass "Docker 权限正常（可以连接 docker.sock）"
     else
@@ -174,9 +365,8 @@ if command -v docker &>/dev/null; then
         fi
     fi
 else
-    # 检查配置中是否用了 sandbox
     if grep -q '"sandbox"' "$CONFIG_FILE" 2>/dev/null; then
-        SANDBOX_MODE=$(grep -o '"mode": "[^"]*"' "$CONFIG_FILE" | head -1 | sed 's/"mode": "//;s/"//')
+        SANDBOX_MODE=$(json_get "$CONFIG_FILE" "agents.defaults.sandbox.mode")
         if [ "$SANDBOX_MODE" = "off" ]; then
             info "Docker 未安装，sandbox 已关闭，无影响"
         else
@@ -189,9 +379,9 @@ else
     fi
 fi
 
-# ---- 检测 Agents 配置 ----
+# ---- [7/9] 检测 Agents 配置 ----
 echo ""
-echo -e "${YELLOW}[6/8] 检查 Agent 配置...${NC}"
+echo -e "${YELLOW}[7/9] 检查 Agent 配置...${NC}"
 
 AGENT_COUNT=$(grep -c '"id":' "$CONFIG_FILE" 2>/dev/null || echo 0)
 if [ "$AGENT_COUNT" -gt 0 ]; then
@@ -200,7 +390,7 @@ else
     warn "未检测到 Agent 配置"
 fi
 
-# 检查 bindings
+# 检查 bindings 总数
 BINDING_COUNT=$(grep -c '"agentId":' "$CONFIG_FILE" 2>/dev/null || echo 0)
 if [ "$BINDING_COUNT" -gt 0 ]; then
     pass "已配置 $BINDING_COUNT 条 Binding 路由"
@@ -208,19 +398,17 @@ else
     warn "未检测到 Binding 路由 — Agent 可能收不到消息"
 fi
 
-# 检查 agent 数量是否和 binding 数量匹配
 if [ "$AGENT_COUNT" -gt 0 ] && [ "$BINDING_COUNT" -gt 0 ]; then
     if [ "$AGENT_COUNT" -ne "$BINDING_COUNT" ]; then
         warn "Agent 数量（$AGENT_COUNT）和 Binding 数量（$BINDING_COUNT）不一致 — 部分 Agent 可能没有绑定"
     fi
 fi
 
-# ---- 检测工作区 ----
+# ---- [8/9] 检测工作区 ----
 echo ""
-echo -e "${YELLOW}[7/8] 检查工作区...${NC}"
+echo -e "${YELLOW}[8/9] 检查工作区...${NC}"
 
-# 查找工作区路径
-WORKSPACE=$(grep -o '"workspace": "[^"]*"' "$CONFIG_FILE" 2>/dev/null | head -1 | sed 's/"workspace": "//;s/"//' | sed "s|\$HOME|$HOME|;s|~|$HOME|")
+WORKSPACE=$(json_get "$CONFIG_FILE" "agents.defaults.workspace" | sed "s|\$HOME|$HOME|;s|~|$HOME|")
 if [ -z "$WORKSPACE" ]; then
     WORKSPACE="$HOME/clawd"
 fi
@@ -236,10 +424,11 @@ fi
 [ -f "$WORKSPACE/USER.md" ] && pass "USER.md ✓" || warn "USER.md 不存在 — Agent 不了解用户信息"
 [ -d "$WORKSPACE/memory" ] && pass "memory/ ✓" || warn "memory/ 目录不存在 — 运行: mkdir -p $WORKSPACE/memory"
 
-# ---- 检测 Notion ----
+# ---- [9/9] 检测可选集成 ----
 echo ""
-echo -e "${YELLOW}[8/8] 检查可选集成...${NC}"
+echo -e "${YELLOW}[9/9] 检查可选集成与服务...${NC}"
 
+# Notion
 if [ -f "$HOME/.config/notion/api_key" ]; then
     NOTION_KEY=$(cat "$HOME/.config/notion/api_key" 2>/dev/null)
     if [[ "$NOTION_KEY" == ntn_* ]] || [[ "$NOTION_KEY" == secret_* ]]; then
@@ -251,20 +440,25 @@ else
     info "Notion 未配置（可选，跳过）"
 fi
 
-# 检查 Gateway 服务状态
+# Gateway 服务状态
 if systemctl --user is-active openclaw-gateway &>/dev/null; then
     pass "Gateway 服务运行中（openclaw-gateway）"
 elif systemctl --user is-active clawdbot-gateway &>/dev/null; then
     pass "Gateway 服务运行中（clawdbot-gateway）"
+elif systemctl is-active openclaw-gateway &>/dev/null 2>&1; then
+    pass "Gateway 服务运行中（openclaw-gateway, system）"
+elif systemctl is-active clawdbot-gateway &>/dev/null 2>&1; then
+    pass "Gateway 服务运行中（clawdbot-gateway, system）"
 else
-    info "Gateway 服务未运行 — 可手动启动: $CLI_CMD gateway --verbose"
+    warn "Gateway 服务未运行 — 可手动启动: $CLI_CMD gateway start"
+    info "或前台调试: $CLI_CMD gateway --verbose"
 fi
 
 # ---- 运行 OpenClaw 自带的 doctor ----
 echo ""
 if [ -n "$CLI_CMD" ]; then
     echo -e "${YELLOW}运行 $CLI_CMD doctor...${NC}"
-    $CLI_CMD doctor 2>/dev/null || info "$CLI_CMD doctor 执行失败（可忽略）"
+    $CLI_CMD doctor --non-interactive 2>/dev/null || info "$CLI_CMD doctor 执行失败（可忽略）"
 fi
 
 # ---- 汇总 ----
@@ -283,8 +477,19 @@ else
 fi
 
 echo ""
-echo -e "如果 @everyone 仍然不触发，请确认 Discord Developer Portal 中"
-echo -e "每个 Bot 都开启了 ${YELLOW}Message Content Intent${NC} 和 ${YELLOW}Server Members Intent${NC}"
-echo ""
+
+# 根据配置的频道给出针对性提示
+if [ "$DISCORD_ENABLED" = "true" ]; then
+    echo -e "Discord 提示：确认 Discord Developer Portal 中"
+    echo -e "每个 Bot 都开启了 ${YELLOW}Message Content Intent${NC} 和 ${YELLOW}Server Members Intent${NC}"
+    echo ""
+fi
+
+if [ "$FEISHU_ENABLED" = "true" ]; then
+    echo -e "飞书提示：确认飞书开放平台中每个应用都已${YELLOW}发布${NC}，"
+    echo -e "事件订阅使用 ${YELLOW}WebSocket 长连接${NC}，且添加了 ${YELLOW}im.message.receive_v1${NC} 事件"
+    echo ""
+fi
+
 echo -e "需要帮助？${BLUE}https://discord.gg/clawd${NC}"
 echo ""
