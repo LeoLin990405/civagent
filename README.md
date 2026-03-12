@@ -753,16 +753,24 @@ openclaw channels add
 # 启动/重启 Gateway
 openclaw gateway restart
 
-# 在飞书里找到你的机器人，发一条消息
-# 首次会收到配对码，执行以下命令批准：
+# 查看状态，确认飞书连接成功
+openclaw gateway status
+```
+
+如果使用 `dmPolicy: "open"`（推荐），直接在飞书里给机器人发消息即可开始对话。
+
+如果使用 `dmPolicy: "pairing"`，首次私聊会收到配对码，需要在服务器上批准：
+```bash
 openclaw pairing approve feishu <配对码>
 ```
 
-批准后即可正常聊天。群聊中需要 @机器人 才会触发回复。
+群聊中需要 @机器人 才会触发回复（除非设置了 `groupPolicy: "open"`）。
 
 > 💡 飞书使用 WebSocket 长连接，**不需要公网IP或域名**，本地部署也能用。
 >
-> 📖 完整飞书文档：[docs.openclaw.ai/channels/feishu](https://docs.openclaw.ai/channels/feishu)
+> 📖 **本项目飞书详细指南**：[飞书配置指南.md](./飞书配置指南.md)（含多 Bot 六部架构、完整配置示例、诊断排查）
+>
+> 📖 OpenClaw 官方飞书文档：[docs.openclaw.ai/channels/feishu](https://docs.openclaw.ai/channels/feishu)
 
 ### 飞书排查指南
 
@@ -825,11 +833,12 @@ journalctl --user -u openclaw-gateway --since "5 min ago" | grep -i "feishu\|lar
 # 没有任何 feishu 日志 → channels.feishu 未启用
 ```
 
-**⑦ 配对确认**
-首次连接需要批准配对：
+**⑦ 配对确认（仅 `dmPolicy: "pairing"` 时）**
+如果使用 `dmPolicy: "pairing"`，首次私聊需要在服务器上批准：
 ```bash
 openclaw pairing approve feishu <配对码>
 ```
+如果使用 `dmPolicy: "open"`，此步跳过。
 
 > 💡 90% 的飞书连接问题出在事件订阅和权限配置上。按 ①→② 的顺序检查通常就能解决。
 

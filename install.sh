@@ -553,6 +553,7 @@ cat > "$CONFIG_DIR/openclaw.json" << FEISHU_EOF
   "channels": {
     "feishu": {
       "enabled": true,
+      "dmPolicy": "open",
       "groupPolicy": "open",
       "allowBots": true,
       "accounts": {
@@ -560,24 +561,28 @@ cat > "$CONFIG_DIR/openclaw.json" << FEISHU_EOF
           "name": "司礼监",
           "appId": "YOUR_FEISHU_SILIJIAN_APP_ID",
           "appSecret": "YOUR_FEISHU_SILIJIAN_APP_SECRET",
+          "botName": "司礼监",
           "groupPolicy": "open"
         },
         "bingbu": {
           "name": "兵部",
           "appId": "YOUR_FEISHU_BINGBU_APP_ID",
           "appSecret": "YOUR_FEISHU_BINGBU_APP_SECRET",
+          "botName": "兵部",
           "groupPolicy": "open"
         },
         "hubu": {
           "name": "户部",
           "appId": "YOUR_FEISHU_HUBU_APP_ID",
           "appSecret": "YOUR_FEISHU_HUBU_APP_SECRET",
+          "botName": "户部",
           "groupPolicy": "open"
         },
         "gongbu": {
           "name": "工部",
           "appId": "YOUR_FEISHU_GONGBU_APP_ID",
           "appSecret": "YOUR_FEISHU_GONGBU_APP_SECRET",
+          "botName": "工部",
           "groupPolicy": "open"
         }
       }
@@ -806,10 +811,13 @@ if [ "$DEPLOY_MODE" = "2" ]; then
 echo -e "  ${YELLOW}2. 创建飞书应用（每个部门一个）${NC}"
 echo "     a) 访问 https://open.feishu.cn/app"
 echo "     b) 创建应用 → 复制 App ID 和 App Secret"
-echo "     c) 开启机器人能力，添加 im.message.receive_v1 事件"
-echo "     d) 事件接收选择 WebSocket 长连接"
-echo "     e) 把 appId/appSecret 填到 openclaw.json 对应位置"
-echo "     f) 发布应用，邀请 Bot 到飞书群"
+echo "     c) 权限管理 → 添加 im:message 等 8 个权限（见飞书配置指南）"
+echo "     d) 开启机器人能力，添加 im.message.receive_v1 事件"
+echo "     e) 事件接收选择 WebSocket 长连接"
+echo "     f) 把 appId/appSecret 填到 openclaw.json 对应位置"
+echo "     g) 创建版本并发布应用，邀请 Bot 到飞书群"
+echo ""
+echo -e "     📖 详细指南: ${CYAN}https://github.com/wanikua/boluobobo-ai-court-tutorial/blob/main/飞书配置指南.md${NC}"
 elif [ "$DEPLOY_MODE" = "3" ]; then
 echo -e "  ${YELLOW}2. 无需配置 Bot${NC}"
 echo "     WebUI 模式直接通过浏览器访问即可"

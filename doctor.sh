@@ -231,7 +231,28 @@ if grep -q '"feishu"' "$CONFIG_FILE" 2>/dev/null; then
         warn "飞书 enabled 状态不明确 — 请确认 channels.feishu.enabled: true"
     fi
 
-    # 5b. allowBots
+    # 5b. dmPolicy 检查
+    FEISHU_DM_POLICY=$(json_get "$CONFIG_FILE" "channels.feishu.dmPolicy")
+    if [ "$FEISHU_DM_POLICY" = "open" ]; then
+        pass "飞书 dmPolicy: open（私聊直接对话）"
+    elif [ "$FEISHU_DM_POLICY" = "pairing" ]; then
+        info "飞书 dmPolicy: pairing — 首次私聊需要运行 openclaw pairing approve"
+        info "新手建议改为 \"open\" 简化流程"
+    elif [ -z "$FEISHU_DM_POLICY" ]; then
+        warn "飞书 dmPolicy 未设置 — 建议设为 \"open\"（直接私聊）或 \"pairing\"（配对审批）"
+        info "在 channels.feishu 中添加 \"dmPolicy\": \"open\""
+    fi
+
+    # 5b2. groupPolicy（顶层）检查
+    FEISHU_GP=$(json_get "$CONFIG_FILE" "channels.feishu.groupPolicy")
+    if [ "$FEISHU_GP" = "open" ]; then
+        pass "飞书 groupPolicy: open（群聊消息已开放）"
+    elif [ -z "$FEISHU_GP" ]; then
+        warn "飞书顶层 groupPolicy 未设置 — 群聊可能不响应"
+        info "在 channels.feishu 中添加 \"groupPolicy\": \"open\""
+    fi
+
+    # 5b3. allowBots
     FEISHU_ALLOW_BOTS=$(json_get "$CONFIG_FILE" "channels.feishu.allowBots")
     if [ "$FEISHU_ALLOW_BOTS" = "true" ]; then
         pass "飞书 allowBots: true（Bot 之间可以互相触发）"

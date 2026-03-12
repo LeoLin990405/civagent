@@ -125,6 +125,7 @@
     },
     "feishu": {
       "enabled": false,
+      "dmPolicy": "open",
       "groupPolicy": "open",
       "allowBots": true,
       "accounts": {
@@ -132,6 +133,7 @@
           "name": "司礼监",
           "appId": "YOUR_FEISHU_APP_ID",
           "appSecret": "YOUR_FEISHU_APP_SECRET",
+          "botName": "司礼监",
           "groupPolicy": "open"
         }
       }

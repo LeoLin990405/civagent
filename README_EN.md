@@ -719,7 +719,8 @@ openclaw channels add
   "channels": {
     "feishu": {
       "enabled": true,
-      "dmPolicy": "pairing",
+      "dmPolicy": "open",          // DM policy: open=direct chat, pairing=requires approval
+      "groupPolicy": "open",       // Group policy: must be "open" to receive group messages
       "accounts": {
         "main": {
           "appId": "cli_xxx",
@@ -730,6 +731,7 @@ openclaw channels add
   }
 }
 ```
+> 💡 `dmPolicy: "pairing"` requires running `openclaw pairing approve` before DMs work — good for high-security setups. Beginners should use `"open"`.
 
 ### Step 4: Start and Test
 
@@ -737,16 +739,24 @@ openclaw channels add
 # Start/restart Gateway
 openclaw gateway restart
 
-# Find your bot in Feishu and send a message
-# First time you'll receive a pairing code — approve it:
+# Check status to confirm Feishu connection
+openclaw gateway status
+```
+
+With `dmPolicy: "open"` (recommended), just send your bot a message in Feishu to start chatting.
+
+With `dmPolicy: "pairing"`, the first DM triggers a pairing code — approve it on the server:
+```bash
 openclaw pairing approve feishu <pairing-code>
 ```
 
-Once approved, you can chat normally. In group chats, @mention the bot to trigger a response.
+In group chats, @mention the bot to trigger a response (unless `groupPolicy: "open"` is set).
 
 > 💡 Feishu uses WebSocket long connections — **no public IP or domain required**. Works even with local deployments.
 >
-> 📖 Full Feishu documentation: [docs.openclaw.ai/channels/feishu](https://docs.openclaw.ai/channels/feishu)
+> 📖 **Detailed Feishu guide in this project**: [飞书配置指南.md](./飞书配置指南.md) (Chinese, covers multi-Bot setup, full config examples, diagnostics)
+>
+> 📖 OpenClaw official Feishu docs: [docs.openclaw.ai/channels/feishu](https://docs.openclaw.ai/channels/feishu)
 
 ### Feishu / Lark Troubleshooting
 
@@ -761,22 +771,33 @@ Feishu Open Platform → Your App → Events & Callbacks:
 > ⚠️ Start the Gateway before configuring event subscriptions — otherwise the WebSocket long connection may fail to save.
 
 **② Permission Check**
-App Management → Permission Management — confirm these are enabled:
+App Management → Permission Management — confirm these are enabled (at least the first 6):
 
-| Permission | Purpose |
-|-----------|---------|
-| `im:message` | Read messages |
-| `im:message:send` | Send messages |
-| `im:chat` | Get group info |
+| Permission | Purpose | Required |
+|-----------|---------|:---:|
+| `im:message` | Read & send messages | ✅ |
+| `im:message:send_as_bot` | Send messages as bot | ✅ |
+| `im:message:readonly` | Read messages | ✅ |
+| `im:message.p2p_msg:readonly` | Read DM messages | ✅ |
+| `im:message.group_at_msg:readonly` | Read group @messages | ✅ |
+| `im:resource` | Access message resources | ✅ |
+| `im:chat.members:bot_access` | Get group member info | Recommended |
+| `im:chat.access_event.bot_p2p_chat:read` | Get DM events | Recommended |
 
 **③ Config File Check**
-```json
+```json5
 // openclaw.json must contain:
 "channels": {
   "feishu": {
     "enabled": true,
-    "appId": "cli_your-AppID",
-    "appSecret": "your-AppSecret"
+    "dmPolicy": "open",
+    "groupPolicy": "open",
+    "accounts": {
+      "main": {
+        "appId": "cli_your-AppID",
+        "appSecret": "your-AppSecret"
+      }
+    }
   }
 }
 ```
@@ -798,8 +819,8 @@ journalctl --user -u openclaw-gateway --since "5 min ago" | grep -i "feishu\|lar
 # No feishu logs at all → channels.feishu not enabled
 ```
 
-**⑦ Pairing Confirmation**
-First-time connections require pairing approval:
+**⑦ Pairing Confirmation (only with `dmPolicy: "pairing"`)**
+If using `dmPolicy: "pairing"`, the first DM requires server-side approval:
 ```bash
 openclaw pairing approve feishu <pairing-code>
 ```
