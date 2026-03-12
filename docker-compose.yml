@@ -5,8 +5,9 @@ services:
     container_name: ai-court
     restart: unless-stopped
     ports:
-      - "18789:18789"   # Gateway Dashboard
-      - "18795:18795"   # 菠萝 GUI（可选，需另行启动）
+      # SEC-11: 仅绑定 localhost，防止端口暴露到公网
+      - "127.0.0.1:18789:18789"   # Gateway Dashboard
+      - "127.0.0.1:18795:18795"   # 菠萝 GUI（可选，需另行启动）
     volumes:
       # 配置文件（必须挂载；如果用 clawdbot 改为 .clawdbot/clawdbot.json）
       - ./openclaw.json:${OPENCLAW_CONFIG_PATH:-/root/.openclaw/openclaw.json}

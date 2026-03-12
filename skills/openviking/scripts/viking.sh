@@ -47,27 +47,30 @@ case "$CMD" in
             exit 1
         fi
         echo -e "${YELLOW}索引文件: $1${NC}"
-        python3 -c "
+        # SEC-04: 用环境变量传参，防止 Python 代码注入
+        VIKING_INPUT="$1" VIKING_CONF="$OV_CONF" VIKING_DATA="$OV_DATA" python3 -c "
+import os
 from openviking import Viking
-v = Viking.from_config('$OV_CONF')
-v.add_resource('$1', data_dir='$OV_DATA')
+v = Viking.from_config(os.environ['VIKING_CONF'])
+v.add_resource(os.environ['VIKING_INPUT'], data_dir=os.environ['VIKING_DATA'])
 print('✓ 索引完成')
 " 2>&1
         ;;
     add-dir)
         DIR="${1:-.}"
         echo -e "${YELLOW}批量索引目录: $DIR${NC}"
-        python3 -c "
+        # SEC-04: 用环境变量传参
+        VIKING_DIR="$DIR" VIKING_CONF="$OV_CONF" VIKING_DATA="$OV_DATA" python3 -c "
 import os
 from openviking import Viking
-v = Viking.from_config('$OV_CONF')
+v = Viking.from_config(os.environ['VIKING_CONF'])
 count = 0
-for root, dirs, files in os.walk('$DIR'):
+for root, dirs, files in os.walk(os.environ['VIKING_DIR']):
     for f in files:
         if f.endswith(('.md', '.txt', '.py', '.js', '.ts', '.json', '.yaml', '.yml', '.sh', '.html', '.css')):
             path = os.path.join(root, f)
             try:
-                v.add_resource(path, data_dir='$OV_DATA')
+                v.add_resource(path, data_dir=os.environ['VIKING_DATA'])
                 count += 1
                 print(f'  ✓ {path}')
             except Exception as e:
@@ -80,11 +83,12 @@ print(f'\n共索引 {count} 个文件')
             echo -e "${RED}用法: viking.sh search <query>${NC}"
             exit 1
         fi
-        QUERY="$*"
-        python3 -c "
+        # SEC-04: 用环境变量传参
+        VIKING_QUERY="$*" VIKING_CONF="$OV_CONF" VIKING_DATA="$OV_DATA" python3 -c "
+import os
 from openviking import Viking
-v = Viking.from_config('$OV_CONF')
-results = v.search('$QUERY', data_dir='$OV_DATA', top_k=5)
+v = Viking.from_config(os.environ['VIKING_CONF'])
+results = v.search(os.environ['VIKING_QUERY'], data_dir=os.environ['VIKING_DATA'], top_k=5)
 if not results:
     print('无匹配结果')
 else:
@@ -99,10 +103,11 @@ else:
         ;;
     list)
         echo -e "${GREEN}已索引的文件：${NC}"
-        python3 -c "
+        VIKING_CONF="$OV_CONF" VIKING_DATA="$OV_DATA" python3 -c "
+import os
 from openviking import Viking
-v = Viking.from_config('$OV_CONF')
-resources = v.list_resources(data_dir='$OV_DATA')
+v = Viking.from_config(os.environ['VIKING_CONF'])
+resources = v.list_resources(data_dir=os.environ['VIKING_DATA'])
 if not resources:
     print('  （空）')
 else:
@@ -115,10 +120,11 @@ else:
             echo -e "${RED}用法: viking.sh summary <file-path>${NC}"
             exit 1
         fi
-        python3 -c "
+        VIKING_INPUT="$1" VIKING_CONF="$OV_CONF" VIKING_DATA="$OV_DATA" python3 -c "
+import os
 from openviking import Viking
-v = Viking.from_config('$OV_CONF')
-summary = v.get_summary('$1', data_dir='$OV_DATA')
+v = Viking.from_config(os.environ['VIKING_CONF'])
+summary = v.get_summary(os.environ['VIKING_INPUT'], data_dir=os.environ['VIKING_DATA'])
 print(summary or '无摘要')
 " 2>&1
         ;;

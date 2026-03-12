@@ -26,7 +26,20 @@ try {
 const app = express();
 const PORT = process.env.BOLUO_GUI_PORT || 18795;
 
-const AUTH_TOKEN = process.env.BOLUO_AUTH_TOKEN || 'changeme';
+// SEC-03: 不再使用硬编码默认 Token
+import crypto from 'crypto';
+let AUTH_TOKEN = process.env.BOLUO_AUTH_TOKEN;
+if (!AUTH_TOKEN || AUTH_TOKEN === 'changeme') {
+  AUTH_TOKEN = crypto.randomBytes(16).toString('hex');
+  console.warn('');
+  console.warn('╔══════════════════════════════════════════════════════════════╗');
+  console.warn('║  ⚠️  安全警告: BOLUO_AUTH_TOKEN 未设置或使用了默认值!       ║');
+  console.warn('║  已自动生成随机 Token（仅本次运行有效）                     ║');
+  console.warn('║  请设置环境变量: export BOLUO_AUTH_TOKEN=$(openssl rand -hex 16) ║');
+  console.warn('╚══════════════════════════════════════════════════════════════╝');
+  console.warn(`  本次 Token: ${AUTH_TOKEN}`);
+  console.warn('');
+}
 
 const AGENT_DEPT_MAP = {
   'silijian': '司礼监', 'main': '司礼监', 'gongbu': '工部', 'hubu': '户部',
@@ -76,6 +89,14 @@ function getClawdbotConfig() {
     }
   } catch (e) { }
   return null;
+}
+
+// SEC-15: 验证 agentId 防止路径遍历
+function sanitizeAgentId(id) {
+  if (!id || typeof id !== 'string') return null;
+  if (/[\/\\.\s]/.test(id) || id.includes('..')) return null;
+  if (!/^[a-zA-Z0-9_-]{1,64}$/.test(id)) return null;
+  return id;
 }
 
 function getAgentSessionData(agentId) {
@@ -716,7 +737,8 @@ app.get('/api/sessions/:sessionId/timeline', authMiddleware, (req, res) => {
     if (cached) return res.json(cached);
     
     const parts = sessionId.split(':');
-    const agentId = parts[1] || 'main';
+    const agentId = sanitizeAgentId(parts[1]) || 'main';
+    if (!sanitizeAgentId(agentId)) return res.status(400).json({ error: 'Invalid agent ID', timeline: [] });
     const sessionKey = parts.slice(2).join(':');
     
     const sessionsPath = join(AGENTS_DIR, agentId, 'sessions', 'sessions.json');
@@ -764,7 +786,8 @@ app.get('/api/sessions/:sessionId/messages', authMiddleware, (req, res) => {
     const allMessages = [];
     
     const parts = sessionId.split(':');
-    const agentId = parts[1] || 'main';
+    const agentId = sanitizeAgentId(parts[1]) || 'main';
+    if (!sanitizeAgentId(agentId)) return res.status(400).json({ error: 'Invalid agent ID', messages: [], total: 0, page: 1, totalPages: 0 });
     const sessionKey = parts.slice(2).join(':');
     
     const sessionsPath = join(AGENTS_DIR, agentId, 'sessions', 'sessions.json');
@@ -817,7 +840,8 @@ app.get('/api/sessions/:sessionId/summary', authMiddleware, (req, res) => {
   try {
     const { sessionId } = req.params;
     const parts = sessionId.split(':');
-    const agentId = parts[1] || 'main';
+    const agentId = sanitizeAgentId(parts[1]) || 'main';
+    if (!sanitizeAgentId(agentId)) return res.status(400).json({ error: 'Invalid agent ID' });
     const sessionKey = parts.slice(2).join(':');
     
     const sessionsPath = join(AGENTS_DIR, agentId, 'sessions', 'sessions.json');
@@ -948,7 +972,8 @@ app.get('/api/config', authMiddleware, (req, res) => {
       if (!obj || typeof obj !== 'object' || depth > 10) return;
       for (const key of Object.keys(obj)) {
         if (/token|secret|key|password|apiKey/i.test(key) && typeof obj[key] === 'string') {
-          obj[key] = obj[key].substring(0, 6) + '••••••';
+          // SEC-18: 完全脱敏，不保留任何前缀（Discord Token 前缀含 Bot ID）
+          obj[key] = `[REDACTED ${obj[key].length} chars]`;
         } else if (typeof obj[key] === 'object') {
           maskSecrets(obj[key], depth + 1);
         }
@@ -1033,16 +1058,18 @@ app.get('/api/notion/data', authMiddleware, (req, res) => {
 const WEATHER_DEFAULT_LOCATION = process.env.WEATHER_LOCATION || 'Beijing';
 
 app.get('/api/weather', authMiddleware, async (req, res) => {
-  const location = req.query.location || WEATHER_DEFAULT_LOCATION;
+  // SEC-01: 白名单过滤 location，用 fetch 替代 execAsync(curl) 防止命令注入
+  const location = (req.query.location || WEATHER_DEFAULT_LOCATION)
+    .replace(/[^a-zA-Z0-9\s,.\-\u4e00-\u9fff]/g, '');
   
   try {
-    const { stdout } = await execAsync(`curl -s "wttr.in/${location}?format=j1"`, { 
-      timeout: 5000,
-      encoding: 'utf8'
+    const weatherResp = await fetch(`https://wttr.in/${encodeURIComponent(location)}?format=j1`, {
+      signal: AbortSignal.timeout(5000),
+      headers: { 'User-Agent': 'boluo-gui/1.0' }
     });
-    const output = stdout.trim();
+    if (!weatherResp.ok) throw new Error(`wttr.in returned ${weatherResp.status}`);
     
-    const data = JSON.parse(output);
+    const data = await weatherResp.json();
     const current = data.current_condition?.[0];
     
     if (current) {
@@ -1155,6 +1182,11 @@ app.get('/api/platforms', authMiddleware, (req, res) => {
   }
 });
 
+// SEC-02: Cron Job ID 白名单验证（防止命令注入）
+function validateCronId(id) {
+  return /^[a-zA-Z0-9_-]{1,64}$/.test(id);
+}
+
 // Helper: parse cron job list output
 function parseCronJobs(data) {
   return (data.jobs || []).map((j) => {
@@ -1198,6 +1230,9 @@ app.get('/api/cron', authMiddleware, async (req, res) => {
 
 app.post('/api/cron/run/:id', authMiddleware, async (req, res) => {
   const { id } = req.params;
+  if (!validateCronId(id)) {
+    return res.status(400).json({ success: false, message: 'Invalid cron job ID' });
+  }
   try {
     await execAsync(`${CLI_CMD} cron run ${id}`, { encoding: 'utf-8', timeout: 10000 });
     res.json({ success: true, message: `任务 ${id} 已触发执行` });
@@ -1210,6 +1245,9 @@ app.post('/api/cron/run/:id', authMiddleware, async (req, res) => {
 app.patch('/api/cron/jobs/:id', authMiddleware, async (req, res) => {
   try {
     const { id } = req.params;
+    if (!validateCronId(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid cron job ID' });
+    }
     const { enabled } = req.body;
     
     if (typeof enabled === 'boolean') {

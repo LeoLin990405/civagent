@@ -213,7 +213,8 @@ if grep -q '"discord"' "$CONFIG_FILE" 2>/dev/null; then
                 [[ "$TOKEN" == YOUR_* ]] && continue
 
                 # --- 验证 Token ---
-                USER_RESP=$(curl -sS -w "\n%{http_code}" -H "Authorization: Bot $TOKEN" \
+                # SEC-29: 用 process substitution 传递 header，避免 Token 在 ps/top 命令行中泄露
+                USER_RESP=$(curl -sS -w "\n%{http_code}" -H @<(echo "Authorization: Bot $TOKEN") \
                     "https://discord.com/api/v10/users/@me" 2>/dev/null)
                 HTTP_CODE=$(echo "$USER_RESP" | tail -1)
                 USER_BODY=$(echo "$USER_RESP" | sed '$d')
@@ -236,7 +237,7 @@ print(d.get('username','?') + '|' + d.get('id','?'))
                 fi
 
                 # --- 检查 Privileged Intents ---
-                APP_RESP=$(curl -sS -w "\n%{http_code}" -H "Authorization: Bot $TOKEN" \
+                APP_RESP=$(curl -sS -w "\n%{http_code}" -H @<(echo "Authorization: Bot $TOKEN") \
                     "https://discord.com/api/v10/applications/@me" 2>/dev/null)
                 APP_CODE=$(echo "$APP_RESP" | tail -1)
                 APP_BODY=$(echo "$APP_RESP" | sed '$d')
@@ -278,7 +279,7 @@ print(d.get('username','?') + '|' + d.get('id','?'))
                 fi
 
                 # --- 检查服务器权限 ---
-                GUILDS_RESP=$(curl -sS -w "\n%{http_code}" -H "Authorization: Bot $TOKEN" \
+                GUILDS_RESP=$(curl -sS -w "\n%{http_code}" -H @<(echo "Authorization: Bot $TOKEN") \
                     "https://discord.com/api/v10/users/@me/guilds" 2>/dev/null)
                 GUILDS_CODE=$(echo "$GUILDS_RESP" | tail -1)
                 GUILDS_BODY=$(echo "$GUILDS_RESP" | sed '$d')

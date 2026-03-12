@@ -43,7 +43,10 @@ else
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     # Add to PATH for Apple Silicon
     if [[ "$ARCH" == "arm64" ]]; then
-        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+        # SEC-28: 检查是否已存在，避免重复追加
+        if ! grep -q 'brew shellenv' ~/.zprofile 2>/dev/null; then
+            echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.zprofile
+        fi
         eval "$(/opt/homebrew/bin/brew shellenv)"
     fi
     echo -e "  ${GREEN}✓ Homebrew 安装完成${NC}"

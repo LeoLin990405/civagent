@@ -408,14 +408,16 @@ if [ "$INSTALL_GUI" = "yes" ]; then
     else
         echo -e "  ${CYAN}正在下载 Dashboard...${NC}"
         # 只克隆 gui 目录
-        git clone --depth 1 --filter=blob:none --sparse "$REPO_URL" /tmp/_boluo_gui_tmp 2>/dev/null || true
-        cd /tmp/_boluo_gui_tmp && git sparse-checkout set gui 2>/dev/null || true
-        if [ -d /tmp/_boluo_gui_tmp/gui ]; then
-            cp -r /tmp/_boluo_gui_tmp/gui "$GUI_DIR"
-            rm -rf /tmp/_boluo_gui_tmp
+        # SEC-08: 使用 mktemp 创建安全临时目录，避免符号链接竞态
+        BOLUO_GUI_TMP=$(mktemp -d /tmp/boluo_gui_XXXXXX)
+        git clone --depth 1 --filter=blob:none --sparse "$REPO_URL" "$BOLUO_GUI_TMP" 2>/dev/null || true
+        cd "$BOLUO_GUI_TMP" && git sparse-checkout set gui 2>/dev/null || true
+        if [ -d "$BOLUO_GUI_TMP/gui" ]; then
+            cp -r "$BOLUO_GUI_TMP/gui" "$GUI_DIR"
+            rm -rf "$BOLUO_GUI_TMP"
             echo -e "  ${GREEN}✓ Dashboard 已下载到 $GUI_DIR${NC}"
         else
-            rm -rf /tmp/_boluo_gui_tmp
+            rm -rf "$BOLUO_GUI_TMP"
             echo -e "  ${YELLOW}⚠ Dashboard 下载失败，可稍后手动安装${NC}"
         fi
     fi
