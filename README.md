@@ -98,7 +98,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 |------|------|
 | ✅ 已有 Linux 服务器 | 直接进入第二步 |
 | ✅ 已有 Mac | 直接进入第二步 |
-| ❌ 没有服务器 | → [**领一台免费服务器**](./docs/server-setup.md)（Oracle Cloud 永久免费 / 阿里云、腾讯云免费试用 / AWS 12个月免费） |
+| ❌ 没有服务器 | → [**领一台云服务器**](./docs/server-setup.md)（Oracle Cloud / 阿里云 / 腾讯云 / AWS 均可） |
 
 ### 📍 第二步：选平台
 
