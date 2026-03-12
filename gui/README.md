@@ -1,73 +1,35 @@
-# React + TypeScript + Vite
+# 🖥️ 菠萝王朝 GUI — Web 管理后台
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> ← [返回项目 README](../README.md) | [📖 GUI 文档](../docs/gui.md)
 
-Currently, two official plugins are available:
+基于 React + TypeScript + Vite 构建的 AI 朝廷 Web 管理后台。
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 功能
 
-## React Compiler
+- **仪表盘** — 各部门状态、Token 消耗、系统负载
+- **朝堂** — Web 端与各部门 Bot 对话
+- **会话管理** — 历史会话、消息详情、Token 统计
+- **定时任务** — 可视化管理 Cron（启用/禁用/手动触发）
+- **系统健康** — CPU/内存/磁盘监控
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 快速启动
 
-## Expanding the ESLint configuration
+```bash
+# 1. 构建前端
+cd gui && npm install && npm run build
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# 2. 启动后端（设置登录密码）
+cd server && npm install
+BOLUO_AUTH_TOKEN=你的密码 node index.js
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+访问 `http://你的服务器IP:18795`
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+> 📖 详细说明见 [GUI 文档](../docs/gui.md)
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## 技术栈
+
+- React 18 + TypeScript
+- Vite 构建
+- Express.js 后端代理
+- OpenClaw Gateway API

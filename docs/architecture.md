@@ -43,6 +43,10 @@
      └───────────────────────────────────────────────────────────┘
 ```
 
+<p align="center">
+  <img src="../images/discord-architecture.png" alt="Discord 朝廷架构图" width="80%" />
+</p>
+
 每个 Agent 绑定一个 Discord Bot 账号，由同一个 Gateway 进程统一管理：
 - **独立会话**：每个 Agent 有独立的会话存储，互不干扰
 - **独立模型**：重活用强力模型，轻活用快速模型，省钱又高效

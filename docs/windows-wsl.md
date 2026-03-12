@@ -1,5 +1,7 @@
 # 🪟 Windows 用户指南 — 通过 WSL2 运行 AI 朝廷
 
+> ← [返回 README](../README.md) | [📚 文档索引](./README.md)
+>
 > OpenClaw 是 Node.js 应用，原生运行在 Linux/macOS 上。Windows 用户推荐通过 **WSL2（Windows Subsystem for Linux）** 运行。
 
 ## 前置要求

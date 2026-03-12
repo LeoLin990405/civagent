@@ -21,5 +21,5 @@ Thumbs.db
 # 构建产物
 frontend/
 gui/dist/
-.github/
 SECURITY-AUDIT.md
+.github/
