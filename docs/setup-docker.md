@@ -70,7 +70,7 @@ docker compose pull && docker compose up -d
       "your-provider": {
         "baseUrl": "https://api.your-provider.com",
         "apiKey": "你的API_KEY",
-        "api": "your-api-format",
+        "api": "openai",
         "models": [...]
       }
     }

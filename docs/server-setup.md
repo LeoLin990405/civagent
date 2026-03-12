@@ -27,7 +27,7 @@
 | **腾讯云** | 轻量 2核4G | 免费试用 / ¥40/月 | [领取免费试用](https://cloud.tencent.com/act/free) |
 | **AWS** | t4g.medium | 免费 12 个月 | [Free Tier](https://aws.amazon.com/free/) |
 | **GCP** | e2-medium | $300 试用额度 | [Free Trial](https://cloud.google.com/free) |
-| **华为云** | HECS 2核4G | 免费试用 | [Free Trial](https://activity.huaweicloud.com/free_test/) |
+| **华为云** | HECS 2核4G | 免费试用 | [华为云](https://www.huaweicloud.com/) |
 
 > 💡 国内用户推荐阿里云/腾讯云（延迟低）；海外用户推荐 Oracle Cloud（永久免费）。
 

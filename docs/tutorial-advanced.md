@@ -209,14 +209,14 @@ openclaw gateway token
 
 # 每日自动日报
 openclaw cron add \
-  --name "每日日报" --agent main \
+  --name "每日日报" --agent silijian \
   --cron "0 22 * * *" --tz "Asia/Shanghai" \
   --message "生成今日日报，写入 Notion 日报数据库" \
   --session isolated --token 你的token
 
 # 服务器健康检查（每 6 小时）
 openclaw cron add \
-  --name "健康检查" --agent main \
+  --name "健康检查" --agent silijian \
   --cron "0 */6 * * *" --tz "Asia/Shanghai" \
   --message "检查服务器 CPU、内存、磁盘使用率" \
   --session isolated --token 你的token

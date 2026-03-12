@@ -273,7 +273,7 @@ nano ~/.openclaw/openclaw.json
       "your-provider": {
         "baseUrl": "https://your-llm-provider-api-url",
         "apiKey": "你的LLM_API_KEY",
-        "api": "your-api-format",
+        "api": "openai",
         "models": [
           {
             "id": "fast-model",

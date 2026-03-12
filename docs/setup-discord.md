@@ -106,7 +106,7 @@ nano ~/.openclaw/openclaw.json
 > ⚠️ **关键配置**：
 > - `groupPolicy: "open"` — channels 和每个 account 里**都要加**，否则群聊消息被静默丢弃
 > - `allowBots: true` — 让 Bot 之间互相看到消息、互相触发回复
-> - account key（如 `main`、`bingbu`）要和 bindings 里的 `accountId` **一致**
+> - account key（如 `silijian`、`bingbu`）要和 bindings 里的 `accountId` **一致**
 
 ---
 

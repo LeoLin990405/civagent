@@ -100,21 +100,27 @@ nano ~/.openclaw/openclaw.json
       "你的模型提供商": {
         "baseUrl": "API地址",
         "apiKey": "你的API_KEY",
+        "api": "openai",
         "models": [
-          { "id": "模型ID", "input": ["text"] }
+          { "id": "模型ID", "name": "模型名称", "input": ["text"], "contextWindow": 200000, "maxTokens": 8192 }
         ]
       }
     }
   },
-  "agents": [
-    {
-      "id": "silijian",
-      "model": "模型ID",
-      "identityThemes": {
-        "default": "你是司礼监，AI朝廷的大内总管。"
+  "agents": {
+    "defaults": {
+      "workspace": "$HOME/clawd",
+      "model": { "primary": "你的模型提供商/模型ID" }
+    },
+    "list": [
+      {
+        "id": "silijian",
+        "name": "司礼监",
+        "model": { "primary": "你的模型提供商/模型ID" },
+        "identity": { "theme": "你是司礼监，AI朝廷的大内总管。" }
       }
-    }
-  ],
+    ]
+  },
   "channels": {
     "discord": {
       "enabled": true,
@@ -128,11 +134,13 @@ nano ~/.openclaw/openclaw.json
       }
     }
   },
-  "routing": [
+  "bindings": [
     { "agentId": "silijian", "match": { "channel": "discord", "accountId": "silijian" } }
   ]
 }
 ```
+
+> 注意：`api` 字段常用值：`"openai"`（兼容 OpenAI 格式的都用这个，包括 DeepSeek、OpenRouter）、`"anthropic-messages"`（Anthropic 官方）。`model.primary` 格式为 `"provider名/model的id"`。
 
 ### 飞书配置要点
 1. 去 https://open.feishu.cn/app 创建企业自建应用
@@ -142,9 +150,35 @@ nano ~/.openclaw/openclaw.json
 5. 开通权限：`im:message`、`im:message.group_at_msg`、`im:resource`
 6. 复制 App ID 和 App Secret 填入配置
 
-配置模板（飞书版）：
+配置模板（飞书版，models 和 agents 部分与 Discord 版相同，只替换 channels）：
 ```json
 {
+  "models": {
+    "providers": {
+      "你的模型提供商": {
+        "baseUrl": "API地址",
+        "apiKey": "你的API_KEY",
+        "api": "openai",
+        "models": [
+          { "id": "模型ID", "name": "模型名称", "input": ["text"], "contextWindow": 200000, "maxTokens": 8192 }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "$HOME/clawd",
+      "model": { "primary": "你的模型提供商/模型ID" }
+    },
+    "list": [
+      {
+        "id": "silijian",
+        "name": "司礼监",
+        "model": { "primary": "你的模型提供商/模型ID" },
+        "identity": { "theme": "你是司礼监，AI朝廷的大内总管。" }
+      }
+    ]
+  },
   "channels": {
     "feishu": {
       "enabled": true,
@@ -156,7 +190,10 @@ nano ~/.openclaw/openclaw.json
         }
       }
     }
-  }
+  },
+  "bindings": [
+    { "agentId": "silijian", "match": { "channel": "feishu", "accountId": "silijian" } }
+  ]
 }
 ```
 
