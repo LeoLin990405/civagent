@@ -391,14 +391,8 @@ if grep -q '"feishu"' "$CONFIG_FILE" 2>/dev/null; then
         info "在 channels.feishu 中添加 \"groupPolicy\": \"open\""
     fi
 
-    # 5b3. allowBots
+    # 5b3. allowBots（仅多 Bot 模式才需要）
     FEISHU_ALLOW_BOTS=$(json_get "$CONFIG_FILE" "channels.feishu.allowBots")
-    if [ "$FEISHU_ALLOW_BOTS" = "true" ]; then
-        pass "飞书 allowBots: true（Bot 之间可以互相触发）"
-    else
-        warn "飞书 allowBots 未开启 — 多 Bot 模式下 Bot 之间无法互相对话"
-        info "在 channels.feishu 中添加 \"allowBots\": true"
-    fi
 
     # 5c. 检查 accounts
     FEISHU_ACCOUNTS=$(json_keys "$CONFIG_FILE" "channels.feishu.accounts")
@@ -409,6 +403,15 @@ if grep -q '"feishu"' "$CONFIG_FILE" 2>/dev/null; then
 
         if [ "$FEISHU_ACCOUNT_COUNT" -gt 1 ]; then
             info "多 Bot 模式（六部架构）— 确保每个 Bot 在飞书开放平台都是独立应用"
+            # 多 Bot 模式才需要 allowBots
+            if [ "$FEISHU_ALLOW_BOTS" = "true" ]; then
+                pass "飞书 allowBots: true（Bot 之间可以互相触发）"
+            else
+                warn "飞书 allowBots 未开启 — 多 Bot 模式下 Bot 之间无法互相对话"
+                info "在 channels.feishu 中添加 \"allowBots\": true"
+            fi
+        else
+            info "单 Bot 模式（推荐）— 司礼监 + sessions_spawn 后台调度"
         fi
 
         # 逐个检查 account
@@ -466,7 +469,7 @@ if grep -q '"feishu"' "$CONFIG_FILE" 2>/dev/null; then
                 fail "多 Bot 模式但没有飞书 binding — Bot 无法路由到对应 Agent"
                 info "在 bindings 数组中为每个飞书 account 添加路由规则"
             else
-                info "单 Bot 模式，无需飞书 binding（使用默认 Agent）"
+                info "单 Bot 模式 — 1 条 binding 或使用默认 Agent 均可"
             fi
         fi
 
@@ -493,7 +496,7 @@ if grep -q '"feishu"' "$CONFIG_FILE" 2>/dev/null; then
     echo -e "     8. 配置文件 → 每个 account 的 ${YELLOW}appId${NC} 以 cli_ 开头"
     echo -e "     9. 配置文件 → 每个 account 的 ${YELLOW}appSecret${NC} 已正确填写"
     echo -e "    10. 配置文件 → 每个 account 的 ${YELLOW}groupPolicy: \"open\"${NC}（群消息需要）"
-    echo -e "    11. 配置文件 → ${YELLOW}allowBots: true${NC}（多 Bot 互触发需要）"
+    echo -e "    11. 配置文件 → ${YELLOW}allowBots: true${NC}（仅多 Bot 模式需要）"
     echo -e "    12. 多 Bot → 每个 Bot 的 ${YELLOW}bindings${NC} 路由到正确的 Agent"
     echo ""
     echo -e "${CYAN}  🔍 进一步诊断：${NC}"
@@ -560,7 +563,12 @@ fi
 
 if [ "$AGENT_COUNT" -gt 0 ] && [ "$BINDING_COUNT" -gt 0 ]; then
     if [ "$AGENT_COUNT" -ne "$BINDING_COUNT" ]; then
-        warn "Agent 数量（$AGENT_COUNT）和 Binding 数量（$BINDING_COUNT）不一致 — 部分 Agent 可能没有绑定"
+        # 飞书单 Bot 模式下 10 agent + 1 binding 是正常的（司礼监 sessions_spawn 后台调度）
+        if [ "$FEISHU_ENABLED" = "true" ] && [ "$BINDING_COUNT" -eq 1 ] && [ "$FEISHU_ACCOUNT_COUNT" -le 1 ] 2>/dev/null; then
+            pass "飞书单 Bot 模式 — $AGENT_COUNT 个 Agent + 1 条 Binding（司礼监入口，其余后台调度）"
+        else
+            warn "Agent 数量（$AGENT_COUNT）和 Binding 数量（$BINDING_COUNT）不一致 — 部分 Agent 可能没有绑定"
+        fi
     fi
 fi
 

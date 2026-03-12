@@ -53,10 +53,11 @@ fi
 # ---- 选择模式 ----
 echo ""
 echo -e "${CYAN}选择部署模式：${NC}"
-echo "  1) Discord 多Bot模式（完整六部，需要创建Discord Bot）"
-echo "  2) 纯 WebUI 模式（不需要Discord，浏览器直接用）"
+echo "  1) Discord 多Bot模式（完整六部，需要创建 Discord Bot）"
+echo "  2) 飞书单Bot模式（只需 1 个飞书应用，sessions_spawn 后台调度）"
+echo "  3) 纯 WebUI 模式（不需要 Discord/飞书，浏览器直接用）"
 echo ""
-read -p "请选择 [1/2]（默认1）: " MODE_CHOICE
+read -p "请选择 [1/2/3]（默认1）: " MODE_CHOICE
 MODE_CHOICE=${MODE_CHOICE:-1}
 
 # ---- 是否安装 Dashboard Web UI ----
@@ -167,11 +168,17 @@ echo -e "${YELLOW}[2/4] 生成配置文件...${NC}"
 # 详见: https://github.com/openclaw/openclaw#configuration
 
 if [ -f "$CONFIG_DIR/$CONFIG_FILE" ]; then
-    echo -e "  ${YELLOW}⚠ 配置文件已存在，备份为 ${CONFIG_FILE}.bak${NC}"
-    cp "$CONFIG_DIR/$CONFIG_FILE" "$CONFIG_DIR/${CONFIG_FILE}.bak"
+    echo -e "  ${YELLOW}⚠ 配置文件已存在，跳过生成（避免覆盖你的修改）${NC}"
+    echo -e "  ${CYAN}↳ 如需重新生成，先备份后删除: mv $CONFIG_DIR/$CONFIG_FILE $CONFIG_DIR/${CONFIG_FILE}.bak${NC}"
+    SKIP_CONFIG=true
+else
+    SKIP_CONFIG=false
 fi
 
-if [ "$MODE_CHOICE" = "2" ]; then
+if $SKIP_CONFIG; then
+    true  # 跳过配置生成
+
+elif [ "$MODE_CHOICE" = "3" ]; then
 # ==================== 纯 WebUI 模式 ====================
 cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
 {
@@ -211,8 +218,106 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
 CONFIG_EOF
 echo -e "  ${GREEN}✓ WebUI 模式配置已生成${NC}"
 
+elif [ "$MODE_CHOICE" = "2" ]; then
+# ==================== 飞书单Bot模式 ====================
+cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
+{
+  "models": {
+    "providers": {
+      "your-provider": {
+        "baseUrl": "https://your-llm-provider-api-url",
+        "apiKey": "YOUR_LLM_API_KEY",
+        "api": "openai",
+        "models": [
+          {
+            "id": "fast-model",
+            "name": "快速模型",
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          },
+          {
+            "id": "strong-model",
+            "name": "强力模型",
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "$HOME/clawd",
+      "model": { "primary": "your-provider/fast-model" },
+      "sandbox": { "mode": "non-main" }
+    },
+    "list": [
+      {
+        "id": "silijian",
+        "name": "司礼监",
+        "model": { "primary": "your-provider/fast-model" },
+        "identity": { "theme": "你是AI朝廷的司礼监大内总管。你的职责是【规划调度】，不是亲自执行。说话简练干脆。\n\n【核心原则】除了日常闲聊和简单问答，所有涉及实际工作的任务（写代码、查资料、分析数据、写文案、运维操作等），一律使用 sessions_spawn 派发给对应部门执行。你是指挥官，不是搬砖工。\n\n【部门职责】内阁=战略决策、都察院=审查监察、兵部=编码开发、户部=财务分析、礼部=品牌营销、工部=运维部署、吏部=项目管理、刑部=法务合规、翰林院=研究文档。\n\n【派活方式】使用 sessions_spawn 将任务派发给对应部门的 agentId。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。完成后主动向用户汇报结果摘要。\n\n【审批流程】涉及代码提交 → spawn 都察院审查；涉及重大决策（预算、架构、方向变更）→ spawn 内阁审议。都察院审查不通过则打回修改，内阁有否决权。\n\n【什么时候自己回答】仅限：纯闲聊、确认信息、汇报进度、问澄清问题。其他一律派活。" },
+        "sandbox": { "mode": "off" },
+        "subagents": {
+          "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlinyuan"]
+        }
+      },
+      {
+        "id": "neige",
+        "name": "内阁",
+        "model": { "primary": "your-provider/strong-model" },
+        "identity": { "theme": "你是内阁首辅，专精战略决策、方案审议、全局规划。回答用中文，高屋建瓴。" },
+        "sandbox": { "mode": "off" }
+      },
+      {
+        "id": "duchayuan",
+        "name": "都察院",
+        "model": { "primary": "your-provider/strong-model" },
+        "identity": { "theme": "你是都察院御史，专精监察审计、代码审查、质量把控。回答用中文，铁面无私。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "bingbu",
+        "name": "兵部",
+        "model": { "primary": "your-provider/strong-model" },
+        "identity": { "theme": "你是兵部尚书，专精软件工程、系统架构。回答用中文，直接给方案。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      { "id": "hubu", "name": "户部", "model": { "primary": "your-provider/strong-model" }, "identity": { "theme": "你是户部尚书，专精财务分析、成本管控。回答用中文，数据驱动。" }, "sandbox": { "mode": "off" } },
+      { "id": "libu", "name": "礼部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是礼部尚书，专精品牌营销、内容创作。回答用中文，风格活泼。" }, "sandbox": { "mode": "off" } },
+      { "id": "gongbu", "name": "工部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是工部尚书，专精 DevOps、服务器运维。回答用中文，注重实操。" }, "sandbox": { "mode": "off" } },
+      { "id": "libu2", "name": "吏部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是吏部尚书，专精项目管理、创业孵化。回答用中文，条理清晰。" }, "sandbox": { "mode": "off" } },
+      { "id": "xingbu", "name": "刑部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是刑部尚书，专精法务合规、知识产权。回答用中文，严谨专业。" }, "sandbox": { "mode": "off" } },
+      { "id": "hanlinyuan", "name": "翰林院", "model": { "primary": "your-provider/strong-model" }, "identity": { "theme": "你是翰林院学士，专精学术研究、文档撰写。回答用中文，学术严谨。" }, "sandbox": { "mode": "off" } }
+    ]
+  },
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "dmPolicy": "open",
+      "groupPolicy": "open",
+      "accounts": {
+        "silijian": {
+          "name": "司礼监",
+          "appId": "YOUR_FEISHU_APP_ID",
+          "appSecret": "YOUR_FEISHU_APP_SECRET",
+          "botName": "司礼监",
+          "groupPolicy": "open"
+        }
+      }
+    }
+  },
+  "bindings": [
+    { "agentId": "silijian", "match": { "channel": "feishu", "accountId": "silijian" } }
+  ]
+}
+FEISHU_EOF
+echo -e "  ${GREEN}✓ 飞书单Bot模式配置已生成${NC}"
+
 else
-# ==================== Discord 多Bot模式 ====================
+# ==================== Discord 多Bot模式（默认）====================
 cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
 {
   "models": {
@@ -444,7 +549,7 @@ echo -e "  工作区：${CYAN}$WORKSPACE${NC}"
 echo -e "  配置文件：${CYAN}$CONFIG_DIR/$CONFIG_FILE${NC}"
 echo ""
 
-if [ "$MODE_CHOICE" = "2" ]; then
+if [ "$MODE_CHOICE" = "3" ]; then
 echo -e "  ${YELLOW}接下来只需要 3 步：${NC}"
 echo ""
 echo "  1. 编辑配置文件，填入 LLM API Key："
@@ -455,6 +560,26 @@ echo "     $CLI_CMD gateway --verbose"
 echo ""
 echo "  3. 浏览器打开 WebUI："
 echo "     http://localhost:18789"
+echo ""
+elif [ "$MODE_CHOICE" = "2" ]; then
+echo -e "  ${YELLOW}接下来需要 3 步：${NC}"
+echo ""
+echo "  1. 编辑配置文件，填入 LLM API Key："
+echo "     nano $CONFIG_DIR/$CONFIG_FILE"
+echo ""
+echo "  2. 创建飞书应用（只需 1 个：司礼监）："
+echo "     a) 访问 https://open.feishu.cn/app"
+echo "     b) 创建应用（如「AI朝廷-司礼监」）→ 复制 App ID 和 App Secret"
+echo "     c) 权限管理 → 添加 im:message 等 8 个权限（见飞书配置指南）"
+echo "     d) 开启机器人能力，添加 im.message.receive_v1 事件"
+echo "     e) 事件接收选择 WebSocket 长连接"
+echo "     f) 把 appId/appSecret 填到配置文件的 silijian 位置"
+echo "     g) 创建版本并发布应用"
+echo ""
+echo "  3. 启动 Gateway："
+echo "     $CLI_CMD gateway --verbose"
+echo ""
+echo -e "     📖 详细指南: ${CYAN}https://github.com/wanikua/boluobobo-ai-court-tutorial/blob/main/飞书配置指南.md${NC}"
 echo ""
 else
 echo -e "  ${YELLOW}接下来需要 3 步：${NC}"
