@@ -162,6 +162,12 @@ systemctl --user start openclaw-gateway
 
 @你的 Bot 说句话，收到回复 = 登基成功！🎉
 
+> 🏥 **遇到问题？** 一行命令自动诊断：
+> ```bash
+> bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/doctor.sh)
+> ```
+> 自动检查配置、API Key、Bot Token、权限、路由匹配等。详见 [诊断工具文档](./docs/doctor.md)。
+
 > 📖 **完整保姆级步骤** → [基础篇教程](./docs/tutorial-basics.md)（含服务器申请、SSH 连接、Discord Bot 创建）
 
 ---
