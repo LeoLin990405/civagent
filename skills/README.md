@@ -18,17 +18,17 @@
 
 ## 安装更多 Skill
 
-通过 [OpenClaw Hub](https://clawdhub.com) 社区安装：
+通过 OpenClaw Skill 生态安装：
 
 ```bash
 # 搜索
-clawdhub search "关键词"
+openclaw skill search "关键词"
 
 # 安装
-clawdhub install skill-name
+openclaw skill install skill-name
 
 # 查看已安装
-clawdhub list
+openclaw skill list
 ```
 
 ## 自定义 Skill
