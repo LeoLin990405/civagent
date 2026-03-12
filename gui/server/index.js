@@ -795,17 +795,34 @@ app.get('/api/sessions/:sessionId/messages', authMiddleware, (req, res) => {
       const sessionsData = JSON.parse(readFileSync(sessionsPath, 'utf-8'));
       const session = sessionsData[sessionKey];
       if (session?.sessionFile && existsSync(session.sessionFile)) {
-        const lines = readFileSync(session.sessionFile, 'utf-8').split('\n').filter(Boolean);
+        // Q2: 大文件保护 — 超过 10MB 的 JSONL 只读最后 2MB（避免 OOM）
+        const fileStat = statSync(session.sessionFile);
+        const MAX_FULL_READ = 10 * 1024 * 1024; // 10MB
+        const TAIL_READ = 2 * 1024 * 1024; // 2MB
+        let content;
+        if (fileStat.size > MAX_FULL_READ && !search) {
+          // 只读尾部，避免内存爆炸
+          const fd = require('fs').openSync(session.sessionFile, 'r');
+          const buf = Buffer.alloc(TAIL_READ);
+          require('fs').readSync(fd, buf, 0, TAIL_READ, fileStat.size - TAIL_READ);
+          require('fs').closeSync(fd);
+          // 丢弃第一行（可能不完整）
+          const raw = buf.toString('utf-8');
+          content = raw.substring(raw.indexOf('\n') + 1);
+        } else {
+          content = readFileSync(session.sessionFile, 'utf-8');
+        }
+        const lines = content.split('\n').filter(Boolean);
         for (const line of lines) {
           try {
             const entry = JSON.parse(line);
             if (entry.type === 'message' && entry.message) {
-              const content = entry.message.content;
+              const msgContent = entry.message.content;
               let text = '';
-              if (Array.isArray(content)) {
-                text = content.map(c => c.text || c.type).join('');
-              } else if (typeof content === 'string') {
-                text = content;
+              if (Array.isArray(msgContent)) {
+                text = msgContent.map(c => c.text || c.type).join('');
+              } else if (typeof msgContent === 'string') {
+                text = msgContent;
               }
               if (text) {
                 // Search filter
@@ -988,16 +1005,19 @@ app.get('/api/config', authMiddleware, (req, res) => {
 });
 
 app.get('/api/notion', authMiddleware, (req, res) => {
+  const NOTION_TOKEN = process.env.NOTION_TOKEN;
   res.json({
-    status: 'success',
-    lastSync: new Date().toISOString(),
-    pagesLinked: 12,
-    lastError: null
+    status: NOTION_TOKEN ? 'configured' : 'not_configured',
+    configured: !!NOTION_TOKEN,
+    lastSync: null,
+    pagesLinked: 0,
+    lastError: NOTION_TOKEN ? null : '未配置 NOTION_TOKEN 环境变量',
+    _note: 'placeholder — 尚未对接真实 Notion 同步'
   });
 });
 
 app.post('/api/notion/sync', authMiddleware, (req, res) => {
-  res.json({ success: true, message: '同步任务已触发' });
+  res.status(501).json({ success: false, message: 'Notion 同步功能尚未实现（placeholder）' });
 });
 
 app.get('/api/notion/data', authMiddleware, (req, res) => {
@@ -1512,7 +1532,11 @@ app.get('/api/notion/:id', authMiddleware, async (req, res) => {
 
 // 获取Discord频道最新消息
 app.get('/api/channel-messages', authMiddleware, async (req, res) => {
-  const channelId = req.query.channel || '1474091579630293164';
+  // channel 必填，不使用硬编码默认值
+  const channelId = req.query.channel;
+  if (!channelId) {
+    return res.status(400).json({ error: 'channel query parameter is required', messages: [] });
+  }
   // Validate channel ID is numeric (Discord snowflake)
   if (!/^\d{17,20}$/.test(channelId)) {
     return res.status(400).json({ error: 'Invalid channel ID format', messages: [] });
@@ -1524,11 +1548,14 @@ app.get('/api/channel-messages', authMiddleware, async (req, res) => {
       return res.status(400).json({ error: 'Config not found', messages: [] });
     }
     const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
-    const account = config.channels?.discord?.accounts?.['main'];
+    // 取第一个可用的 Discord account（不再硬编码 'main'）
+    const accounts = config.channels?.discord?.accounts || {};
+    const firstAccountKey = Object.keys(accounts)[0];
+    const account = firstAccountKey ? accounts[firstAccountKey] : null;
     const token = account?.token;
     
     if (!token) {
-      return res.status(400).json({ error: 'Main bot token not found' });
+      return res.status(400).json({ error: 'No Discord bot token configured (check channels.discord.accounts)' });
     }
 
     const r = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages?limit=${limit}`, {
@@ -1576,16 +1603,34 @@ app.get('/api/channel-messages', authMiddleware, async (req, res) => {
 });
 
 // 发送指令到Discord频道
+// SEC-31: /api/command rate limiter — 每分钟最多 10 次
+const _cmdRateLimit = { count: 0, resetAt: 0 };
+
 app.post('/api/command', authMiddleware, async (req, res) => {
+  // Rate limit check
+  const now = Date.now();
+  if (now > _cmdRateLimit.resetAt) { _cmdRateLimit.count = 0; _cmdRateLimit.resetAt = now + 60000; }
+  _cmdRateLimit.count++;
+  if (_cmdRateLimit.count > 10) {
+    return res.status(429).json({ error: 'Rate limit exceeded (max 10/min)' });
+  }
+
   const { channel, message, botId } = req.body;
   if (!message || typeof message !== 'string') {
     return res.status(400).json({ error: 'Message is required and must be a string' });
   }
-  const targetChannel = channel || '1474091579630293164'; // 默认朝堂频道
+  // SEC-32: channel 必填，不使用硬编码默认值
+  if (!channel) {
+    return res.status(400).json({ error: 'Channel ID is required' });
+  }
+  const targetChannel = channel;
   // Validate channel ID is numeric (Discord snowflake)
   if (!/^\d{17,20}$/.test(targetChannel)) {
     return res.status(400).json({ error: 'Invalid channel ID format' });
   }
+  
+  // SEC-33: 验证 botId 防止原型链污染
+  const safeBotId = botId ? sanitizeAgentId(botId) : null;
   
   // 读取bot token - 使用指定的botId发送
   try {
@@ -1593,14 +1638,19 @@ app.post('/api/command', authMiddleware, async (req, res) => {
       return res.status(400).json({ error: 'Config not found' });
     }
     const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
-    // Try target bot first, fall back to main
-    let account = config.channels?.discord?.accounts?.[botId];
-    let usedBot = botId;
+    const accounts = config.channels?.discord?.accounts || {};
+    // Try target bot first, fall back to first available account
+    let account = safeBotId ? accounts[safeBotId] : null;
+    let usedBot = safeBotId || 'unknown';
     if (!account?.token) {
-      account = config.channels?.discord?.accounts?.['main'];
-      usedBot = 'main';
+      const firstKey = Object.keys(accounts)[0];
+      account = firstKey ? accounts[firstKey] : null;
+      usedBot = firstKey || 'none';
     }
     const token = account?.token;
+    
+    // SEC-34: 审计日志
+    console.log(`[AUDIT] /api/command botId=${usedBot} channel=${targetChannel} msgLen=${message.length}`);
     
     if (!token) {
       return res.status(400).json({ error: `Bot ${botId} token not found` });
@@ -1663,12 +1713,23 @@ app.get('/api/bots', authMiddleware, (req, res) => {
   }
 });
 
-// 三城天气 API (Open-Meteo, 免费无需key)
-const WEATHER_CITIES = [
-  { name: '苏黎世', lat: 47.37, lon: 8.55, tz: 'Europe/Zurich' },
-  { name: '南京', lat: 32.06, lon: 118.80, tz: 'Asia/Shanghai' },
-  { name: '杭州', lat: 30.25, lon: 120.17, tz: 'Asia/Shanghai' },
+// 天气城市 API (Open-Meteo, 免费无需key)
+// 可通过环境变量 WEATHER_CITIES 自定义，JSON 格式：
+// export WEATHER_CITIES='[{"name":"北京","lat":39.90,"lon":116.40,"tz":"Asia/Shanghai"}]'
+const DEFAULT_WEATHER_CITIES = [
+  { name: '北京', lat: 39.90, lon: 116.40, tz: 'Asia/Shanghai' },
+  { name: '上海', lat: 31.23, lon: 121.47, tz: 'Asia/Shanghai' },
+  { name: '广州', lat: 23.13, lon: 113.26, tz: 'Asia/Shanghai' },
 ];
+let WEATHER_CITIES = DEFAULT_WEATHER_CITIES;
+try {
+  if (process.env.WEATHER_CITIES) {
+    const parsed = JSON.parse(process.env.WEATHER_CITIES);
+    if (Array.isArray(parsed) && parsed.length > 0) WEATHER_CITIES = parsed;
+  }
+} catch (e) {
+  console.warn('[WARN] WEATHER_CITIES 环境变量 JSON 解析失败，使用默认城市');
+}
 
 let weatherCache = { data: null, ts: 0 };
 
@@ -1822,13 +1883,17 @@ process.on('SIGINT', () => {
   process.exit(0);
 });
 
-// Prevent uncaught exceptions from crashing the process
+// Node.js 官方建议：uncaughtException 后进程状态不确定，应退出
+// 配合 systemd/PM2 自动重启
 process.on('uncaughtException', (err) => {
-  console.error('[FATAL] Uncaught exception:', err.message);
+  console.error('[FATAL] Uncaught exception — process will exit:', err.message);
   console.error(err.stack);
+  // 给日志一点时间写完，然后退出
+  setTimeout(() => process.exit(1), 1000);
 });
 process.on('unhandledRejection', (reason) => {
-  console.error('[FATAL] Unhandled rejection:', reason);
+  console.error('[WARN] Unhandled rejection:', reason);
+  // unhandledRejection 不一定需要退出，但记录下来
 });
 
 // ========== HTTP SERVER + WEBSOCKET ==========
@@ -1911,6 +1976,11 @@ setInterval(() => {
   }
 }, 30000);
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Boluo GUI running on http://0.0.0.0:${PORT} (HTTP + WebSocket)`);
+// SEC-30: 默认绑定 localhost，防止非 Docker 部署时暴露到公网
+const BIND_HOST = process.env.BOLUO_BIND_HOST || '127.0.0.1';
+server.listen(PORT, BIND_HOST, () => {
+  console.log(`Boluo GUI running on http://${BIND_HOST}:${PORT} (HTTP + WebSocket)`);
+  if (BIND_HOST === '0.0.0.0') {
+    console.warn('⚠️  GUI 监听所有网口，确保已配置防火墙或反向代理');
+  }
 });

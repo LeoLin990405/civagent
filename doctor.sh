@@ -469,7 +469,12 @@ if grep -q '"feishu"' "$CONFIG_FILE" 2>/dev/null; then
                 fail "多 Bot 模式但没有飞书 binding — Bot 无法路由到对应 Agent"
                 info "在 bindings 数组中为每个飞书 account 添加路由规则"
             else
-                info "单 Bot 模式 — 1 条 binding 或使用默认 Agent 均可"
+                if [ "$FEISHU_BINDING_COUNT" -gt 0 ]; then
+                    pass "单 Bot 模式 — 1 条飞书 binding ✓"
+                else
+                    warn "单 Bot 模式但没有飞书 binding — 建议添加 binding 确保消息路由正确"
+                    info "在 bindings 数组中添加: {\"agentId\": \"silijian\", \"match\": {\"channel\": \"feishu\", \"accountId\": \"silijian\"}}"
+                fi
             fi
         fi
 
