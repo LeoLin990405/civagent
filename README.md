@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/架构灵感-三省六部制-gold?style=for-the-badge" />
   <img src="https://img.shields.io/badge/框架-OpenClaw-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Agent数-10+-green?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/内置Skill-60+-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/OpenClaw_Skill生态-60+-orange?style=for-the-badge" />
   <img src="https://img.shields.io/badge/部署-5分钟-red?style=for-the-badge" />
 </p>
 
@@ -86,7 +86,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 |------|------|
 | **多 Agent 协作** | 10 个独立 AI Agent（六部 + 司礼监 + 内阁 + 都察院 + 翰林院），各有专长，协同工作 |
 | **独立记忆** | 每个 Agent 有独立工作区和 memory 文件，越用越懂你 |
-| **60+ 内置 Skill** | GitHub、Notion、浏览器、Cron、TTS 等开箱即用 |
+| **60+ Skill 生态** | 基于 OpenClaw 框架 60+ 内置 Skill，GitHub、Notion、浏览器、Cron、TTS 等开箱即用 |
 | **自动化任务** | Cron 定时任务 + 心跳自检，7×24 无人值守 |
 | **沙箱隔离** | Docker 容器隔离，Agent 代码执行互不干扰 |
 | **多平台支持** | Discord / 飞书 / Slack / Telegram 等，@mention 即可调用 |
@@ -123,7 +123,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 |---|---|---|---|
 | 多 Agent 协作 | ❌ 单个通才 | ✅ 需写 Python 编排 | ✅ 配置文件搞定，零代码 |
 | 独立记忆 | ⚠️ 单一通用记忆 | ⚠️ 需自己接向量库 | ✅ 每个 Agent 独立工作区 + memory 文件 |
-| 工具集成 | ⚠️ 有限插件 | ⚠️ 需自己开发 | ✅ 60+ 内置 Skill（GitHub / Notion / 浏览器 / Cron …） |
+| 工具集成 | ⚠️ 有限插件 | ⚠️ 需自己开发 | ✅ OpenClaw 60+ Skill 生态（GitHub / Notion / 浏览器 / Cron …） |
 | 界面 | 网页 | 命令行 / 自建 UI | ✅ Discord 原生（手机电脑都能用） |
 | 部署难度 | 无需部署 | 需 Docker + 编码 | ✅ 一键脚本，5 分钟跑起来 |
 | 24h 在线 | ❌ 需手动对话 | ✅ | ✅ 定时任务 + 心跳自检 |
@@ -161,12 +161,12 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
      ┌──────────┐  ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐  ┌──────────┐
      │ 司礼监   │  │兵部│ │户部│ │吏部│ │礼部│ │工部│  │  刑部    │
      │ 总管调度 │  │编码│ │财务│ │管理│ │营销│ │运维│  │  法务    │
-     │ (main)   │  │    │ │    │ │    │ │    │ │    │  │          │
+     │(silijian)│  │    │ │    │ │    │ │    │ │    │  │          │
      └──────────┘  └────┘ └────┘ └────┘ └────┘ └────┘  └──────────┘
            │          │      │      │      │      │          │
            ▼          ▼      ▼      ▼      ▼      ▼          ▼
      ┌───────────────────────────────────────────────────────────┐
-     │                Skill 工具层（60+ 内置）                    │
+     │           Skill 工具层（基于 OpenClaw 60+ 生态）            │
      │  GitHub · Notion · 浏览器 · Cron · TTS · 截图             │
      │  sessions_spawn（跨 Agent 派活）                           │
      │  sessions_send（跨 Agent 通信）                            │
@@ -719,7 +719,8 @@ openclaw channels add
   "channels": {
     "feishu": {
       "enabled": true,
-      "dmPolicy": "pairing",
+      "dmPolicy": "open",          // 私聊策略：open=直接对话，pairing=需配对审批
+      "groupPolicy": "open",       // 群聊策略：必须设为 open 才能接收群消息
       "accounts": {
         "main": {
           "appId": "cli_xxx",
@@ -730,6 +731,7 @@ openclaw channels add
   }
 }
 ```
+> 💡 `dmPolicy: "pairing"` 需要用户运行 `openclaw pairing approve` 才能私聊，适合安全要求高的场景。新手建议直接用 `"open"`。
 
 ### 第四步：启动并测试
 
@@ -761,22 +763,33 @@ Bot @了不回？按这个顺序排查：
 > ⚠️ 配置事件订阅前需要先启动 Gateway，否则 WebSocket 长连接可能保存失败。
 
 **② 权限检查**
-应用管理 → 权限管理，确认已开启：
+应用管理 → 权限管理，确认已开启（至少需要前 6 个）：
 
-| 权限 | 用途 |
-|------|------|
-| `im:message` | 读取消息 |
-| `im:message:send` | 发送消息 |
-| `im:chat` | 获取群信息 |
+| 权限 | 用途 | 必须 |
+|------|------|------|
+| `im:message` | 获取与发送消息 | ✅ |
+| `im:message:send_as_bot` | 以机器人身份发消息 | ✅ |
+| `im:message:readonly` | 读取消息 | ✅ |
+| `im:message.p2p_msg:readonly` | 获取单聊消息 | ✅ |
+| `im:message.group_at_msg:readonly` | 获取群组 @消息 | ✅ |
+| `im:resource` | 获取消息中的资源文件 | ✅ |
+| `im:chat.members:bot_access` | 获取群成员信息 | 推荐 |
+| `im:chat.access_event.bot_p2p_chat:read` | 获取单聊事件 | 推荐 |
 
 **③ 配置文件检查**
-```json
+```json5
 // openclaw.json 中必须有：
 "channels": {
   "feishu": {
     "enabled": true,
-    "appId": "cli_你的AppID",
-    "appSecret": "你的AppSecret"
+    "dmPolicy": "open",
+    "groupPolicy": "open",
+    "accounts": {
+      "main": {
+        "appId": "cli_你的AppID",
+        "appSecret": "你的AppSecret"
+      }
+    }
   }
 }
 ```

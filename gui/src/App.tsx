@@ -5,6 +5,10 @@ import { useTheme } from "./theme"
 import { PineappleLogo } from "./components/Logo"
 import Login from "./pages/Login"
 
+// 品牌名 — 修改此处即可全局替换
+const BRAND_NAME = import.meta.env.VITE_BRAND_NAME || '菠萝王朝'
+const BRAND_SUBTITLE = import.meta.env.VITE_BRAND_SUBTITLE || 'Pineapple Dynasty'
+
 // Lazy-loaded pages (code-splitting — reduces initial bundle, especially recharts-heavy pages)
 const Dashboard = lazy(() => import("./pages/Dashboard"))
 const Departments = lazy(() => import("./pages/Departments"))
@@ -109,9 +113,9 @@ function App() {
           <div className="flex items-center gap-2.5">
             <PineappleLogo size={32} />
             <div>
-              <div className="text-base font-bold text-accent-gradient tracking-wide">菠萝王朝</div>
+              <div className="text-base font-bold text-accent-gradient tracking-wide">{BRAND_NAME}</div>
               <div className="text-[9px] tracking-widest uppercase" style={{ color: 'var(--text-tertiary)' }}>
-                {data?.uptime ? `运行 ${data.uptime}` : 'Pineapple Dynasty'}
+                {data?.uptime ? `运行 ${data.uptime}` : BRAND_SUBTITLE}
               </div>
             </div>
           </div>
@@ -185,7 +189,7 @@ function App() {
           <button onClick={() => setSidebarOpen(true)} className="text-xl cursor-pointer" style={{ color: 'var(--accent)' }}>☰</button>
           <div className="flex items-center gap-2">
             <PineappleLogo size={22} />
-            <span className="font-bold text-accent-gradient">菠萝王朝</span>
+            <span className="font-bold text-accent-gradient">{BRAND_NAME}</span>
           </div>
           <button onClick={refresh} className="cursor-pointer" style={{ color: 'var(--text-secondary)' }}>↻</button>
         </header>

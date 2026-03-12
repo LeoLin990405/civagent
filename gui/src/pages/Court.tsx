@@ -158,9 +158,11 @@ export default function Court() {
     setTimeout(() => logRef.current?.scrollTo(0, logRef.current.scrollHeight), 100)
   }
 
-  const core = bots.filter(b => ['main', 'neige', 'duchayuan'].includes(b.id))
-  const liubu = bots.filter(b => ['gongbu', 'hubu', 'bingbu', 'libu2', 'xingbu', 'libu'].includes(b.id))
-  const others = bots.filter(b => !['main', 'neige', 'duchayuan', 'gongbu', 'hubu', 'bingbu', 'libu2', 'xingbu', 'libu'].includes(b.id))
+  const coreIds = ['main', 'silijian', 'neige', 'duchayuan']
+  const liubuIds = ['gongbu', 'hubu', 'bingbu', 'libu2', 'xingbu', 'libu']
+  const core = bots.filter(b => coreIds.includes(b.id))
+  const liubu = bots.filter(b => liubuIds.includes(b.id))
+  const others = bots.filter(b => ![...coreIds, ...liubuIds].includes(b.id))
 
   return (
     <div className="space-y-4">

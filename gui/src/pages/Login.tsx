@@ -1,5 +1,7 @@
 import { useState } from "react"
 
+const BRAND_NAME = import.meta.env.VITE_BRAND_NAME || '菠萝王朝'
+
 interface LoginProps {
   onLogin: (token: string) => void
 }
@@ -50,7 +52,7 @@ export default function Login({ onLogin }: LoginProps) {
         <div className="text-center mb-10">
           <div className="text-5xl mb-3 drop-shadow-lg" style={{ filter: 'drop-shadow(0 0 12px rgba(212,165,116,0.3))' }}>🍍</div>
           <h1 className="text-[#e5e5e5] text-2xl font-light tracking-[0.2em]">
-            菠萝王朝
+            {BRAND_NAME}
           </h1>
           <div className="flex items-center justify-center gap-3 mt-3">
             <div className="h-px w-8 bg-gradient-to-r from-transparent to-[#d4a574]/50" />
@@ -97,7 +99,7 @@ export default function Login({ onLogin }: LoginProps) {
 
         {/* Footer */}
         <p className="text-[#a3a3a3]/30 text-[10px] text-center mt-8 tracking-wider">
-          菠萝王朝 © 2026
+          {BRAND_NAME} © {new Date().getFullYear()}
         </p>
       </div>
     </div>
