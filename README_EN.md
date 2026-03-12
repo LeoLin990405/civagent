@@ -91,7 +91,7 @@ These concepts map perfectly to modern multi-agent system design needs. **Ancien
 | **Sandbox Isolation** | Docker container isolation, agent code runs independently |
 | **Multi-Platform Support** | Discord / Feishu (Lark) / Slack / Telegram etc., invoke via @mention |
 | **Web Dashboard** | React + TypeScript dashboard for visual management |
-| **OpenClaw Ecosystem** | Built on [OpenClaw](https://github.com/openclaw/openclaw), access the [OpenClaw Hub](https://github.com/openclaw/openclaw) Skill ecosystem |
+| **OpenClaw Ecosystem** | Built on [OpenClaw](https://github.com/openclaw/openclaw), access the [OpenClaw Skill Ecosystem](https://github.com/openclaw/openclaw) Skill ecosystem |
 
 ### Prefer a Corporate Edition?
 
@@ -561,7 +561,7 @@ Emperor → @Directorate: Refactor the user system
 Each agent has its own workspace and `memory/` directory. Project knowledge accumulated through conversations is persisted to files and retained across sessions. The more you use an agent, the better it understands your project.
 
 ### 60+ Skill Ecosystem (Powered by OpenClaw Framework)
-It's not just a chatbot — the OpenClaw framework includes 60+ built-in Skills covering the entire development lifecycle, extendable via [OpenClaw Hub](https://github.com/openclaw/openclaw):
+It's not just a chatbot — the OpenClaw framework includes 60+ built-in Skills covering the entire development lifecycle, extendable via [OpenClaw Skill Ecosystem](https://github.com/openclaw/openclaw):
 
 | Category | Skills |
 |----------|--------|
@@ -586,7 +586,7 @@ It's not just a chatbot — the OpenClaw framework includes 60+ built-in Skills 
 | `quadrants` | Eisenhower matrix task management | ✅ |
 | `openviking` | Vector knowledge base (Volcengine open-source) | ✅ |
 
-> 💡 These are just the starter pack. Install more from the community anytime with `clawdhub install <skill-name>`.
+> 💡 These are just the starter pack. Install more from the community anytime with `openclaw skill install <skill-name>`.
 
 ### Scheduled Tasks (Cron)
 Built-in Cron scheduler lets agents run tasks on autopilot:
@@ -806,6 +806,7 @@ App Management → Permission Management — confirm these are enabled (at least
 | `im:resource` | Access message resources | ✅ |
 | `im:chat.members:bot_access` | Get group member info | Recommended |
 | `im:chat.access_event.bot_p2p_chat:read` | Get DM events | Recommended |
+| `contact:user.employee_id:readonly` | Get user employee ID | Recommended |
 
 **③ Config File Check**
 ```json5
@@ -1003,7 +1004,7 @@ No. OpenClaw maintains independent sessions for each user × agent combination. 
 Yes. Agents can use `sessions_spawn` to delegate sub-tasks to other agents, or `sessions_send` to message another agent's session. For example, the Directorate of Ceremonial can assign coding tasks to the War Ministry.
 
 **Q: How do I create custom Skills?**
-OpenClaw has a built-in Skill Creator tool for creating custom Skills. Each Skill is a directory containing `SKILL.md` (instructions) + scripts + resources. Place it in the `skills/` directory of your workspace, and agents can use it immediately. You can also find community-shared Skills on [OpenClaw Hub](https://github.com/openclaw/openclaw).
+OpenClaw has a built-in Skill Creator tool for creating custom Skills. Each Skill is a directory containing `SKILL.md` (instructions) + scripts + resources. Place it in the `skills/` directory of your workspace, and agents can use it immediately. You can also find community-shared Skills on [OpenClaw Skill Ecosystem](https://github.com/openclaw/openclaw).
 
 **Q: How do I connect private models (Ollama, etc.)?**
 Add an OpenAI API-compatible provider in the `models.providers` section of `openclaw.json`, pointing `baseUrl` to your Ollama address. Local Ollama models have zero API costs.
@@ -1158,6 +1159,6 @@ This project is provided "as is" without any warranties, express or implied.
 
 ---
 
-v3.5 | MIT License
+v3.5.1 | MIT License
 
 > 📜 This project is licensed under MIT. If you create derivative works or projects inspired by this architecture, please credit the original: [boluobobo-ai-court-tutorial](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua)

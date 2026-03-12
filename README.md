@@ -2,6 +2,10 @@
 
 <!-- SEO 关键词 / Keywords：三省六部、明朝、六部制、中书省、门下省、尚书省、司礼监、内阁、都察院、翰林院、兵部、户部、礼部、工部、刑部、吏部、AI朝廷、AI Agent、多Agent协作、人工智能管理、古代治国、现代管理、组织架构、OpenClaw、multi-agent、ancient-china -->
 
+<p align="center">
+  <img src="./images/boluobobo-mascot.png" alt="菠萝菠菠 mascot" width="120" />
+</p>
+
 # 🏛️ 三省六部 ✖️ OpenClaw
 
 ### 一行命令起王朝，三省六部皆AI；千里之外调百官，万事不劳御驾亲。
@@ -91,7 +95,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 | **沙箱隔离** | Docker 容器隔离，Agent 代码执行互不干扰 |
 | **多平台支持** | Discord / 飞书 / Slack / Telegram 等，@mention 即可调用 |
 | **Web 管理后台** | React + TypeScript 构建的 Dashboard，可视化管理 |
-| **OpenClaw 生态** | 基于 [OpenClaw](https://github.com/openclaw/openclaw) 框架，可使用 [OpenClaw Hub](https://github.com/openclaw/openclaw) 的 Skill 生态 |
+| **OpenClaw 生态** | 基于 [OpenClaw](https://github.com/openclaw/openclaw) 框架，可使用 [OpenClaw Skill 生态](https://github.com/openclaw/openclaw) 的 Skill 生态 |
 
 ### 想要企业版？
 
@@ -423,7 +427,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 
 1. 打开 [飞书开放平台](https://open.feishu.cn/app)，创建企业自建应用（如「AI朝廷-司礼监」）
 2. 复制 **App ID**（`cli_xxx`）和 **App Secret**
-3. **权限管理** → 添加 `im:message` 等 8 个权限
+3. **权限管理** → 添加 `im:message` 等 **9 个权限**
 4. **应用能力** → 开启机器人
 5. **事件订阅** → WebSocket 模式 → 添加 `im.message.receive_v1`
 6. **版本管理** → 创建版本并发布
@@ -731,7 +735,7 @@ openclaw cron add \
 每个 Agent 有独立的工作区和 `memory/` 目录。对话积累的项目知识会持久化到文件，跨会话保留。Agent 越用越懂你的项目。
 
 ### 60+ Skill 生态（基于 OpenClaw 框架）
-不只是聊天——OpenClaw 框架内置 60+ Skill 覆盖开发全流程，且可通过 [OpenClaw Hub](https://github.com/openclaw/openclaw) 扩展更多：
+不只是聊天——OpenClaw 框架内置 60+ Skill 覆盖开发全流程，且可通过 [OpenClaw Skill 生态](https://github.com/openclaw/openclaw) 扩展更多：
 
 | 类别 | Skill |
 |------|-------|
@@ -756,7 +760,7 @@ openclaw cron add \
 | `quadrants` | 四象限任务管理（quadrants.ch） | ✅ |
 | `openviking` | 向量知识库（火山引擎开源） | ✅ |
 
-> 💡 这些只是起步包。通过 `clawdhub install <skill名>` 可以随时从社区安装更多 Skill。
+> 💡 这些只是起步包。通过 `openclaw skill install <skill名>` 可以随时从社区获取更多 Skill。
 
 ### 定时任务（Cron）
 内置 Cron 调度器，让 Agent 定时自动执行：
@@ -893,6 +897,7 @@ Bot @了不回？按这个顺序排查：
 | `im:resource` | 获取消息中的资源文件 | ✅ |
 | `im:chat.members:bot_access` | 获取群成员信息 | 推荐 |
 | `im:chat.access_event.bot_p2p_chat:read` | 获取单聊事件 | 推荐 |
+| `contact:user.employee_id:readonly` | 获取用户工号 | 推荐 |
 
 **③ 配置文件检查**
 ```json5
@@ -1090,7 +1095,7 @@ Discord Developer Portal 里每个 Bot 要开启 **Message Content Intent** 和 
 - `docker.network: "bridge"` — 允许联网（默认断网）
 - `docker.env` — 传入 API Key（沙箱不继承主机环境变量）
 
-> 详细说明见上方 [Sandbox 沙箱配置详解](#-sandbox-沙箱配置详解)
+> 详细说明见下方「🛡️ 安全须知」中的 Sandbox 沙箱配置部分
 
 **Q: 多人同时 @ 同一个 Agent 会冲突吗？**
 不会。OpenClaw 为每个用户 × Agent 组合维护独立的会话（session）。多人同时 @兵部，各自的对话互不干扰。
@@ -1099,7 +1104,7 @@ Discord Developer Portal 里每个 Bot 要开启 **Message Content Intent** 和 
 能。Agent 可以通过 `sessions_spawn` 产生子任务给其他 Agent，也可以通过 `sessions_send` 发消息给其他 Agent 的会话。比如司礼监可以把编码任务派给兵部。
 
 **Q: 怎么自定义 Skill？**
-OpenClaw 有内置的 Skill Creator 工具，可以创建自定义 Skill。每个 Skill 是一个包含 `SKILL.md`（指令）+ 脚本 + 资源的目录。放到工作区的 `skills/` 目录下即可被 Agent 使用。也可以从 [OpenClaw Hub](https://github.com/openclaw/openclaw) 获取社区共享的 Skill。
+OpenClaw 有内置的 Skill Creator 工具，可以创建自定义 Skill。每个 Skill 是一个包含 `SKILL.md`（指令）+ 脚本 + 资源的目录。放到工作区的 `skills/` 目录下即可被 Agent 使用。也可以从 [OpenClaw Skill 生态](https://github.com/openclaw/openclaw) 获取社区共享的 Skill。
 
 **Q: 怎么接入私有模型（Ollama 等）？**
 在 `openclaw.json` 的 `models.providers` 中添加兼容 OpenAI API 格式的 provider，指定 `baseUrl` 到你的 Ollama 地址即可。Ollama 本地模型零 API 费用。
@@ -1289,6 +1294,6 @@ openclaw doctor --fix
 
 ---
 
-v3.5 | MIT License
+v3.5.1 | MIT License
 
 > 📜 This project is licensed under MIT. If you create derivative works or projects inspired by this architecture, please credit the original: [boluobobo-ai-court-tutorial](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua)

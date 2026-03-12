@@ -1,5 +1,20 @@
 # 📜 Changelog
 
+## v3.5.1 (2026-07-14)
+
+### 优化
+- **README 重构** — 精简为 ~400 行引导页，详细教程拆分到 `docs/` 目录
+- 修复飞书权限数量描述（8→9 个）
+- 飞书排查权限表补全 `contact:user.employee_id:readonly`
+- 修复 Sandbox 锚点链接
+- 插入 mascot 图片
+- OpenClaw Hub 链接统一为 OpenClaw Skill 生态
+- `clawdhub install` 命令更新为 `openclaw skill install`
+- 基础篇/进阶篇 txt 转 markdown 格式（`docs/tutorial-basics.md`、`docs/tutorial-advanced.md`）
+- 新增 `docs/` 文档索引和多个拆分文档
+
+---
+
 ## v3.5 (2026-03-12)
 
 ### 新功能
