@@ -404,6 +404,56 @@ if [ "$AGENT_COUNT" -gt 0 ] && [ "$BINDING_COUNT" -gt 0 ]; then
     fi
 fi
 
+# 检查 identity 配置
+if [ "$AGENT_COUNT" -gt 0 ]; then
+    AGENT_IDS=$(json_keys "$CONFIG_FILE" "agents.list" 2>/dev/null)
+    # 用 python/node 获取缺 identity 的 agent 列表
+    MISSING_IDENTITY=""
+    if command -v python3 &>/dev/null; then
+        MISSING_IDENTITY=$(python3 -c "
+import json
+try:
+    d = json.load(open('$CONFIG_FILE'))
+    agents = d.get('agents', {}).get('list', [])
+    missing = []
+    for a in agents:
+        aid = a.get('id', '?')
+        name = a.get('name', aid)
+        identity = a.get('identity')
+        if not identity or not identity.get('theme'):
+            missing.append(name)
+    if missing:
+        print(','.join(missing))
+except: pass
+" 2>/dev/null)
+    elif command -v node &>/dev/null; then
+        MISSING_IDENTITY=$(node -e "
+try {
+    const d = require('$CONFIG_FILE');
+    const agents = (d.agents || {}).list || [];
+    const missing = agents.filter(a => !a.identity || !a.identity.theme).map(a => a.name || a.id);
+    if (missing.length) console.log(missing.join(','));
+} catch(e) {}
+" 2>/dev/null)
+    fi
+
+    if [ -n "$MISSING_IDENTITY" ]; then
+        MISSING_COUNT=$(echo "$MISSING_IDENTITY" | tr ',' '\n' | wc -l)
+        fail "有 $MISSING_COUNT 个 Agent 缺少 identity.theme（角色描述）"
+        info "缺少 identity 的 Agent: $MISSING_IDENTITY"
+        info "Agent 没有 identity.theme 会不知道自己的角色定位，影响回答质量"
+        info "参考模板补全: https://github.com/wanikua/boluobobo-ai-court-tutorial/blob/main/openclaw.example.json"
+        echo ""
+        echo -e "${CYAN}  📋 修复方法：${NC}"
+        echo -e "     1. 编辑 ${YELLOW}$CONFIG_FILE${NC}"
+        echo -e "     2. 在每个 agent 对象里加上 ${YELLOW}\"identity\": { \"theme\": \"你是...\" }${NC}"
+        echo -e "     3. 重启: ${YELLOW}$CLI_CMD gateway restart${NC}"
+        echo ""
+    else
+        pass "所有 Agent 都有 identity.theme（角色描述）✓"
+    fi
+fi
+
 # ---- [8/9] 检测工作区 ----
 echo ""
 echo -e "${YELLOW}[8/9] 检查工作区...${NC}"
