@@ -196,12 +196,150 @@ if grep -q '"discord"' "$CONFIG_FILE" 2>/dev/null; then
             info "确保 channels.discord.groupPolicy 设为 \"open\""
         fi
 
-        echo ""
-        echo -e "${CYAN}  📋 Discord @everyone 不触发？逐项检查：${NC}"
+        # ---- Discord API 在线验证 ----
+        if [ "$BOT_PLACEHOLDER" -eq 0 ] && command -v curl &>/dev/null; then
+            echo ""
+            echo -e "${CYAN}  🔍 Discord API 在线验证...${NC}"
+            echo ""
+
+            DISCORD_ACCOUNTS=$(json_keys "$CONFIG_FILE" "channels.discord.accounts")
+            while IFS= read -r acct; do
+                [ -z "$acct" ] && continue
+                TOKEN=$(json_get "$CONFIG_FILE" "channels.discord.accounts.$acct.token")
+                ACCT_NAME=$(json_get "$CONFIG_FILE" "channels.discord.accounts.$acct.name")
+                DISPLAY_NAME="${ACCT_NAME:-$acct}"
+
+                [ -z "$TOKEN" ] && continue
+                [[ "$TOKEN" == YOUR_* ]] && continue
+
+                # --- 验证 Token ---
+                USER_RESP=$(curl -sS -w "\n%{http_code}" -H "Authorization: Bot $TOKEN" \
+                    "https://discord.com/api/v10/users/@me" 2>/dev/null)
+                HTTP_CODE=$(echo "$USER_RESP" | tail -1)
+                USER_BODY=$(echo "$USER_RESP" | sed '$d')
+
+                if [ "$HTTP_CODE" = "200" ]; then
+                    BOT_INFO=$(echo "$USER_BODY" | python3 -c "
+import json, sys
+d = json.load(sys.stdin)
+print(d.get('username','?') + '|' + d.get('id','?'))
+" 2>/dev/null)
+                    BOT_USERNAME=$(echo "$BOT_INFO" | cut -d'|' -f1)
+                    BOT_ID=$(echo "$BOT_INFO" | cut -d'|' -f2)
+                    pass "[$DISPLAY_NAME] Token 有效 — @$BOT_USERNAME (ID: $BOT_ID)"
+                elif [ "$HTTP_CODE" = "401" ]; then
+                    fail "[$DISPLAY_NAME] Token 无效（401）— 请重新复制 Bot Token"
+                    continue
+                else
+                    warn "[$DISPLAY_NAME] API 请求失败（HTTP $HTTP_CODE）— 网络问题或被限流"
+                    continue
+                fi
+
+                # --- 检查 Privileged Intents ---
+                APP_RESP=$(curl -sS -w "\n%{http_code}" -H "Authorization: Bot $TOKEN" \
+                    "https://discord.com/api/v10/applications/@me" 2>/dev/null)
+                APP_CODE=$(echo "$APP_RESP" | tail -1)
+                APP_BODY=$(echo "$APP_RESP" | sed '$d')
+
+                if [ "$APP_CODE" = "200" ]; then
+                    FLAGS=$(echo "$APP_BODY" | python3 -c "import json,sys; print(json.load(sys.stdin).get('flags',0))" 2>/dev/null)
+                    FLAGS=${FLAGS:-0}
+
+                    # Message Content Intent: bit 18 (262144) or limited bit 19 (524288)
+                    MSG_CONTENT=$(( (FLAGS >> 18) & 1 ))
+                    MSG_CONTENT_LTD=$(( (FLAGS >> 19) & 1 ))
+                    if [ "$MSG_CONTENT" -eq 1 ] || [ "$MSG_CONTENT_LTD" -eq 1 ]; then
+                        pass "[$DISPLAY_NAME] Message Content Intent ✓"
+                    else
+                        fail "[$DISPLAY_NAME] Message Content Intent 未开启 — Bot 无法读取消息内容"
+                        info "Discord Developer Portal → Bot → Privileged Gateway Intents → 开启 Message Content Intent"
+                    fi
+
+                    # Server Members Intent: bit 14 (16384) or limited bit 15 (32768)
+                    MEMBERS=$(( (FLAGS >> 14) & 1 ))
+                    MEMBERS_LTD=$(( (FLAGS >> 15) & 1 ))
+                    if [ "$MEMBERS" -eq 1 ] || [ "$MEMBERS_LTD" -eq 1 ]; then
+                        pass "[$DISPLAY_NAME] Server Members Intent ✓"
+                    else
+                        fail "[$DISPLAY_NAME] Server Members Intent 未开启 — Bot 无法解析 @mention"
+                        info "Discord Developer Portal → Bot → Privileged Gateway Intents → 开启 Server Members Intent"
+                    fi
+
+                    # Presence Intent: bit 12 (4096) or limited bit 13 (8192) — optional
+                    PRESENCE=$(( (FLAGS >> 12) & 1 ))
+                    PRESENCE_LTD=$(( (FLAGS >> 13) & 1 ))
+                    if [ "$PRESENCE" -eq 1 ] || [ "$PRESENCE_LTD" -eq 1 ]; then
+                        pass "[$DISPLAY_NAME] Presence Intent ✓"
+                    else
+                        info "[$DISPLAY_NAME] Presence Intent 未开启（可选，不影响核心功能）"
+                    fi
+                else
+                    warn "[$DISPLAY_NAME] 无法获取 Application 信息（HTTP $APP_CODE）— Intent 检查跳过"
+                fi
+
+                # --- 检查服务器权限 ---
+                GUILDS_RESP=$(curl -sS -w "\n%{http_code}" -H "Authorization: Bot $TOKEN" \
+                    "https://discord.com/api/v10/users/@me/guilds" 2>/dev/null)
+                GUILDS_CODE=$(echo "$GUILDS_RESP" | tail -1)
+                GUILDS_BODY=$(echo "$GUILDS_RESP" | sed '$d')
+
+                if [ "$GUILDS_CODE" = "200" ]; then
+                    GUILD_LINES=$(echo "$GUILDS_BODY" | python3 -c "
+import json, sys
+guilds = json.load(sys.stdin)
+print(len(guilds))
+for g in guilds:
+    perms = int(g.get('permissions', 0))
+    name = g.get('name', '?')
+    gid = g.get('id', '?')
+    view_ch  = bool(perms & (1 << 10))
+    send_msg = bool(perms & (1 << 11))
+    read_hist = bool(perms & (1 << 16))
+    embed_links = bool(perms & (1 << 14))
+    print(f'{gid}|{name}|{view_ch}|{send_msg}|{read_hist}|{embed_links}')
+" 2>/dev/null)
+
+                    GUILD_COUNT=$(echo "$GUILD_LINES" | head -1)
+                    if [ "${GUILD_COUNT:-0}" -gt 0 ]; then
+                        pass "[$DISPLAY_NAME] 已加入 $GUILD_COUNT 个服务器"
+
+                        echo "$GUILD_LINES" | tail -n +2 | while IFS='|' read -r gid gname can_view can_send can_read can_embed; do
+                            [ -z "$gid" ] && continue
+                            MISSING=""
+                            [ "$can_view" = "False" ] && MISSING="${MISSING} View_Channels"
+                            [ "$can_send" = "False" ] && MISSING="${MISSING} Send_Messages"
+                            [ "$can_read" = "False" ] && MISSING="${MISSING} Read_History"
+
+                            if [ -z "$MISSING" ]; then
+                                pass "[$DISPLAY_NAME] 「$gname」权限正常（查看+发送+历史记录）"
+                            else
+                                fail "[$DISPLAY_NAME] 「$gname」缺少权限:$MISSING"
+                                info "服务器设置 → 角色 → 给 $DISPLAY_NAME 的角色添加:$MISSING"
+                            fi
+                        done
+                    else
+                        fail "[$DISPLAY_NAME] 未加入任何服务器"
+                        info "用 OAuth2 链接邀请: https://discord.com/oauth2/authorize?client_id=$BOT_ID&permissions=274877975552&scope=bot"
+                    fi
+                else
+                    warn "[$DISPLAY_NAME] 无法获取服务器列表（HTTP $GUILDS_CODE）"
+                fi
+
+                # 小间隔防止 rate limit
+                sleep 0.3
+
+            done <<< "$DISCORD_ACCOUNTS"
+
+            echo ""
+        elif ! command -v curl &>/dev/null; then
+            info "curl 未安装 — 跳过 Discord API 在线验证"
+        fi
+
+        echo -e "${CYAN}  📋 Discord 手动排查清单：${NC}"
         echo -e "     1. Discord Developer Portal → 每个 Bot 开启 ${YELLOW}Message Content Intent${NC}"
         echo -e "     2. Discord Developer Portal → 每个 Bot 开启 ${YELLOW}Server Members Intent${NC}"
         echo -e "     3. Discord Developer Portal → 每个 Bot 开启 ${YELLOW}Presence Intent${NC}（可选）"
-        echo -e "     4. 服务器设置 → 每个 Bot 角色有 ${YELLOW}View Channels${NC} 权限"
+        echo -e "     4. 服务器设置 → 每个 Bot 角色有 ${YELLOW}View Channels${NC} + ${YELLOW}Send Messages${NC} 权限"
         echo -e "     5. 配置文件 → channels.discord.${YELLOW}groupPolicy: \"open\"${NC}"
         echo -e "     6. 配置文件 → 每个 account 的 ${YELLOW}groupPolicy: \"open\"${NC}"
         echo -e "     7. 配置文件 → channels.discord.${YELLOW}\"allowBots\": true${NC}（Bot互触发需要）"
