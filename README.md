@@ -64,26 +64,30 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 ## 效果展示
 
 ```
-👑 皇帝：@兵部 帮朕写一个用户登录的 REST API，用 Node.js + Express
+👑 皇帝：@司礼监 帮朕搞一个用户登录的 REST API，用 Node.js + Express，
+         然后查一下这个月 API 花了多少钱，顺便让礼部写条小红书文案推广一下。
 
-🏛️ 兵部：遵旨，臣即刻动手。
+🏛️ 司礼监：遵旨！臣即刻安排各部：
+  → @兵部 编写用户登录 REST API（Node.js + Express）
+  → @户部 统计本月 API 支出明细
+  → @礼部 撰写小红书推广文案，主题：AI 工具搭建
+
+🏛️ 兵部：启禀陛下，臣已完工：
   📁 已创建 auth-api/ 项目结构
   ✅ POST /api/login — JWT 认证
   ✅ POST /api/register — 用户注册
   ✅ 已提交至 GitHub：wanikua/auth-api#1
-
-👑 皇帝：@户部 这个月 API 花了多少钱？
 
 🏛️ 户部：启禀陛下，本月 API 总计 $23.47
   ├── 兵部（强力模型）：$15.20
   ├── 礼部（快速模型）：$3.80
   └── 其他：$4.47  📊 环比 -12%
 
-👑 皇帝：@礼部 写条小红书文案，推荐 AI 工具搭建
-
-🏛️ 礼部：遵旨！
+🏛️ 礼部：启禀陛下，文案已备好：
   📝「普通人也能当AI皇帝？我用6个AI管理整个团队」
   🏷️ #AI工具 #效率提升 #多Agent #AI朝廷
+
+🏛️ 司礼监：陛下，三项任务均已办妥，请御览。
 ```
 
 ---
