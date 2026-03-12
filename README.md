@@ -118,7 +118,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 
 > 🔴 **新手请用云服务器**，不要在个人电脑上安装。详见 [安全须知](./docs/security.md)。
 
-### 📍 第零步：已有 OpenClaw / Clawdbot？
+### 📍 第零步：已安装 OpenClaw？
 
 > 已经在跑 OpenClaw 的老用户，不需要重新安装，用精简版脚本直接初始化朝廷工作区和配置模板：
 > ```bash
