@@ -88,19 +88,9 @@ if [ "$PLATFORM" = "1" ]; then
         echo -e "${RED}✗ Bot Token 不能为空${NC}"
         exit 1
     fi
-    CHANNEL_CONFIG='"discord": {
-      "enabled": true,
-      "groupPolicy": "open",
-      "allowBots": true,
-      "accounts": {
-        "silijian": {
-          "botName": "司礼监",
-          "token": "'"$BOT_TOKEN"'",
-          "groupPolicy": "open"
-        }
-      }
-    }'
-    BINDINGS='{ "agentId": "silijian", "match": { "channel": "discord", "accountId": "silijian" } }'
+    # Discord 凭证已保存在 $BOT_TOKEN
+    APP_ID=""
+    APP_SECRET=""
 
 elif [ "$PLATFORM" = "2" ]; then
     echo "飞书配置："
@@ -114,22 +104,14 @@ elif [ "$PLATFORM" = "2" ]; then
         echo -e "${RED}✗ App ID 和 App Secret 不能为空${NC}"
         exit 1
     fi
-    CHANNEL_CONFIG='"feishu": {
-      "enabled": true,
-      "accounts": {
-        "silijian": {
-          "botName": "司礼监",
-          "appId": "'"$APP_ID"'",
-          "appSecret": "'"$APP_SECRET"'"
-        }
-      }
-    }'
-    BINDINGS='{ "agentId": "silijian", "match": { "channel": "feishu", "accountId": "silijian" } }'
+    # 飞书凭证已保存在 $APP_ID 和 $APP_SECRET
+    BOT_TOKEN=""
 
 elif [ "$PLATFORM" = "3" ]; then
     echo -e "${GREEN}WebUI 模式不需要额外配置，启动后访问 http://localhost:18789 即可${NC}"
-    CHANNEL_CONFIG=""
-    BINDINGS='{ "agentId": "silijian", "match": {} }'
+    BOT_TOKEN=""
+    APP_ID=""
+    APP_SECRET=""
 fi
 
 # ---- 生成配置 ----
@@ -158,48 +140,83 @@ else
     SILIJIAN_IDENTITY="你是AI朝廷的司礼监，忠诚干练，说话简练干脆。用中文回答。"
 fi
 
-CHANNELS_SECTION=""
-if [ -n "$CHANNEL_CONFIG" ]; then
-    CHANNELS_SECTION='"channels": { '"$CHANNEL_CONFIG"' },'
-fi
+# 用 Python 生成合法 JSON（避免 heredoc 转义和逗号问题）
+python3 << PYEOF
+import json, sys
 
-cat > "$CONFIG_FILE" << CONFIGEOF
-{
-  "models": {
-    "providers": {
-      "provider": {
-        "baseUrl": "$API_URL",
-        "apiKey": "$API_KEY",
-        "api": "$API_FORMAT",
-        "models": [
-          { "id": "$MODEL_ID", "name": "$MODEL_ID", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 }
-        ]
-      }
-    }
-  },
-  "agents": {
-    "defaults": {
-      "workspace": "$WORKSPACE",
-      "model": { "primary": "provider/$MODEL_ID" },
-      "sandbox": { "mode": "non-main" }
+config = {
+    "models": {
+        "providers": {
+            "provider": {
+                "baseUrl": "$API_URL",
+                "apiKey": "$API_KEY",
+                "api": "$API_FORMAT",
+                "models": [{
+                    "id": "$MODEL_ID", "name": "$MODEL_ID",
+                    "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192
+                }]
+            }
+        }
     },
-    "list": [
-      {
-        "id": "silijian",
-        "name": "司礼监",
-        "model": { "primary": "provider/$MODEL_ID" },
-        "identity": { "theme": "$SILIJIAN_IDENTITY" },
-        $SUBAGENTS
-        "sandbox": { "mode": "off" }
-      }$AGENTS_LIST
-    ]
-  },
-  $CHANNELS_SECTION
-  "bindings": [
-    $BINDINGS
-  ]
+    "agents": {
+        "defaults": {
+            "workspace": "$WORKSPACE",
+            "model": {"primary": "provider/$MODEL_ID"},
+            "sandbox": {"mode": "non-main"}
+        },
+        "list": [{
+            "id": "silijian",
+            "name": "司礼监",
+            "model": {"primary": "provider/$MODEL_ID"},
+            "identity": {"theme": """$SILIJIAN_IDENTITY"""},
+            "sandbox": {"mode": "off"}
+        }]
+    },
+    "bindings": []
 }
-CONFIGEOF
+
+# 全六部模式：添加 subagents 和其他部门
+if "$MODE" == "2":
+    config["agents"]["list"][0]["subagents"] = {
+        "allowAgents": ["neige","duchayuan","bingbu","hubu","libu","gongbu","libu2","xingbu","hanlinyuan"]
+    }
+    departments = [
+        ("neige", "内阁", "你是内阁首辅，专精战略决策、方案审议、全局规划。回答用中文。", "off"),
+        ("duchayuan", "都察院", "你是都察院御史，专精监察审计、代码审查、质量把控。回答用中文。", "all"),
+        ("bingbu", "兵部", "你是兵部尚书，专精软件工程、系统架构。回答用中文。", "all"),
+        ("hubu", "户部", "你是户部尚书，专精财务分析、成本管控。回答用中文。", "off"),
+        ("libu", "礼部", "你是礼部尚书，专精品牌营销、内容创作。回答用中文。", "off"),
+        ("gongbu", "工部", "你是工部尚书，专精 DevOps、服务器运维。回答用中文。", "off"),
+        ("libu2", "吏部", "你是吏部尚书，专精项目管理、团队协调。回答用中文。", "off"),
+        ("xingbu", "刑部", "你是刑部尚书，专精法务合规、知识产权。回答用中文。", "off"),
+        ("hanlinyuan", "翰林院", "你是翰林院学士，专精学术研究、知识整理、文档撰写。回答用中文。", "off"),
+    ]
+    for did, dname, dtheme, smode in departments:
+        agent = {"id": did, "name": dname, "identity": {"theme": dtheme}, "sandbox": {"mode": smode}}
+        if smode == "all":
+            agent["sandbox"]["scope"] = "agent"
+        config["agents"]["list"].append(agent)
+
+# 平台配置
+platform = "$PLATFORM"
+if platform == "1":
+    config["channels"] = {"discord": {
+        "enabled": True, "groupPolicy": "open", "allowBots": True,
+        "accounts": {"silijian": {"botName": "司礼监", "token": "$BOT_TOKEN", "groupPolicy": "open"}}
+    }}
+    config["bindings"] = [{"agentId": "silijian", "match": {"channel": "discord", "accountId": "silijian"}}]
+elif platform == "2":
+    config["channels"] = {"feishu": {
+        "enabled": True,
+        "accounts": {"silijian": {"botName": "司礼监", "appId": "$APP_ID", "appSecret": "$APP_SECRET"}}
+    }}
+    config["bindings"] = [{"agentId": "silijian", "match": {"channel": "feishu", "accountId": "silijian"}}]
+else:
+    config["bindings"] = [{"agentId": "silijian", "match": {}}]
+
+with open("$CONFIG_FILE", "w") as f:
+    json.dump(config, f, indent=2, ensure_ascii=False)
+PYEOF
 
 echo -e "${GREEN}✓ 配置文件已生成：$CONFIG_FILE${NC}"
 
