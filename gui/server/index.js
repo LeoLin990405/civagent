@@ -16,22 +16,36 @@ const execAsync = promisify(_exec);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// 检测可用的 CLI 命令（openclaw 优先，clawdbot 兜底）
+let CLI_CMD = 'openclaw';
+try {
+  const { stdout } = await execAsync('which openclaw 2>/dev/null || which clawdbot 2>/dev/null', { encoding: 'utf-8', timeout: 3000 });
+  CLI_CMD = stdout.trim().includes('openclaw') ? 'openclaw' : 'clawdbot';
+} catch { CLI_CMD = 'clawdbot'; }
+
 const app = express();
 const PORT = process.env.BOLUO_GUI_PORT || 18795;
 
 const AUTH_TOKEN = process.env.BOLUO_AUTH_TOKEN || 'changeme';
 
 const AGENT_DEPT_MAP = {
-  'main': '司礼监', 'gongbu': '工部', 'hubu': '户部', 'libu': '吏部',
-  'xingbu': '刑部', 'bingbu': '兵部', 'libu2': '礼部',
+  'silijian': '司礼监', 'main': '司礼监', 'gongbu': '工部', 'hubu': '户部',
+  'libu': '礼部', 'libu2': '吏部',
+  'xingbu': '刑部', 'bingbu': '兵部',
   'neige': '内阁', 'duchayuan': '都察院', 'neiwufu': '内务府',
   'hanlinyuan': '翰林院', 'taiyiyuan': '太医院', 'guozijian': '国子监',
   'yushanfang': '御膳房'
 };
 
 const HOME = process.env.HOME || '/home/ubuntu';
-const AGENTS_DIR = join(HOME, '.clawdbot/agents');
-const CONFIG_PATH = join(HOME, '.clawdbot/clawdbot.json');
+// 兼容 openclaw 和 clawdbot 两种安装方式
+const OPENCLAW_DIR = join(HOME, '.openclaw');
+const CLAWDBOT_DIR = join(HOME, '.clawdbot');
+const STATE_DIR = existsSync(OPENCLAW_DIR) ? OPENCLAW_DIR : CLAWDBOT_DIR;
+const AGENTS_DIR = join(STATE_DIR, 'agents');
+const CONFIG_PATH = existsSync(join(OPENCLAW_DIR, 'openclaw.json'))
+  ? join(OPENCLAW_DIR, 'openclaw.json')
+  : join(CLAWDBOT_DIR, 'clawdbot.json');
 
 app.use(cors());
 app.use(express.json());
@@ -287,8 +301,10 @@ app.get('/api/messages', authMiddleware, (req, res) => {
 
 function getTokenStats() {
   const deptMap = {
-    'gongbu': '工部', 'hubu': '户部', 'libu': '吏部', 
-    'xingbu': '刑部', 'bingbu': '兵部', 'libu2': '礼部'
+    'silijian': '司礼监', 'main': '司礼监',
+    'gongbu': '工部', 'hubu': '户部', 'libu': '礼部',
+    'xingbu': '刑部', 'bingbu': '兵部', 'libu2': '吏部',
+    'neige': '内阁', 'duchayuan': '都察院', 'hanlinyuan': '翰林院'
   };
 
   const byDepartment = [];
@@ -1166,7 +1182,7 @@ function parseCronJobs(data) {
 
 app.get('/api/cron', authMiddleware, async (req, res) => {
   try {
-    const { stdout } = await execAsync('clawdbot cron list --json 2>/dev/null', { encoding: 'utf-8', timeout: 5000 });
+    const { stdout } = await execAsync(`${CLI_CMD} cron list --json 2>/dev/null`, { encoding: 'utf-8', timeout: 5000 });
     const data = JSON.parse(stdout);
     res.json({ jobs: parseCronJobs(data), source: 'gateway' });
   } catch (e) {
@@ -1183,7 +1199,7 @@ app.get('/api/cron', authMiddleware, async (req, res) => {
 app.post('/api/cron/run/:id', authMiddleware, async (req, res) => {
   const { id } = req.params;
   try {
-    await execAsync(`clawdbot cron run ${id}`, { encoding: 'utf-8', timeout: 10000 });
+    await execAsync(`${CLI_CMD} cron run ${id}`, { encoding: 'utf-8', timeout: 10000 });
     res.json({ success: true, message: `任务 ${id} 已触发执行` });
   } catch (e) {
     res.json({ success: false, message: `任务 ${id} 执行失败: ${e.message}` });
@@ -1200,7 +1216,7 @@ app.patch('/api/cron/jobs/:id', authMiddleware, async (req, res) => {
       const action = enabled ? 'enable' : 'disable';
       // Try clawdbot CLI
       try {
-        await execAsync(`clawdbot cron ${action} ${id}`, { encoding: 'utf-8', timeout: 10000 });
+        await execAsync(`${CLI_CMD} cron ${action} ${id}`, { encoding: 'utf-8', timeout: 10000 });
         res.json({ success: true, message: `任务 ${id} 已${enabled ? '启用' : '禁用'}`, id, enabled });
       } catch (cliErr) {
         // Fallback: try to update config directly
@@ -1233,7 +1249,7 @@ app.patch('/api/cron/jobs/:id', authMiddleware, async (req, res) => {
 // Alias: GET /api/cron/jobs → same handler as GET /api/cron
 app.get('/api/cron/jobs', authMiddleware, async (req, res) => {
   try {
-    const { stdout } = await execAsync('clawdbot cron list --json 2>/dev/null', { encoding: 'utf-8', timeout: 5000 });
+    const { stdout } = await execAsync(`${CLI_CMD} cron list --json 2>/dev/null`, { encoding: 'utf-8', timeout: 5000 });
     const data = JSON.parse(stdout);
     res.json({ jobs: parseCronJobs(data), source: 'gateway' });
   } catch (e) {
@@ -1255,18 +1271,20 @@ function readGatewayLogs(opts = {}) {
   } else {
     logs = [];
     try {
-      // Try journalctl for clawdbot service logs
+      // Try journalctl for gateway service logs (openclaw or clawdbot)
       const { execSync } = require('child_process');
-      let cmd = 'journalctl -u clawdbot --no-pager -n 200 --output=short-iso 2>/dev/null';
+      const svcName = CLI_CMD === 'openclaw' ? 'openclaw-gateway' : 'clawdbot-gateway';
+      let cmd = `journalctl -u ${svcName} --no-pager -n 200 --output=short-iso 2>/dev/null`;
       if (since) cmd += ` --since="${since}"`;
       
       let output = '';
       try {
         output = execSync(cmd, { encoding: 'utf-8', timeout: 5000 });
       } catch {
-        // Fallback: read from clawdbot log file
+        // Fallback: read from log files
         const logPaths = [
-          '/home/ubuntu/.clawdbot/logs/gateway.log',
+          join(HOME, '.openclaw/logs/gateway.log'),
+          join(HOME, '.clawdbot/logs/gateway.log'),
           '/tmp/clawdbot.log',
           '/tmp/boluo-gui.log',
         ];
@@ -1383,7 +1401,7 @@ setInterval(() => {
 app.get('/api/nodes', authMiddleware, async (req, res) => {
   // Try to get real node data from clawdbot CLI
   try {
-    const { stdout } = await execAsync('clawdbot node list --json 2>/dev/null', { encoding: 'utf-8', timeout: 5000 });
+    const { stdout } = await execAsync(`${CLI_CMD} node list --json 2>/dev/null`, { encoding: 'utf-8', timeout: 5000 });
     const data = JSON.parse(stdout);
     const nodes = (data.nodes || []).map(n => ({
       id: n.id || n.name,

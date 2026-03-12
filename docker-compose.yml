@@ -10,10 +10,10 @@ services:
       - "18789:18789"   # Gateway Dashboard
       - "18795:18795"   # 菠萝 GUI（可选，需另行启动）
     volumes:
-      # 配置文件（必须挂载）
-      - ./openclaw.json:/root/.openclaw/openclaw.json
+      # 配置文件（必须挂载；如果用 clawdbot 改为 .clawdbot/clawdbot.json）
+      - ./openclaw.json:${OPENCLAW_CONFIG_PATH:-/root/.openclaw/openclaw.json}
       # 工作区持久化（记忆、日志等）
-      - court-workspace:/root/clawd
+      - court-workspace:${OPENCLAW_WORKSPACE:-/root/clawd}
       # OpenViking 数据持久化（可选）
       - court-openviking:/root/.openviking
     environment:

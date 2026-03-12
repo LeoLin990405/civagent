@@ -32,9 +32,10 @@ RUN python3 -m venv /opt/openviking && \
     ln -s /opt/openviking/bin/openviking /usr/local/bin/openviking 2>/dev/null || true
 ENV PATH="/opt/openviking/bin:$PATH"
 
-# 工作区
-RUN mkdir -p /root/clawd/memory /root/clawd/skills /root/.openclaw
-WORKDIR /root/clawd
+# 工作区（使用 $HOME 兼容非 root 运行）
+ARG WORKSPACE=/root/clawd
+RUN mkdir -p ${WORKSPACE}/memory ${WORKSPACE}/skills /root/.openclaw
+WORKDIR ${WORKSPACE}
 
 # 复制朝廷模板文件
 COPY docker/entrypoint.sh /entrypoint.sh
