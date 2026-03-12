@@ -298,6 +298,21 @@ systemctl --user start openclaw-gateway
 
 ---
 
+## 🔄 已安装？一键更新
+
+```bash
+# 重跑安装脚本（自动保留你的配置）
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
+
+# Docker 用户
+docker pull boluobobo/ai-court:latest && docker compose up -d
+
+# 手动更新
+npm update -g openclaw && systemctl --user restart openclaw-gateway
+```
+
+---
+
 v3.0 | MIT License
 
 > 📜 Licensed under MIT. Derivative works please credit: [boluobobo-ai-court-tutorial](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua)
