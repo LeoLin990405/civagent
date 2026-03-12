@@ -105,11 +105,28 @@ if $IS_MACOS; then
 elif $IN_DOCKER; then
     echo -e "  ${CYAN}↳ Docker 环境，跳过防火墙配置${NC}"
 else
-    # 云服务商 默认 iptables 有一条 REJECT 规则会阻断非 SSH 流量，只删这条
-    $SUDO iptables -D INPUT -j REJECT --reject-with icmp-host-prohibited 2>/dev/null || true
-    $SUDO iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited 2>/dev/null || true
-    $SUDO netfilter-persistent save 2>/dev/null || true
-    echo -e "  ${GREEN}✓ 防火墙已配置${NC}"
+    # 检测是否有 REJECT 规则（云服务商默认可能阻断非 SSH 流量）
+    if iptables -L INPUT -n 2>/dev/null | grep -q "REJECT"; then
+        echo -e "  ${YELLOW}⚠ 检测到 iptables REJECT 规则，可能阻断 OpenClaw 通信${NC}"
+        FW_CHOICE=""
+        if [ -t 0 ]; then
+            # 交互模式：询问用户
+            read -p "  是否删除 REJECT 规则？[y/N]: " FW_CHOICE || FW_CHOICE=""
+        fi
+        case "$FW_CHOICE" in
+            [yY]|[yY][eE][sS])
+                $SUDO iptables -D INPUT -j REJECT --reject-with icmp-host-prohibited 2>/dev/null || true
+                $SUDO iptables -D FORWARD -j REJECT --reject-with icmp-host-prohibited 2>/dev/null || true
+                $SUDO netfilter-persistent save 2>/dev/null || true
+                echo -e "  ${GREEN}✓ REJECT 规则已删除${NC}"
+                ;;
+            *)
+                echo -e "  ${CYAN}↳ 跳过防火墙修改（如遇连接问题可手动删除 REJECT 规则）${NC}"
+                ;;
+        esac
+    else
+        echo -e "  ${GREEN}✓ 防火墙无阻断规则${NC}"
+    fi
 fi
 
 # ---- 3. Swap（小内存机器需要）----
@@ -319,14 +336,18 @@ cat > SOUL.md << 'SOUL_EOF'
 ## 沟通风格
 - 中文为主
 - 直接说结论，需要细节再展开
-SOUL_EOF
-echo -e "  ${GREEN}✓ SOUL.md 已创建${NC}"
-fi
 
-# IDENTITY.md
-if [ ! -f IDENTITY.md ]; then
-cat > IDENTITY.md << 'ID_EOF'
-# IDENTITY.md - 朝廷架构
+## 朝廷架构
+- 司礼监：日常调度、任务分配
+- 内阁：战略决策、方案审议、全局规划
+- 都察院：监察审计、代码审查、质量把控
+- 兵部：软件工程、系统架构
+- 户部：财务预算、电商运营
+- 礼部：品牌营销、内容创作
+- 工部：DevOps、服务器运维
+- 吏部：项目管理、创业孵化
+- 刑部：法务合规、知识产权
+- 翰林院：学术研究、知识整理、文档撰写
 
 ## 模型分层
 | 层级 | 模型 | 说明 |
@@ -334,14 +355,19 @@ cat > IDENTITY.md << 'ID_EOF'
 | 调度层 | 快速模型 | 日常对话，快速响应 |
 | 执行层（重） | 强力模型 | 编码、深度分析 |
 | 执行层（轻） | 经济模型（可选） | 轻量任务，省钱 |
+SOUL_EOF
+echo -e "  ${GREEN}✓ SOUL.md 已创建${NC}"
+fi
 
-## 六部
-- 兵部：软件工程、系统架构
-- 户部：财务预算、电商运营
-- 礼部：品牌营销、内容创作
-- 工部：DevOps、服务器运维
-- 吏部：项目管理、创业孵化
-- 刑部：法务合规、知识产权
+# IDENTITY.md
+if [ ! -f IDENTITY.md ]; then
+cat > IDENTITY.md << 'ID_EOF'
+# IDENTITY.md - 身份信息
+
+- **Name:** AI朝廷
+- **Creature:** 大明朝廷 AI 集群
+- **Vibe:** 忠诚干练、各司其职
+- **Emoji:** 🏛️
 ID_EOF
 echo -e "  ${GREEN}✓ IDENTITY.md 已创建${NC}"
 fi
@@ -359,7 +385,216 @@ echo -e "  ${GREEN}✓ USER.md 已创建${NC}"
 fi
 
 # openclaw.json 模板 → 写到 ~/.openclaw/
+echo ""
+echo -e "${CYAN}选择部署模式：${NC}"
+echo "  1) Discord 多Bot模式（完整朝廷，需要创建 Discord Bot）"
+echo "  2) 飞书多Bot模式（完整朝廷，需要创建飞书应用）"
+echo "  3) 纯 WebUI 模式（不需要 Discord/飞书，浏览器直接用）"
+echo ""
+DEPLOY_MODE=""
+if [ -t 0 ]; then
+    read -p "请选择 [1/2/3]（默认1）: " DEPLOY_MODE || DEPLOY_MODE=""
+fi
+DEPLOY_MODE=${DEPLOY_MODE:-1}
+
 if [ ! -f "$CONFIG_DIR/openclaw.json" ]; then
+
+if [ "$DEPLOY_MODE" = "3" ]; then
+# ==================== 纯 WebUI 模式 ====================
+cat > "$CONFIG_DIR/openclaw.json" << CONFIG_EOF
+{
+  "models": {
+    "providers": {
+      "your-provider": {
+        "baseUrl": "https://your-llm-provider-api-url",
+        "apiKey": "YOUR_LLM_API_KEY",
+        "api": "openai",
+        "models": [
+          {
+            "id": "fast-model",
+            "name": "快速模型",
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "$HOME/clawd",
+      "model": { "primary": "your-provider/fast-model" }
+    },
+    "list": [
+      {
+        "id": "silijian",
+        "name": "司礼监",
+        "model": { "primary": "your-provider/fast-model" },
+        "identity": { "theme": "你是AI朝廷的总管，负责日常对话和任务调度。回答用中文，简洁高效。" }
+      }
+    ]
+  }
+}
+CONFIG_EOF
+echo -e "  ${GREEN}✓ WebUI 模式配置已生成${NC}"
+
+elif [ "$DEPLOY_MODE" = "2" ]; then
+# ==================== 飞书多Bot模式 ====================
+cat > "$CONFIG_DIR/openclaw.json" << FEISHU_EOF
+{
+  "models": {
+    "providers": {
+      "your-provider": {
+        "baseUrl": "https://your-llm-provider-api-url",
+        "apiKey": "YOUR_LLM_API_KEY",
+        "api": "openai",
+        "models": [
+          {
+            "id": "fast-model",
+            "name": "快速模型",
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          },
+          {
+            "id": "strong-model",
+            "name": "强力模型",
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "$HOME/clawd",
+      "model": { "primary": "your-provider/fast-model" },
+      "sandbox": { "mode": "non-main" }
+    },
+    "list": [
+      {
+        "id": "silijian",
+        "name": "司礼监",
+        "model": { "primary": "your-provider/fast-model" },
+        "identity": { "theme": "你是AI朝廷的司礼监大内总管。负责日常对话、任务调度、统领六部。说话简练干脆。" },
+        "sandbox": { "mode": "off" },
+        "subagents": {
+          "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlinyuan"]
+        }
+      },
+      {
+        "id": "neige",
+        "name": "内阁",
+        "model": { "primary": "your-provider/strong-model" },
+        "identity": { "theme": "你是内阁首辅，专精战略决策、方案审议、全局规划。回答用中文。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "duchayuan",
+        "name": "都察院",
+        "model": { "primary": "your-provider/strong-model" },
+        "identity": { "theme": "你是都察院御史，专精监察审计、代码审查、质量把控。回答用中文。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "bingbu",
+        "name": "兵部",
+        "model": { "primary": "your-provider/strong-model" },
+        "identity": { "theme": "你是兵部尚书，专精软件工程、系统架构。回答用中文。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "hubu",
+        "name": "户部",
+        "model": { "primary": "your-provider/strong-model" },
+        "identity": { "theme": "你是户部尚书，专精财务分析、电商运营。回答用中文。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "libu",
+        "name": "礼部",
+        "model": { "primary": "your-provider/fast-model" },
+        "identity": { "theme": "你是礼部尚书，专精品牌营销、内容创作。回答用中文。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "gongbu",
+        "name": "工部",
+        "model": { "primary": "your-provider/fast-model" },
+        "identity": { "theme": "你是工部尚书，专精 DevOps、服务器运维。回答用中文。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "libu2",
+        "name": "吏部",
+        "model": { "primary": "your-provider/fast-model" },
+        "identity": { "theme": "你是吏部尚书，专精项目管理、创业孵化。回答用中文。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "xingbu",
+        "name": "刑部",
+        "model": { "primary": "your-provider/fast-model" },
+        "identity": { "theme": "你是刑部尚书，专精法务合规、知识产权。回答用中文。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
+      {
+        "id": "hanlinyuan",
+        "name": "翰林院",
+        "model": { "primary": "your-provider/strong-model" },
+        "identity": { "theme": "你是翰林院学士，专精学术研究、文档撰写。回答用中文。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      }
+    ]
+  },
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": true,
+      "accounts": {
+        "silijian": {
+          "name": "司礼监",
+          "appId": "YOUR_FEISHU_SILIJIAN_APP_ID",
+          "appSecret": "YOUR_FEISHU_SILIJIAN_APP_SECRET",
+          "groupPolicy": "open"
+        },
+        "bingbu": {
+          "name": "兵部",
+          "appId": "YOUR_FEISHU_BINGBU_APP_ID",
+          "appSecret": "YOUR_FEISHU_BINGBU_APP_SECRET",
+          "groupPolicy": "open"
+        },
+        "hubu": {
+          "name": "户部",
+          "appId": "YOUR_FEISHU_HUBU_APP_ID",
+          "appSecret": "YOUR_FEISHU_HUBU_APP_SECRET",
+          "groupPolicy": "open"
+        },
+        "gongbu": {
+          "name": "工部",
+          "appId": "YOUR_FEISHU_GONGBU_APP_ID",
+          "appSecret": "YOUR_FEISHU_GONGBU_APP_SECRET",
+          "groupPolicy": "open"
+        }
+      }
+    }
+  },
+  "bindings": [
+    { "agentId": "silijian", "match": { "channel": "feishu", "accountId": "silijian" } },
+    { "agentId": "bingbu", "match": { "channel": "feishu", "accountId": "bingbu" } },
+    { "agentId": "hubu", "match": { "channel": "feishu", "accountId": "hubu" } },
+    { "agentId": "gongbu", "match": { "channel": "feishu", "accountId": "gongbu" } }
+  ]
+}
+FEISHU_EOF
+echo -e "  ${GREEN}✓ 飞书多Bot模式配置已生成${NC}"
+
+else
+# ==================== Discord 多Bot模式（默认）====================
 cat > "$CONFIG_DIR/openclaw.json" << CONFIG_EOF
 {
   "models": {
@@ -408,63 +643,63 @@ cat > "$CONFIG_DIR/openclaw.json" << CONFIG_EOF
         "id": "neige",
         "name": "内阁",
         "model": { "primary": "your-provider/strong-model" },
-        "identity": { "theme": "你是内阁首辅，专精战略决策、方案审议、全局规划。回答用中文，高屋建瓴。当收到重大决策请求时，从多角度分析利弊，给出明确建议。擅长将复杂问题拆解为可执行的步骤，协调各部门资源。【审议职责】当司礼监将重大决策（预算、架构变更、战略方向）提交审议时，必须独立评估可行性、风险和替代方案，给出明确的批准/驳回/修改建议。有权否决不合理的方案。任务完成后主动汇报决策建议和执行路径。" },
+        "identity": { "theme": "你是内阁首辅，专精战略决策、方案审议、全局规划。回答用中文，高屋建瓴。" },
         "sandbox": { "mode": "all", "scope": "agent" }
       },
       {
         "id": "duchayuan",
         "name": "都察院",
         "model": { "primary": "your-provider/strong-model" },
-        "identity": { "theme": "你是都察院御史，专精监察审计、代码审查、质量把控、安全评估。回答用中文，铁面无私。审查代码时关注安全漏洞、性能问题、最佳实践。审计项目时检查进度偏差、资源浪费、风险隐患。发现问题直言不讳，给出具体改进建议。任务完成后主动汇报审查结论和整改建议。【自动审查】当其他部门通过 sessions_send 或 spawn 提交代码/PR 给你审查时，逐一检查并给出通过/驳回结论。驳回时必须说明具体原因和修改建议。" },
+        "identity": { "theme": "你是都察院御史，专精监察审计、代码审查、质量把控、安全评估。回答用中文，铁面无私。" },
         "sandbox": { "mode": "all", "scope": "agent" }
       },
       {
         "id": "bingbu",
         "name": "兵部",
         "model": { "primary": "your-provider/strong-model" },
-        "identity": { "theme": "你是兵部尚书，专精软件工程、系统架构、代码审查。回答用中文，直接给方案。任务完成后主动汇报结果摘要。如需其他部门配合，通过 sessions_send 通知对方。" },
-        "sandbox": { "mode": "all", "scope": "agent" },
+        "identity": { "theme": "你是兵部尚书，专精软件工程、系统架构、代码审查。回答用中文，直接给方案。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
       },
       {
         "id": "hubu",
         "name": "户部",
         "model": { "primary": "your-provider/strong-model" },
-        "identity": { "theme": "你是户部尚书，专精财务分析、成本管控、电商运营。回答用中文，数据驱动。任务完成后主动汇报数据摘要和关键发现。发现异常开支时主动告警。" },
-        "sandbox": { "mode": "all", "scope": "agent" },
+        "identity": { "theme": "你是户部尚书，专精财务分析、成本管控、电商运营。回答用中文，数据驱动。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
       },
       {
         "id": "libu",
         "name": "礼部",
         "model": { "primary": "your-provider/fast-model" },
-        "identity": { "theme": "你是礼部尚书，专精品牌营销、社交媒体、内容创作。回答用中文，风格活泼。任务完成后主动汇报产出内容摘要。" },
-        "sandbox": { "mode": "all", "scope": "agent" },
+        "identity": { "theme": "你是礼部尚书，专精品牌营销、社交媒体、内容创作。回答用中文，风格活泼。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
       },
       {
         "id": "gongbu",
         "name": "工部",
         "model": { "primary": "your-provider/fast-model" },
-        "identity": { "theme": "你是工部尚书，专精 DevOps、服务器运维、CI/CD、基础设施。回答用中文，注重实操。任务完成后主动汇报执行结果和系统状态。发现服务异常时主动告警。" },
-        "sandbox": { "mode": "all", "scope": "agent" },
+        "identity": { "theme": "你是工部尚书，专精 DevOps、服务器运维、CI/CD、基础设施。回答用中文，注重实操。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
       },
       {
         "id": "libu2",
         "name": "吏部",
         "model": { "primary": "your-provider/fast-model" },
-        "identity": { "theme": "你是吏部尚书，专精项目管理、创业孵化、团队协调。回答用中文，条理清晰。任务完成后主动汇报进度和待办事项。" },
-        "sandbox": { "mode": "all", "scope": "agent" },
+        "identity": { "theme": "你是吏部尚书，专精项目管理、创业孵化、团队协调。回答用中文，条理清晰。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
       },
       {
         "id": "xingbu",
         "name": "刑部",
         "model": { "primary": "your-provider/fast-model" },
-        "identity": { "theme": "你是刑部尚书，专精法务合规、知识产权、合同审查。回答用中文，严谨专业。任务完成后主动汇报审查结论和风险点。发现合规问题时主动告警。" },
+        "identity": { "theme": "你是刑部尚书，专精法务合规、知识产权、合同审查。回答用中文，严谨专业。" },
         "sandbox": { "mode": "all", "scope": "agent" }
       },
       {
         "id": "hanlinyuan",
         "name": "翰林院",
         "model": { "primary": "your-provider/strong-model" },
-        "identity": { "theme": "你是翰林院学士，专精学术研究、知识整理、文档撰写、技术调研。回答用中文，学术严谨但通俗易懂。擅长将复杂概念拆解为清晰的知识体系，撰写教程和技术文档。任务完成后主动汇报研究成果和知识要点。" },
+        "identity": { "theme": "你是翰林院学士，专精学术研究、知识整理、文档撰写、技术调研。回答用中文，学术严谨但通俗易懂。" },
         "sandbox": { "mode": "all", "scope": "agent" }
       }
     ]
@@ -536,8 +771,10 @@ cat > "$CONFIG_DIR/openclaw.json" << CONFIG_EOF
   ]
 }
 CONFIG_EOF
-echo -e "  ${GREEN}✓ openclaw.json 模板已创建 ($CONFIG_DIR/openclaw.json)${NC}"
-fi
+echo -e "  ${GREEN}✓ Discord 多Bot模式配置已生成${NC}"
+
+fi # end DEPLOY_MODE
+fi # end config file exists check
 
 # 创建 memory 目录
 mkdir -p memory
@@ -565,6 +802,18 @@ echo "     编辑 ~/.openclaw/openclaw.json"
 echo "     把 YOUR_LLM_API_KEY 替换成你的 LLM API Key"
 echo "     获取地址：你的 LLM 服务商控制台（如 Anthropic / OpenAI / Google 等）"
 echo ""
+if [ "$DEPLOY_MODE" = "2" ]; then
+echo -e "  ${YELLOW}2. 创建飞书应用（每个部门一个）${NC}"
+echo "     a) 访问 https://open.feishu.cn/app"
+echo "     b) 创建应用 → 复制 App ID 和 App Secret"
+echo "     c) 开启机器人能力，添加 im.message.receive_v1 事件"
+echo "     d) 事件接收选择 WebSocket 长连接"
+echo "     e) 把 appId/appSecret 填到 openclaw.json 对应位置"
+echo "     f) 发布应用，邀请 Bot 到飞书群"
+elif [ "$DEPLOY_MODE" = "3" ]; then
+echo -e "  ${YELLOW}2. 无需配置 Bot${NC}"
+echo "     WebUI 模式直接通过浏览器访问即可"
+else
 echo -e "  ${YELLOW}2. 创建 Discord Bot（每个部门一个）${NC}"
 echo "     a) 访问 https://discord.com/developers/applications"
 echo "     b) 创建 Application → Bot → 复制 Token"
@@ -572,6 +821,7 @@ echo "     c) 重复创建多个 Bot（司礼监、兵部、户部...按需）"
 echo "     d) 把每个 Token 填到 openclaw.json 的 accounts 对应位置"
 echo "     e) 每个 Bot 都要开启 Message Content Intent"
 echo "     f) 邀请所有 Bot 到你的 Discord 服务器"
+fi
 echo ""
 echo -e "  ${YELLOW}3. 启动朝廷${NC}"
 if $IS_MACOS; then

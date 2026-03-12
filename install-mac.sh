@@ -51,8 +51,16 @@ fi
 
 # ---- 2. Node.js ----
 echo -e "${YELLOW}[2/5] 检查 Node.js...${NC}"
-if command -v node &>/dev/null && [[ "$(node -v | cut -d. -f1)" == "v22" || "$(node -v | cut -d. -f1)" == "v20" ]]; then
-    echo -e "  ${GREEN}✓ Node.js $(node -v) 已安装${NC}"
+if command -v node &>/dev/null; then
+    NODE_MAJOR=$(node -v | sed 's/v\([0-9]*\).*/\1/')
+    if [ "$NODE_MAJOR" -ge 22 ] 2>/dev/null; then
+        echo -e "  ${GREEN}✓ Node.js $(node -v) 已安装${NC}"
+    else
+        echo -e "  ${YELLOW}⚠ Node.js $(node -v) 版本过低，升级中...${NC}"
+        brew install node@22
+        brew link --overwrite node@22 2>/dev/null || true
+        echo -e "  ${GREEN}✓ Node.js $(node -v) 安装完成${NC}"
+    fi
 else
     echo -e "  ${CYAN}→ 安装 Node.js 22...${NC}"
     brew install node@22
@@ -113,6 +121,15 @@ cat > "$WORKSPACE/SOUL.md" << 'SOUL_EOF'
 ## 沟通风格
 - 中文为主
 - 直接说结论，需要细节再展开
+
+## 朝廷架构
+- 司礼监：日常调度、任务分配
+- 兵部：软件工程、系统架构
+- 户部：财务预算、电商运营
+- 礼部：品牌营销、内容创作
+- 工部：DevOps、服务器运维
+- 吏部：项目管理、创业孵化
+- 刑部：法务合规、知识产权
 SOUL_EOF
 echo -e "  ${GREEN}✓ SOUL.md 已创建${NC}"
 fi
@@ -122,9 +139,9 @@ if [ ! -f "$WORKSPACE/IDENTITY.md" ]; then
 cat > "$WORKSPACE/IDENTITY.md" << 'ID_EOF'
 # IDENTITY.md - 身份信息
 
-- **Name:** （给你的 AI 起个名字）
-- **Creature:** AI 大臣
-- **Vibe:** 忠诚干练
+- **Name:** AI朝廷
+- **Creature:** 大明朝廷 AI 集群
+- **Vibe:** 忠诚干练、各司其职
 - **Emoji:** 🏛️
 ID_EOF
 echo -e "  ${GREEN}✓ IDENTITY.md 已创建${NC}"
@@ -182,7 +199,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
     },
     "list": [
       {
-        "id": "main",
+        "id": "silijian",
         "name": "司礼监",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是AI朝廷的司礼监大内总管。负责日常对话、任务调度、统领六部。说话简练干脆。当用户交代复杂任务时，主动使用 sessions_spawn 将任务派发给对应的部门（兵部负责编码、户部负责财务、礼部负责营销、工部负责运维、吏部负责管理、刑部负责法务）。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。完成后主动向用户汇报结果。" },
@@ -249,9 +266,9 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       "groupPolicy": "open",
       "allowBots": true,
       "accounts": {
-        "main": {
+        "silijian": {
           "name": "司礼监",
-          "token": "YOUR_MAIN_BOT_TOKEN",
+          "token": "YOUR_SILIJIAN_BOT_TOKEN",
           "groupPolicy": "open"
         },
         "bingbu": {
@@ -288,7 +305,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
     }
   },
   "bindings": [
-    { "agentId": "main", "match": { "channel": "discord", "accountId": "main" } },
+    { "agentId": "silijian", "match": { "channel": "discord", "accountId": "silijian" } },
     { "agentId": "bingbu", "match": { "channel": "discord", "accountId": "bingbu" } },
     { "agentId": "hubu", "match": { "channel": "discord", "accountId": "hubu" } },
     { "agentId": "libu", "match": { "channel": "discord", "accountId": "libu" } },
