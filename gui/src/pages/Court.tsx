@@ -10,7 +10,7 @@ interface Bot {
 }
 
 const COLORS: Record<string, { bg: string; hat: string }> = {
-  main:       { bg: '#d4a574', hat: '#b8894d' },
+  silijian:   { bg: '#d4a574', hat: '#b8894d' },
   neige:      { bg: '#ef4444', hat: '#b91c1c' },
   duchayuan:  { bg: '#22c55e', hat: '#15803d' },
   gongbu:     { bg: '#3b82f6', hat: '#1d4ed8' },
