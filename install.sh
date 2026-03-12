@@ -767,8 +767,9 @@ echo -e "  ${GREEN}✓ Discord 多Bot模式配置已生成${NC}"
 fi # end DEPLOY_MODE
 fi # end config file exists check
 
-# 创建 memory 目录
-mkdir -p memory
+# 创建工作区和 memory 目录（OpenClaw 不会自动创建，缺少会导致 agent 被跳过）
+mkdir -p "$WORKSPACE"
+mkdir -p "$WORKSPACE/memory"
 
 # ---- 安装 Gateway 服务（开机自启）----
 echo -e "${YELLOW}安装 Gateway 服务...${NC}"

@@ -736,7 +736,7 @@ openclaw channels add
       "dmPolicy": "open",          // DM policy: open=direct chat, pairing=requires approval
       "groupPolicy": "open",       // Group policy: must be "open" to receive group messages
       "accounts": {
-        "main": {
+        "silijian": {
           "appId": "cli_xxx",
           "appSecret": "your-App-Secret"
         }
@@ -745,6 +745,7 @@ openclaw channels add
   }
 }
 ```
+> ⚠️ The account key must match the `accountId` in your `bindings`. This project uses `silijian` for Feishu mode.
 > 💡 `dmPolicy: "pairing"` requires running `openclaw pairing approve` before DMs work — good for high-security setups. Beginners should use `"open"`.
 
 ### Step 4: Start and Test
@@ -800,14 +801,14 @@ App Management → Permission Management — confirm these are enabled (at least
 
 **③ Config File Check**
 ```json5
-// openclaw.json must contain:
+// openclaw.json must contain (account key must match accountId in bindings):
 "channels": {
   "feishu": {
     "enabled": true,
     "dmPolicy": "open",
     "groupPolicy": "open",
     "accounts": {
-      "main": {
+      "silijian": {
         "appId": "cli_your-AppID",
         "appSecret": "your-AppSecret"
       }
@@ -815,6 +816,7 @@ App Management → Permission Management — confirm these are enabled (at least
   }
 }
 ```
+> ⚠️ Use `silijian` as the account key (matching install.sh output), not `main`. Mismatched keys cause message routing failures.
 
 **④ Bot Capability**
 Feishu Open Platform → App Capabilities → Confirm **Bot** capability is enabled and the bot has been added to the target group chat.
