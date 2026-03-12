@@ -44,8 +44,8 @@ RUN chmod +x /entrypoint.sh
 # 复制 skill 和模板
 COPY skills/ ${WORKSPACE}/skills/
 
-# 端口：Gateway WebUI
-EXPOSE 18789
+# 端口：Gateway WebUI + 菠萝 GUI（可选）
+EXPOSE 18789 18795
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["openclaw", "gateway", "--verbose"]
