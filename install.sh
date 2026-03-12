@@ -388,7 +388,7 @@ fi
 echo ""
 echo -e "${CYAN}选择部署模式：${NC}"
 echo "  1) Discord 多Bot模式（完整朝廷，需要创建 Discord Bot）"
-echo "  2) 飞书多Bot模式（完整朝廷，需要创建飞书应用）"
+echo "  2) 飞书单Bot模式（只需 1 个飞书应用，sessions_spawn 后台调度）"
 echo "  3) 纯 WebUI 模式（不需要 Discord/飞书，浏览器直接用）"
 echo ""
 DEPLOY_MODE=""
@@ -440,7 +440,12 @@ CONFIG_EOF
 echo -e "  ${GREEN}✓ WebUI 模式配置已生成${NC}"
 
 elif [ "$DEPLOY_MODE" = "2" ]; then
-# ==================== 飞书多Bot模式 ====================
+# ==================== 飞书单Bot模式（推荐） ====================
+# 飞书 Bot 不能互相 @触发（Discord 可以），所以飞书不适合多 Bot 频道派活模式。
+# 推荐架构：单 Bot（司礼监）+ sessions_spawn 后台调度
+# - 用户只需创建 1 个飞书应用（司礼监）
+# - 10 个 Agent 全部保留，在后台通过 sessions_spawn 协作
+# - 用户只看到司礼监一个 Bot，背后整个朝廷都在干活
 cat > "$CONFIG_DIR/openclaw.json" << FEISHU_EOF
 {
   "models": {
@@ -479,7 +484,7 @@ cat > "$CONFIG_DIR/openclaw.json" << FEISHU_EOF
         "id": "silijian",
         "name": "司礼监",
         "model": { "primary": "your-provider/fast-model" },
-        "identity": { "theme": "你是AI朝廷的司礼监大内总管。你的职责是【规划调度】，不是亲自执行。说话简练干脆。\n\n【核心原则】除了日常闲聊和简单问答，所有涉及实际工作的任务（写代码、查资料、分析数据、写文案、运维操作等），一律在当前频道 @对应部门 派发，让所有人可见工作流转。你是指挥官，不是搬砖工。\n\n【部门职责】内阁=战略决策、都察院=审查监察、兵部=编码开发、户部=财务分析、礼部=品牌营销、工部=运维部署、吏部=项目管理、刑部=法务合规、翰林院=研究文档。\n\n【派活方式】用 message 工具在当前 Discord 频道发消息，@对应部门bot 下达任务。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。禁止用 sessions_spawn 暗地里干活，一切工作流转必须在频道内公开可见。\n\n【审批流程】涉及代码提交 → @都察院 审查；涉及重大决策（预算、架构、方向变更）→ @内阁 审议。都察院审查不通过则打回修改，内阁有否决权。\n\n【什么时候自己回答】仅限：纯闲聊、确认信息、汇报进度、问澄清问题。其他一律派活。" },
+        "identity": { "theme": "你是AI朝廷的司礼监大内总管。你的职责是【规划调度】，不是亲自执行。说话简练干脆。\n\n【核心原则】除了日常闲聊和简单问答，所有涉及实际工作的任务（写代码、查资料、分析数据、写文案、运维操作等），一律使用 sessions_spawn 派发给对应部门执行。你是指挥官，不是搬砖工。\n\n【部门职责】内阁=战略决策、都察院=审查监察、兵部=编码开发、户部=财务分析、礼部=品牌营销、工部=运维部署、吏部=项目管理、刑部=法务合规、翰林院=研究文档。\n\n【派活方式】使用 sessions_spawn 将任务派发给对应部门的 agentId。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。完成后主动向用户汇报结果摘要。\n\n【审批流程】涉及代码提交 → spawn 都察院审查；涉及重大决策（预算、架构、方向变更）→ spawn 内阁审议。都察院审查不通过则打回修改，内阁有否决权。\n\n【什么时候自己回答】仅限：纯闲聊、确认信息、汇报进度、问澄清问题。其他一律派活。" },
         "sandbox": { "mode": "off" },
         "subagents": {
           "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlinyuan"]
@@ -555,96 +560,23 @@ cat > "$CONFIG_DIR/openclaw.json" << FEISHU_EOF
       "enabled": true,
       "dmPolicy": "open",
       "groupPolicy": "open",
-      "allowBots": true,
       "accounts": {
         "silijian": {
           "name": "司礼监",
-          "appId": "YOUR_FEISHU_SILIJIAN_APP_ID",
-          "appSecret": "YOUR_FEISHU_SILIJIAN_APP_SECRET",
+          "appId": "YOUR_FEISHU_APP_ID",
+          "appSecret": "YOUR_FEISHU_APP_SECRET",
           "botName": "司礼监",
-          "groupPolicy": "open"
-        },
-        "bingbu": {
-          "name": "兵部",
-          "appId": "YOUR_FEISHU_BINGBU_APP_ID",
-          "appSecret": "YOUR_FEISHU_BINGBU_APP_SECRET",
-          "botName": "兵部",
-          "groupPolicy": "open"
-        },
-        "hubu": {
-          "name": "户部",
-          "appId": "YOUR_FEISHU_HUBU_APP_ID",
-          "appSecret": "YOUR_FEISHU_HUBU_APP_SECRET",
-          "botName": "户部",
-          "groupPolicy": "open"
-        },
-        "gongbu": {
-          "name": "工部",
-          "appId": "YOUR_FEISHU_GONGBU_APP_ID",
-          "appSecret": "YOUR_FEISHU_GONGBU_APP_SECRET",
-          "botName": "工部",
-          "groupPolicy": "open"
-        },
-        "libu": {
-          "name": "礼部",
-          "appId": "YOUR_FEISHU_LIBU_APP_ID",
-          "appSecret": "YOUR_FEISHU_LIBU_APP_SECRET",
-          "botName": "礼部",
-          "groupPolicy": "open"
-        },
-        "libu2": {
-          "name": "吏部",
-          "appId": "YOUR_FEISHU_LIBU2_APP_ID",
-          "appSecret": "YOUR_FEISHU_LIBU2_APP_SECRET",
-          "botName": "吏部",
-          "groupPolicy": "open"
-        },
-        "xingbu": {
-          "name": "刑部",
-          "appId": "YOUR_FEISHU_XINGBU_APP_ID",
-          "appSecret": "YOUR_FEISHU_XINGBU_APP_SECRET",
-          "botName": "刑部",
-          "groupPolicy": "open"
-        },
-        "neige": {
-          "name": "内阁",
-          "appId": "YOUR_FEISHU_NEIGE_APP_ID",
-          "appSecret": "YOUR_FEISHU_NEIGE_APP_SECRET",
-          "botName": "内阁",
-          "groupPolicy": "open"
-        },
-        "duchayuan": {
-          "name": "都察院",
-          "appId": "YOUR_FEISHU_DUCHAYUAN_APP_ID",
-          "appSecret": "YOUR_FEISHU_DUCHAYUAN_APP_SECRET",
-          "botName": "都察院",
-          "groupPolicy": "open"
-        },
-        "hanlinyuan": {
-          "name": "翰林院",
-          "appId": "YOUR_FEISHU_HANLINYUAN_APP_ID",
-          "appSecret": "YOUR_FEISHU_HANLINYUAN_APP_SECRET",
-          "botName": "翰林院",
           "groupPolicy": "open"
         }
       }
     }
   },
   "bindings": [
-    { "agentId": "silijian", "match": { "channel": "feishu", "accountId": "silijian" } },
-    { "agentId": "bingbu", "match": { "channel": "feishu", "accountId": "bingbu" } },
-    { "agentId": "hubu", "match": { "channel": "feishu", "accountId": "hubu" } },
-    { "agentId": "gongbu", "match": { "channel": "feishu", "accountId": "gongbu" } },
-    { "agentId": "libu", "match": { "channel": "feishu", "accountId": "libu" } },
-    { "agentId": "libu2", "match": { "channel": "feishu", "accountId": "libu2" } },
-    { "agentId": "xingbu", "match": { "channel": "feishu", "accountId": "xingbu" } },
-    { "agentId": "neige", "match": { "channel": "feishu", "accountId": "neige" } },
-    { "agentId": "duchayuan", "match": { "channel": "feishu", "accountId": "duchayuan" } },
-    { "agentId": "hanlinyuan", "match": { "channel": "feishu", "accountId": "hanlinyuan" } }
+    { "agentId": "silijian", "match": { "channel": "feishu", "accountId": "silijian" } }
   ]
 }
 FEISHU_EOF
-echo -e "  ${GREEN}✓ 飞书多Bot模式配置已生成${NC}"
+echo -e "  ${GREEN}✓ 飞书单Bot模式配置已生成（司礼监 + sessions_spawn 后台调度）${NC}"
 
 else
 # ==================== Discord 多Bot模式（默认）====================
@@ -862,13 +794,16 @@ echo "     把 YOUR_LLM_API_KEY 替换成你的 LLM API Key"
 echo "     获取地址：你的 LLM 服务商控制台（如 Anthropic / OpenAI / Google 等）"
 echo ""
 if [ "$DEPLOY_MODE" = "2" ]; then
-echo -e "  ${YELLOW}2. 创建飞书应用（每个部门一个）${NC}"
+echo -e "  ${YELLOW}2. 创建飞书应用（只需 1 个：司礼监）${NC}"
+echo "     飞书 Bot 不能互相 @触发，所以只需创建一个飞书应用（司礼监）。"
+echo "     司礼监会通过 sessions_spawn 在后台调度其他部门，用户只看到一个 Bot。"
+echo ""
 echo "     a) 访问 https://open.feishu.cn/app"
-echo "     b) 创建应用 → 复制 App ID 和 App Secret"
+echo "     b) 创建应用（如「AI朝廷-司礼监」）→ 复制 App ID 和 App Secret"
 echo "     c) 权限管理 → 添加 im:message 等 8 个权限（见飞书配置指南）"
 echo "     d) 开启机器人能力，添加 im.message.receive_v1 事件"
 echo "     e) 事件接收选择 WebSocket 长连接"
-echo "     f) 把 appId/appSecret 填到 openclaw.json 对应位置"
+echo "     f) 把 appId/appSecret 填到 openclaw.json 的 silijian 位置"
 echo "     g) 创建版本并发布应用，邀请 Bot 到飞书群"
 echo ""
 echo -e "     📖 详细指南: ${CYAN}https://github.com/wanikua/boluobobo-ai-court-tutorial/blob/main/飞书配置指南.md${NC}"

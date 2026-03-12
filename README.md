@@ -274,7 +274,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 | **A** | 新手首选 | Linux 云服务器 + Discord | 海外 | [→ 路径 A](#路径-a-linux--discord新手推荐) |
 | **B** | 有 Docker 经验 | Docker 容器化 | 通用 | [→ 路径 B](#路径-b-docker-部署) |
 | **C** | Mac 用户 | macOS 本地 | 通用 | [→ 路径 C](#路径-c-macos-本地) |
-| **D** | 国内用户 | Linux 云服务器 + 飞书 | 国内 | [→ 路径 D](#路径-d-linux--飞书国内推荐) |
+| **D** | 国内用户 | Linux 云服务器 + 飞书（单 Bot） | 国内 | [→ 路径 D](#路径-d-linux--飞书国内推荐) |
 | **E** | 极简体验 | 纯 WebUI（无 Bot） | — | [→ 路径 E](#路径-e-纯-webui) |
 
 > 💡 **不确定选哪个？** 国内用户选 **路径 D**（飞书），海外用户选 **路径 A**（Discord）。
@@ -404,7 +404,9 @@ openclaw gateway --verbose       # 启动（Mac 不用 systemd）
 <details>
 <summary>📖 展开路径 D 详细步骤</summary>
 
-飞书无需梯子，WebSocket 长连接不需要公网 IP。
+飞书无需梯子，WebSocket 长连接不需要公网 IP。**起步只需创建 1 个飞书应用（司礼监），背后整个朝廷都在干活。**
+
+> ⚠️ **飞书与 Discord 的差异**：飞书 Bot 不能互相 @触发（Discord 可以），所以飞书采用**单 Bot + sessions_spawn 后台调度**架构。用户只看到司礼监一个 Bot，司礼监通过 `sessions_spawn` 在后台派活给六部。
 
 #### 1. 准备服务器
 
@@ -414,12 +416,12 @@ openclaw gateway --verbose       # 启动（Mac 不用 systemd）
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
-# 选择模式 2: 飞书多Bot模式
+# 选择模式 2: 飞书单Bot模式
 ```
 
-#### 3. 创建飞书应用
+#### 3. 创建飞书应用（只需 1 个）
 
-1. 打开 [飞书开放平台](https://open.feishu.cn/app)，创建企业自建应用
+1. 打开 [飞书开放平台](https://open.feishu.cn/app)，创建企业自建应用（如「AI朝廷-司礼监」）
 2. 复制 **App ID**（`cli_xxx`）和 **App Secret**
 3. **权限管理** → 添加 `im:message` 等 8 个权限
 4. **应用能力** → 开启机器人
@@ -436,7 +438,7 @@ nano ~/.openclaw/openclaw.json
 
 填两样东西：
 1. **LLM API Key** — 你的 LLM 服务商
-2. **飞书 App ID + App Secret** — 填到 `channels.feishu.accounts` 里
+2. **飞书 App ID + App Secret** — 填到 `channels.feishu.accounts.silijian` 里
 
 #### 5. 启动
 
@@ -447,7 +449,7 @@ systemctl --user status openclaw-gateway
 
 在飞书里给机器人发消息，收到回复就成功了！🎉
 
-> 💡 起步只需一个飞书应用（司礼监），通过 @mention 或 `sessions_spawn` 调度其他部门。不用一次创建 7 个应用。
+> 💡 **只需 1 个飞书应用**，司礼监会通过 `sessions_spawn` 自动调度其他 9 个部门在后台协作。Discord 用 @部门派活，飞书用 sessions_spawn 派活，效果完全一样。
 
 </details>
 
@@ -862,10 +864,12 @@ Discord 本身就是最佳的 GUI 管理界面：
 
 除了 Discord，AI 朝廷也支持飞书作为交互界面。飞书插件已内置在新版 OpenClaw 中，无需额外安装。
 
-### 第一步：创建飞书应用
+> 💡 **飞书只需 1 个应用（司礼监）。** 飞书 Bot 不能互相 @触发（Discord 可以），所以飞书采用单 Bot + `sessions_spawn` 后台调度架构。司礼监作为唯一入口，在后台通过 `sessions_spawn` 派活给各部门。Discord 用 @部门派活，飞书用 sessions_spawn 派活，效果完全一样。
+
+### 第一步：创建飞书应用（只需 1 个）
 
 1. 访问 [飞书开放平台](https://open.feishu.cn/app)，登录后点击 **创建企业自建应用**
-2. 填写应用名称和描述，选择图标
+2. 填写应用名称（如「AI朝廷-司礼监」）和描述，选择图标
 3. 在 **凭证与基础信息** 页面，复制 **App ID**（格式 `cli_xxx`）和 **App Secret**
 
 ### 第二步：配置权限和能力
@@ -941,7 +945,7 @@ openclaw pairing approve feishu <配对码>
 
 > 💡 飞书使用 WebSocket 长连接，**不需要公网IP或域名**，本地部署也能用。
 >
-> 📖 **本项目飞书详细指南**：[飞书配置指南.md](./飞书配置指南.md)（含多 Bot 六部架构、完整配置示例、诊断排查）
+> 📖 **本项目飞书详细指南**：[飞书配置指南.md](./飞书配置指南.md)（含单 Bot + sessions_spawn 架构说明、完整配置示例、诊断排查）
 >
 > 📖 OpenClaw 官方飞书文档：[docs.openclaw.ai/channels/feishu](https://docs.openclaw.ai/channels/feishu)
 
