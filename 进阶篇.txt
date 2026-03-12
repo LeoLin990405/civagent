@@ -1439,12 +1439,183 @@ openclaw cron add \
 
 ━━━━━━━━━━━━━━━━━━━━━━━━
 
+七、飞书接入 - 不用 Discord 也能玩
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+除了 Discord，朝廷也支持飞书（Feishu/Lark）作为交互界面。
+飞书用 WebSocket 长连接，不需要公网 IP。
+
+💡 飞书 vs Discord 对比
+
+| 特性 | Discord | 飞书 |
+|------|---------|------|
+| 注册门槛 | 个人免费 | 需要企业版（免费版也行） |
+| 国内访问 | 需要梯子 | 直连 |
+| 移动端 | 较流畅 | 非常流畅 |
+| 多Bot支持 | 原生支持 | 需要创建多个应用 |
+| 公网IP | 不需要 | 不需要 |
+
+📦 快速接入（4 步）
+
+1️⃣ 创建飞书应用
+- 打开 https://open.feishu.cn/app
+- 点击「创建企业自建应用」
+- 复制 App ID（cli_xxx）和 App Secret
+
+2️⃣ 配置权限和能力
+- 权限管理 → 添加 im:message 等 8 个权限
+- 应用能力 → 开启「机器人」
+- 事件订阅 → WebSocket 模式 → 添加 im.message.receive_v1
+
+3️⃣ 配置 OpenClaw
+openclaw channels add
+# 选 Feishu，填 App ID 和 App Secret
+
+# 或者手动编辑 openclaw.json：
+# channels.feishu.enabled: true
+# channels.feishu.dmPolicy: "open"
+# channels.feishu.groupPolicy: "open"
+# channels.feishu.accounts.main.appId: "cli_xxx"
+# channels.feishu.accounts.main.appSecret: "你的Secret"
+
+4️⃣ 发布应用 + 重启
+- 飞书开放平台 → 版本管理 → 创建版本 → 发布
+- openclaw gateway restart
+- 在飞书里给机器人发消息测试
+
+⚠️ 重要提醒
+- dmPolicy 建议设为 "open"（直接对话），不用配对审批
+- groupPolicy 必须设为 "open" 才能收群消息
+- 事件订阅必须在 Gateway 运行时配置（WebSocket 握手需要）
+
+📖 详细指南见项目中的「飞书配置指南.md」
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+八、Web GUI - 浏览器管理朝廷
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+项目内置了 Web 管理后台，在浏览器里可视化管理朝廷。
+
+💡 GUI 能做什么？
+- 📊 仪表盘：各部门状态、Token 消耗、系统负载
+- 🏛️ 朝堂：直接在网页端跟各部门对话
+- 💬 会话管理：所有历史会话、消息详情
+- ⏰ 定时任务：可视化管理 Cron（启用/禁用/手动触发）
+- 📈 Token 统计：按部门、按日期分析消耗
+- 🔧 系统健康：CPU/内存/磁盘监控
+
+📦 启动 GUI
+
+# 1. 进入 gui 目录
+cd gui
+
+# 2. 构建前端
+npm install && npm run build
+
+# 3. 启动后端（设置登录密码）
+cd server && npm install
+BOLUO_AUTH_TOKEN=你的密码 node index.js
+
+# 4. 访问
+# http://你的服务器IP:18795
+
+💡 长期运行建议用 pm2：
+npm install -g pm2
+BOLUO_AUTH_TOKEN=你的密码 pm2 start server/index.js --name boluo-gui
+
+⚠️ 生产环境建议用 Nginx 反向代理 + HTTPS，不要直接暴露端口。
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+九、预装 Skill - 开箱即用的能力
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+项目在 skills/ 目录预装了 7 个 Skill，Agent 自动识别和加载。
+
+📦 预装 Skill 一览
+
+| Skill | 说明 | 需要 API Key |
+|-------|------|:---:|
+| weather | 天气查询（wttr.in） | ❌ 免配置 |
+| github | GitHub Issue/PR/CI | ❌ 需 gh auth login |
+| notion | Notion 页面/数据库 | ✅ |
+| hacker-news | HN 浏览和搜索 | ❌ 免配置 |
+| browser-use | 浏览器自动化 | ❌ |
+| quadrants | 四象限任务管理 | ✅ |
+| openviking | 向量知识库 | ✅ |
+
+💡 安装更多 Skill
+
+# 从 OpenClaw Hub 社区安装
+clawdhub search "关键词"
+clawdhub install skill名
+
+# 查看已安装
+clawdhub list
+
+💡 自定义 Skill
+
+每个 Skill 就是一个目录，至少包含 SKILL.md：
+
+skills/
+└── my-skill/
+    ├── SKILL.md          ← Agent 的使用说明（必须）
+    ├── scripts/          ← 脚本（可选）
+    └── references/       ← 参考文档（可选）
+
+SKILL.md 里写 Agent 需要知道的一切：怎么调用、参数是什么、示例。
+放到 skills/ 目录，Agent 下次启动就能用了。
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+十、Docker 部署 - 容器化一键启动
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+不想在服务器上装一堆依赖？Docker 一行搞定。
+
+📦 快速启动
+
+# 1. 克隆项目
+git clone https://github.com/wanikua/boluobobo-ai-court-tutorial.git
+cd boluobobo-ai-court-tutorial
+
+# 2. 准备配置文件
+cp openclaw.example.json openclaw.json
+nano openclaw.json   # 填入 API Key 和 Bot Token
+
+# 3. 一键启动
+docker compose up -d
+
+# 4. 查看日志
+docker compose logs -f
+
+# 5. 升级
+docker compose pull && docker compose up -d
+
+💡 镜像说明
+- 镜像：ghcr.io/wanikua/boluobobo-ai-court-tutorial:latest
+- 支持 amd64 + arm64（Oracle ARM 服务器直接用）
+- 内含：OpenClaw + Chromium + GitHub CLI + Python + OpenViking
+- 工作区和配置通过 volume 持久化，升级不丢数据
+
+| 端口 | 用途 |
+|------|------|
+| 18789 | Gateway Dashboard |
+| 18795 | 菠萝 GUI（可选） |
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+
 📚 下一步学习
 
-1. 自定义 Skill 开发 - 打造专属朝廷技能
-2. 多模型路由优化 - 根据任务自动选择最合适的模型
-3. 自动化工作流 - 把重复工作交给朝廷
-4. API 集成 - 连接更多外部服务
+1. 多模型路由优化 — 根据任务自动选择最合适的模型
+2. 自动化工作流 — 把重复工作交给朝廷
+3. API 集成 — 连接更多外部服务
+4. 贡献代码 — 看 CONTRIBUTING.md 开始参与
 
 ━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -1452,4 +1623,5 @@ openclaw cron add \
 
 现在你的朝廷已经武装到牙齿，可以高效运转了！
 
-有任何问题，欢迎在 小红书 找我交流～ 🎋
+有任何问题，欢迎在 小红书「菠萝菠菠🍍」找我交流～ 🎋
+关注公众号「菠言菠语」获取最新教程和更新。

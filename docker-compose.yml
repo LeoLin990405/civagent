@@ -1,7 +1,7 @@
 services:
   court:
-    build: .
-    image: ai-court:latest
+    image: ghcr.io/wanikua/boluobobo-ai-court-tutorial:latest
+    build: .   # 本地构建备选（无预构建镜像时自动 build）
     container_name: ai-court
     restart: unless-stopped
     ports:
