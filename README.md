@@ -300,6 +300,8 @@ systemctl --user start openclaw-gateway
 
 ## 🔄 已安装？一键更新
 
+> 💡 放心跑，不会覆盖你的 SOUL.md、USER.md、IDENTITY.md 和 openclaw.json 等已有配置。
+
 ```bash
 # 重跑安装脚本（自动保留你的配置）
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
