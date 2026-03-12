@@ -1143,9 +1143,15 @@ ChatGPT 是一个通才，对话结束就失忆。这套系统是多个专家—
 **Q: @everyone 不触发 Agent 回复？**
 Discord Developer Portal 里每个 Bot 要开启 **Message Content Intent** 和 **Server Members Intent**，服务器里 Bot 角色要有 View Channels 权限。OpenClaw 会把 @everyone 当作对每个 Bot 的显式 mention，权限到位就能触发。
 
-**Q: 开了 sandbox 后 Agent 报没有权限写文件？**
-sandbox mode 设成 `all` 会把 Agent 跑在 Docker 容器里，默认只读文件系统、断网、不继承环境变量。解决方法：
+**Q: Agent 报「只读文件系统」「apt 失败」怎么办？**
+这是 sandbox mode `"all"` 导致的 — Agent 跑在 Docker 容器里，文件系统只读、不能装软件。
 
+**最简单的解法：** 不写代码的部门直接关掉沙箱：
+```json
+"sandbox": { "mode": "off" }
+```
+
+**如果必须开沙箱但需要更多权限：**
 ```json
 "sandbox": {
   "mode": "all",
@@ -1157,8 +1163,10 @@ sandbox mode 设成 `all` 会把 Agent 跑在 Docker 容器里，默认只读文
 }
 ```
 - `workspaceAccess: "rw"` — 让沙箱能读写工作目录
-- `docker.network: "bridge"` — 允许联网
+- `docker.network: "bridge"` — 允许联网（默认断网）
 - `docker.env` — 传入 API Key（沙箱不继承主机环境变量）
+
+> 详细说明见上方 [Sandbox 沙箱配置详解](#-sandbox-沙箱配置详解)
 
 **Q: 多人同时 @ 同一个 Agent 会冲突吗？**
 不会。OpenClaw 为每个用户 × Agent 组合维护独立的会话（session）。多人同时 @兵部，各自的对话互不干扰。
@@ -1262,16 +1270,24 @@ openclaw doctor --fix
 "workspace": "/"                         ← 等于给 Agent root 权限
 ```
 
-**Sandbox 沙箱配置建议：**
+**Sandbox 沙箱配置详解：**
 
-| 模式 | 说明 | 推荐场景 |
-|------|------|----------|
-| `"mode": "all"` | Docker 容器隔离，最安全 | 执行不信任的代码（兵部等） |
-| `"mode": "non-main"` | 除主 Agent 外都沙箱化 | 默认推荐 |
-| `"mode": "off"` | 无隔离，完整系统权限 | 仅司礼监/需要完整权限的 Agent |
+沙箱 = Docker 容器。开了沙箱的 Agent 会在独立容器里运行，**文件系统只读、不能 apt 装软件、不继承主机环境变量**。好处是安全隔离，坏处是能力受限。
+
+| 模式 | 含义 | 适合谁 | 能做什么 |
+|------|------|--------|----------|
+| `"off"` | **不用沙箱**，直接在主机上运行 | 司礼监、礼部、户部等不跑代码的 | ✅ 读写文件 ✅ 装软件 ✅ 网络 ✅ 完整权限 |
+| `"non-main"` | **主对话不沙箱，spawn 出来的子任务沙箱** | defaults 默认值 | 主对话正常，子任务隔离 |
+| `"all"` | **所有对话都在沙箱里** | 兵部、都察院等要跑代码的 | ❌ 只读文件系统 ❌ 不能装软件 ✅ 工作区可读写 |
+
+> ⚠️ **常见坑：** 如果你的 Agent 报「只读文件系统」「apt 失败」，十有八九是 sandbox mode 设成了 `all`。不写代码的部门直接设 `"off"` 就行。
+
+**推荐配置：**
+- 🔴 **需要跑代码的（兵部、都察院）** → `"mode": "all", "scope": "agent"`（安全隔离）
+- 🟢 **不跑代码的（礼部、户部、吏部、刑部、翰林院等）** → `"mode": "off"`（完整能力）
+- 🟡 **司礼监** → `"mode": "off"`（需要调度所有部门，必须有完整权限）
 
 ```json
-// 推荐配置：defaults 里开沙箱，只给司礼监关沙箱
 "agents": {
   "defaults": {
     "workspace": "/home/ubuntu/clawd",
@@ -1279,10 +1295,15 @@ openclaw doctor --fix
   },
   "list": [
     { "id": "silijian", "sandbox": { "mode": "off" } },
-    { "id": "bingbu", "sandbox": { "mode": "all", "scope": "agent" } }
+    { "id": "bingbu", "sandbox": { "mode": "all", "scope": "agent" } },
+    { "id": "duchayuan", "sandbox": { "mode": "all", "scope": "agent" } },
+    { "id": "libu", "sandbox": { "mode": "off" } },
+    { "id": "hubu", "sandbox": { "mode": "off" } }
   ]
 }
 ```
+
+> 💡 `"scope": "agent"` 表示每个 Agent 有自己独立的沙箱容器，互不干扰。
 
 ### 🔑 API Key 安全
 
