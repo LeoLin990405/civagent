@@ -759,6 +759,11 @@ cat > "$CONFIG_DIR/openclaw.json" << CONFIG_EOF
           "name": "都察院",
           "token": "YOUR_DUCHAYUAN_BOT_TOKEN",
           "groupPolicy": "open"
+        },
+        "hanlinyuan": {
+          "name": "翰林院",
+          "token": "YOUR_HANLINYUAN_BOT_TOKEN",
+          "groupPolicy": "open"
         }
       }
     }
@@ -772,7 +777,8 @@ cat > "$CONFIG_DIR/openclaw.json" << CONFIG_EOF
     { "agentId": "libu", "match": { "channel": "discord", "accountId": "libu" } },
     { "agentId": "gongbu", "match": { "channel": "discord", "accountId": "gongbu" } },
     { "agentId": "libu2", "match": { "channel": "discord", "accountId": "libu2" } },
-    { "agentId": "xingbu", "match": { "channel": "discord", "accountId": "xingbu" } }
+    { "agentId": "xingbu", "match": { "channel": "discord", "accountId": "xingbu" } },
+    { "agentId": "hanlinyuan", "match": { "channel": "discord", "accountId": "hanlinyuan" } }
   ]
 }
 CONFIG_EOF
@@ -853,4 +859,17 @@ echo "       --agent main --cron '0 22 * * *' --tz Asia/Shanghai \\"
 echo "       --message '生成今日简报' --session isolated --token <你的token>"
 echo ""
 echo -e "完整教程：${BLUE}https://github.com/wanikua/boluobobo-ai-court-tutorial${NC}"
+echo ""
+
+# ---- 自动运行 doctor.sh 健康检查 ----
+echo ""
+echo -e "${YELLOW}[自检] 运行 doctor.sh 检查安装状态...${NC}"
+echo ""
+if [ -f "$WORKSPACE/doctor.sh" ]; then
+    bash "$WORKSPACE/doctor.sh" 2>/dev/null || true
+elif command -v curl &>/dev/null; then
+    bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/doctor.sh) 2>/dev/null || true
+else
+    echo -e "${CYAN}跳过自检（可手动运行 bash doctor.sh）${NC}"
+fi
 echo ""

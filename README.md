@@ -678,7 +678,12 @@ Discord 本身就是最佳的 GUI 管理界面：
 <details>
 <summary><h2>📖 详细教程</h2></summary>
 
-基础篇（服务器申请→安装→配置→跑起来）和进阶篇（tmux、GitHub、Notion、Cron、Discord、Prompt 技巧）见小红书系列笔记。
+配套小红书系列视频教程的文字稿，适合跟着一步步操作：
+
+- **[基础篇.txt](./基础篇.txt)** — 从零开始：云服务器申请 → SSH 连接 → 安装 → 配置 → 跑起来
+- **[进阶篇.txt](./进阶篇.txt)** — 进阶技巧：tmux、GitHub 集成、Notion 归档、Cron 定时任务、Discord 配置、Prompt 技巧
+
+> 💡 这些是小红书笔记的纯文本版本，配合视频食用效果更佳。
 
 </details>
 

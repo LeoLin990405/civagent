@@ -13,7 +13,7 @@
   <img src="https://img.shields.io/badge/Inspired_By-Six_Ministries_System-gold?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Framework-OpenClaw-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Agents-10+-green?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Built--in_Skills-60+-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/OpenClaw_Skill_Ecosystem-60+-orange?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Deploy-5_min-red?style=for-the-badge" />
 </p>
 
@@ -86,7 +86,7 @@ These concepts map perfectly to modern multi-agent system design needs. **Ancien
 |-----------|-------------|
 | **Multi-Agent Collaboration** | 10 independent AI Agents (Six Ministries + Directorate of Ceremonial + Grand Secretariat + Censorate + Hanlin Academy), each specialized, working in concert |
 | **Independent Memory** | Each agent has its own workspace and memory files — the more you use it, the better it knows you |
-| **60+ Built-in Skills** | GitHub, Notion, Browser, Cron, TTS and more, ready out of the box |
+| **60+ Skill Ecosystem** | Built on OpenClaw's 60+ Skills — GitHub, Notion, Browser, Cron, TTS and more, ready out of the box |
 | **Automated Tasks** | Cron scheduling + heartbeat self-checks, 24/7 unattended operation |
 | **Sandbox Isolation** | Docker container isolation, agent code runs independently |
 | **Multi-Platform Support** | Discord / Feishu (Lark) / Slack / Telegram etc., invoke via @mention |
@@ -123,7 +123,7 @@ If you're more familiar with modern corporate management concepts, we have an **
 |---|---|---|---|
 | Multi-agent collaboration | ❌ Single generalist | ✅ Requires Python orchestration | ✅ Config files only, zero code |
 | Persistent memory | ⚠️ Single shared memory | ⚠️ BYO vector database | ✅ Each agent has its own workspace + memory files |
-| Tool integrations | ⚠️ Limited plugins | ⚠️ Build your own | ✅ 60+ built-in Skills (GitHub / Notion / Browser / Cron …) |
+| Tool integrations | ⚠️ Limited plugins | ⚠️ Build your own | ✅ OpenClaw 60+ Skill ecosystem (GitHub / Notion / Browser / Cron …) |
 | Interface | Web | CLI / Self-hosted UI | ✅ Native Discord (works on phone & desktop) |
 | Deployment difficulty | No deployment needed | Docker + coding required | ✅ One-line script, up in 5 minutes |
 | 24h availability | ❌ Manual conversations only | ✅ | ✅ Cron jobs + heartbeat self-checks |
@@ -166,7 +166,7 @@ If you're more familiar with modern corporate management concepts, we have an **
            │          │      │      │      │      │          │
            ▼          ▼      ▼      ▼      ▼      ▼          ▼
      ┌───────────────────────────────────────────────────────────┐
-     │                Skill Layer (60+ Built-in)                 │
+     │          Skill Layer (OpenClaw 60+ Ecosystem)              │
      │  GitHub · Notion · Browser · Cron · TTS · Screenshot     │
      │  sessions_spawn (cross-Agent task delegation)             │
      │  sessions_send (cross-Agent messaging)                    │
@@ -560,19 +560,33 @@ Emperor → @Directorate: Refactor the user system
 ### Independent Memory System
 Each agent has its own workspace and `memory/` directory. Project knowledge accumulated through conversations is persisted to files and retained across sessions. The more you use an agent, the better it understands your project.
 
-### 60+ Built-in Skills (Powered by OpenClaw Ecosystem)
-It's not just a chatbot — the built-in toolset covers the entire development lifecycle, and you can extend with more Skills from [OpenClaw Hub](https://github.com/openclaw/openclaw):
+### 60+ Skill Ecosystem (Powered by OpenClaw Framework)
+It's not just a chatbot — the OpenClaw framework includes 60+ built-in Skills covering the entire development lifecycle, extendable via [OpenClaw Hub](https://github.com/openclaw/openclaw):
 
 | Category | Skills |
 |----------|--------|
 | Development | GitHub (Issues/PRs/CI), Coding Agent (code generation & refactoring) |
 | Documentation | Notion (databases/pages/automated reporting) |
-| Information | Browser automation, Web search, Web scraping |
+| Information | Browser automation, Web search, Web scraping, Hacker News |
 | Automation | Cron scheduled tasks, Heartbeat self-checks |
 | Media | TTS voice, Screenshots, Video frame extraction |
-| Operations | tmux remote control, Shell command execution |
+| Operations | tmux remote control, Shell command execution, Weather |
 | Communication | Discord, Slack, Feishu (Lark), Telegram, WhatsApp, Signal… |
 | Extensions | OpenClaw Hub community Skills, Custom Skills |
+
+#### 📦 Pre-installed Skills (in `skills/` directory)
+
+| Skill | Description | API Key Required |
+|-------|-------------|:---:|
+| `weather` | Weather via wttr.in / Open-Meteo | ❌ |
+| `github` | GitHub operations via gh CLI | ❌ (need `gh auth login`) |
+| `notion` | Notion page/database management | ✅ |
+| `hacker-news` | Hacker News browsing & search | ❌ |
+| `browser-use` | Browser automation, social media management | ❌ |
+| `quadrants` | Eisenhower matrix task management | ✅ |
+| `openviking` | Vector knowledge base (Volcengine open-source) | ✅ |
+
+> 💡 These are just the starter pack. Install more from the community anytime with `clawdhub install <skill-name>`.
 
 ### Scheduled Tasks (Cron)
 Built-in Cron scheduler lets agents run tasks on autopilot:

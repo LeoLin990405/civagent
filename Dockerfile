@@ -42,7 +42,7 @@ COPY docker/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # 复制 skill 和模板
-COPY skills/ /root/clawd/skills/
+COPY skills/ ${WORKSPACE}/skills/
 
 # 端口：Gateway WebUI
 EXPOSE 18789

@@ -120,7 +120,8 @@
         "libu": { "name": "礼部", "token": "YOUR_LIBU_BOT_TOKEN", "groupPolicy": "open" },
         "gongbu": { "name": "工部", "token": "YOUR_GONGBU_BOT_TOKEN", "groupPolicy": "open" },
         "libu2": { "name": "吏部", "token": "YOUR_LIBU2_BOT_TOKEN", "groupPolicy": "open" },
-        "xingbu": { "name": "刑部", "token": "YOUR_XINGBU_BOT_TOKEN", "groupPolicy": "open" }
+        "xingbu": { "name": "刑部", "token": "YOUR_XINGBU_BOT_TOKEN", "groupPolicy": "open" },
+        "hanlinyuan": { "name": "翰林院", "token": "YOUR_HANLINYUAN_BOT_TOKEN", "groupPolicy": "open" }
       }
     },
     "feishu": {
@@ -149,6 +150,7 @@
     { "agentId": "gongbu", "match": { "channel": "discord", "accountId": "gongbu" } },
     { "agentId": "libu2", "match": { "channel": "discord", "accountId": "libu2" } },
     { "agentId": "xingbu", "match": { "channel": "discord", "accountId": "xingbu" } },
+    { "agentId": "hanlinyuan", "match": { "channel": "discord", "accountId": "hanlinyuan" } },
     { "agentId": "silijian", "match": { "channel": "feishu", "accountId": "silijian" } }
   ]
 }
