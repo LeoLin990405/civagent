@@ -1,4 +1,4 @@
-[English Version](./README_EN.md) | [🏢 企业版 Become CEO (English)](https://github.com/wanikua/become-ceo)
+[English Version](./README_EN.md) | [🏢 企业版 Become CEO (English)](https://github.com/wanikua/become-ceo) | [📚 完整文档](./docs/README.md)
 
 <!-- SEO 关键词 / Keywords：三省六部、明朝、六部制、中书省、门下省、尚书省、司礼监、内阁、都察院、翰林院、兵部、户部、礼部、工部、刑部、吏部、AI朝廷、AI Agent、多Agent协作、人工智能管理、古代治国、现代管理、组织架构、OpenClaw、multi-agent、ancient-china -->
 
@@ -29,7 +29,7 @@
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
 ```
 
-**一行命令，5 分钟，你就是皇上。** [→ 详细安装指南](#快速开始)
+**一行命令，5 分钟，你就是皇上。** [→ 快速开始](#快速开始三步登基)
 
 </div>
 
@@ -37,161 +37,31 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
   <img src="./images/flow-architecture.png" alt="系统架构流程图" width="80%" />
 </p>
 
-<p align="center">
-  <img src="./images/discord-architecture.png" alt="Discord 朝廷架构图" width="80%" />
-</p>
-
----
-
-## 目录
-
-| 章节 | 说明 |
-|------|------|
-| 📜 [这个项目是什么？](#这个项目是什么) | 项目介绍、设计理念、核心能力 |
-| 🆚 [为什么选这套方案？](#为什么选这套方案) | 与 ChatGPT / AutoGPT / CrewAI 对比 |
-| 🏗️ [技术架构](#技术架构) | 三省六部映射、架构图 |
-| 🎬 [效果展示](#效果展示) | Discord 真实对话示例 |
-| 🚀 [**快速开始**](#快速开始) | **← 从这里开始安装（路线图引导）** |
-| ├─ [路径 A: Linux + Discord](#路径-a-linux--discord新手推荐) | 海外用户首选 |
-| ├─ [路径 B: Docker 部署](#路径-b-docker-部署) | 有 Docker 经验 |
-| ├─ [路径 C: macOS 本地](#路径-c-macos-本地) | Mac 用户 |
-| ├─ [路径 D: Linux + 飞书](#路径-d-linux--飞书国内推荐) | 国内用户首选 |
-| └─ [路径 E: 纯 WebUI](#路径-e-纯-webui) | 不需要 Bot |
-| 🍍 [实战案例：菠萝王朝](#实战案例菠萝王朝) | 14 Agent 真实运行架构 |
-| 🏛️ [朝廷架构详解](#朝廷架构三省六部制) | 历史背景、角色对照、多模型混搭 |
-| ⚙️ [核心能力详解](#核心能力) | 协作、记忆、Skill、Cron、沙箱 |
-| 🖥️ [GUI 管理界面](#gui-管理界面) | Web Dashboard + Discord + Notion |
-| ❓ [常见问题](#常见问题) | 基础 + 技术 FAQ |
-| 🏢 [企业版 Become CEO](#想要企业版) | 同架构的英文企业版 |
-| 🔗 [相关链接 & 社区](#加入朝会) | 小红书、公众号、微信群 |
-
 ---
 
 ## 这个项目是什么？
 
-**AI 朝廷**是一个开箱即用的多 AI Agent 协作系统，将中国古代的**三省六部制**（中书省 · 门下省 · 尚书省 → 吏部 · 户部 · 礼部 · 兵部 · 刑部 · 工部）及**内阁 · 都察院 · 翰林院**映射为现代 AI Agent 的组织架构。
+**AI 朝廷**是一个开箱即用的多 AI Agent 协作系统。你是皇帝，AI 是你的大臣——每位大臣各司其职：写代码的、管财务的、搞营销的、做运维的——你只需要在 Discord 或飞书里下一道「圣旨」（@某个 Agent），大臣们就会立刻执行。
 
-**简单来说：** 你是皇帝，AI 是你的大臣。每位大臣各司其职——写代码的、管财务的、搞营销的、做运维的——你只需要在 Discord 里下一道「圣旨」（@某个 Agent），大臣们就会立刻执行。
+古代三省六部制运行超过 1300 年，是人类历史上最久经考验的组织架构之一。它的核心设计——**职责分明、流程标准化、权力制衡、档案留存**——完美映射到现代多 Agent 系统。**古代治国的智慧，就是管理 AI 团队的最佳实践。**
 
-### 为什么用古代朝廷架构？
-
-古代三省六部制是人类历史上运行时间最久的组织管理体系之一（隋唐至清末，超过 1300 年）。它的核心设计理念：
-
-- **职责分明** — 六部各司其职，互不越权（= AI Agent 各有专长）
-- **流程标准化** — 奏折制度、批红制度（= Prompt 模板 + SOUL.md 人格注入）
-- **权力制衡** — 三省互相制约（= Agent 互审、多步确认）
-- **档案留存** — 起居注、实录制度（= Memory 持久化、Notion 自动归档）
-
-这些思想完美映射到现代多 Agent 系统的设计需求。**古代治国的智慧，就是现代管理 AI 团队的最佳实践。**
-
-### 核心能力一览
+### 核心能力
 
 | 能力 | 描述 |
 |------|------|
-| **多 Agent 协作** | 10 个独立 AI Agent（六部 + 司礼监 + 内阁 + 都察院 + 翰林院），各有专长，协同工作 |
+| **多 Agent 协作** | 10+ 独立 AI Agent，各有专长，@谁谁回复 |
 | **独立记忆** | 每个 Agent 有独立工作区和 memory 文件，越用越懂你 |
-| **60+ Skill 生态** | 基于 OpenClaw 框架 60+ 内置 Skill，GitHub、Notion、浏览器、Cron、TTS 等开箱即用 |
-| **自动化任务** | Cron 定时任务 + 心跳自检，7×24 无人值守 |
+| **60+ Skill 生态** | GitHub、Notion、浏览器、Cron、TTS 等开箱即用 |
+| **自动化任务** | Cron 定时 + 心跳自检，7×24 无人值守 |
+| **多平台支持** | Discord / 飞书 / Slack / Telegram / 纯 WebUI |
 | **沙箱隔离** | Docker 容器隔离，Agent 代码执行互不干扰 |
-| **多平台支持** | Discord / 飞书 / Slack / Telegram 等，@mention 即可调用 |
-| **Web 管理后台** | React + TypeScript 构建的 Dashboard，可视化管理 |
-| **OpenClaw 生态** | 基于 [OpenClaw](https://github.com/openclaw/openclaw) 框架，可使用 [OpenClaw Skill 生态](https://github.com/openclaw/openclaw) 的 Skill 生态 |
+| **Web 管理后台** | React Dashboard，可视化管理一切 |
 
-### 想要企业版？
-
-如果你更熟悉现代企业管理概念，我们有**英文企业版**：
-
-👉 **[Become CEO](https://github.com/wanikua/become-ceo)** — 同一套架构，用 CEO / CTO / CFO / CMO 等企业角色代替朝廷六部
-
-| 朝廷角色 | 企业角色 | 职责 |
-|:---:|:---:|:---:|
-| 皇帝 | CEO | 最高决策者 |
-| 司礼监 | COO / 首席运营官 | 日常调度、任务分配 |
-| 内阁 | CSO / 战略VP | 战略决策、方案审议 |
-| 都察院 | QA VP / 审计总监 | 监察审计、代码审查、质量把控 |
-| 兵部 | CTO / 工程VP | 软件工程、技术架构 |
-| 户部 | CFO / 财务VP | 财务分析、成本管控 |
-| 礼部 | CMO / 营销VP | 品牌营销、内容策划 |
-| 工部 | VP Infra / SRE | DevOps、基础设施 |
-| 吏部 | VP Product / PMO | 项目管理、团队协调 |
-| 刑部 | General Counsel | 法务合规、合同审查 |
-| 翰林院 | 首席知识官 CKO | 学术研究、文档撰写、技术调研 |
-
-> 💡 两个项目基于相同的 [OpenClaw](https://github.com/openclaw/openclaw) 框架，架构完全一致，只是角色命名和文化背景不同。选你喜欢的风格即可！
-
----
-
-## 为什么选这套方案？
-
-| | ChatGPT 等网页版 | AutoGPT / CrewAI / MetaGPT | **AI 朝廷（本方案）** |
-|---|---|---|---|
-| 多 Agent 协作 | ❌ 单个通才 | ✅ 需写 Python 编排 | ✅ 配置文件搞定，零代码 |
-| 独立记忆 | ⚠️ 单一通用记忆 | ⚠️ 需自己接向量库 | ✅ 每个 Agent 独立工作区 + memory 文件 |
-| 工具集成 | ⚠️ 有限插件 | ⚠️ 需自己开发 | ✅ OpenClaw 60+ Skill 生态（GitHub / Notion / 浏览器 / Cron …） |
-| 界面 | 网页 | 命令行 / 自建 UI | ✅ Discord 原生（手机电脑都能用） |
-| 部署难度 | 无需部署 | 需 Docker + 编码 | ✅ 一键脚本，5 分钟跑起来 |
-| 24h 在线 | ❌ 需手动对话 | ✅ | ✅ 定时任务 + 心跳自检 |
-| 组织架构隐喻 | 无 | 无 | **三省六部制，职责分明** |
-| 框架生态 | 封闭 | 自建 | ✅ OpenClaw Hub Skill 生态 |
-
-**核心优势：不是框架，是成品。** 跑个脚本就能用，在 Discord 里 @谁谁回复。
-
----
-
-<details>
-<summary><h2>🏗️ 技术架构</h2></summary>
-
-```
-                          ┌─────────────────────┐
-                          │      皇帝（你）      │
-                          │  Discord / Web UI    │
-                          └──────────┬──────────┘
-                                     │ 圣旨（@mention / DM）
-                                     ▼
-                      ┌──────────────────────────────┐
-                      │      OpenClaw Gateway         │
-                      │      Node.js 守护进程          │
-                      │                              │
-                      │  ┌─────────────────────────┐ │
-                      │  │ 消息路由 (Bindings)       │ │
-                      │  │ channel + accountId      │ │
-                      │  │ → agentId 匹配 → 分发    │ │
-                      │  │ 会话隔离 · Cron · 心跳    │ │
-                      │  └─────────────────────────┘ │
-                      └──┬───┬───┬───┬───┬───┬───┬───┘
-                         │   │   │   │   │   │   │
-           ┌─────────────┘   │   │   │   │   │   └─────────────┐
-           ▼           ▼     ▼   ▼   ▼   ▼   ▼                ▼
-     ┌──────────┐  ┌────┐ ┌────┐ ┌────┐ ┌────┐ ┌────┐  ┌──────────┐
-     │ 司礼监   │  │兵部│ │户部│ │吏部│ │礼部│ │工部│  │  刑部    │
-     │ 总管调度 │  │编码│ │财务│ │管理│ │营销│ │运维│  │  法务    │
-     │(silijian)│  │    │ │    │ │    │ │    │ │    │  │          │
-     └──────────┘  └────┘ └────┘ └────┘ └────┘ └────┘  └──────────┘
-           │          │      │      │      │      │          │
-           ▼          ▼      ▼      ▼      ▼      ▼          ▼
-     ┌───────────────────────────────────────────────────────────┐
-     │           Skill 工具层（基于 OpenClaw 60+ 生态）            │
-     │  GitHub · Notion · 浏览器 · Cron · TTS · 截图             │
-     │  sessions_spawn（跨 Agent 派活）                           │
-     │  sessions_send（跨 Agent 通信）                            │
-     │  OpenClaw Hub 社区扩展 Skill                              │
-     └───────────────────────────────────────────────────────────┘
-```
-
-每个 Agent 绑定一个 Discord Bot 账号，由同一个 Gateway 进程统一管理：
-- **独立会话**：每个 Agent 有独立的会话存储（`~/.openclaw/agents/<agentId>/sessions`），互不干扰
-- **独立模型**：重活用强力模型，轻活用快速模型，省钱又高效
-- **独立沙箱**：可配置 Docker 沙箱隔离，每个 Agent 独立容器
-- **身份注入**：Gateway 自动将 SOUL.md + IDENTITY.md + 工作区文件组装为系统提示
-- **消息路由**：通过 `bindings` 配置将 `(channel, accountId)` 映射到 `agentId`，最具体的匹配优先
-
-</details>
+> 📖 **深入了解** → [架构详解](./docs/architecture.md) | [与 ChatGPT/AutoGPT/CrewAI 对比](./docs/architecture.md)
 
 ---
 
 ## 效果展示
-
-### Discord 对话示例
 
 ```
 👑 皇帝：@兵部 帮朕写一个用户登录的 REST API，用 Node.js + Express
@@ -200,970 +70,158 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
   📁 已创建 auth-api/ 项目结构
   ✅ POST /api/login — JWT 认证
   ✅ POST /api/register — 用户注册
-  ✅ middleware/auth.js — Token 验证中间件
   ✅ 已提交至 GitHub：wanikua/auth-api#1
-  臣已完工，请陛下御览。
 
 👑 皇帝：@户部 这个月 API 花了多少钱？
 
-🏛️ 户部：启禀陛下，本月 API 支出如下：
-  💰 总计：$23.47
-  ├── 兵部（强力模型）：$15.20（编码任务 142 次）
-  ├── 礼部（快速模型）：$3.80（文案任务 89 次）
-  ├── 司礼监（快速模型）：$2.12（日常对话 203 次）
-  └── 其他：$2.35
-  📊 环比上月 -12%，主要因兵部优化了 Prompt 长度。
+🏛️ 户部：启禀陛下，本月 API 总计 $23.47
+  ├── 兵部（强力模型）：$15.20
+  ├── 礼部（快速模型）：$3.80
+  └── 其他：$4.47  📊 环比 -12%
 
 👑 皇帝：@礼部 写条小红书文案，推荐 AI 工具搭建
 
-🏛️ 礼部：遵旨！文案如下：
-  📝 标题：「普通人也能当AI皇帝？我用6个AI管理整个团队」
-  正文：还在一个个对话框里跟AI聊天？我直接搭了个AI朝廷...
-  🏷️ #AI工具 #效率提升 #多Agent #AI朝廷 #三省六部
-
-👑 皇帝：@everyone 明天下午三点开会，各部门准备周报
-
-🏛️ 司礼监：遵旨，臣已记录会议安排。
-🏛️ 兵部：臣收到，将整理本周代码产出。
-🏛️ 户部：臣收到，将备好财务报表。
-🏛️ 礼部：臣收到，将汇总营销数据。
-🏛️ 工部：臣收到，将备好服务器运行报告。
+🏛️ 礼部：遵旨！
+  📝「普通人也能当AI皇帝？我用6个AI管理整个团队」
+  🏷️ #AI工具 #效率提升 #多Agent #AI朝廷
 ```
 
 ---
 
-## 使用场景
+## 快速开始（三步登基）
 
-| 场景 | 描述 | 涉及部门 |
-|------|------|----------|
-| **独立开发者** | 一个人拥有完整技术团队，编码 + 运维 + 营销全覆盖 | 兵部 + 工部 + 礼部 |
-| **学生学习** | AI 导师团队，不同科目不同 Agent，各有记忆 | 全六部可自定义 |
-| **创业团队** | 低成本 AI 助手矩阵，覆盖产品、技术、运营 | 全六部 |
-| **自媒体运营** | 内容创作 + 数据分析 + 财务管理一体化 | 礼部 + 户部 |
-| **科研项目** | 文献搜索 + 代码实验 + 论文写作 | 兵部 + 礼部 |
-| **AI 实验/娱乐** | Agent 互相对话、成语接龙、模拟朝会 | 全六部 |
+> 🔴 **新手请用云服务器**，不要在个人电脑上安装。详见 [安全须知](./docs/security.md)。
 
----
+### 📍 第一步：有服务器吗？
 
-## 快速开始
-
-> 🔴 **新手请用云服务器，不要在个人电脑上安装！** Agent 拥有工作区的完整读写和命令执行权限，在云服务器上出问题随时重建，在个人电脑上可能误删文件。详见 [安全须知](#🛡️-安全须知新手必读)。
-
-### 🗺️ 部署路线图 — 找到你的路径
-
-```
-                        ┌─────────────────────┐
-                        │   你想用什么平台？    │
-                        └──────────┬──────────┘
-                 ┌─────────────────┼─────────────────┐
-                 ▼                 ▼                  ▼
-          ┌────────────┐   ┌────────────┐    ┌──────────────┐
-          │  Discord   │   │    飞书    │    │ 纯 WebUI     │
-          │ 海外/全球  │   │  国内首选  │    │ 不需要Bot    │
-          └─────┬──────┘   └─────┬──────┘    └──────┬───────┘
-                │                │                   │
-       ┌────────┴────────┐      │          ┌────────┴────────┐
-       ▼        ▼        ▼      ▼          ▼                 ▼
-   ┌───────┐┌──────┐┌───────┐┌───────┐┌───────┐       ┌──────────┐
-   │ Linux ││Docker││ macOS ││ Linux ││Docker │       │install.sh│
-   │云服务器││容器化││ 本地  ││云服务器││容器化 │       │  模式3   │
-   └───┬───┘└──┬───┘└───┬───┘└───┬───┘└──┬───┘       └────┬─────┘
-       │       │        │        │       │                 │
-       ▼       ▼        ▼        ▼       ▼                 ▼
-     路径A   路径B     路径C    路径D   路径B             路径E
-```
-
-| 路径 | 适合谁 | 部署方式 | 平台 | 跳转 |
-|:---:|--------|----------|------|------|
-| **A** | 新手首选 | Linux 云服务器 + Discord | 海外 | [→ 路径 A](#路径-a-linux--discord新手推荐) |
-| **B** | 有 Docker 经验 | Docker 容器化 | 通用 | [→ 路径 B](#路径-b-docker-部署) |
-| **C** | Mac 用户 | macOS 本地 | 通用 | [→ 路径 C](#路径-c-macos-本地) |
-| **D** | 国内用户 | Linux 云服务器 + 飞书（单 Bot） | 国内 | [→ 路径 D](#路径-d-linux--飞书国内推荐) |
-| **E** | 极简体验 | 纯 WebUI（无 Bot） | — | [→ 路径 E](#路径-e-纯-webui) |
-
-> 💡 **不确定选哪个？** 国内用户选 **路径 D**（飞书），海外用户选 **路径 A**（Discord）。
-
----
-
-### 路径 A: Linux + Discord（新手推荐）
-
-<details>
-<summary>📖 展开路径 A 详细步骤</summary>
-
-#### 1. 准备服务器
-
-| 平台 | 推荐配置 | 费用 | 说明 |
-|------|----------|------|------|
-| **Oracle Cloud** | ARM 4核24G | **永久免费** ⭐ | [Always Free](https://www.oracle.com/cloud/free/) |
-| **阿里云** | ECS 2核4G | 免费试用 / ¥40/月 | [领取免费试用](https://free.aliyun.com/) |
-| **腾讯云** | 轻量 2核4G | 免费试用 / ¥40/月 | [领取免费试用](https://cloud.tencent.com/act/free) |
-| **AWS** | t4g.medium | 免费 12 个月 | [Free Tier](https://aws.amazon.com/free/) |
-
-> 💡 推荐 ARM 架构 + 4GB 以上内存。只跑司礼监（单 Agent）2GB 也够。
-
-#### 2. 一键安装
-
-SSH 连上服务器，运行：
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
-# 选择模式 1: Discord 多Bot模式
-```
-
-脚本自动完成：系统更新 → 防火墙 → Swap → Node.js 22 → OpenClaw → 工作区初始化 → Gateway 系统服务
-
-#### 3. 填 Key
-
-```bash
-nano ~/.openclaw/openclaw.json
-```
-
-填两样东西：
-1. **LLM API Key** — 你的 LLM 服务商（Anthropic / OpenAI / DeepSeek 等）
-2. **Discord Bot Token** — [discord.com/developers](https://discord.com/developers/applications) 创建 Bot 获取
-
-> 💡 每个部门需要一个独立的 Discord Bot。起步可以只创建司礼监一个 Bot，后续再加。
-
-#### 4. 启动
-
-```bash
-systemctl --user start openclaw-gateway
-systemctl --user status openclaw-gateway
-```
-
-在 Discord @你的 Bot 说句话，收到回复就成功了！🎉
-
-> ⚠️ 每个 Bot 都要在 Discord Developer Portal 开启 **Message Content Intent** + **Server Members Intent**。
-
-</details>
-
----
-
-### 路径 B: Docker 部署
-
-<details>
-<summary>📖 展开路径 B 详细步骤</summary>
-
-预构建镜像支持 **amd64 + arm64**，不污染系统环境。
-
-```bash
-# 1. 克隆项目
-git clone https://github.com/wanikua/boluobobo-ai-court-tutorial.git
-cd boluobobo-ai-court-tutorial
-
-# 2. 准备配置文件（复制模板，填入 API Key 和 Bot Token）
-cp openclaw.example.json openclaw.json
-nano openclaw.json
-
-# 3. 一键启动
-docker compose up -d
-
-# 查看日志
-docker compose logs -f
-
-# 升级
-docker compose pull && docker compose up -d
-```
-
-镜像：`ghcr.io/wanikua/boluobobo-ai-court-tutorial:latest`
-容器内已预装 OpenClaw + Chromium + GitHub CLI + Python。
-
-| 端口 | 用途 |
+| 情况 | 操作 |
 |------|------|
-| 18789 | Gateway Dashboard |
-| 18795 | 菠萝 GUI（可选） |
+| ✅ 已有 Linux 服务器 | 直接进入第二步 |
+| ✅ 已有 Mac | 直接进入第二步 |
+| ❌ 没有服务器 | → [**领一台免费服务器**](./docs/server-setup.md)（Oracle Cloud 永久免费 4核24G） |
 
-> 💡 配置文件里填 Discord Bot Token 或飞书 App ID/Secret 均可。Docker 模式支持所有平台。
+### 📍 第二步：选平台
 
-</details>
-
----
-
-### 路径 C: macOS 本地
-
-<details>
-<summary>📖 展开路径 C 详细步骤</summary>
-
-支持 Intel 和 Apple Silicon (M1/M2/M3/M4)，自动检测架构：
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install-mac.sh)
+```
+            你想用什么平台交互？
+           ┌──────┼──────┐
+           ▼      ▼      ▼
+       Discord   飞书   纯浏览器
+       海外首选  国内首选  极简体验
 ```
 
-自动通过 Homebrew 安装所有依赖。装完后填 Key、启动：
+| 路径 | 平台 | 适合谁 | 部署方式 | 文档 |
+|:---:|------|--------|----------|------|
+| **A** | Discord | 海外用户 / 新手 | Linux 一键脚本 | [→ 路径 A](./docs/setup-linux-discord.md) |
+| **B** | 通用 | 有 Docker 经验 | Docker 容器化 | [→ 路径 B](./docs/setup-docker.md) |
+| **C** | 通用 | Mac 用户 | macOS Homebrew | [→ 路径 C](./docs/setup-macos.md) |
+| **D** | 飞书 | 国内用户 | Linux 一键脚本 | [→ 路径 D](./docs/setup-feishu.md) |
+| **E** | 纯 WebUI | 不需要 Bot | 只要 API Key | [→ 路径 E](./docs/setup-webui.md) |
+| **W** | Discord/飞书 | Windows 用户 | WSL2 | [→ WSL2 指南](./docs/windows-wsl.md) |
+
+> 💡 **不确定选哪个？** 国内用户选 **D**（飞书），海外用户选 **A**（Discord）。
+
+### 📍 第三步：安装 → 填 Key → 启动
+
+无论哪条路径，核心步骤都一样：
 
 ```bash
-nano ~/.openclaw/openclaw.json   # 填 API Key + Bot Token
-openclaw gateway --verbose       # 启动（Mac 不用 systemd）
-```
-
-> 💡 Mac 上 Agent 能访问你的本地文件系统，建议设置独立工作区目录。
-
-</details>
-
----
-
-### 路径 D: Linux + 飞书（国内推荐）
-
-<details>
-<summary>📖 展开路径 D 详细步骤</summary>
-
-飞书无需梯子，WebSocket 长连接不需要公网 IP。**起步只需创建 1 个飞书应用（司礼监），背后整个朝廷都在干活。**
-
-> ⚠️ **飞书与 Discord 的差异**：飞书 Bot 不能互相 @触发（Discord 可以），所以飞书采用**单 Bot + sessions_spawn 后台调度**架构。用户只看到司礼监一个 Bot，司礼监通过 `sessions_spawn` 在后台派活给六部。
-
-#### 1. 准备服务器
-
-同路径 A，推荐阿里云/腾讯云/华为云（国内延迟更低）。
-
-#### 2. 一键安装
-
-```bash
+# 1️⃣ 一键安装（Linux 示例，其他路径见对应文档）
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
-# 选择模式 2: 飞书单Bot模式
-```
 
-#### 3. 创建飞书应用（只需 1 个）
-
-1. 打开 [飞书开放平台](https://open.feishu.cn/app)，创建企业自建应用（如「AI朝廷-司礼监」）
-2. 复制 **App ID**（`cli_xxx`）和 **App Secret**
-3. **权限管理** → 添加 `im:message` 等 **9 个权限**
-4. **应用能力** → 开启机器人
-5. **事件订阅** → WebSocket 模式 → 添加 `im.message.receive_v1`
-6. **版本管理** → 创建版本并发布
-
-> 📖 详细步骤见 [飞书配置指南](./飞书配置指南.md)
-
-#### 4. 填 Key
-
-```bash
+# 2️⃣ 填入 API Key 和 Bot Token
 nano ~/.openclaw/openclaw.json
-```
 
-填两样东西：
-1. **LLM API Key** — 你的 LLM 服务商
-2. **飞书 App ID + App Secret** — 填到 `channels.feishu.accounts.silijian` 里
-
-#### 5. 启动
-
-```bash
+# 3️⃣ 启动
 systemctl --user start openclaw-gateway
-systemctl --user status openclaw-gateway
 ```
 
-在飞书里给机器人发消息，收到回复就成功了！🎉
+@你的 Bot 说句话，收到回复 = 登基成功！🎉
 
-> 💡 **只需 1 个飞书应用**，司礼监会通过 `sessions_spawn` 自动调度其他 9 个部门在后台协作。Discord 用 @部门派活，飞书用 sessions_spawn 派活，效果完全一样。
-
-</details>
+> 📖 **完整保姆级步骤** → [基础篇教程](./docs/tutorial-basics.md)（含服务器申请、SSH 连接、Discord Bot 创建）
 
 ---
 
-### 路径 E: 纯 WebUI
+### 📍 可选增强（安装完成后随时加）
 
-<details>
-<summary>📖 展开路径 E 详细步骤</summary>
-
-**不需要配 Discord Bot Token 或飞书应用。** Gateway 自带 WebChat，通过浏览器直接与 Agent 对话。
-
-#### 1. 安装
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install-lite.sh)
-# 选择：纯 WebUI 模式
-```
-
-#### 2. 填 LLM API Key
-
-```bash
-nano ~/.openclaw/openclaw.json
-# 只需填 models.providers 里的 API Key
-# channels 部分可以留空或不配
-```
-
-#### 3. 启动
-
-```bash
-openclaw gateway --verbose
-# 或用系统服务：systemctl --user start openclaw-gateway
-```
-
-#### 4. 打开浏览器
-
-访问 `http://你的服务器IP:18789`，进入 Gateway 自带的 Control UI → Chat 标签页，直接对话。
-
-> ✅ **完全不需要 Discord Bot Token 或飞书 App ID。** Gateway 启动只需要 LLM API Key，WebChat 是内置功能。
->
-> 💡 后续想接 Discord 或飞书？随时在 `openclaw.json` 里加 channel 配置，重启 Gateway 即可。
-
-</details>
-
----
-
-### 🪟 Windows 用户？
-
-通过 WSL2 运行，详见 [Windows WSL2 安装指南](./docs/windows-wsl.md)。
-
-### 已有 OpenClaw/Clawdbot？
-
-用精简版脚本，跳过系统依赖安装，只初始化工作区和配置模板：
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install-lite.sh)
-```
-
----
-
-### 安装完成后：全六部上线 + 自动化
-
-无论哪条路径，安装完成后的体验是一样的：
-
-```
-@兵部 帮我写个用户登录的 API
-→ 兵部（强力模型）：完整代码 + 架构建议，大任务自动开 Thread
-
-@户部 这个月 API 花了多少钱
-→ 户部（强力模型）：费用明细 + 优化建议
-
-@礼部 写条小红书文案，主题是 AI 工具推荐
-→ 礼部（快速模型）：文案 + 标签建议
-
-@everyone 明天下午开会，各部门准备周报
-→ 所有 Agent 各自回复确认
-```
-
-配置自动日报：
-```bash
-openclaw gateway token   # 获取 Token
-
-openclaw cron add \
-  --name "每日日报" --agent main \
-  --cron "0 22 * * *" --tz "Asia/Shanghai" \
-  --message "生成今日日报，写入 Notion 并发送到 Discord" \
-  --session isolated --token <你的token>
-```
+| 增强项 | 说明 | 必选？ | 文档 |
+|--------|------|--------|------|
+| 📝 Notion 接入 | 自动日报/周报/知识库归档 | 可选 | [→ Notion 指南](./docs/notion-setup.md) |
+| 🖥️ Web GUI | 可视化管理后台 | 可选 | [→ GUI 文档](./docs/gui.md) |
+| ⏰ 定时任务 | Cron 自动执行 | 可选 | [→ 进阶篇](./docs/tutorial-advanced.md) |
+| 🛡️ 安全加固 | Sandbox 沙箱配置 | 推荐 | [→ 安全须知](./docs/security.md) |
+| 🏥 配置诊断 | 一键排查问题 | 遇到问题时 | [→ 诊断工具](./docs/doctor.md) |
 
 ---
 
 ## 实战案例：菠萝王朝
 
-> 以下是基于本项目搭建的**真实运行中的 AI 朝廷**——菠萝王朝，展示 14 个 Agent 协同运作的完整架构。
-
-### 菠萝王朝组织架构
+> 14 个 Agent，24/7 在线运转的真实生产系统。
 
 ```
-                           ┌──────────────────────┐
-                           │    菠萝皇帝（你）     │
-                           │   Discord + 多端推送   │
-                           └──────────┬───────────┘
-                                      │
-                 ┌────────────────────┼────────────────────┐
-                 ▼                    ▼                    ▼
-        ┌────────────────┐  ┌────────────────┐  ┌────────────────┐
-        │   司礼监        │  │   内阁首辅      │  │   都察院        │
-        │  大内总管       │  │  战略谋划       │  │  左都御史       │
-        │  批红·调度·统领 │  │  票拟·直谏     │  │  纠劾·审查·质控 │
-        └───────┬────────┘  └────────────────┘  └────────────────┘
-                │
-    ┌───────────┼───────────────────────────────────┐
-    │           │           │           │           │
-    ▼           ▼           ▼           ▼           ▼
-┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐
-│ 兵部   │ │ 户部   │ │ 礼部   │ │ 工部   │ │ 刑部   │ │ 吏部   │
-│软件工程│ │财务预算│ │品牌营销│ │基础设施│ │法务合规│ │人事考核│
-│架构部署│ │成本管控│ │社媒公关│ │DevOps │ │风控审查│ │团队管理│
-└────────┘ └────────┘ └────────┘ └────────┘ └────────┘ └────────┘
-
-    ┌───────────────────────────────────────────────┐
-    │              🏛️ 辅助机构                       │
-    ├────────┬────────┬────────┬────────┬────────────┤
-    │ 国子监 │ 翰林院 │ 太医院 │ 内务府 │ 御膳房   │
-    │教育培训 │文书起草 │健康管理 │日程后勤 │膳食推荐    │
-    │知识管理 │论文研究 │营养规划 │起居安排 │食谱研究    │
-    └────────┴────────┴────────┴────────┴────────────┘
+              ┌──────────────────┐
+              │   菠萝皇帝（你）  │
+              └────────┬─────────┘
+       ┌───────────────┼───────────────┐
+       ▼               ▼               ▼
+   ┌────────┐    ┌──────────┐    ┌────────┐
+   │ 司礼监 │    │   内阁   │    │ 都察院 │
+   │ 调度   │    │  战略    │    │  审查  │
+   └───┬────┘    └──────────┘    └────────┘
+       │
+ ┌─────┼─────┬──────┬──────┬──────┐
+ ▼     ▼     ▼      ▼      ▼      ▼
+兵部  户部  礼部   工部   刑部   吏部
+编码  财务  营销   运维   法务   管理
+       +
+ 国子监 · 翰林院 · 太医院 · 内务府 · 御膳房
 ```
 
-### 菠萝王朝运作实况
+| 自动化任务 | 频率 | 描述 |
+|-----------|------|------|
+| 每日简报 | 08:00 | 汇总 GitHub、天气、待办，推送到手机 |
+| 盘前分析 | 工作日 09:15 | 户部拉取市场数据，生成报告 |
+| 起居注 | 22:30 | 自动记录当日大事，写入 Notion |
 
-**14 个 Agent，各有专属 Discord Bot，24/7 在线运转：**
-
-| 机构 | Agent | 日常工作示例 |
-|------|-------|-------------|
-| 司礼监 | 大内总管 | 接收圣旨、分派任务、协调各部、Cron 调度 |
-| 内阁 | 首辅大学士 | 商业战略分析、竞品研究、全局决策建议 |
-| 都察院 | 左都御史 | 代码审查、质量把关、纠正各部错误 |
-| 兵部 | 尚书 | 全栈开发、GitHub PR、系统架构、Bug 修复 |
-| 户部 | 尚书 | 市场数据分析、API 成本追踪、财务报表 |
-| 礼部 | 尚书 | 社媒运营、文案创作、品牌推广 |
-| 工部 | 尚书 | 服务器运维、CI/CD、基础设施巡检 |
-| 刑部 | 尚书 | 开源合规、知识产权维权、合同审查 |
-| 吏部 | 尚书 | 项目管理、创业孵化、人事考核 |
-| 国子监 | 祭酒 | 课程学习辅导、学习规划、知识整理 |
-| 翰林院 | 学士 | 论文写作、读书笔记、技术文档 |
-| 太医院 | 院使 | 健康提醒、饮食建议、运动计划 |
-| 内务府 | 总管 | 日程管理、天气查询、出行提醒 |
-| 御膳房 | 总管 | 美食推荐、食谱研究、外卖选择 |
-
-### 自动化 Cron 任务（实际运行中）
-
-| 任务 | 频率 | 描述 |
-|------|------|------|
-| 每日简报 | 每天 08:00 | 自动汇总 GitHub、天气、待办，推送到手机 |
-| 市场盘前分析 | 工作日 09:15 | 户部自动拉取市场数据，生成分析报告，多渠道推送 |
-| 起居注 | 每天 22:30 | 史官自动记录当日大事，写入 Notion 起居注数据库 |
-| 礼部日报 | 每天 14:00 | 礼部汇报社媒运营数据 |
-
-### Notion 史记式知识库
-
-菠萝王朝使用 Notion 作为「国史馆」，完整存档所有决策和数据：
-
-```
-🏯 菠萝王朝
-├── 本纪（时间线）
-│   ├── 起居注（日报）    ← 每日自动写入
-│   ├── 朔望录（周报）    ← 每周自动汇总
-│   ├── 编年纪（月报）    ← 每月自动总结
-│   └── 大事记            ← 里程碑事件
-├── 表（数据看板）
-│   ├── 食货表（财务）    ← 户部管理
-│   ├── 舆情表（社媒）    ← 礼部管理
-│   ├── 臣工表（人脉）    ← 吏部管理
-│   └── 器用表（工具）    ← 工部管理
-├── 志（知识库）
-│   ├── 天工志（技术）    ← 兵部/工部
-│   ├── 宣化志（运营）    ← 礼部
-│   ├── 经籍志（学业）    ← 国子监
-│   └── 典章志（SOP）     ← 各部流程
-└── 列传（项目档案）
-    └── 11个项目独立档案  ← 全生命周期管理
-```
-
-> 💡 **这不是 demo，是每天在用的生产系统。** 菠萝王朝已稳定运行数周，处理过数百个实际任务——从代码开发到内容运营，从数据分析到项目管理。
+> 📖 **完整案例** → [菠萝王朝详解](./docs/pineapple-dynasty.md)
 
 ---
 
-## 朝廷架构——三省六部制
-
-### 历史背景
-
-三省六部制是中国古代的中央官制体系：
-- **中书省**：起草诏令（= 接收用户指令、生成计划）
-- **门下省**：审核驳回（= 消息路由、权限校验）
-- **尚书省**：执行落实（= Skill 工具层、实际执行）
-
-尚书省下设**六部**，各管一摊。在本项目中，OpenClaw Gateway 扮演三省的角色，六个 AI Agent 对应六部：
-
-| 部门 | 古代职责 | AI 职责 | 推荐模型 | 典型场景 |
-|------|----------|---------|----------|----------|
-| **司礼监** | 皇帝近侍、批红 | 总管调度 | 快速模型 | 日常对话、任务分配、自动汇报 |
-| **兵部** | 军事武备 | 软件工程 | 强力模型 | 写代码、架构设计、代码审查、Bug 调试 |
-| **户部** | 户籍财税 | 财务运营 | 强力模型 | 成本分析、预算管控、电商运营 |
-| **礼部** | 礼仪外交 | 品牌营销 | 快速模型 | 文案创作、社媒运营、内容策划 |
-| **工部** | 工程营造 | 运维部署 | 快速模型 | DevOps、CI/CD、服务器管理 |
-| **吏部** | 官员选拔 | 项目管理 | 快速模型 | 创业孵化、任务追踪、团队协调 |
-| **刑部** | 司法刑狱 | 法务合规 | 快速模型 | 合同审查、知识产权、合规检查 |
-
-> 💡 模型分层策略：重活（编码/分析）用 强力模型，轻活（文案/管理）用 快速模型，能省 5 倍成本。也可以接入 经济模型 等国产模型进一步降本。
-
-### 多 Provider 混搭（可选）
-
-默认模板用单一 Provider，但你可以同时接入多家，给不同部门分配不同模型：
-
-```json5
-// openclaw.json 中的 models.providers 支持多个
-{
-  "models": {
-    "providers": {
-      "anthropic": {
-        "baseUrl": "https://api.anthropic.com",
-        "apiKey": "sk-ant-xxx",
-        "api": "anthropic-messages",
-        "models": [
-          { "id": "claude-sonnet-4-5", "name": "Claude Sonnet 4.5", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 }
-        ]
-      },
-      "deepseek": {
-        "baseUrl": "https://api.deepseek.com/v1",
-        "apiKey": "sk-xxx",
-        "api": "openai-completions",
-        "models": [
-          { "id": "deepseek-chat", "name": "DeepSeek V3", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
-        ]
-      }
-    }
-  }
-}
-```
-
-然后在 `agents.list` 里按需分配：
-
-```json5
-{ "id": "bingbu", "model": { "primary": "anthropic/claude-sonnet-4-5" } },  // 重活用 Claude
-{ "id": "libu",   "model": { "primary": "deepseek/deepseek-chat" } }        // 轻活用 DeepSeek 省钱
-```
-
-> 格式：`provider名/模型id`。支持任何兼容 OpenAI API 格式的服务商（Ollama、通义千问、Gemini 等），详见 [OpenClaw 模型配置文档](https://docs.openclaw.ai/concepts/models)。
-
----
-
-## 核心能力
-
-### 多 Agent 协作
-每个部门是独立 Bot，@谁谁回复，@everyone 全员响应。大任务自动新建 Thread 保持频道整洁。
-
-**内置审批流程：**
-司礼监派发任务时自动触发审查链——代码类任务完成后自动 spawn 都察院审查，重大决策自动 spawn 内阁审议。都察院审查不通过会驳回修改，内阁有否决权。
-
-```
-皇帝 → @司礼监 重构用户系统
-          │
-          ├── spawn 兵部：编码实现
-          │       │
-          │       └── 完成后 → spawn 都察院：代码审查
-          │                       │
-          │                       ├── ✅ 通过 → 合并
-          │                       └── ❌ 驳回 → 打回兵部修改
-          │
-          └── 涉及架构变更 → spawn 内阁：审议
-                              │
-                              ├── ✅ 批准 → 继续执行
-                              └── ❌ 否决 → 汇报皇帝另议
-```
-
-> ⚠️ 想让 Bot 之间互相触发（如成语接龙、多 Bot 讨论），需在 `openclaw.json` 的 `channels.discord` 中加上 `"allowBots": true`。不加的话 Bot 默认忽略其他 Bot 的消息。同时每个 account 都要设置 `"groupPolicy": "open"`，否则群聊消息会被静默丢弃。
-
-### 独立记忆系统
-每个 Agent 有独立的工作区和 `memory/` 目录。对话积累的项目知识会持久化到文件，跨会话保留。Agent 越用越懂你的项目。
-
-### 60+ Skill 生态（基于 OpenClaw 框架）
-不只是聊天——OpenClaw 框架内置 60+ Skill 覆盖开发全流程，且可通过 [OpenClaw Skill 生态](https://github.com/openclaw/openclaw) 扩展更多：
-
-| 类别 | Skill |
-|------|-------|
-| 开发 | GitHub（Issue/PR/CI）、Coding Agent（代码生成与重构） |
-| 文档 | Notion（数据库/页面/自动汇报） |
-| 信息 | 浏览器自动化、Web 搜索、Web 抓取、Hacker News |
-| 自动化 | Cron 定时任务、心跳自检 |
-| 媒体 | TTS 语音、截图、视频帧提取 |
-| 运维 | tmux 远程控制、Shell 命令执行、天气查询 |
-| 通信 | Discord、Slack、飞书（Lark）、Telegram、WhatsApp、Signal… |
-| 扩展 | OpenClaw Hub 社区 Skill、自定义 Skill |
-
-#### 📦 本项目预装 Skill（`skills/` 目录）
-
-| Skill | 说明 | 需要 API Key |
-|-------|------|:---:|
-| `weather` | 天气查询（wttr.in / Open-Meteo） | ❌ |
-| `github` | GitHub 操作（gh CLI） | ❌（需 `gh auth login`） |
-| `notion` | Notion 页面/数据库管理 | ✅ |
-| `hacker-news` | Hacker News 浏览和搜索 | ❌ |
-| `browser-use` | 浏览器自动化（社媒管理、数据抓取） | ❌ |
-| `quadrants` | 四象限任务管理（quadrants.ch） | ✅ |
-| `openviking` | 向量知识库（火山引擎开源） | ✅ |
-
-> 💡 这些只是起步包。通过 `openclaw skill install <skill名>` 可以随时从社区获取更多 Skill。
-
-### 定时任务（Cron）
-内置 Cron 调度器，让 Agent 定时自动执行：
-- 每天自动写日报，发到 Discord + 存到 Notion
-- 每周汇总周报
-- 定时健康检查、代码备份
-- 自定义任意定时任务
-
-### 好友协作
-邀请朋友进 Discord 服务器，所有人都能 @各部门 Bot 下达指令。互不干扰，结果大家都能看到。
-
-### 沙箱隔离
-Agent 可以运行在 Docker 沙箱中，代码执行互不干扰。支持配置网络、文件系统、环境变量的隔离级别。
-
----
-
-<details>
-<summary><h2>🖥️ GUI 管理界面</h2></summary>
-
-除了 Discord 命令行交互，AI 朝廷还提供多种图形界面（GUI）管理方式：
-
-### Web 管理后台（菠萝王朝 Dashboard）
-
-本项目内置了一套 Web 管理后台（`gui/` 目录），基于 React + TypeScript + Vite 构建：
-
-<p align="center">
-  <img src="./images/gui-court.png" alt="朝堂总览 — 各部门状态一目了然" width="90%" />
-  <br/>
-  <em>朝堂总览 — 御座、六部、诸院，在线状态一目了然</em>
-</p>
-
-<p align="center">
-  <img src="./images/gui-sessions.png" alt="会话管理 — Token 消耗、消息统计" width="90%" />
-  <br/>
-  <em>会话管理 — 88 个会话、9008 条消息、87.34M Token 消耗实时追踪</em>
-</p>
-
-功能包括：
-- **仪表盘**：实时查看各部门状态、Token 消耗、系统负载
-- **朝堂**：直接在 Web 端与各部门 Bot 对话
-- **会话管理**：查看所有历史会话、消息详情、Token 统计
-- **定时任务**：可视化管理 Cron 任务（启用/禁用/手动触发）
-- **Token 统计**：按部门、按日期的 Token 消耗分析
-- **系统健康**：CPU/内存/磁盘监控、Gateway 状态
-
-**启动方式：**
-```bash
-# 1. 先 clone 教程仓库（如果还没有）
-git clone https://github.com/wanikua/boluobobo-ai-court-tutorial.git
-cd boluobobo-ai-court-tutorial
-
-# 2. 构建前端
-cd gui && npm install && npm run build
-
-# 3. 安装后端依赖并启动（设置登录密码）
-cd server && npm install
-BOLUO_AUTH_TOKEN=你的密码 node index.js
-```
-
-> ⚠️ **登录密码说明**：启动后端时通过环境变量 `BOLUO_AUTH_TOKEN` 设置登录密码。打开页面后用这个密码登录。如果不想要密码验证，需要修改 `server/index.js` 中的 `authMiddleware`。
-
-访问地址：`http://你的服务器IP:18795`
-
-> 💡 生产环境建议通过 Nginx 反向代理 + HTTPS 访问，不要直接暴露端口。长期运行建议用 `pm2` 或 `screen`：`BOLUO_AUTH_TOKEN=你的密码 pm2 start server/index.js --name boluo-gui`
-
-### Discord 作为 GUI
-
-Discord 本身就是最佳的 GUI 管理界面：
-- **手机 + 电脑**同步，随时随地管理
-- **频道分类**天然对应各部门（兵部、户部、礼部…）
-- **消息历史**永久保存，自带搜索
-- **权限管理**精细控制谁能看什么、谁能操作什么
-- **@mention** 即可调用任意 Agent，零学习成本
-
-### Notion 作为数据可视化补充
-
-通过 OpenClaw 的 Notion Skill 集成，朝廷的数据可以自动同步到 Notion：
-- **起居注（日报）**、**朔望录（周报）**自动生成
-- **食货表（财务）**自动记录 API 消耗
-- **列传（项目）**追踪各项目进展
-- Notion 的看板、日历、表格视图提供丰富的数据可视化
-
-> 💡 三层 GUI 配合使用：**Web Dashboard** 看系统状态 → **Discord** 下达指令 → **Notion** 查看报表和历史数据。
-
-</details>
-
----
-
-<details>
-<summary><h2>📖 详细教程</h2></summary>
-
-配套小红书系列视频教程的文字稿，适合跟着一步步操作：
-
-- **[基础篇.txt](./基础篇.txt)** — 从零开始：云服务器申请 → SSH 连接 → 安装 → 配置 → 跑起来
-- **[进阶篇.txt](./进阶篇.txt)** — 进阶技巧：tmux、GitHub 集成、Notion 归档、Cron 定时任务、Discord 配置、Prompt 技巧
-
-> 💡 这些是小红书笔记的纯文本版本，配合视频食用效果更佳。
-
-</details>
-
----
-
-<details>
-<summary><h2>📱 接入飞书（Feishu/Lark）</h2></summary>
-
-> 📖 **安装步骤见 [→ 路径 D: Linux + 飞书](#路径-d-linux--飞书国内推荐)**，这里只放排查指南。
->
-> 📖 **本项目飞书详细指南**：[飞书配置指南.md](./飞书配置指南.md)（含单 Bot + sessions_spawn 架构说明、完整配置示例）
->
-> 📖 OpenClaw 官方飞书文档：[docs.openclaw.ai/channels/feishu](https://docs.openclaw.ai/channels/feishu)
-
-### 飞书排查指南
-
-Bot @了不回？按这个顺序排查：
-
-**① 事件订阅（最常见原因）**
-飞书开放平台 → 你的应用 → 事件与回调：
-- 订阅方式选 **WebSocket**（不是 HTTP）
-- 已添加事件：`im.message.receive_v1`（接收消息）
-- 状态显示 **已启用**
-
-> ⚠️ 配置事件订阅前需要先启动 Gateway，否则 WebSocket 长连接可能保存失败。
-
-**② 权限检查**
-应用管理 → 权限管理，确认已开启（至少需要前 6 个）：
-
-| 权限 | 用途 | 必须 |
-|------|------|------|
-| `im:message` | 获取与发送消息 | ✅ |
-| `im:message:send_as_bot` | 以机器人身份发消息 | ✅ |
-| `im:message:readonly` | 读取消息 | ✅ |
-| `im:message.p2p_msg:readonly` | 获取单聊消息 | ✅ |
-| `im:message.group_at_msg:readonly` | 获取群组 @消息 | ✅ |
-| `im:resource` | 获取消息中的资源文件 | ✅ |
-| `im:chat.members:bot_access` | 获取群成员信息 | 推荐 |
-| `im:chat.access_event.bot_p2p_chat:read` | 获取单聊事件 | 推荐 |
-| `contact:user.employee_id:readonly` | 获取用户工号 | 推荐 |
-
-**③ 配置文件检查**
-```json5
-// openclaw.json 中必须有（account key 必须和 bindings 里的 accountId 一致）：
-"channels": {
-  "feishu": {
-    "enabled": true,
-    "dmPolicy": "open",
-    "groupPolicy": "open",
-    "accounts": {
-      "silijian": {
-        "appId": "cli_你的AppID",
-        "appSecret": "你的AppSecret"
-      }
-    }
-  }
-}
-```
-> ⚠️ account key 要用 `silijian`（与 install.sh 生成的一致），不要用 `main`。如果 key 和 bindings 的 `accountId` 对不上，消息会路由失败。
-
-**④ 机器人能力**
-飞书开放平台 → 应用能力 → 确认开启了 **机器人** 能力，且 Bot 已被添加到目标群聊。
-
-**⑤ @方式**
-飞书里要从弹出列表中选择机器人，不能只手打文字 "@xxx"。
-
-**⑥ 查看日志**
-```bash
-# 看 Gateway 有没有收到飞书消息
-journalctl --user -u openclaw-gateway --since "5 min ago" | grep -i "feishu\|lark"
-
-# 常见报错：
-# "feishu: not connected" → appId/appSecret 错误
-# "feishu: event not received" → 事件订阅未配置
-# 没有任何 feishu 日志 → channels.feishu 未启用
-```
-
-**⑦ 配对确认（仅 `dmPolicy: "pairing"` 时）**
-如果使用 `dmPolicy: "pairing"`，首次私聊需要在服务器上批准：
-```bash
-openclaw pairing approve feishu <配对码>
-```
-如果使用 `dmPolicy: "open"`，此步跳过。
-
-> 💡 90% 的飞书连接问题出在事件订阅和权限配置上。按 ①→② 的顺序检查通常就能解决。
-
-</details>
-
----
-
-<details>
-<summary><h2>📝 接入 Notion（自动归档）</h2></summary>
-
-AI 朝廷可以通过 Notion Skill 自动写日报、归档数据、管理知识库。配置只需 3 步。
-
-### 第一步：创建 Notion Integration
-
-1. 访问 [Notion Integrations](https://www.notion.so/profile/integrations)
-2. 点击 **New integration**（新建集成）
-3. 填写名称（如「AI 朝廷」），选择关联的 Workspace
-4. 创建后复制 **Internal Integration Secret**（格式 `ntn_xxx` 或 `secret_xxx`）
-
-### 第二步：存储 API Key
-
-```bash
-# 创建配置目录并保存 Key
-mkdir -p ~/.config/notion
-echo "ntn_你的token" > ~/.config/notion/api_key
-```
-
-### 第三步：授权页面/数据库
-
-这一步**很关键**，不做的话 API 会返回 404：
-
-1. 打开你想让 AI 访问的 Notion 页面或数据库
-2. 点击右上角 **`···`** → **Connect to**（连接到）
-3. 选择你刚创建的 Integration 名称
-4. 子页面会自动继承权限
-
-> ⚠️ **每个要访问的顶级页面/数据库都需要手动授权一次**，Integration 不会自动获得整个 Workspace 的权限。
-
-### 验证
-
-```bash
-# 测试 API 是否通了
-NOTION_KEY=$(cat ~/.config/notion/api_key)
-curl -s "https://api.notion.com/v1/users/me" \
-  -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2025-09-03" | head -c 200
-```
-
-看到返回的 JSON 包含你的 Integration 名称就说明配置成功了。
-
-### 使用示例
-
-配好后就可以在 Discord 里让 Agent 操作 Notion：
-
-```
-@司礼监 把今天的工作总结写到 Notion 日报里
-@户部 创建一个新的财务数据库，字段包含日期、收入、支出、备注
-@礼部 把这周的社媒数据更新到 Notion 舆情表
-```
-
-> 💡 Notion 适合做**持久化存档**（日报/周报/知识库），Discord 适合做**实时交互**，两者配合效果最佳。
->
-> 📖 Notion API 文档：[developers.notion.com](https://developers.notion.com)
-
-</details>
-
----
-
-<details>
-<summary><h2>🏥 配置诊断（doctor.sh）</h2></summary>
-
-遇到问题？跑一行命令自动检查配置：
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/doctor.sh)
-```
-
-诊断内容包括：
-- ✅ OpenClaw/Node.js 安装检查
-- ✅ 配置文件格式和 API Key 检查
-- ✅ Discord Bot Token、allowBots、groupPolicy 检查
-- ✅ Agent 和 Binding 路由匹配检查
-- ✅ 工作区文件（SOUL.md / USER.md / memory/）检查
-- ✅ Notion 等可选集成检查
-- ✅ **@everyone 不触发的完整排查清单**
-
-### @everyone 不触发 Bot 回复？
-
-这是最常见的问题，通常原因是 **Discord Developer Portal 的 Intent 没开**：
-
-1. 打开 [Discord Developer Portal](https://discord.com/developers/applications)
-2. 选择你的 Bot → 左侧 **Bot** 页面
-3. 往下翻到 **Privileged Gateway Intents**，开启以下三项：
-   - ✅ **Message Content Intent**（必须）
-   - ✅ **Server Members Intent**（必须）
-   - ✅ **Presence Intent**（可选）
-4. **每个 Bot 都要开**，不是只开一个！
-5. 确认服务器里每个 Bot 的角色有 **View Channels** 权限
-6. 确认配置文件里 `channels.discord.groupPolicy` 和每个 account 的 `groupPolicy` 都是 `"open"`
-
-> ⚠️ 改完 Intent 后需要**重启 Gateway**：`openclaw gateway restart` 或 `systemctl --user restart openclaw-gateway`
-
-</details>
-
----
-
-<details>
-<summary><h2>❓ 常见问题</h2></summary>
-
-### 基础问题
+## 常见问题
 
 **Q: 需要会写代码吗？**
-不需要。一键脚本搞定安装，配置文件填几个 Key 就行。所有交互都是在 Discord 里用自然语言。
+→ 不需要。一键脚本安装，配置填 Key，Discord 里自然语言交互。
 
 **Q: 和直接用 ChatGPT 有什么区别？**
-ChatGPT 是一个通才，对话结束就失忆。这套系统是多个专家——每个 Agent 有自己的专业领域、持久记忆和工具权限。能自动写代码提交 GitHub、自动写文档到 Notion、定时执行任务。
+→ ChatGPT 是单通才，关掉就失忆。这里是多专家，各有记忆和工具，能自动提交 GitHub、写 Notion、跑定时任务。
 
-**Q: 能用其他模型吗？**
-能。OpenClaw 支持 Anthropic、OpenAI、Google Gemini 等主流服务商，也可接入其他兼容 OpenAI API 格式的服务商。在 `openclaw.json` 里改 model 配置就行。不同部门可以用不同模型。
+**Q: 每月 API 费用？**
+→ 轻度 $10-15，中度 $20-30。重活用强力模型，轻活用快速模型（省 5 倍）。
 
-**Q: 每月 API 费用大概多少？**
-看使用强度。轻度使用 $10-15/月，中度 $20-30/月。省钱技巧：重活用 强力模型，轻活用 快速模型（便宜约 5 倍），简单任务可接入 经济模型 等国产模型进一步降本。
+**Q: @everyone 不触发回复？**
+→ 每个 Bot 要开 Message Content Intent + Server Members Intent。详见 [诊断工具](./docs/doctor.md)。
 
-**Q: 和 Become CEO 项目有什么关系？**
-[Become CEO](https://github.com/wanikua/become-ceo) 是本项目的英文企业版，使用相同的 OpenClaw 框架和架构，只是将朝廷角色换成了现代企业角色（CTO、CFO 等）。喜欢中国古代风格选 AI 朝廷，喜欢现代企业风格选 Become CEO。
+**Q: Agent 报「只读文件系统」？**
+→ sandbox mode 导致的。不跑代码的部门设 `"sandbox": { "mode": "off" }`。详见 [安全须知](./docs/security.md)。
 
-### 技术问题
+> 📖 **完整 FAQ** → [常见问题](./docs/faq.md)
 
-**Q: @everyone 不触发 Agent 回复？**
-Discord Developer Portal 里每个 Bot 要开启 **Message Content Intent** 和 **Server Members Intent**，服务器里 Bot 角色要有 View Channels 权限。OpenClaw 会把 @everyone 当作对每个 Bot 的显式 mention，权限到位就能触发。
+---
 
-**Q: Agent 报「只读文件系统」「apt 失败」怎么办？**
-这是 sandbox mode `"all"` 导致的 — Agent 跑在 Docker 容器里，文件系统只读、不能装软件。
+## 企业版：Become CEO
 
-**最简单的解法：** 不写代码的部门直接关掉沙箱：
-```json
-"sandbox": { "mode": "off" }
-```
+喜欢现代企业风格？同一架构，用 CEO/CTO/CFO 代替朝廷六部：
 
-**如果必须开沙箱但需要更多权限：**
-```json
-"sandbox": {
-  "mode": "all",
-  "workspaceAccess": "rw",
-  "docker": {
-    "network": "bridge",
-    "env": { "LLM_API_KEY": "你的LLM_API_KEY" }
-  }
-}
-```
-- `workspaceAccess: "rw"` — 让沙箱能读写工作目录
-- `docker.network: "bridge"` — 允许联网（默认断网）
-- `docker.env` — 传入 API Key（沙箱不继承主机环境变量）
-
-> 详细说明见下方「🛡️ 安全须知」中的 Sandbox 沙箱配置部分
-
-**Q: 多人同时 @ 同一个 Agent 会冲突吗？**
-不会。OpenClaw 为每个用户 × Agent 组合维护独立的会话（session）。多人同时 @兵部，各自的对话互不干扰。
-
-**Q: Agent 之间能互相调用吗？**
-能。Agent 可以通过 `sessions_spawn` 产生子任务给其他 Agent，也可以通过 `sessions_send` 发消息给其他 Agent 的会话。比如司礼监可以把编码任务派给兵部。
-
-**Q: 怎么自定义 Skill？**
-OpenClaw 有内置的 Skill Creator 工具，可以创建自定义 Skill。每个 Skill 是一个包含 `SKILL.md`（指令）+ 脚本 + 资源的目录。放到工作区的 `skills/` 目录下即可被 Agent 使用。也可以从 [OpenClaw Skill 生态](https://github.com/openclaw/openclaw) 获取社区共享的 Skill。
-
-**Q: 怎么接入私有模型（Ollama 等）？**
-在 `openclaw.json` 的 `models.providers` 中添加兼容 OpenAI API 格式的 provider，指定 `baseUrl` 到你的 Ollama 地址即可。Ollama 本地模型零 API 费用。
-
-**Q: 启动时报 "workspace does not exist" 怎么办？**
-OpenClaw 不会自动创建 Agent 的工作目录。如果你给某些 Agent 单独配了 `workspace`（如 `~/.openclaw/workspace-bingbu`），需要手动创建：
-```bash
-# 方法一：手动创建缺失的目录
-mkdir -p ~/.openclaw/workspace-bingbu ~/.openclaw/workspace-hubu  # ...等等
-
-# 方法二（推荐）：所有 Agent 共用一个工作区，不需要单独配
-# 只在 agents.defaults 里设 workspace，不要给每个 agent 单独设
-```
-```json
-// ✅ 推荐：统一用 defaults.workspace，所有 Agent 共用
-"agents": {
-  "defaults": { "workspace": "$HOME/clawd" },
-  "list": [
-    { "id": "silijian" },    // 自动继承 $HOME/clawd
-    { "id": "bingbu" }       // 自动继承 $HOME/clawd
-  ]
-}
-```
-> 💡 install.sh 生成的配置已经是统一 workspace 模式。如果你手动改过配置加了 per-agent workspace，确保对应目录存在。
-
-**Q: Gateway 启动失败怎么排查？**
-```bash
-# 查看详细日志
-journalctl --user -u openclaw-gateway --since today --no-pager
-
-# 配置检查
-openclaw doctor
-
-# 常见原因：API Key 未填、JSON 格式错误、Bot Token 无效
-```
-
-**Q: 报 config invalid 错误？**
-新版 OpenClaw 移除了一些过期字段（如 `runTimeoutSeconds`、`subagents.maxConcurrent`），如果你的配置文件里还有这些字段，会报验证错误。解决方法：
-```bash
-# 自动修复配置
-openclaw doctor --fix
-```
-手动检查：确保 `models.providers` 中的 `api` 字段值为有效格式（如 `"openai"`、`"anthropic"` 等），而不是占位符。
-
-**Q: Windows 能用吗？**
-可以！通过 WSL2（Windows Subsystem for Linux）运行。详见 [Windows WSL2 安装指南](./docs/windows-wsl.md)。
-
-</details>
+👉 **[Become CEO](https://github.com/wanikua/become-ceo)** — 同框架，企业角色，英文版
 
 ---
 
 ## 加入朝会
 
-| 小红书「菠萝菠菠🍍」 | 公众号「菠言菠语」 | 微信群「OpenClaw 皇帝交流群」 |
+| 小红书「菠萝菠菠🍍」 | 公众号「菠言菠语」 | 微信群 |
 |:---:|:---:|:---:|
-| <a href="https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d"><img src="./images/avatar-xiaohongshu.png" width="180" style="border-radius:50%"/></a> | <img src="./images/qr-wechat-official.jpg" width="180"/> | <img src="./images/qr-wechat-group.png" width="180"/> |
-| [@菠萝菠菠🍍](https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d) | 关注获取最新教程和更新 | 群二维码过期请关注公众号获取最新入口 |
-
----
+| <a href="https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d"><img src="./images/avatar-xiaohongshu.png" width="150" style="border-radius:50%"/></a> | <img src="./images/qr-wechat-official.jpg" width="150"/> | <img src="./images/qr-wechat-group.png" width="150"/> |
+| [@菠萝菠菠🍍](https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d) | 关注获取最新教程 | 群二维码过期请关注公众号 |
 
 ## 🤝 推荐
 
@@ -1171,129 +229,39 @@ openclaw doctor --fix
 
 ## 相关链接
 
-- 🏢 [Become CEO — 企业版（English）](https://github.com/wanikua/become-ceo) — 同一架构的现代企业版
+- 🏢 [Become CEO — 企业版（English）](https://github.com/wanikua/become-ceo)
 - 🎭 [AI 朝廷 Skill — 中文版](https://github.com/wanikua/ai-court-skill)
-- 🔧 [OpenClaw 框架](https://github.com/openclaw/openclaw) — 本项目的底层框架
+- 🔧 [OpenClaw 框架](https://github.com/openclaw/openclaw)
 - 📖 [OpenClaw 官方文档](https://docs.openclaw.ai)
+- 📚 [完整文档目录](./docs/README.md)
 
 ---
 
 ## ⚠️ 维权声明
 
-本项目于 **2026年2月22日** 首发（[小红书推广帖更早于2月20日](https://www.xiaohongshu.com/discovery/item/6998638f000000000d0092fe?source=webshare)），是「三省六部制 × AI 多智能体」概念的原创项目。近日发现有项目在 21 小时后创建了 15/15 核心设计决策完全一致的仿品，且不注明来源。完整证据链见 [GitHub Issue](https://github.com/cft0808/edict/issues/55) | [维权文章](https://mp.weixin.qq.com/s/erVkoANrpZQFawMCNn6p9g)。我们欢迎 fork 和二次开发，但请尊重开源精神，注明出处。
+本项目于 **2026年2月22日** 首发（[小红书推广帖更早于2月20日](https://www.xiaohongshu.com/discovery/item/6998638f000000000d0092fe?source=webshare)），是「三省六部制 × AI 多智能体」概念的原创项目。完整证据链见 [GitHub Issue](https://github.com/cft0808/edict/issues/55) | [维权文章](https://mp.weixin.qq.com/s/erVkoANrpZQFawMCNn6p9g)。欢迎 fork 和二次开发，请尊重开源精神，注明出处。
 
-> 📌 **关于原创性** — 本项目首次提交于 **2026-02-22**（[commit 记录](https://github.com/wanikua/boluobobo-ai-court-tutorial/commits/main)），是「用中国古代官制隐喻 AI 多 Agent 协作」这一概念的原始实现。我们注意到 [cft0808/edict](https://github.com/cft0808/edict)（首次提交 2026-02-23，晚约 21 小时）在框架选型、SOUL.md 人格文件、部署方式、竞品对比表格等方面与本项目高度一致，详见 [Issue #55](https://github.com/cft0808/edict/issues/55)。
->
-> **欢迎转载，请注明出处。**
->
-> 📕 小红书原创系列：[用AI当上皇帝的第3天，我已经欲罢不能了](https://www.xiaohongshu.com/discovery/item/6998638f000000000d0092fe) | [赛博皇帝的日常：睡前下旨，AI连夜肝完代码](https://www.xiaohongshu.com/discovery/item/69a95dc3000000002801e886)
+> 📕 小红书原创系列：[用AI当上皇帝的第3天](https://www.xiaohongshu.com/discovery/item/6998638f000000000d0092fe) | [赛博皇帝的日常](https://www.xiaohongshu.com/discovery/item/69a95dc3000000002801e886)
 
 ---
 
-## 🛡️ 安全须知（新手必读）
+## 🛡️ 安全须知
 
-### ⚠️ 不建议在本地电脑安装
+> 详细配置见 [安全须知文档](./docs/security.md)
 
-**强烈建议使用云服务器，不要在个人电脑上跑 Agent：**
-
-| | 云服务器 | 本地电脑 |
-|---|---|---|
-| Agent 能动的文件 | 仅服务器上的工作区 | **你的所有个人文件** |
-| 搞坏了怎么办 | 重建服务器，5 分钟恢复 | 个人文件可能丢失 |
-| API Key 泄露风险 | 隔离在服务器 | 暴露在个人环境 |
-| 24 小时在线 | ✅ 服务器不关机 | ❌ 关电脑就停了 |
-
-> 🔴 **特别提醒**：Agent 拥有工作区内的**完整读写权限**，包括执行命令。如果你把工作区设成 `$HOME`（家目录），Agent 理论上可以读写你的所有文件。在云服务器上这不是问题（服务器本来就是给它用的），但在个人电脑上就是安全隐患。
-
-### 🔒 Workspace 权限配置（重要）
-
-`workspace` 是 Agent 的"领地"——它只能读写这个目录。配置原则：
-
-```
-✅ 推荐：专用目录
-"workspace": "/home/ubuntu/clawd"        ← Agent 只能动这个目录
-
-❌ 危险：家目录
-"workspace": "/home/ubuntu"              ← Agent 能动你所有文件
-
-❌ 绝对不要：根目录
-"workspace": "/"                         ← 等于给 Agent root 权限
-```
-
-**Sandbox 沙箱配置详解：**
-
-沙箱 = Docker 容器。开了沙箱的 Agent 会在独立容器里运行，**文件系统只读、不能 apt 装软件、不继承主机环境变量**。好处是安全隔离，坏处是能力受限。
-
-| 模式 | 含义 | 适合谁 | 能做什么 |
-|------|------|--------|----------|
-| `"off"` | **不用沙箱**，直接在主机上运行 | 司礼监、礼部、户部等不跑代码的 | ✅ 读写文件 ✅ 装软件 ✅ 网络 ✅ 完整权限 |
-| `"non-main"` | **主对话不沙箱，spawn 出来的子任务沙箱** | defaults 默认值 | 主对话正常，子任务隔离 |
-| `"all"` | **所有对话都在沙箱里** | 兵部、都察院等要跑代码的 | ❌ 只读文件系统 ❌ 不能装软件 ✅ 工作区可读写 |
-
-> ⚠️ **常见坑：** 如果你的 Agent 报「只读文件系统」「apt 失败」，十有八九是 sandbox mode 设成了 `all`。不写代码的部门直接设 `"off"` 就行。
-
-**推荐配置：**
-- 🔴 **需要跑代码的（兵部、都察院）** → `"mode": "all", "scope": "agent"`（安全隔离）
-- 🟢 **不跑代码的（礼部、户部、吏部、刑部、翰林院等）** → `"mode": "off"`（完整能力）
-- 🟡 **司礼监** → `"mode": "off"`（需要调度所有部门，必须有完整权限）
-
-```json
-"agents": {
-  "defaults": {
-    "workspace": "/home/ubuntu/clawd",
-    "sandbox": { "mode": "non-main" }
-  },
-  "list": [
-    { "id": "silijian", "sandbox": { "mode": "off" } },
-    { "id": "bingbu", "sandbox": { "mode": "all", "scope": "agent" } },
-    { "id": "duchayuan", "sandbox": { "mode": "all", "scope": "agent" } },
-    { "id": "libu", "sandbox": { "mode": "off" } },
-    { "id": "hubu", "sandbox": { "mode": "off" } }
-  ]
-}
-```
-
-> 💡 `"scope": "agent"` 表示每个 Agent 有自己独立的沙箱容器，互不干扰。
-
-### 🔑 API Key 安全
-
-- **不要** 把含 API Key 的配置文件提交到 GitHub 公开仓库
-- **不要** 在群聊里发 API Key
-- **建议** 给 API Key 设置用量上限（在 LLM 服务商后台）
-- **建议** 定期轮换 Key
+- 🔴 **不要在个人电脑上安装**——用云服务器，出问题随时重建
+- 🔴 **workspace 设专用目录**（如 `/home/ubuntu/clawd`），不要设成家目录
+- 🔴 **API Key 不要提交到公开仓库**
+- 💡 不跑代码的部门 sandbox 设 `"off"`，跑代码的设 `"all"`
 
 ---
 
-## 免责声明 / Disclaimer
+## 免责声明
 
-本项目按"原样"提供，不承担任何直接或间接责任。/ This project is provided "as is" without any warranties.
-
-**使用前请注意 / Please note:**
-
-1. **AI 生成内容仅供参考 / AI-generated content is for reference only**
-   - AI 生成的代码、文案、建议等可能存在错误或不准确之处
-   - 使用前请自行审核，确认无风险后再实际应用
-   - Code, suggestions, etc. may contain errors. Please review before using in production.
-
-2. **代码安全 / Code Security**
-   - 自动生成的代码建议在合并前进行 code review
-   - 涉及财务、安全敏感的操作请务必人工复核
-   - Review AI-generated code before merging. Human review required for financial/sensitive operations.
-
-3. **API 密钥安全 / API Key Security**
-   - 请妥善保管您的 API 密钥 / Keep your API keys safe
-   - 不要将包含密钥的配置文件提交到公开仓库 / Don't commit config files with keys to public repos
-
-4. **服务器费用 / Server Costs**
-   - 免费服务器（云服务商 等）有一定使用限额 / Free servers have usage limits
-   - 超出限额后可能产生费用，请留意账单 / Excess usage may incur charges
-
-5. **数据备份 / Data Backup**
-   - 建议定期备份您的工作区和数据 / Regularly backup your workspace
-   - 本项目不提供任何数据保证 / This project provides no data guarantees
+本项目按"原样"提供，不承担任何直接或间接责任。AI 生成内容仅供参考，使用前请自行审核。涉及财务、安全敏感操作请务必人工复核。详见 [安全须知](./docs/security.md)。
 
 ---
 
 v3.5.1 | MIT License
 
-> 📜 This project is licensed under MIT. If you create derivative works or projects inspired by this architecture, please credit the original: [boluobobo-ai-court-tutorial](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua)
+> 📜 Licensed under MIT. Derivative works please credit: [boluobobo-ai-court-tutorial](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua)
