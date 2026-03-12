@@ -315,6 +315,6 @@ npm update -g openclaw && systemctl --user restart openclaw-gateway
 
 ---
 
-v3.0 | MIT License
+v3.5.1 | MIT License
 
 > 📜 Licensed under MIT. Derivative works please credit: [boluobobo-ai-court-tutorial](https://github.com/wanikua/boluobobo-ai-court-tutorial) by [@wanikua](https://github.com/wanikua)

@@ -31,6 +31,10 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 
 **One command. 5 minutes. You are the Emperor.** [→ Quick Start](#quick-start-three-steps-to-the-throne)
 
+🏥 **Having issues?** `bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/doctor.sh)` — [Doctor Tool Docs](./docs/doctor.md)
+
+🤖 **Don't want to read docs?** Give [this Prompt](./docs/install-prompt.md) to your AI assistant (Claude / ChatGPT / DeepSeek) and let it guide you step by step.
+
 </div>
 
 <p align="center">
@@ -91,6 +95,14 @@ The Three Departments and Six Ministries system ran for over 1,300 years — one
 ## Quick Start (Three Steps to the Throne)
 
 > 🔴 **Beginners: use a cloud server, not your personal computer.** See [Security Guide](./docs/security.md).
+
+### 📍 Step 0: Already Have OpenClaw?
+
+> Already running OpenClaw? No need to reinstall. Use the lite script to initialize the court workspace and config template:
+> ```bash
+> bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install-lite.sh)
+> ```
+> Then skip to Step 3 to fill in your keys. **New users: ignore this, start from Step 1.**
 
 ### 📍 Step 1: Got a Server?
 
@@ -230,6 +242,23 @@ This project was first published on **February 22, 2026**. Full evidence: [GitHu
 - 🔴 **Set workspace to a dedicated directory** (e.g., `/home/ubuntu/clawd`)
 - 🔴 **Never commit API keys to public repos**
 - 💡 Non-coding departments: sandbox `"off"`. Coding departments: sandbox `"all"`
+
+---
+
+## 🔄 Already Installed? One-Click Update
+
+> 💡 Safe to run — won't overwrite your SOUL.md, USER.md, IDENTITY.md, or openclaw.json.
+
+```bash
+# Re-run install script (auto-preserves your config)
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/install.sh)
+
+# Docker users
+docker pull boluobobo/ai-court:latest && docker compose up -d
+
+# Manual update
+npm update -g openclaw && systemctl --user restart openclaw-gateway
+```
 
 ---
 
