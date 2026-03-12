@@ -33,6 +33,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 
 🏥 **安装遇到问题？** `bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/doctor.sh)` — [诊断工具文档](./docs/doctor.md)
 
+🤖 **不想看文档？** 把 [这段 Prompt](./docs/install-prompt.md) 丢给你的 AI 助手（Claude / ChatGPT / DeepSeek），让它一步步带你装。
+
 </div>
 
 <p align="center">
