@@ -582,6 +582,7 @@ openclaw cron add \
 | `github` | GitHub 操作（gh CLI） | ❌（需 `gh auth login`） |
 | `notion` | Notion 页面/数据库管理 | ✅ |
 | `hacker-news` | Hacker News 浏览和搜索 | ❌ |
+| `browser-use` | 浏览器自动化（社媒管理、数据抓取） | ❌ |
 | `quadrants` | 四象限任务管理（quadrants.ch） | ✅ |
 | `openviking` | 向量知识库（火山引擎开源） | ✅ |
 
