@@ -13,7 +13,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('[菠萝王朝] React crashed:', error, info)
+    console.error('[AI朝廷] React crashed:', error, info)
   }
 
   render() {
@@ -25,7 +25,7 @@ class ErrorBoundary extends Component<{ children: ReactNode }, { error: Error | 
         }}>
           <div style={{ textAlign: 'center', maxWidth: '400px' }}>
             <div style={{ fontSize: '48px', marginBottom: '16px' }}>🍍</div>
-            <h1 style={{ color: '#d4a574', fontSize: '20px', marginBottom: '8px' }}>菠萝王朝 · 系统异常</h1>
+            <h1 style={{ color: '#d4a574', fontSize: '20px', marginBottom: '8px' }}>AI 朝廷 · 系统异常</h1>
             <p style={{ color: '#a3a3a3', fontSize: '14px', marginBottom: '16px' }}>
               页面渲染出错，请刷新重试
             </p>

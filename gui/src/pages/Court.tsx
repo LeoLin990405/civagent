@@ -2,7 +2,8 @@ import { useState, useEffect, useRef } from "react"
 import { useTheme } from "../theme"
 import { getAuthToken } from "../utils/auth"
 
-const COURT_CHANNEL = '1474091579630293164'
+// 频道 ID 可通过环境变量配置，默认使用 API 获取
+const COURT_CHANNEL = import.meta.env.VITE_COURT_CHANNEL || ''
 
 interface Bot {
   id: string; name: string; displayName: string; model: string; hasToken: boolean
@@ -128,10 +129,10 @@ export default function Court() {
 
   const sendCommand = async () => {
     if (!command.trim()) return
-    const target = selectedBot || 'main'
+    const target = selectedBot || 'silijian'
     const botName = bots.find(b => b.id === target)?.displayName || target
     let finalMessage = command
-    if (selectedBot && selectedBot !== 'main') {
+    if (selectedBot && selectedBot !== 'silijian') {
       finalMessage = `@${botName} ${command}`
     }
     setSending(true)
@@ -158,7 +159,7 @@ export default function Court() {
     setTimeout(() => logRef.current?.scrollTo(0, logRef.current.scrollHeight), 100)
   }
 
-  const coreIds = ['main', 'silijian', 'neige', 'duchayuan']
+  const coreIds = ['silijian', 'neige', 'duchayuan']
   const liubuIds = ['gongbu', 'hubu', 'bingbu', 'libu2', 'xingbu', 'libu']
   const core = bots.filter(b => coreIds.includes(b.id))
   const liubu = bots.filter(b => liubuIds.includes(b.id))
@@ -177,9 +178,9 @@ export default function Court() {
             
             <div className="text-[#ffd700] text-xl sm:text-2xl font-bold tracking-[0.5em]"
                  style={{ textShadow: '0 0 20px rgba(255,215,0,0.3), 2px 2px 4px rgba(0,0,0,0.5)', fontFamily: 'serif' }}>
-              菠萝朝堂
+              {import.meta.env.VITE_BRAND_NAME ? `${import.meta.env.VITE_BRAND_NAME}朝堂` : 'AI 朝堂'}
             </div>
-            <div className="text-[#ffd700]/40 text-xs mt-1 tracking-[0.3em]">PINEAPPLE IMPERIAL COURT</div>
+            <div className="text-[#ffd700]/40 text-xs mt-1 tracking-[0.3em]">IMPERIAL COURT</div>
           </div>
         </div>
 

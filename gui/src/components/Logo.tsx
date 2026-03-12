@@ -84,7 +84,7 @@ export function LogoFull({ className = '' }: { className?: string }) {
     <div className={`flex items-center gap-3 ${className}`}>
       <PineappleLogo size={36} />
       <div>
-        <div className="text-lg font-bold text-accent-gradient tracking-wide">菠萝王朝</div>
+        <div className="text-lg font-bold text-accent-gradient tracking-wide">{import.meta.env.VITE_BRAND_NAME || 'AI 朝廷'}</div>
         <div className="text-[10px] text-[var(--text-tertiary)] tracking-widest uppercase">Pineapple Dynasty</div>
       </div>
     </div>

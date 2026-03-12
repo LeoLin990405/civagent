@@ -447,7 +447,7 @@ systemctl --user status openclaw-gateway
 
 在飞书里给机器人发消息，收到回复就成功了！🎉
 
-> 💡 起步只需一个飞书应用（司礼监），通过 `sessions_spawn` 调度其他部门。不用一次创建 7 个应用。
+> 💡 起步只需一个飞书应用（司礼监），通过 @mention 或 `sessions_spawn` 调度其他部门。不用一次创建 7 个应用。
 
 </details>
 
