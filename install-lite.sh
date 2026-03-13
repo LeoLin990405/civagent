@@ -57,7 +57,11 @@ echo "  1) Discord 多Bot模式（完整六部，需要创建 Discord Bot）"
 echo "  2) 飞书单Bot模式（只需 1 个飞书应用，sessions_spawn 后台调度）"
 echo "  3) 纯 WebUI 模式（不需要 Discord/飞书，浏览器直接用）"
 echo ""
-read -p "请选择 [1/2/3]（默认1）: " MODE_CHOICE
+if [ -t 0 ]; then
+    read -p "请选择 [1/2/3]（默认1）: " MODE_CHOICE
+else
+    MODE_CHOICE=""
+fi
 MODE_CHOICE=${MODE_CHOICE:-1}
 
 # ---- 是否安装 Dashboard Web UI ----
@@ -67,7 +71,11 @@ if [ -z "$INSTALL_GUI" ]; then
     echo "  Dashboard 提供会话管理、Token 统计、系统监控等功能。"
     echo "  如果只需要 CLI / Discord 交互，可以跳过。"
     echo ""
-    read -p "安装 Dashboard？[y/N]: " GUI_CHOICE
+    if [ -t 0 ]; then
+        read -p "安装 Dashboard？[y/N]: " GUI_CHOICE
+    else
+        GUI_CHOICE=""
+    fi
     case "$GUI_CHOICE" in
         [yY]|[yY][eE][sS]) INSTALL_GUI="yes" ;;
         *) INSTALL_GUI="no" ;;

@@ -96,7 +96,7 @@ elif [ "$PLATFORM" = "2" ]; then
     echo "飞书配置："
     echo "  1. 去 https://open.feishu.cn/app 创建企业自建应用"
     echo "  2. 添加「机器人」能力"
-    echo "  3. 配置事件订阅回调：http://你的IP:18789/webhooks/feishu"
+    echo "  3. 事件接收方式选择「WebSocket 长连接」（无需配置回调 URL）"
     echo ""
     read -p "App ID: " APP_ID
     read -p "App Secret: " APP_SECRET

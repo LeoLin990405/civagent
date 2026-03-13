@@ -175,7 +175,11 @@ echo "  1) Discord 多Bot模式（完整六部，需要创建 Discord Bot）"
 echo "  2) 飞书单Bot模式（只需 1 个飞书应用，sessions_spawn 后台调度）"
 echo "  3) 纯 WebUI 模式（不需要 Discord/飞书，浏览器直接用）"
 echo ""
-read -p "请选择 [1/2/3]（默认1）: " DEPLOY_MODE
+if [ -t 0 ]; then
+    read -p "请选择 [1/2/3]（默认1）: " DEPLOY_MODE
+else
+    DEPLOY_MODE=""
+fi
 DEPLOY_MODE=${DEPLOY_MODE:-1}
 
 if [ ! -f "$CONFIG_DIR/$CONFIG_FILE" ]; then
