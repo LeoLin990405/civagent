@@ -32,9 +32,12 @@ RUN python3 -m venv /opt/openviking && \
     ln -s /opt/openviking/bin/openviking /usr/local/bin/openviking 2>/dev/null || true
 ENV PATH="/opt/openviking/bin:$PATH"
 
-# 工作区（使用 $HOME 兼容非 root 运行）
-ARG WORKSPACE=/root/clawd
-RUN mkdir -p ${WORKSPACE}/memory ${WORKSPACE}/skills /root/.openclaw
+# [H-04] 创建非特权用户（安全加固）
+RUN groupadd -r court && useradd -r -g court -m -s /bin/bash court
+
+# 工作区
+ARG WORKSPACE=/home/court/clawd
+RUN mkdir -p ${WORKSPACE}/memory ${WORKSPACE}/skills /home/court/.openclaw
 WORKDIR ${WORKSPACE}
 
 # 复制朝廷模板文件和初始化脚本
@@ -47,13 +50,20 @@ RUN chmod +x /entrypoint.sh /init-docker.sh && \
 # 复制 skill 和模板
 COPY skills/ ${WORKSPACE}/skills/
 
-# 复制并构建 GUI Dashboard
-COPY gui/ /opt/gui/
-RUN cd /opt/gui && npm install --loglevel=error 2>/dev/null || true && \
-    cd /opt/gui/server && npm install --loglevel=error 2>/dev/null || true
+# [M-02] 只复制 GUI server（前端源码不需要进镜像）
+COPY gui/server/ /opt/gui/server/
+COPY gui/package.json /opt/gui/package.json
+RUN cd /opt/gui && npm install --production --loglevel=error 2>/dev/null || true && \
+    cd /opt/gui/server && npm install --production --loglevel=error 2>/dev/null || true
+
+# 设置文件所有权
+RUN chown -R court:court /home/court ${WORKSPACE} /opt/gui /entrypoint.sh /init-docker.sh
 
 # 端口：Gateway WebUI + 菠萝 GUI（可选）
 EXPOSE 18789 18795
+
+# [H-04] 以非 root 用户运行
+USER court
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["openclaw", "gateway", "--verbose"]

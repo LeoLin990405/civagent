@@ -140,19 +140,44 @@ else
     SILIJIAN_IDENTITY="你是AI朝廷的司礼监，忠诚干练，说话简练干脆。用中文回答。"
 fi
 
-# 用 Python 生成合法 JSON（避免 heredoc 转义和逗号问题）
-python3 << PYEOF
-import json, sys
+# [M-15] 用 Python 生成合法 JSON（通过环境变量传参，避免注入风险）
+CFG_API_URL="$API_URL" \
+CFG_API_KEY="$API_KEY" \
+CFG_API_FORMAT="$API_FORMAT" \
+CFG_MODEL_ID="$MODEL_ID" \
+CFG_WORKSPACE="$WORKSPACE" \
+CFG_SILIJIAN_IDENTITY="$SILIJIAN_IDENTITY" \
+CFG_MODE="$MODE" \
+CFG_PLATFORM="$PLATFORM" \
+CFG_BOT_TOKEN="$BOT_TOKEN" \
+CFG_APP_ID="$APP_ID" \
+CFG_APP_SECRET="$APP_SECRET" \
+CFG_CONFIG_FILE="$CONFIG_FILE" \
+python3 << 'PYEOF'
+import json, os
+
+api_url = os.environ['CFG_API_URL']
+api_key = os.environ['CFG_API_KEY']
+api_format = os.environ['CFG_API_FORMAT']
+model_id = os.environ['CFG_MODEL_ID']
+workspace = os.environ['CFG_WORKSPACE']
+silijian_identity = os.environ['CFG_SILIJIAN_IDENTITY']
+mode = os.environ['CFG_MODE']
+platform = os.environ['CFG_PLATFORM']
+bot_token = os.environ.get('CFG_BOT_TOKEN', '')
+app_id = os.environ.get('CFG_APP_ID', '')
+app_secret = os.environ.get('CFG_APP_SECRET', '')
+config_file = os.environ['CFG_CONFIG_FILE']
 
 config = {
     "models": {
         "providers": {
             "provider": {
-                "baseUrl": "$API_URL",
-                "apiKey": "$API_KEY",
-                "api": "$API_FORMAT",
+                "baseUrl": api_url,
+                "apiKey": api_key,
+                "api": api_format,
                 "models": [{
-                    "id": "$MODEL_ID", "name": "$MODEL_ID",
+                    "id": model_id, "name": model_id,
                     "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192
                 }]
             }
@@ -160,15 +185,15 @@ config = {
     },
     "agents": {
         "defaults": {
-            "workspace": "$WORKSPACE",
-            "model": {"primary": "provider/$MODEL_ID"},
+            "workspace": workspace,
+            "model": {"primary": f"provider/{model_id}"},
             "sandbox": {"mode": "non-main"}
         },
         "list": [{
             "id": "silijian",
             "name": "司礼监",
-            "model": {"primary": "provider/$MODEL_ID"},
-            "identity": {"theme": """$SILIJIAN_IDENTITY"""},
+            "model": {"primary": f"provider/{model_id}"},
+            "identity": {"theme": silijian_identity},
             "sandbox": {"mode": "off"}
         }]
     },
@@ -176,7 +201,7 @@ config = {
 }
 
 # 全六部模式：添加 subagents 和其他部门
-if "$MODE" == "2":
+if mode == "2":
     config["agents"]["list"][0]["subagents"] = {
         "allowAgents": ["neige","duchayuan","bingbu","hubu","libu","gongbu","libu2","xingbu","hanlinyuan"]
     }
@@ -198,23 +223,22 @@ if "$MODE" == "2":
         config["agents"]["list"].append(agent)
 
 # 平台配置
-platform = "$PLATFORM"
 if platform == "1":
     config["channels"] = {"discord": {
         "enabled": True, "groupPolicy": "open", "allowBots": True,
-        "accounts": {"silijian": {"botName": "司礼监", "token": "$BOT_TOKEN", "groupPolicy": "open"}}
+        "accounts": {"silijian": {"botName": "司礼监", "token": bot_token, "groupPolicy": "open"}}
     }}
     config["bindings"] = [{"agentId": "silijian", "match": {"channel": "discord", "accountId": "silijian"}}]
 elif platform == "2":
     config["channels"] = {"feishu": {
         "enabled": True,
-        "accounts": {"silijian": {"botName": "司礼监", "appId": "$APP_ID", "appSecret": "$APP_SECRET"}}
+        "accounts": {"silijian": {"botName": "司礼监", "appId": app_id, "appSecret": app_secret}}
     }}
     config["bindings"] = [{"agentId": "silijian", "match": {"channel": "feishu", "accountId": "silijian"}}]
 else:
     config["bindings"] = [{"agentId": "silijian", "match": {}}]
 
-with open("$CONFIG_FILE", "w") as f:
+with open(config_file, "w") as f:
     json.dump(config, f, indent=2, ensure_ascii=False)
 PYEOF
 

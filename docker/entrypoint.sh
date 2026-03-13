@@ -4,6 +4,29 @@ set -e
 WORKSPACE="${OPENCLAW_WORKSPACE:-$HOME/clawd}"
 CONFIG_DIR="${OPENCLAW_CONFIG_DIR:-$HOME/.openclaw}"
 
+# ---- [H-10] 检测 bind mount 目录误创建 ----
+if [ -d "$CONFIG_DIR/openclaw.json" ]; then
+    echo ""
+    echo "================================"
+    echo "⚠ 错误：$CONFIG_DIR/openclaw.json 是一个目录！"
+    echo "================================"
+    echo ""
+    echo "Docker 在文件不存在时会自动创建同名目录。"
+    echo "请先在宿主机创建配置文件再启动："
+    echo ""
+    echo "  cp openclaw.example.json openclaw.json"
+    echo "  docker compose up -d"
+    echo ""
+    echo "或使用交互式初始化（不需要预创建文件）："
+    echo "  先移除错误目录：rm -rf openclaw.json"
+    echo "  注释掉 docker-compose.yml 中的 openclaw.json 挂载行"
+    echo "  docker compose up -d"
+    echo "  docker exec -it ai-court /init-docker.sh"
+    echo ""
+    rmdir "$CONFIG_DIR/openclaw.json" 2>/dev/null || true
+    exit 1
+fi
+
 # ---- 初始化工作区模板（仅首次）----
 if [ ! -f "$WORKSPACE/SOUL.md" ]; then
 cat > "$WORKSPACE/SOUL.md" << 'EOF'
@@ -59,19 +82,26 @@ fi
 mkdir -p "$WORKSPACE/memory"
 
 # ---- OpenViking 初始化（如果配置了）----
-if [ -f "/root/.openviking/ov.conf" ] || [ -n "$OPENVIKING_CONFIG_FILE" ]; then
+if [ -f "$HOME/.openviking/ov.conf" ] || [ -n "$OPENVIKING_CONFIG_FILE" ]; then
     echo "✓ OpenViking 配置已检测到"
-    mkdir -p /root/.openviking/data
+    mkdir -p "$HOME/.openviking/data"
 fi
 
-# ---- GUI Dashboard 自动启动（如果存在）----
+# ---- [M-03] GUI Dashboard 自动启动（带进程守护）----
 if [ -f "/opt/gui/server/index.js" ]; then
     echo "✓ 朝堂 Dashboard 已检测到，启动中..."
     export BOLUO_BIND_HOST="${BOLUO_BIND_HOST:-0.0.0.0}"
-    cd /opt/gui && node server/index.js &
+    (
+        cd /opt/gui
+        while true; do
+            node server/index.js || true
+            echo "⚠ Dashboard 进程退出，2 秒后重启..."
+            sleep 2
+        done
+    ) &
     GUI_PID=$!
     cd "$WORKSPACE"
-    echo "✓ Dashboard 已启动 (PID: $GUI_PID, 端口: 18795)"
+    echo "✓ Dashboard 已启动 (PID: $GUI_PID, 端口: 18795, 自动重启: 已启用)"
 fi
 
 # ---- 提示信息 ----
@@ -93,7 +123,7 @@ if [ ! -f "$CONFIG_DIR/openclaw.json" ]; then
     echo "    docker exec -it ai-court openclaw onboard"
     echo ""
     echo "  方式三：挂载已有配置文件"
-    echo "    docker run -v ./openclaw.json:/root/.openclaw/openclaw.json ..."
+    echo "    docker run -v ./openclaw.json:$CONFIG_DIR/openclaw.json ..."
     echo ""
 fi
 
