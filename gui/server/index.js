@@ -1976,8 +1976,9 @@ setInterval(() => {
   }
 }, 30000);
 
-// SEC-30: 默认绑定 localhost，防止非 Docker 部署时暴露到公网
-const BIND_HOST = process.env.BOLUO_BIND_HOST || '127.0.0.1';
+// SEC-30: Docker 内默认 0.0.0.0（否则容器外无法访问），非 Docker 默认 localhost
+const IS_DOCKER = existsSync('/.dockerenv') || (existsSync('/proc/1/cgroup') && readFileSync('/proc/1/cgroup', 'utf8').includes('docker'));
+const BIND_HOST = process.env.BOLUO_BIND_HOST || (IS_DOCKER ? '0.0.0.0' : '127.0.0.1');
 server.listen(PORT, BIND_HOST, () => {
   console.log(`Boluo GUI running on http://${BIND_HOST}:${PORT} (HTTP + WebSocket)`);
   if (BIND_HOST === '0.0.0.0') {

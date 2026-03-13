@@ -67,6 +67,7 @@ fi
 # ---- GUI Dashboard 自动启动（如果存在）----
 if [ -f "/opt/gui/server/index.js" ]; then
     echo "✓ 朝堂 Dashboard 已检测到，启动中..."
+    export BOLUO_BIND_HOST="${BOLUO_BIND_HOST:-0.0.0.0}"
     cd /opt/gui && node server/index.js &
     GUI_PID=$!
     cd "$WORKSPACE"
