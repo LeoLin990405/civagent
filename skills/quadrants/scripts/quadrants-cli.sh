@@ -4,6 +4,9 @@
 
 set -euo pipefail
 
+# [L-07] 检查 jq 依赖
+command -v jq &>/dev/null || { echo "Error: jq is required but not installed. Install with: apt install jq / brew install jq"; exit 1; }
+
 API_URL="${QUADRANTS_API_URL:-https://quadrants.ch}"
 API_KEY="${QUADRANTS_API_KEY:-}"
 SERVICE_ENDPOINT="${API_URL}/api/service"

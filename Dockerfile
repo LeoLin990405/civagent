@@ -26,10 +26,11 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 # OpenClaw
 RUN npm install -g openclaw --loglevel=error
 
-# OpenViking（Python 依赖）
+# [L-02] OpenViking（Python 依赖）— 安装失败时给出明确提示而非静默跳过
 RUN python3 -m venv /opt/openviking && \
-    /opt/openviking/bin/pip install --no-cache-dir openviking && \
-    ln -s /opt/openviking/bin/openviking /usr/local/bin/openviking 2>/dev/null || true
+    (/opt/openviking/bin/pip install --no-cache-dir openviking && \
+    ln -s /opt/openviking/bin/openviking /usr/local/bin/openviking 2>/dev/null || \
+    echo "⚠ OpenViking 安装跳过（包可能不可用），不影响核心功能")
 ENV PATH="/opt/openviking/bin:$PATH"
 
 # [H-04] 创建非特权用户（安全加固）

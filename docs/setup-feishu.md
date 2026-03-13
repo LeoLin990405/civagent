@@ -44,6 +44,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-t
 | `im:chat.access_event.bot_p2p_chat:read` | 获取单聊事件 | 推荐 |
 | `contact:user.employee_id:readonly` | 获取用户工号 | 推荐 |
 
+> ⚠️ **权限以 [飞书配置指南](../飞书配置指南.md) 为准**，此表为快速参考。如有差异，以飞书配置指南为权威来源。
+
 > 📖 详细步骤见 [飞书配置指南](../飞书配置指南.md)
 
 ## 4. 填 Key

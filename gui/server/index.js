@@ -1081,7 +1081,7 @@ app.get('/api/notion/data', authMiddleware, (req, res) => {
       title: name,
       department: name,
       status: 'active',
-      tenure: `${2024 + i}年任职`
+      tenure: `${new Date().getFullYear() - (depts.length - i - 1)}年任职`
     }));
     res.json({ type: 'personnel', data, lastSync: new Date().toISOString() });
   } else {
@@ -1256,8 +1256,8 @@ app.get('/api/cron', authMiddleware, async (req, res) => {
   } catch (e) {
     // Fallback to demo data
     const jobs = [
-      { id: 'heartbeat-check', name: '心跳检查', schedule: '*/30 * * * *', enabled: true, nextRun: new Date().toISOString() },
-      { id: 'notion-sync', name: 'Notion同步', schedule: '0 2 * * *', enabled: true, nextRun: new Date().toISOString() },
+      { id: 'heartbeat-check', name: '心跳检查', schedule: '*/30 * * * *', enabled: true, nextRun: new Date(Date.now() + 30 * 60000).toISOString() },
+      { id: 'notion-sync', name: 'Notion同步', schedule: '0 2 * * *', enabled: true, nextRun: new Date(Date.now() + 24 * 3600000).toISOString() },
       { id: 'data-backup', name: '数据备份', schedule: '0 3 * * *', enabled: false, nextRun: null }
     ];
     res.json({ jobs, source: 'demo' });

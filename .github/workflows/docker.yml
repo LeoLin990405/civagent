@@ -32,3 +32,6 @@ jobs:
             ${{ env.DOCKERHUB_IMAGE }}:${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          # [L-11] 供应链安全：添加 provenance 和 SBOM
+          provenance: true
+          sbom: true

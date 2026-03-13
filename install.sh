@@ -284,8 +284,11 @@ else
     esac
 fi
 
-# 设置 Puppeteer 浏览器路径
-if ! grep -q PUPPETEER_EXECUTABLE_PATH ~/.bashrc ~/.zshrc 2>/dev/null; then
+# [L-01] 设置 Puppeteer 浏览器路径 — 分别检查 .bashrc 和 .zshrc
+_puppeteer_configured=false
+[ -f "$HOME/.bashrc" ] && grep -q PUPPETEER_EXECUTABLE_PATH "$HOME/.bashrc" 2>/dev/null && _puppeteer_configured=true
+[ -f "$HOME/.zshrc" ] && grep -q PUPPETEER_EXECUTABLE_PATH "$HOME/.zshrc" 2>/dev/null && _puppeteer_configured=true
+if ! $_puppeteer_configured; then
     case "$OS_TYPE" in
         macos)
             if [ -d "/Applications/Google Chrome.app" ]; then
