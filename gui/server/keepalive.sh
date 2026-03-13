@@ -38,8 +38,12 @@ echo "$(date): Keepalive started (check every ${CHECK_INTERVAL}s)" >> "$LOG_FILE
 while true; do
   if ! is_running; then
     echo "$(date): Server not running, restarting..." >> "$LOG_FILE"
-    # Kill any zombie processes on the port
-    lsof -i :18795 -t 2>/dev/null | xargs kill 2>/dev/null
+    # [M-12] Kill any zombie processes on the port (use fuser, fallback to ss+awk)
+    if command -v fuser &>/dev/null; then
+      fuser -k 18795/tcp 2>/dev/null
+    else
+      ss -tlnp 2>/dev/null | grep ':18795 ' | grep -oP 'pid=\K[0-9]+' | xargs kill 2>/dev/null
+    fi
     sleep 1
     start_server
     sleep 3

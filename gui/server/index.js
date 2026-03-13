@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { readFileSync, readdirSync, existsSync, statSync, createReadStream } from 'fs';
+import { readFileSync, readdirSync, existsSync, statSync, createReadStream, openSync, readSync, closeSync } from 'fs';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
@@ -323,12 +323,8 @@ app.get('/api/messages', authMiddleware, (req, res) => {
 });
 
 function getTokenStats() {
-  const deptMap = {
-    'silijian': '司礼监', 'main': '司礼监',
-    'gongbu': '工部', 'hubu': '户部', 'libu': '礼部',
-    'xingbu': '刑部', 'bingbu': '兵部', 'libu2': '吏部',
-    'neige': '内阁', 'duchayuan': '都察院', 'hanlinyuan': '翰林院'
-  };
+  // [M-05] 统一使用顶部 AGENT_DEPT_MAP，不再维护重复的 deptMap
+  const deptMap = AGENT_DEPT_MAP;
 
   const byDepartment = [];
   let totalTokens = 0;
@@ -448,6 +444,13 @@ function getCached(key) {
 
 function setCache(key, data) {
   cache[key] = { data, ts: Date.now() };
+}
+
+// [M-06] 手动清除缓存的 API
+function clearCache() {
+  const keys = Object.keys(cache);
+  for (const key of keys) delete cache[key];
+  return keys.length;
 }
 
 // Periodic cache cleanup — evict expired entries every 10 minutes
@@ -575,6 +578,12 @@ app.get('/api/sessions', authMiddleware, async (req, res) => {
   }
 });
 
+// [M-06] 手动刷新缓存的 API
+app.post('/api/cache/clear', authMiddleware, (req, res) => {
+  const cleared = clearCache();
+  res.json({ success: true, clearedKeys: cleared });
+});
+
 // ========== DASHBOARD SUMMARY ==========
 app.get('/api/dashboard/summary', authMiddleware, async (req, res) => {
   try {
@@ -615,7 +624,23 @@ app.get('/api/dashboard/summary', authMiddleware, async (req, res) => {
               }
             }
             if (bestFile) {
-              const lines = readFileSync(bestFile, 'utf-8').split('\n').filter(l => l.trim());
+              // [M-16] 只读文件尾部 4KB，避免对大文件全量读取
+              const PREVIEW_TAIL = 4096;
+              let tailContent;
+              try {
+                const fStat = statSync(bestFile);
+                if (fStat.size > PREVIEW_TAIL) {
+                  const fd2 = openSync(bestFile, 'r');
+                  const buf2 = Buffer.alloc(PREVIEW_TAIL);
+                  readSync(fd2, buf2, 0, PREVIEW_TAIL, fStat.size - PREVIEW_TAIL);
+                  closeSync(fd2);
+                  const raw2 = buf2.toString('utf-8');
+                  tailContent = raw2.substring(raw2.indexOf('\n') + 1);
+                } else {
+                  tailContent = readFileSync(bestFile, 'utf-8');
+                }
+              } catch { tailContent = ''; }
+              const lines = tailContent.split('\n').filter(l => l.trim());
               for (let i = lines.length - 1; i >= Math.max(0, lines.length - 20); i--) {
                 try {
                   const e = JSON.parse(lines[i]);
@@ -790,10 +815,11 @@ app.get('/api/sessions/:sessionId/messages', authMiddleware, (req, res) => {
         let content;
         if (fileStat.size > MAX_FULL_READ && !search) {
           // 只读尾部，避免内存爆炸
-          const fd = require('fs').openSync(session.sessionFile, 'r');
+          // [M-11] 统一使用 ESM import，不再混用 require('fs')
+          const fd = openSync(session.sessionFile, 'r');
           const buf = Buffer.alloc(TAIL_READ);
-          require('fs').readSync(fd, buf, 0, TAIL_READ, fileStat.size - TAIL_READ);
-          require('fs').closeSync(fd);
+          readSync(fd, buf, 0, TAIL_READ, fileStat.size - TAIL_READ);
+          closeSync(fd);
           // 丢弃第一行（可能不完整）
           const raw = buf.toString('utf-8');
           content = raw.substring(raw.indexOf('\n') + 1);
@@ -1067,8 +1093,10 @@ const WEATHER_DEFAULT_LOCATION = process.env.WEATHER_LOCATION || 'Beijing';
 
 app.get('/api/weather', authMiddleware, async (req, res) => {
   // SEC-01: 白名单过滤 location，用 fetch 替代 execAsync(curl) 防止命令注入
+  // [M-14] 增加最大长度限制，防止超长输入
   const location = (req.query.location || WEATHER_DEFAULT_LOCATION)
-    .replace(/[^a-zA-Z0-9\s,.\-\u4e00-\u9fff]/g, '');
+    .replace(/[^a-zA-Z0-9\s,.\-\u4e00-\u9fff]/g, '')
+    .substring(0, 100);
   
   try {
     const weatherResp = await fetch(`https://wttr.in/${encodeURIComponent(location)}?format=j1`, {

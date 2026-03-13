@@ -174,12 +174,19 @@ install_nodejs() {
             pkg_install nodejs
             ;;
         alpine)
-            # Alpine 默认仓库版本低，用 nodesource 方式
-            # 如果 apk 版本够高就直接装，否则用 unofficial builds
-            if $SUDO apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main nodejs npm 2>/dev/null; then
-                true
+            # [M-13] 优先尝试当前版本仓库，仅在版本不够时才 fallback 到 edge
+            pkg_install nodejs npm 2>/dev/null || true
+            if command -v node &>/dev/null; then
+                local _ALPINE_NODE_VER=$(node -v | sed 's/v\([0-9]*\).*/\1/')
+                if [ "$_ALPINE_NODE_VER" -ge 22 ] 2>/dev/null; then
+                    true  # 当前仓库版本够用
+                else
+                    # 当前仓库版本太低，fallback 到 edge
+                    $SUDO apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main nodejs npm 2>/dev/null || true
+                fi
             else
-                pkg_install nodejs npm
+                # 当前仓库没有 nodejs，fallback 到 edge
+                $SUDO apk add --no-cache --repository=https://dl-cdn.alpinelinux.org/alpine/edge/main nodejs npm 2>/dev/null || true
             fi
             ;;
         macos)
@@ -237,7 +244,7 @@ if command -v chromium &>/dev/null || command -v chromium-browser &>/dev/null ||
     echo -e "  ${GREEN}✓ 浏览器已安装，跳过${NC}"
 elif $IS_MACOS && [ -d "/Applications/Google Chrome.app" -o -d "/Applications/Chromium.app" ]; then
     echo -e "  ${GREEN}✓ 浏览器已安装，跳过${NC}"
-elif ! $IN_DOCKER && snap list chromium &>/dev/null 2>&1; then
+elif ! $IN_DOCKER && command -v snap &>/dev/null && snap list chromium &>/dev/null 2>&1; then
     echo -e "  ${GREEN}✓ Chromium 已安装（snap），跳过${NC}"
 else
     case "$OS_TYPE" in
@@ -868,10 +875,12 @@ echo ""
 echo ""
 echo -e "${YELLOW}[自检] 运行 doctor.sh 检查安装状态...${NC}"
 echo ""
+# [M-04] 优先下载最新 doctor.sh 到工作区，确保路径始终可用
+if command -v curl &>/dev/null; then
+    curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/doctor.sh -o "$WORKSPACE/doctor.sh" 2>/dev/null || true
+fi
 if [ -f "$WORKSPACE/doctor.sh" ]; then
     bash "$WORKSPACE/doctor.sh" 2>/dev/null || true
-elif command -v curl &>/dev/null; then
-    bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/boluobobo-ai-court-tutorial/main/doctor.sh) 2>/dev/null || true
 else
     echo -e "${CYAN}跳过自检（可手动运行 bash doctor.sh）${NC}"
 fi

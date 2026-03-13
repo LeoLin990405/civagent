@@ -149,7 +149,6 @@
     { "agentId": "gongbu", "match": { "channel": "discord", "accountId": "gongbu" } },
     { "agentId": "libu2", "match": { "channel": "discord", "accountId": "libu2" } },
     { "agentId": "xingbu", "match": { "channel": "discord", "accountId": "xingbu" } },
-    { "agentId": "hanlinyuan", "match": { "channel": "discord", "accountId": "hanlinyuan" } },
-    { "agentId": "silijian", "match": { "channel": "feishu", "accountId": "silijian" } }
+    { "agentId": "hanlinyuan", "match": { "channel": "discord", "accountId": "hanlinyuan" } }
   ]
 }
