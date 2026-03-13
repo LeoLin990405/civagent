@@ -51,7 +51,7 @@
 
 ## 2. 人物档案模板
 
-为每个重要角色创建档案，存入 OpenViking Memories：
+为每个重要角色创建档案，写入 `设定/characters.md`：
 
 ```markdown
 ## {角色名}
@@ -129,7 +129,7 @@
 
 ## 4. 伏笔台账格式
 
-在 plan.md 中维护，同时在 OpenViking Memories 中记录动态状态：
+在 plan.md 中维护，同时在 `设定/foreshadowing.md` 中记录动态状态：
 
 ```markdown
 | ID | 伏笔内容 | 埋设章节 | 预计回收 | 实际回收 | 状态 | 备注 |
