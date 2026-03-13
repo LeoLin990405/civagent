@@ -47,3 +47,5 @@
 | [菠萝王朝案例](./pineapple-dynasty.md) | 14 Agent 真实运行的完整案例 |
 | [完整 FAQ](./faq.md) | 基础 + 技术常见问题 |
 | [飞书 Issue 回复](./feishu-issue-replies.md) | 飞书相关 GitHub Issue 汇总 |
+| [User Agreement](./user-agreement.md) | 用户协议 |
+| [Privacy Policy](./privacy-policy.md) | 隐私政策 |
