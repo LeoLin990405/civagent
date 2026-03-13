@@ -19,7 +19,7 @@ cd boluobobo-ai-court-tutorial
 docker compose up -d
 
 # 3. 交互式初始化（选模式、填 Key、配平台，一步到位）
-docker exec -it ai-court /init-docker.sh
+docker exec -it ai-court init-court
 
 # 4. 重启使配置生效
 docker compose restart
@@ -32,6 +32,18 @@ docker compose pull && docker compose up -d
 ```
 
 > 💡 也可以跳过初始化脚本，手动编辑配置：`cp openclaw.example.json openclaw.json && nano openclaw.json`
+
+> ⚠️ **Windows / Git Bash 用户注意**：Git Bash 的 MSYS 会把 `/init-docker.sh` 转换为 Windows 路径导致报错。请用以下方式之一：
+> ```bash
+> # 推荐：使用不带 / 前缀的别名（不会被 MSYS 转换）
+> docker exec -it ai-court init-court
+>
+> # 或：禁用路径转换
+> MSYS_NO_PATHCONV=1 docker exec -it ai-court /init-docker.sh
+>
+> # 或：用 bash -c 包裹
+> docker exec -it ai-court bash -c /init-docker.sh
+> ```
 
 ## 镜像信息
 

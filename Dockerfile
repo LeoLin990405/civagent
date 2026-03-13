@@ -40,7 +40,9 @@ WORKDIR ${WORKSPACE}
 # 复制朝廷模板文件和初始化脚本
 COPY docker/entrypoint.sh /entrypoint.sh
 COPY docker/init-docker.sh /init-docker.sh
-RUN chmod +x /entrypoint.sh /init-docker.sh
+RUN chmod +x /entrypoint.sh /init-docker.sh && \
+    echo '#!/bin/bash\nexec /init-docker.sh "$@"' > /usr/local/bin/init-court && \
+    chmod +x /usr/local/bin/init-court
 
 # 复制 skill 和模板
 COPY skills/ ${WORKSPACE}/skills/
