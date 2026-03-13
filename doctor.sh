@@ -16,20 +16,21 @@ PASS=0
 WARN=0
 FAIL=0
 
-pass() { echo -e "  ${GREEN}✓${NC} $1"; ((PASS++)); }
-warn() { echo -e "  ${YELLOW}⚠${NC} $1"; ((WARN++)); }
-fail() { echo -e "  ${RED}✗${NC} $1"; ((FAIL++)); }
+pass() { echo -e "  ${GREEN}✓${NC} $1"; PASS=$((PASS + 1)); }
+warn() { echo -e "  ${YELLOW}⚠${NC} $1"; WARN=$((WARN + 1)); }
+fail() { echo -e "  ${RED}✗${NC} $1"; FAIL=$((FAIL + 1)); }
 info() { echo -e "  ${CYAN}ℹ${NC} $1"; }
 
 # JSON 值提取辅助（用 python3 或 node）
+# [H-03] 使用环境变量传参，避免路径/key 含特殊字符时的代码注入
 json_get() {
     local file="$1" path="$2"
     if command -v python3 &>/dev/null; then
-        python3 -c "
-import json, sys
+        JSON_FILE="$file" JSON_PATH="$path" python3 -c "
+import json, os, sys
 try:
-    d = json.load(open('$file'))
-    keys = '$path'.split('.')
+    d = json.load(open(os.environ['JSON_FILE']))
+    keys = os.environ['JSON_PATH'].split('.')
     for k in keys:
         if isinstance(d, dict):
             d = d.get(k)
@@ -44,10 +45,10 @@ try:
 except: pass
 " 2>/dev/null
     elif command -v node &>/dev/null; then
-        node -e "
+        JSON_FILE="$file" JSON_PATH="$path" node -e "
 try {
-    const d = require('$file');
-    const v = '$path'.split('.').reduce((o,k) => o && o[k], d);
+    const d = require(process.env.JSON_FILE);
+    const v = process.env.JSON_PATH.split('.').reduce((o,k) => o && o[k], d);
     if (v !== undefined) console.log(typeof v === 'object' ? JSON.stringify(v) : v);
 } catch(e) {}
 " 2>/dev/null
@@ -58,21 +59,21 @@ try {
 json_keys() {
     local file="$1" path="$2"
     if command -v python3 &>/dev/null; then
-        python3 -c "
-import json
+        JSON_FILE="$file" JSON_PATH="$path" python3 -c "
+import json, os
 try:
-    d = json.load(open('$file'))
-    for k in '$path'.split('.'):
+    d = json.load(open(os.environ['JSON_FILE']))
+    for k in os.environ['JSON_PATH'].split('.'):
         d = d.get(k, {})
     if isinstance(d, dict):
         for k in d: print(k)
 except: pass
 " 2>/dev/null
     elif command -v node &>/dev/null; then
-        node -e "
+        JSON_FILE="$file" JSON_PATH="$path" node -e "
 try {
-    let d = require('$file');
-    for (const k of '$path'.split('.')) d = d && d[k];
+    let d = require(process.env.JSON_FILE);
+    for (const k of process.env.JSON_PATH.split('.')) d = d && d[k];
     if (d && typeof d === 'object') Object.keys(d).forEach(k => console.log(k));
 } catch(e) {}
 " 2>/dev/null
@@ -130,10 +131,10 @@ fi
 
 pass "配置文件: $CONFIG_FILE"
 
-# 检查JSON格式
-if python3 -c "import json; json.load(open('$CONFIG_FILE'))" 2>/dev/null; then
+# 检查JSON格式（通过环境变量传路径，避免特殊字符注入）
+if JSON_FILE="$CONFIG_FILE" python3 -c "import json, os; json.load(open(os.environ['JSON_FILE']))" 2>/dev/null; then
     pass "JSON 格式正确"
-elif node -e "require('$CONFIG_FILE')" 2>/dev/null; then
+elif JSON_FILE="$CONFIG_FILE" node -e "require(process.env.JSON_FILE)" 2>/dev/null; then
     pass "JSON 格式正确"
 else
     fail "JSON 格式错误 — 请检查语法（多余逗号、缺少引号等）"
@@ -326,8 +327,8 @@ for g in guilds:
                     warn "[$DISPLAY_NAME] 无法获取服务器列表（HTTP $GUILDS_CODE）"
                 fi
 
-                # 小间隔防止 rate limit
-                sleep 0.3
+                # [M-07] 小间隔防止 rate limit（用整数秒兼容 busybox/Alpine）
+                sleep 1
 
             done <<< "$DISCORD_ACCOUNTS"
 
@@ -583,10 +584,10 @@ if [ "$AGENT_COUNT" -gt 0 ]; then
     # 用 python/node 获取缺 identity 的 agent 列表
     MISSING_IDENTITY=""
     if command -v python3 &>/dev/null; then
-        MISSING_IDENTITY=$(python3 -c "
-import json
+        MISSING_IDENTITY=$(JSON_FILE="$CONFIG_FILE" python3 -c "
+import json, os
 try:
-    d = json.load(open('$CONFIG_FILE'))
+    d = json.load(open(os.environ['JSON_FILE']))
     agents = d.get('agents', {}).get('list', [])
     missing = []
     for a in agents:
@@ -600,9 +601,9 @@ try:
 except: pass
 " 2>/dev/null)
     elif command -v node &>/dev/null; then
-        MISSING_IDENTITY=$(node -e "
+        MISSING_IDENTITY=$(JSON_FILE="$CONFIG_FILE" node -e "
 try {
-    const d = require('$CONFIG_FILE');
+    const d = require(process.env.JSON_FILE);
     const agents = (d.agents || {}).list || [];
     const missing = agents.filter(a => !a.identity || !a.identity.theme).map(a => a.name || a.id);
     if (missing.length) console.log(missing.join(','));

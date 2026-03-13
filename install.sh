@@ -105,8 +105,8 @@ if $IS_MACOS; then
 elif $IN_DOCKER; then
     echo -e "  ${CYAN}↳ Docker 环境，跳过防火墙配置${NC}"
 else
-    # 检测是否有 REJECT 规则（云服务商默认可能阻断非 SSH 流量）
-    if iptables -L INPUT -n 2>/dev/null | grep -q "REJECT"; then
+    # [H-11] 检测 REJECT 规则时使用 $SUDO，避免非 root 用户因权限不足误判
+    if $SUDO iptables -L INPUT -n 2>/dev/null | grep -q "REJECT"; then
         echo -e "  ${YELLOW}⚠ 检测到 iptables REJECT 规则，可能阻断 OpenClaw 通信${NC}"
         FW_CHOICE=""
         if [ -t 0 ]; then
@@ -135,12 +135,19 @@ if $IS_MACOS || $IN_DOCKER; then
     echo -e "  ${CYAN}↳ 跳过 Swap 配置${NC}"
 else
     if [ ! -f /swapfile ]; then
+        # [H-08] 创建 Swap 前检查可用磁盘空间，避免写满磁盘
+        AVAIL_GB=$(df / --output=avail -BG 2>/dev/null | tail -1 | tr -d ' G' || echo "0")
+        if [ "${AVAIL_GB:-0}" -lt 6 ] 2>/dev/null; then
+            echo -e "  ${YELLOW}⚠ 磁盘剩余空间不足（${AVAIL_GB}GB），跳过 Swap 创建${NC}"
+            echo -e "  ${CYAN}↳ 建议至少保留 6GB 空闲空间再创建 4GB Swap${NC}"
+        else
         $SUDO fallocate -l 4G /swapfile 2>/dev/null || $SUDO dd if=/dev/zero of=/swapfile bs=1G count=4 2>/dev/null
         $SUDO chmod 600 /swapfile
         $SUDO mkswap /swapfile
         $SUDO swapon /swapfile
         echo '/swapfile none swap sw 0 0' | $SUDO tee -a /etc/fstab > /dev/null
         echo -e "  ${GREEN}✓ 4GB Swap 已创建${NC}"
+        fi
     else
         echo -e "  ${GREEN}✓ Swap 已存在，跳过${NC}"
     fi
