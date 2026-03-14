@@ -22,4 +22,4 @@ openclaw plugins disable novel-openviking
 openclaw plugins list
 ```
 
-插件启用后，翰林院 agent 自动获得 `novel_viking_search` 和 `novel_viking_index` 两个工具。关闭插件后回退到纯文件模式，无需任何其他操作。
+插件启用后，翰林院 agent 自动获得 OpenViking 增强 skill，知道如何调用语义搜索和索引。关闭插件后 skill 消失，agent 自然回退到纯文件模式。
