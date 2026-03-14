@@ -796,6 +796,151 @@ echo -e "  ${GREEN}✓ Discord 多Bot模式配置已生成${NC}"
 fi # end DEPLOY_MODE
 fi # end config file exists check
 
+# 安装 jq（用于 JSON 验证，轻量级）
+if ! command -v jq &>/dev/null; then
+  pkg_install jq 2>/dev/null || true
+fi
+
+# ============================================
+# 交互式配置填写（避免用户手动编辑 JSON 出错）
+# ============================================
+CONFIG_FILE="$CONFIG_DIR/openclaw.json"
+
+if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
+  echo ""
+  echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo -e "${YELLOW}[配置向导] 现在帮你填写 API Key 和 Bot Token${NC}"
+  echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo ""
+  echo -e "  直接回车 = 跳过（稍后手动编辑 $CONFIG_FILE）"
+  echo ""
+
+  # ---- API Key ----
+  echo -e "${YELLOW}【1】LLM API Key${NC}"
+  echo -e "  ${CYAN}获取地址: https://console.anthropic.com/settings/keys${NC}"
+  echo -e "  （支持 Anthropic / OpenAI / 其他 OpenAI 兼容 API）"
+  read -rp "  请粘贴你的 API Key: " USER_API_KEY
+  if [ -n "$USER_API_KEY" ]; then
+    sed -i "s|YOUR_LLM_API_KEY|$USER_API_KEY|g" "$CONFIG_FILE"
+    echo -e "  ${GREEN}✓ API Key 已填入${NC}"
+  else
+    echo -e "  ${YELLOW}↳ 跳过，稍后请手动替换 YOUR_LLM_API_KEY${NC}"
+  fi
+  echo ""
+
+  # ---- API Base URL ----
+  echo -e "${YELLOW}【2】API Base URL${NC}"
+  echo -e "  Anthropic 官方: ${CYAN}https://api.anthropic.com/v1${NC}"
+  echo -e "  OpenAI 官方:    ${CYAN}https://api.openai.com/v1${NC}"
+  echo -e "  其他服务商请填写对应的 API 地址"
+  read -rp "  请粘贴 API Base URL（回车默认 Anthropic）: " USER_BASE_URL
+  if [ -n "$USER_BASE_URL" ]; then
+    sed -i "s|https://your-llm-provider-api-url|$USER_BASE_URL|g" "$CONFIG_FILE"
+    echo -e "  ${GREEN}✓ API Base URL 已更新${NC}"
+  else
+    sed -i "s|https://your-llm-provider-api-url|https://api.anthropic.com/v1|g" "$CONFIG_FILE"
+    echo -e "  ${GREEN}✓ 已设为 Anthropic 默认地址${NC}"
+  fi
+  echo ""
+
+  # ---- API 类型 ----
+  if [ -n "$USER_BASE_URL" ] && echo "$USER_BASE_URL" | grep -qi "anthropic"; then
+    sed -i 's|"api": "openai"|"api": "anthropic"|g' "$CONFIG_FILE"
+    echo -e "  ${GREEN}✓ API 类型自动设为 anthropic${NC}"
+  elif [ -z "$USER_BASE_URL" ]; then
+    sed -i 's|"api": "openai"|"api": "anthropic"|g' "$CONFIG_FILE"
+    echo -e "  ${GREEN}✓ API 类型自动设为 anthropic${NC}"
+  fi
+
+  # ---- 模型名称（Anthropic 用户自动替换）----
+  if grep -q '"api": "anthropic"' "$CONFIG_FILE"; then
+    sed -i 's|"id": "fast-model"|"id": "claude-sonnet-4-20250514"|g' "$CONFIG_FILE"
+    sed -i 's|"name": "快速模型"|"name": "Claude Sonnet 4"|g' "$CONFIG_FILE"
+    sed -i 's|"id": "strong-model"|"id": "claude-sonnet-4-20250514"|g' "$CONFIG_FILE"
+    sed -i 's|"name": "强力模型"|"name": "Claude Sonnet 4"|g' "$CONFIG_FILE"
+    sed -i 's|your-provider/fast-model|your-provider/claude-sonnet-4-20250514|g' "$CONFIG_FILE"
+    sed -i 's|your-provider/strong-model|your-provider/claude-sonnet-4-20250514|g' "$CONFIG_FILE"
+    echo -e "  ${GREEN}✓ 模型已自动设为 Claude Sonnet 4${NC}"
+  fi
+  echo ""
+
+  # ---- Discord Bot Tokens (仅 Discord 模式) ----
+  if [ "$DEPLOY_MODE" = "1" ] || [ "$DEPLOY_MODE" = "" ]; then
+    echo -e "${YELLOW}【3】Discord Bot Tokens${NC}"
+    echo -e "  ${CYAN}获取地址: https://discord.com/developers/applications${NC}"
+    echo -e "  每个部门需要一个独立的 Bot Token"
+    echo -e "  直接回车 = 跳过该部门"
+    echo ""
+
+    declare -a BOT_NAMES=("silijian:司礼监" "bingbu:兵部" "hubu:户部" "libu:礼部" "gongbu:工部" "libu2:吏部" "xingbu:刑部" "neige:内阁" "duchayuan:都察院" "hanlinyuan:翰林院")
+
+    FILLED_COUNT=0
+    for entry in "${BOT_NAMES[@]}"; do
+      BOT_ID="${entry%%:*}"
+      BOT_LABEL="${entry##*:}"
+      PLACEHOLDER="YOUR_${BOT_ID^^}_BOT_TOKEN"
+
+      read -rp "  ${BOT_LABEL} (${BOT_ID}) Token: " BOT_TOKEN
+      if [ -n "$BOT_TOKEN" ]; then
+        sed -i "s|$PLACEHOLDER|$BOT_TOKEN|g" "$CONFIG_FILE"
+        echo -e "    ${GREEN}✓${NC}"
+        FILLED_COUNT=$((FILLED_COUNT + 1))
+      fi
+    done
+
+    echo ""
+    if [ "$FILLED_COUNT" -gt 0 ]; then
+      echo -e "  ${GREEN}✓ 已填入 ${FILLED_COUNT} 个 Bot Token${NC}"
+    else
+      echo -e "  ${YELLOW}↳ 未填写任何 Bot Token，稍后请手动编辑 $CONFIG_FILE${NC}"
+    fi
+    echo ""
+  fi
+
+  # ---- 飞书 (仅飞书模式) ----
+  if [ "$DEPLOY_MODE" = "2" ]; then
+    echo -e "${YELLOW}【3】飞书应用配置${NC}"
+    echo -e "  ${CYAN}获取地址: https://open.feishu.cn/app${NC}"
+    echo ""
+    read -rp "  飞书 App ID: " FEISHU_APP_ID
+    read -rp "  飞书 App Secret: " FEISHU_APP_SECRET
+    if [ -n "$FEISHU_APP_ID" ]; then
+      sed -i "s|YOUR_FEISHU_APP_ID|$FEISHU_APP_ID|g" "$CONFIG_FILE"
+      echo -e "  ${GREEN}✓ App ID 已填入${NC}"
+    fi
+    if [ -n "$FEISHU_APP_SECRET" ]; then
+      sed -i "s|YOUR_FEISHU_APP_SECRET|$FEISHU_APP_SECRET|g" "$CONFIG_FILE"
+      echo -e "  ${GREEN}✓ App Secret 已填入${NC}"
+    fi
+    echo ""
+  fi
+
+  # ---- JSON 格式验证 ----
+  echo -e "${YELLOW}[验证] 检查配置文件格式...${NC}"
+  if command -v jq &>/dev/null; then
+    if jq . "$CONFIG_FILE" > /dev/null 2>&1; then
+      echo -e "  ${GREEN}✓ JSON 格式正确${NC}"
+    else
+      echo -e "  ${RED}✗ JSON 格式有误！错误信息：${NC}"
+      jq . "$CONFIG_FILE" 2>&1 | head -3
+      echo -e "  ${YELLOW}↳ 请用 nano $CONFIG_FILE 手动修复${NC}"
+    fi
+  elif command -v python3 &>/dev/null; then
+    if python3 -c "import json; json.load(open('$CONFIG_FILE'))" 2>/dev/null; then
+      echo -e "  ${GREEN}✓ JSON 格式正确${NC}"
+    else
+      echo -e "  ${RED}✗ JSON 格式有误，请检查 $CONFIG_FILE${NC}"
+    fi
+  else
+    echo -e "  ${CYAN}↳ 跳过验证（未安装 jq 或 python3）${NC}"
+  fi
+  echo ""
+
+  echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+  echo -e "${GREEN}配置向导完成！${NC}"
+  echo -e "${CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
+fi
+
 # 创建工作区和 memory 目录（OpenClaw 不会自动创建，缺少会导致 agent 被跳过）
 mkdir -p "$WORKSPACE"
 mkdir -p "$WORKSPACE/memory"
