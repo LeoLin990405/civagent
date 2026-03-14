@@ -7,7 +7,7 @@
   },
   "files": [
     "src/",
-    "SKILL.md",
+    "skills/",
     "openclaw.plugin.json"
   ]
 }

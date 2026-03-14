@@ -3,6 +3,7 @@
   "name": "翰林院 OpenViking 增强",
   "description": "为翰林院小说记忆系统接入 OpenViking 语义搜索、自动摘要和知识图谱。需要先安装 OpenViking。",
   "version": "1.0.0",
+  "skills": ["./skills/novel-openviking"],
   "configSchema": {
     "type": "object",
     "properties": {
