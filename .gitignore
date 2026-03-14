@@ -1,7 +1,24 @@
+# 依赖
 node_modules/
 dist/
+
+# 环境和配置（含敏感信息）
 .env
 .env.*
+openclaw.json
+clawdbot.json
+*.bak
+
+# 状态目录
+.openclaw/
+.clawdbot/
+
+# 系统文件
 *.log
 .DS_Store
-frontend
+Thumbs.db
+
+# 构建产物
+frontend/
+gui/dist/
+SECURITY-AUDIT.md

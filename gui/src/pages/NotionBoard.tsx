@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useTheme } from "../theme"
+import { getAuthToken } from "../utils/auth"
 import {
   PieChart,
   Pie,
@@ -42,7 +43,6 @@ interface PersonnelEntry {
   tenure: string
 }
 
-const AUTH_TOKEN = localStorage.getItem('boluo_auth_token') || ''
 
 const CHART_COLORS = ['#d4a574', '#22c55e', '#ef4444', '#3b82f6', '#f59e0b', '#8b5cf6', '#ec4899', '#14b8a6']
 
@@ -63,9 +63,9 @@ export default function NotionBoard() {
     setLoading(true)
     try {
       const [dailyRes, financeRes, personnelRes] = await Promise.all([
-        fetch('/api/notion/data?type=daily', { headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` } }),
-        fetch('/api/notion/data?type=finance', { headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` } }),
-        fetch('/api/notion/data?type=personnel', { headers: { 'Authorization': `Bearer ${AUTH_TOKEN}` } })
+        fetch('/api/notion/data?type=daily', { headers: { 'Authorization': `Bearer ${getAuthToken()}` } }),
+        fetch('/api/notion/data?type=finance', { headers: { 'Authorization': `Bearer ${getAuthToken()}` } }),
+        fetch('/api/notion/data?type=personnel', { headers: { 'Authorization': `Bearer ${getAuthToken()}` } })
       ])
       
       const [daily, finance, personnel] = await Promise.all([

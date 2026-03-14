@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
 import { useTheme } from "../theme"
+import { getAuthToken } from "../utils/auth"
 
 interface CronJob {
   id: string
@@ -12,7 +13,6 @@ interface CronJob {
   agent: string
 }
 
-const AUTH_TOKEN = localStorage.getItem('boluo_auth_token') || ''
 
 function relTime(ts: string) {
   if (!ts) return '未运行'
@@ -50,7 +50,7 @@ export default function CronJobs() {
 
   const fetchJobs = async () => {
     try {
-      const r = await fetch('/api/cron', { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } })
+      const r = await fetch('/api/cron', { headers: { Authorization: `Bearer ${getAuthToken()}` } })
       if (r.ok) {
         const d = await r.json()
         setJobs(d.jobs || [])
@@ -64,9 +64,9 @@ export default function CronJobs() {
   const handleRun = async (jobId: string, jobName: string) => {
     setActionLoading(jobId)
     try {
-      const r = await fetch(`/api/cron/${jobId}/run`, {
+      const r = await fetch(`/api/cron/run/${encodeURIComponent(jobId)}`, {
         method: 'POST',
-        headers: { Authorization: `Bearer ${AUTH_TOKEN}` },
+        headers: { Authorization: `Bearer ${getAuthToken()}` },
       })
       if (r.ok) {
         showToast(`✅ ${jobName} 已触发运行`)
@@ -83,9 +83,9 @@ export default function CronJobs() {
   const handleToggle = async (jobId: string, jobName: string, currentEnabled: boolean) => {
     setActionLoading(jobId)
     try {
-      const r = await fetch(`/api/cron/${jobId}/toggle`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${AUTH_TOKEN}`, 'Content-Type': 'application/json' },
+      const r = await fetch(`/api/cron/jobs/${encodeURIComponent(jobId)}`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${getAuthToken()}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ enabled: !currentEnabled }),
       })
       if (r.ok) {

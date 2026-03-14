@@ -2,13 +2,13 @@ import { useState, useEffect, useCallback } from "react"
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts"
 import type { SystemStatus } from "../types"
 import { useTheme } from "../theme"
+import { getAuthToken } from "../utils/auth"
 
 interface Props {
   data: SystemStatus
   onNavigate?: (tab: string, filter?: string) => void
 }
 
-const AUTH_TOKEN = localStorage.getItem('boluo_auth_token') || ''
 
 interface CityWeather {
   name: string; tz: string; temp: string; feelsLike?: string
@@ -166,7 +166,7 @@ export default function Dashboard({ data, onNavigate }: Props) {
   const sub = theme === 'light' ? 'text-gray-500' : 'text-[#a3a3a3]'
 
   useEffect(() => {
-    const h = { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } }
+    const h = { headers: { Authorization: `Bearer ${getAuthToken()}` } }
     fetch('/api/weather/cities', h).then(r => r.json()).then(d => setWeather(d.cities || [])).catch(() => {})
     fetch('/api/location/track?role=emperor', h).then(r => r.json()).then(d => setLocations(d.locations || {})).catch(() => {})
     fetch('/api/location/all', h).then(r => r.json()).then(d => setLocations(d.locations || {})).catch(() => {})
@@ -187,8 +187,9 @@ export default function Dashboard({ data, onNavigate }: Props) {
   const deptRanking = summary?.deptRanking || []
   const topActive = deptRanking.slice(0, 5)
 
-  // System load — API may return strings, so coerce to number
-  const cpuPct = Number(summary?.systemLoad?.cpu1m ?? data.cpuLoad?.[0] ?? 0) * 100
+  // System load — normalize by CPU core count to get meaningful percentage
+  const cpuCores = data.cpuCores || 1
+  const cpuPct = (Number(summary?.systemLoad?.cpu1m ?? data.cpuLoad?.[0] ?? 0) / cpuCores) * 100
   const memPct = Number(summary?.systemLoad?.memUsedPct ?? 0)
 
   const handleDeptClick = useCallback((deptName: string) => {

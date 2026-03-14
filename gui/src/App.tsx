@@ -1,23 +1,29 @@
-import { useState } from "react"
+import { useState, lazy, Suspense } from "react"
 import type { TabName } from "./types"
 import { useStatus } from "./hooks/useStatus"
 import { useTheme } from "./theme"
 import { PineappleLogo } from "./components/Logo"
-import Dashboard from "./pages/Dashboard"
-import Departments from "./pages/Departments"
-import TokenStats from "./pages/TokenStats"
-import MessageLogs from "./pages/MessageLogs"
-import SystemHealth from "./pages/SystemHealth"
-import Sessions from "./pages/Sessions"
-import Settings from "./pages/Settings"
-import Court from "./pages/Court"
 import Login from "./pages/Login"
-import Channels from "./pages/Channels"
-import MemorialHall from "./pages/MemorialHall"
-import Nodes from "./pages/Nodes"
-import NotionBoard from "./pages/NotionBoard"
-import Search from "./pages/Search"
-import CronJobs from "./pages/CronJobs"
+
+// 品牌名 — 修改此处即可全局替换
+const BRAND_NAME = import.meta.env.VITE_BRAND_NAME || '菠萝王朝'
+const BRAND_SUBTITLE = import.meta.env.VITE_BRAND_SUBTITLE || 'Pineapple Dynasty'
+
+// Lazy-loaded pages (code-splitting — reduces initial bundle, especially recharts-heavy pages)
+const Dashboard = lazy(() => import("./pages/Dashboard"))
+const Departments = lazy(() => import("./pages/Departments"))
+const TokenStats = lazy(() => import("./pages/TokenStats"))
+const MessageLogs = lazy(() => import("./pages/MessageLogs"))
+const SystemHealth = lazy(() => import("./pages/SystemHealth"))
+const Sessions = lazy(() => import("./pages/Sessions"))
+const Settings = lazy(() => import("./pages/Settings"))
+const Court = lazy(() => import("./pages/Court"))
+const Channels = lazy(() => import("./pages/Channels"))
+const MemorialHall = lazy(() => import("./pages/MemorialHall"))
+const Nodes = lazy(() => import("./pages/Nodes"))
+const NotionBoard = lazy(() => import("./pages/NotionBoard"))
+const Search = lazy(() => import("./pages/Search"))
+const CronJobs = lazy(() => import("./pages/CronJobs"))
 
 const tabs: { key: TabName; label: string; icon: string }[] = [
   { key: "dashboard", label: "总览", icon: "📊" },
@@ -74,8 +80,10 @@ function App() {
     if (!data) return null
     switch (activeTab) {
       case "dashboard": return <Dashboard data={data} onNavigate={(tab, filter) => {
+        if (tab === 'sessions' && filter) {
+          setSessionFilter(filter)
+        }
         setActiveTab(tab as TabName)
-        if (tab === 'sessions' && filter) setSessionFilter(filter)
       }} />
       case "court": return <Court />
       case "departments": return <Departments data={data} />
@@ -105,9 +113,9 @@ function App() {
           <div className="flex items-center gap-2.5">
             <PineappleLogo size={32} />
             <div>
-              <div className="text-base font-bold text-accent-gradient tracking-wide">菠萝王朝</div>
+              <div className="text-base font-bold text-accent-gradient tracking-wide">{BRAND_NAME}</div>
               <div className="text-[9px] tracking-widest uppercase" style={{ color: 'var(--text-tertiary)' }}>
-                {data?.uptime ? `运行 ${data.uptime}` : 'Pineapple Dynasty'}
+                {data?.uptime ? `运行 ${data.uptime}` : BRAND_SUBTITLE}
               </div>
             </div>
           </div>
@@ -118,7 +126,7 @@ function App() {
           {tabs.map((tab) => (
             <button
               key={tab.key}
-              onClick={() => { setActiveTab(tab.key); setSidebarOpen(false) }}
+              onClick={() => { setActiveTab(tab.key); setSidebarOpen(false); if (tab.key !== 'sessions') setSessionFilter(undefined) }}
               className={`w-full flex items-center gap-3 px-5 py-2.5 text-sm transition-all cursor-pointer ${
                 activeTab === tab.key
                   ? 'nav-active'
@@ -181,7 +189,7 @@ function App() {
           <button onClick={() => setSidebarOpen(true)} className="text-xl cursor-pointer" style={{ color: 'var(--accent)' }}>☰</button>
           <div className="flex items-center gap-2">
             <PineappleLogo size={22} />
-            <span className="font-bold text-accent-gradient">菠萝王朝</span>
+            <span className="font-bold text-accent-gradient">{BRAND_NAME}</span>
           </div>
           <button onClick={refresh} className="cursor-pointer" style={{ color: 'var(--text-secondary)' }}>↻</button>
         </header>
@@ -191,7 +199,9 @@ function App() {
             <div className="mb-4 px-3 py-2 rounded-lg text-xs" style={{ backgroundColor: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', color: 'var(--danger)' }}>{error}</div>
           )}
           <div key={activeTab} className="animate-slideIn">
-            {renderPage()}
+            <Suspense fallback={<div className="flex items-center justify-center h-96"><div className="text-[#d4a574] text-lg animate-pulse">加载中...</div></div>}>
+              {renderPage()}
+            </Suspense>
           </div>
         </main>
       </div>

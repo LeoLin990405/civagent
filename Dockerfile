@@ -26,25 +26,45 @@ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 # OpenClaw
 RUN npm install -g openclaw --loglevel=error
 
-# OpenViking（Python 依赖）
+# [L-02] OpenViking（Python 依赖）— 安装失败时给出明确提示而非静默跳过
 RUN python3 -m venv /opt/openviking && \
-    /opt/openviking/bin/pip install --no-cache-dir openviking && \
-    ln -s /opt/openviking/bin/openviking /usr/local/bin/openviking 2>/dev/null || true
+    (/opt/openviking/bin/pip install --no-cache-dir openviking && \
+    ln -s /opt/openviking/bin/openviking /usr/local/bin/openviking 2>/dev/null || \
+    echo "⚠ OpenViking 安装跳过（包可能不可用），不影响核心功能")
 ENV PATH="/opt/openviking/bin:$PATH"
 
-# 工作区
-RUN mkdir -p /root/clawd/memory /root/clawd/skills /root/.openclaw
-WORKDIR /root/clawd
+# [H-04] 创建非特权用户（安全加固）
+RUN groupadd -r court && useradd -r -g court -m -s /bin/bash court
 
-# 复制朝廷模板文件
+# 工作区
+ARG WORKSPACE=/home/court/clawd
+RUN mkdir -p ${WORKSPACE}/memory ${WORKSPACE}/skills /home/court/.openclaw
+WORKDIR ${WORKSPACE}
+
+# 复制朝廷模板文件和初始化脚本
 COPY docker/entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+COPY docker/init-docker.sh /init-docker.sh
+RUN chmod +x /entrypoint.sh /init-docker.sh && \
+    echo '#!/bin/bash\nexec /init-docker.sh "$@"' > /usr/local/bin/init-court && \
+    chmod +x /usr/local/bin/init-court
 
 # 复制 skill 和模板
-COPY skills/ /root/clawd/skills/
+COPY skills/ ${WORKSPACE}/skills/
 
-# 端口：Gateway WebUI
-EXPOSE 18789
+# [M-02] 只复制 GUI server（前端源码不需要进镜像）
+COPY gui/server/ /opt/gui/server/
+COPY gui/package.json /opt/gui/package.json
+RUN cd /opt/gui && npm install --production --loglevel=error 2>/dev/null || true && \
+    cd /opt/gui/server && npm install --production --loglevel=error 2>/dev/null || true
+
+# 设置文件所有权
+RUN chown -R court:court /home/court ${WORKSPACE} /opt/gui /entrypoint.sh /init-docker.sh
+
+# 端口：Gateway WebUI + 菠萝 GUI（可选）
+EXPOSE 18789 18795
+
+# [H-04] 以非 root 用户运行
+USER court
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["openclaw", "gateway", "--verbose"]

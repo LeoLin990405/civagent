@@ -1,23 +1,17 @@
 import { useState, useEffect, useRef } from "react"
 import { useTheme } from "../theme"
+import { getAuthToken } from "../utils/auth"
 
-const AUTH_TOKEN = localStorage.getItem('boluo_auth_token') || ''
+// 频道 ID 可通过环境变量配置，默认使用 API 获取
+const COURT_CHANNEL = import.meta.env.VITE_COURT_CHANNEL || ''
 
 interface Bot {
   id: string; name: string; displayName: string; model: string; hasToken: boolean
 }
 
-interface DiscordChannel {
-  id: string; name: string; parentId?: string; position?: number
-}
-
-interface Category {
-  id: string; name: string; position?: number
-}
-
 const COLORS: Record<string, { bg: string; hat: string }> = {
-  main:       { bg: '#d4a574', hat: '#b8894d' },
-  neige:      { bg: '#ef4444', hat: '#b91c1c' },
+  silijian:   { bg: '#d4a574', hat: '#b8894d' },
+  neige:      { bg: '#dc2626', hat: '#7f1d1d' },
   duchayuan:  { bg: '#22c55e', hat: '#15803d' },
   gongbu:     { bg: '#3b82f6', hat: '#1d4ed8' },
   hubu:       { bg: '#eab308', hat: '#a16207' },
@@ -104,26 +98,19 @@ export default function Court() {
   const [selectedBot, setSelectedBot] = useState<string | null>(null)
   const [command, setCommand] = useState('')
   const [sending, setSending] = useState(false)
-  const [messages, setMessages] = useState<{ bot: string; text: string; time: string; ok: boolean; channel?: string }[]>([])
+  const [messages, setMessages] = useState<{ bot: string; text: string; time: string; ok: boolean }[]>([])
   const [channelMessages, setChannelMessages] = useState<ChannelMessage[]>([])
   const [loadingMessages, setLoadingMessages] = useState(false)
-  const [discordChannels, setDiscordChannels] = useState<DiscordChannel[]>([])
-  const [categories, setCategories] = useState<Category[]>([])
-  const [selectedChannel, setSelectedChannel] = useState<string>('')
-  const [botUserIds, setBotUserIds] = useState<Record<string, string>>({})
   const logRef = useRef<HTMLDivElement>(null)
   const msgRef = useRef<HTMLDivElement>(null)
   const bg = theme === 'light' ? 'bg-white border border-gray-200' : 'bg-[#1a1a2e]'
   const sub = theme === 'light' ? 'text-gray-500' : 'text-[#a3a3a3]'
 
-  const activeChannel = selectedChannel || discordChannels[0]?.id || ''
-
   const fetchChannelMessages = async () => {
-    if (!activeChannel) return
     setLoadingMessages(true)
     try {
-      const r = await fetch(`/api/channel-messages?channel=${activeChannel}&limit=15`, {
-        headers: { Authorization: `Bearer ${AUTH_TOKEN}` }
+      const r = await fetch(`/api/channel-messages?channel=${COURT_CHANNEL}&limit=15`, {
+        headers: { Authorization: `Bearer ${getAuthToken()}` }
       })
       const d = await r.json()
       setChannelMessages(d.messages || [])
@@ -133,72 +120,50 @@ export default function Court() {
   }
 
   useEffect(() => {
-    // 加载 bots
-    fetch('/api/bots', { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } })
+    fetch('/api/bots', { headers: { Authorization: `Bearer ${getAuthToken()}` } })
       .then(r => r.json()).then(d => setBots(d.bots || [])).catch(() => {})
-    // 加载频道列表
-    fetch('/api/discord-channels', { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } })
-      .then(r => r.json()).then(d => {
-        const channels = d.channels || []
-        setDiscordChannels(channels)
-        setCategories(d.categories || [])
-        // 自动选中第一个频道，避免 select value 不匹配
-        if (channels.length > 0 && !selectedChannel) {
-          setSelectedChannel(channels[0].id)
-        }
-      }).catch(() => {})
-    // 加载 bot user IDs（用于正确 @mention）
-    fetch('/api/bot-user-ids', { headers: { Authorization: `Bearer ${AUTH_TOKEN}` } })
-      .then(r => r.json()).then(d => setBotUserIds(d.botUserIds || {})).catch(() => {})
-  }, [])
-
-  // 频道变化时刷新消息
-  useEffect(() => {
-    if (!activeChannel) return
     fetchChannelMessages()
     const interval = setInterval(fetchChannelMessages, 15000)
     return () => clearInterval(interval)
-  }, [activeChannel])
+  }, [])
 
   const sendCommand = async () => {
-    if (!command.trim() || !activeChannel) return
-    const target = selectedBot || 'main'
+    if (!command.trim()) return
+    const target = selectedBot || 'silijian'
     const botName = bots.find(b => b.id === target)?.displayName || target
-    const channelName = discordChannels.find(c => c.id === activeChannel)?.name || activeChannel
-    const mentionUserId = target !== 'main' ? botUserIds[target] : undefined
+    let finalMessage = command
+    if (selectedBot && selectedBot !== 'silijian') {
+      finalMessage = `@${botName} ${command}`
+    }
     setSending(true)
     try {
       const r = await fetch('/api/command', {
         method: 'POST',
-        headers: { Authorization: `Bearer ${AUTH_TOKEN}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          channel: activeChannel,
-          message: command,
-          botId: target,
-          mentionUserId
-        })
+        headers: { Authorization: `Bearer ${getAuthToken()}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ channel: COURT_CHANNEL, message: finalMessage, botId: target })
       })
       const d = await r.json()
       setMessages(prev => [...prev, {
         bot: botName, text: command,
         time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
-        ok: d.success,
-        channel: channelName
+        ok: d.success
       }])
       if (d.success) {
         setCommand('')
         setTimeout(fetchChannelMessages, 1500)
       }
     } catch {
-      setMessages(prev => [...prev, { bot: botName, text: command, time: new Date().toLocaleTimeString('zh-CN'), ok: false, channel: channelName }])
+      setMessages(prev => [...prev, { bot: botName, text: command, time: new Date().toLocaleTimeString('zh-CN'), ok: false }])
     }
     setSending(false)
     setTimeout(() => logRef.current?.scrollTo(0, logRef.current.scrollHeight), 100)
   }
 
-  const core = bots.filter(b => ['main', 'neige', 'duchayuan'].includes(b.id))
-  const liubu = bots.filter(b => ['gongbu', 'hubu', 'bingbu', 'libu2', 'xingbu', 'libu'].includes(b.id))
-  const others = bots.filter(b => !['main', 'neige', 'duchayuan', 'gongbu', 'hubu', 'bingbu', 'libu2', 'xingbu', 'libu'].includes(b.id))
+  const coreIds = ['silijian', 'neige', 'duchayuan']
+  const liubuIds = ['gongbu', 'hubu', 'bingbu', 'libu2', 'xingbu', 'libu']
+  const core = bots.filter(b => coreIds.includes(b.id))
+  const liubu = bots.filter(b => liubuIds.includes(b.id))
+  const others = bots.filter(b => ![...coreIds, ...liubuIds].includes(b.id))
 
   return (
     <div className="space-y-4">
@@ -213,9 +178,9 @@ export default function Court() {
             
             <div className="text-[#ffd700] text-xl sm:text-2xl font-bold tracking-[0.5em]"
                  style={{ textShadow: '0 0 20px rgba(255,215,0,0.3), 2px 2px 4px rgba(0,0,0,0.5)', fontFamily: 'serif' }}>
-              菠萝朝堂
+              {import.meta.env.VITE_BRAND_NAME ? `${import.meta.env.VITE_BRAND_NAME}朝堂` : 'AI 朝堂'}
             </div>
-            <div className="text-[#ffd700]/40 text-xs mt-1 tracking-[0.3em]">PINEAPPLE IMPERIAL COURT</div>
+            <div className="text-[#ffd700]/40 text-xs mt-1 tracking-[0.3em]">IMPERIAL COURT</div>
           </div>
         </div>
 
@@ -294,61 +259,15 @@ export default function Court() {
 
       {/* 指挥台 */}
       <div className={`${bg} rounded-lg p-3 sm:p-4`}>
-        <div className="flex items-center gap-2 mb-3 flex-wrap">
+        <div className="flex items-center gap-2 mb-3">
           <span>📜</span>
           <h3 className="text-xs sm:text-sm font-medium text-[#d4a574]">
-            {selectedBot ? `下旨 → ${bots.find(b => b.id === selectedBot)?.displayName}` : '颁旨'}
+            {selectedBot ? `下旨 → ${bots.find(b => b.id === selectedBot)?.displayName}` : '颁旨 → 朝堂'}
           </h3>
           {selectedBot && (
             <button onClick={() => setSelectedBot(null)} className={`text-[10px] px-2 py-0.5 rounded border border-[#d4a574]/20 ${sub} hover:text-[#d4a574] cursor-pointer`}>✕</button>
           )}
-          <span className={`text-[10px] ${sub}`}>→</span>
-          {/* 频道选择器 */}
-          <select
-            value={selectedChannel}
-            onChange={e => setSelectedChannel(e.target.value)}
-            className={`text-[11px] sm:text-xs px-2 py-1 rounded border ${
-              theme === 'light' ? 'bg-gray-50 border-gray-200' : 'bg-[#0d0d1a] border-[#d4a574]/20 text-[#e5e5e5]'
-            } focus:outline-none focus:border-[#d4a574] cursor-pointer`}
-          >
-            {discordChannels.length === 0 ? (
-              <option value="">加载中...</option>
-            ) : (
-              <>
-                {/* 按分类分组 */}
-                {categories.map(cat => {
-                  const children = discordChannels
-                    .filter(ch => ch.parentId === cat.id)
-                    .sort((a, b) => (a.position ?? 0) - (b.position ?? 0))
-                  if (children.length === 0) return null
-                  return (
-                    <optgroup key={cat.id} label={cat.name}>
-                      {children.map(ch => (
-                        <option key={ch.id} value={ch.id}>#{ch.name}</option>
-                      ))}
-                    </optgroup>
-                  )
-                })}
-                {/* 无分类的频道 */}
-                {discordChannels.filter(ch => !ch.parentId).map(ch => (
-                  <option key={ch.id} value={ch.id}>#{ch.name}</option>
-                ))}
-              </>
-            )}
-          </select>
         </div>
-
-        {/* 提示：选中bot时显示@mention信息 */}
-        {selectedBot && selectedBot !== 'main' && (
-          <div className={`text-[10px] ${sub} mb-2 flex items-center gap-1`}>
-            <span>💡</span>
-            <span>
-              将由司礼监在 #{discordChannels.find(c => c.id === activeChannel)?.name || '...'} 频道
-              @{bots.find(b => b.id === selectedBot)?.displayName} 发送
-              {botUserIds[selectedBot] ? '' : ' ⚠️ 未获取到bot ID，无法@mention'}
-            </span>
-          </div>
-        )}
 
         <div className="flex flex-wrap gap-1.5 mb-3">
           {[
@@ -369,7 +288,7 @@ export default function Court() {
             onKeyDown={e => e.key === 'Enter' && !sending && sendCommand()}
             placeholder="输入圣旨..."
             className={`flex-1 px-3 py-2.5 text-sm rounded border ${theme === 'light' ? 'bg-gray-50 border-gray-200' : 'bg-[#0d0d1a] border-[#d4a574]/20'} focus:outline-none focus:border-[#d4a574]`} />
-          <button onClick={sendCommand} disabled={sending || !command.trim() || !activeChannel}
+          <button onClick={sendCommand} disabled={sending || !command.trim()}
             className="px-4 sm:px-6 py-2.5 bg-gradient-to-r from-[#d4a574] to-[#c49464] text-[#0d0d1a] text-sm font-bold rounded hover:brightness-110 disabled:opacity-40 cursor-pointer transition-all shadow-lg shadow-[#d4a574]/20">
             {sending ? '⏳' : '📜 下旨'}
           </button>
@@ -379,9 +298,7 @@ export default function Court() {
       {/* 朝堂最新消息 */}
       <div className={`${bg} rounded-lg p-3 sm:p-4`}>
         <div className="flex items-center justify-between mb-3">
-          <h3 className={`text-[10px] sm:text-xs uppercase tracking-wider ${sub}`}>
-            💬 #{discordChannels.find(c => c.id === activeChannel)?.name || '...'} 最新消息
-          </h3>
+          <h3 className={`text-[10px] sm:text-xs uppercase tracking-wider ${sub}`}>💬 朝堂最新消息</h3>
           <button
             onClick={fetchChannelMessages}
             disabled={loadingMessages}
@@ -429,7 +346,6 @@ export default function Court() {
                 <span className={`text-[10px] ${sub} w-10 flex-shrink-0`}>{m.time}</span>
                 <span className={m.ok ? 'text-green-400' : 'text-red-400'}>{m.ok ? '✅' : '❌'}</span>
                 <span className="text-[#d4a574] flex-shrink-0 font-medium">{m.bot}</span>
-                {m.channel && <span className={`text-[10px] ${sub}`}>#{m.channel}</span>}
                 <span className={sub}>: {m.text}</span>
               </div>
             ))}

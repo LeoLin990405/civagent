@@ -7,8 +7,39 @@ export interface BotAccount {
   inputTokens: number
   outputTokens: number
   totalTokens: number
-  groupPolicy: string
+  groupPolicy?: string
   uptime?: string
+  platform?: string
+  platforms?: string[]
+}
+
+export interface Platform {
+  key?: string
+  name: string
+  icon?: string
+  status: 'connected' | 'disconnected'
+  channels: number
+  accounts: number
+}
+
+export interface CronJob {
+  id: string
+  name: string
+  schedule: string
+  enabled: boolean
+  nextRun: string | null
+  lastRun: string | null
+  status: string
+  agent?: string
+}
+
+export interface NodeInfo {
+  id: string
+  name: string
+  status: 'online' | 'offline'
+  lastHeartbeat: number
+  os: string
+  uptime: number
 }
 
 export interface SystemStatus {
@@ -22,6 +53,7 @@ export interface SystemStatus {
     external: number
   }
   cpuLoad: number[]
+  cpuCores?: number
   gateway: {
     status: string
     ping: number

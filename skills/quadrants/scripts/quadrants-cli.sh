@@ -4,6 +4,9 @@
 
 set -euo pipefail
 
+# [L-07] 检查 jq 依赖
+command -v jq &>/dev/null || { echo "Error: jq is required but not installed. Install with: apt install jq / brew install jq"; exit 1; }
+
 API_URL="${QUADRANTS_API_URL:-https://quadrants.ch}"
 API_KEY="${QUADRANTS_API_KEY:-}"
 SERVICE_ENDPOINT="${API_URL}/api/service"
@@ -32,7 +35,8 @@ case "$ACTION" in
 
   tasks)
     PROJECT_ID="${1:?Error: projectId required}"
-    call_api "{\"action\":\"tasks\",\"projectId\":\"$PROJECT_ID\"}"
+    # SEC-05: 用 jq 安全构建 JSON，防止注入
+    call_api "$(jq -n --arg pid "$PROJECT_ID" '{"action":"tasks","projectId":$pid}')"
     ;;
 
   priority)
@@ -44,34 +48,39 @@ case "$ACTION" in
     DESCRIPTION="${2:?Error: description required}"
     URGENCY="${3:-50}"
     IMPORTANCE="${4:-50}"
-    call_api "{\"action\":\"create\",\"projectId\":\"$PROJECT_ID\",\"description\":$(echo "$DESCRIPTION" | jq -Rs .),\"urgency\":$URGENCY,\"importance\":$IMPORTANCE}"
+    # SEC-05: 用 jq 安全构建 JSON
+    call_api "$(jq -n --arg pid "$PROJECT_ID" --arg desc "$DESCRIPTION" --argjson urg "$URGENCY" --argjson imp "$IMPORTANCE" \
+      '{"action":"create","projectId":$pid,"description":$desc,"urgency":$urg,"importance":$imp}')"
     ;;
 
   bulk-create)
     PROJECT_ID="${1:?Error: projectId required}"
     TASKS_JSON="${2:?Error: tasks JSON required}"
-    call_api "{\"action\":\"bulk-create\",\"projectId\":\"$PROJECT_ID\",\"tasks\":$TASKS_JSON}"
+    # SEC-05: 用 jq 安全构建 JSON
+    call_api "$(jq -n --arg pid "$PROJECT_ID" --argjson tasks "$TASKS_JSON" \
+      '{"action":"bulk-create","projectId":$pid,"tasks":$tasks}')"
     ;;
 
   complete)
     TASK_ID="${1:?Error: taskId required}"
-    call_api "{\"action\":\"complete\",\"taskId\":$TASK_ID}"
+    call_api "$(jq -n --argjson tid "$TASK_ID" '{"action":"complete","taskId":$tid}')"
     ;;
 
   update)
     TASK_ID="${1:?Error: taskId required}"
     UPDATES="${2:?Error: updates JSON required}"
-    call_api "{\"action\":\"update\",\"taskId\":$TASK_ID,\"updates\":$UPDATES}"
+    call_api "$(jq -n --argjson tid "$TASK_ID" --argjson upd "$UPDATES" \
+      '{"action":"update","taskId":$tid,"updates":$upd}')"
     ;;
 
   delete)
     TASK_ID="${1:?Error: taskId required}"
-    call_api "{\"action\":\"delete\",\"taskId\":$TASK_ID}"
+    call_api "$(jq -n --argjson tid "$TASK_ID" '{"action":"delete","taskId":$tid}')"
     ;;
 
   overview)
     PROJECT_ID="${1:?Error: projectId required}"
-    call_api "{\"action\":\"overview\",\"projectId\":\"$PROJECT_ID\"}"
+    call_api "$(jq -n --arg pid "$PROJECT_ID" '{"action":"overview","projectId":$pid}')"
     ;;
 
   help|*)

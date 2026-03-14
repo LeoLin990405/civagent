@@ -1,78 +1,68 @@
 import express from 'express';
 import cors from 'cors';
-import { readFileSync, readdirSync, existsSync, statSync, writeFileSync, mkdirSync } from 'fs';
+import { readFileSync, readdirSync, existsSync, statSync, createReadStream, openSync, readSync, closeSync } from 'fs';
+import { readFile } from 'fs/promises';
 import { join } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import readline from 'readline';
 import os from 'os';
 import http from 'http';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 import { WebSocketServer } from 'ws';
+import { exec as _exec } from 'child_process';
+import { promisify } from 'util';
+const execAsync = promisify(_exec);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// 检测可用的 CLI 命令（openclaw 优先，clawdbot 兜底）
+let CLI_CMD = 'openclaw';
+try {
+  const { stdout } = await execAsync('which openclaw 2>/dev/null || which clawdbot 2>/dev/null', { encoding: 'utf-8', timeout: 3000 });
+  CLI_CMD = stdout.trim().includes('openclaw') ? 'openclaw' : 'clawdbot';
+} catch { CLI_CMD = 'clawdbot'; }
+
 const app = express();
-const PORT = 18790;
+const PORT = process.env.BOLUO_GUI_PORT || 18795;
 
-// AUTH_TOKEN 管理：优先使用环境变量，否则从文件读取或生成新 token
-function getOrCreateAuthToken() {
-  // 1. 检查环境变量
-  if (process.env.BOLUO_AUTH_TOKEN) {
-    return process.env.BOLUO_AUTH_TOKEN;
-  }
-
-  // 2. 定义 token 存储路径
-  const tokenFilePath = join(HOME || process.env.HOME || '/home/ubuntu', '.openclaw/gui-auth-token.txt');
-
-  // 3. 尝试从文件读取
-  try {
-    if (existsSync(tokenFilePath)) {
-      const savedToken = readFileSync(tokenFilePath, 'utf-8').trim();
-      if (savedToken) {
-        return savedToken;
-      }
-    }
-  } catch (err) {
-    console.warn('[Auth] 读取保存的 token 失败，将生成新 token');
-  }
-
-  // 4. 生成新的随机 token（64 位十六进制）
-  const crypto = require('crypto');
-  const newToken = crypto.randomBytes(32).toString('hex');
-
-  // 5. 确保 .openclaw 目录存在
-  try {
-    const configDir = join(HOME || process.env.HOME || '/home/ubuntu', '.openclaw');
-    if (!existsSync(configDir)) {
-      mkdirSync(configDir, { recursive: true });
-    }
-
-    // 6. 保存 token 到文件
-    writeFileSync(tokenFilePath, newToken, 'utf-8');
-  } catch (err) {
-    console.error('[Auth] 保存 token 失败:', err.message);
-  }
-
-  return newToken;
+// SEC-03: 不再使用硬编码默认 Token
+import crypto from 'crypto';
+let AUTH_TOKEN = process.env.BOLUO_AUTH_TOKEN;
+if (!AUTH_TOKEN || AUTH_TOKEN === 'changeme') {
+  AUTH_TOKEN = crypto.randomBytes(16).toString('hex');
+  console.warn('');
+  console.warn('╔══════════════════════════════════════════════════════════════╗');
+  console.warn('║  ⚠️  安全警告: BOLUO_AUTH_TOKEN 未设置或使用了默认值!       ║');
+  console.warn('║  已自动生成随机 Token（仅本次运行有效）                     ║');
+  console.warn('║  请设置环境变量: export BOLUO_AUTH_TOKEN=$(openssl rand -hex 16) ║');
+  console.warn('╚══════════════════════════════════════════════════════════════╝');
+  console.warn(`  本次 Token: ${AUTH_TOKEN}`);
+  console.warn('');
 }
 
-const AUTH_TOKEN = getOrCreateAuthToken();
-
 const AGENT_DEPT_MAP = {
-  'main': '司礼监', 'gongbu': '工部', 'hubu': '户部', 'libu': '吏部',
-  'xingbu': '刑部', 'bingbu': '兵部', 'libu2': '礼部',
+  'silijian': '司礼监', 'main': '司礼监', 'gongbu': '工部', 'hubu': '户部',
+  'libu': '礼部', 'libu2': '吏部',
+  'xingbu': '刑部', 'bingbu': '兵部',
   'neige': '内阁', 'duchayuan': '都察院', 'neiwufu': '内务府',
   'hanlinyuan': '翰林院', 'taiyiyuan': '太医院', 'guozijian': '国子监',
   'yushanfang': '御膳房'
 };
 
 const HOME = process.env.HOME || '/home/ubuntu';
-const AGENTS_DIR = join(HOME, '.openclaw/agents');
-const CONFIG_PATH = join(HOME, '.openclaw/openclaw.json');
+// 兼容 openclaw 和 clawdbot 两种安装方式
+const OPENCLAW_DIR = join(HOME, '.openclaw');
+const CLAWDBOT_DIR = join(HOME, '.clawdbot');
+const STATE_DIR = existsSync(OPENCLAW_DIR) ? OPENCLAW_DIR : CLAWDBOT_DIR;
+const AGENTS_DIR = join(STATE_DIR, 'agents');
+const CONFIG_PATH = existsSync(join(OPENCLAW_DIR, 'openclaw.json'))
+  ? join(OPENCLAW_DIR, 'openclaw.json')
+  : join(CLAWDBOT_DIR, 'clawdbot.json');
 
-app.use(cors({ origin: ['https://gui.at2.one'] }));
+app.use(cors());
 app.use(express.json());
 
 function authMiddleware(req, res, next) {
@@ -94,13 +84,21 @@ function formatUptime(seconds) {
   return parts.join(' ');
 }
 
-function getOpenClawConfig() {
+function getClawdbotConfig() {
   try {
     if (existsSync(CONFIG_PATH)) {
       return JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
     }
   } catch (e) { }
   return null;
+}
+
+// SEC-15: 验证 agentId 防止路径遍历
+function sanitizeAgentId(id) {
+  if (!id || typeof id !== 'string') return null;
+  if (/[\/\\.\s]/.test(id) || id.includes('..')) return null;
+  if (!/^[a-zA-Z0-9_-]{1,64}$/.test(id)) return null;
+  return id;
 }
 
 function getAgentSessionData(agentId) {
@@ -173,9 +171,47 @@ function getRecentLogs(limit = 100) {
   return logs.sort((a, b) => b.timestamp.localeCompare(a.timestamp)).slice(0, limit);
 }
 
+// Detect which platforms an agent is bound to, from session keys
+function detectAgentPlatforms(agentId) {
+  const sessionsPath = join(AGENTS_DIR, agentId, 'sessions', 'sessions.json');
+  const platformSet = new Set();
+
+  if (existsSync(sessionsPath)) {
+    try {
+      const data = JSON.parse(readFileSync(sessionsPath, 'utf-8'));
+      for (const sessionKey of Object.keys(data)) {
+        // Session key format: "discord:channel:xxx", "feishu:xxx", "telegram:xxx", "cron:xxx", etc.
+        const parts = sessionKey.split(':');
+        const plat = parts[0]?.toLowerCase();
+        if (['discord', 'telegram', 'signal', 'whatsapp', 'slack', 'feishu', 'lark'].includes(plat)) {
+          // Normalize lark -> feishu
+          platformSet.add(plat === 'lark' ? 'feishu' : plat);
+        }
+      }
+    } catch (e) { }
+  }
+
+  // Also check gateway config channels
+  const config = getClawdbotConfig();
+  const channels = config?.channels || {};
+  for (const key of Object.keys(channels)) {
+    const plat = key.toLowerCase();
+    if (['discord', 'telegram', 'signal', 'whatsapp', 'slack', 'feishu', 'lark'].includes(plat)) {
+      // Check if this agent has accounts in that channel
+      const accounts = channels[key]?.accounts || {};
+      if (accounts[agentId]) {
+        platformSet.add(plat === 'lark' ? 'feishu' : plat);
+      }
+    }
+  }
+
+  const platforms = [...platformSet];
+  return platforms.length > 0 ? platforms : ['discord']; // default fallback
+}
+
 app.get('/api/status', authMiddleware, async (req, res) => {
-  const config = getOpenClawConfig();
-  const defaultModel = config?.agents?.defaults?.model?.primary || 'default';
+  const config = getClawdbotConfig();
+  const defaultModel = config?.agents?.defaults?.model?.primary || 'minimax/MiniMax-M2.5';
 
   let agentIds = [];
   if (existsSync(AGENTS_DIR)) {
@@ -186,8 +222,17 @@ app.get('/api/status', authMiddleware, async (req, res) => {
 
   const botAccounts = agentIds.map(id => {
     const sessData = getAgentSessionData(id);
-    const agentConfig = config?.agents?.list?.[id] || {};
+    // Support both array and object agent list formats
+    let agentConfig = {};
+    if (Array.isArray(config?.agents?.list)) {
+      agentConfig = config.agents.list.find(a => a.id === id) || {};
+    } else {
+      agentConfig = config?.agents?.list?.[id] || {};
+    }
     const model = agentConfig?.model?.primary || sessData.model || defaultModel;
+
+    // Detect platform from session keys
+    const platforms = detectAgentPlatforms(id);
 
     return {
       name: id,
@@ -198,6 +243,8 @@ app.get('/api/status', authMiddleware, async (req, res) => {
       inputTokens: sessData.inputTokens,
       outputTokens: sessData.outputTokens,
       totalTokens: sessData.totalTokens,
+      platforms: platforms,
+      platform: platforms[0] || 'unknown',
     };
   });
 
@@ -210,6 +257,22 @@ app.get('/api/status', authMiddleware, async (req, res) => {
 
   const logs = getRecentLogs(100);
 
+  // Measure real gateway ping
+  let gatewayPing = -1;
+  let gatewayStatus = 'unknown';
+  try {
+    const pingStart = Date.now();
+    const pingRes = await fetch('http://localhost:18789/health', { signal: AbortSignal.timeout(3000) });
+    if (pingRes.ok) {
+      gatewayPing = Date.now() - pingStart;
+      gatewayStatus = 'ready';
+    } else {
+      gatewayStatus = 'error';
+    }
+  } catch {
+    gatewayStatus = 'unreachable';
+  }
+
   const status = {
     platform: `${os.platform()} ${os.arch()}`,
     uptime: formatUptime(sysUptime),
@@ -221,10 +284,11 @@ app.get('/api/status', authMiddleware, async (req, res) => {
       external: mem.external
     },
     cpuLoad: cpuLoad,
+    cpuCores: os.cpus().length,
     gateway: {
-      status: 'ready',
-      ping: Math.floor(Math.random() * 30) + 20,
-      guilds: 1
+      status: gatewayStatus,
+      ping: gatewayPing,
+      guilds: Object.keys(config?.channels || {}).length || 1
     },
     botAccounts: botAccounts,
     totalSessions: totalSessions,
@@ -244,22 +308,23 @@ app.get('/api/logs', authMiddleware, (req, res) => {
 app.get('/api/messages', authMiddleware, (req, res) => {
   const logs = getRecentLogs(200);
   const messages = logs
-    .filter(line => line.includes('channel') || line.includes('message'))
+    .filter(entry => {
+      const msg = entry.message || '';
+      return msg.includes('channel') || msg.includes('message');
+    })
     .slice(-50)
-    .map((line, i) => ({
+    .map((entry, i) => ({
       id: i,
-      content: line.substring(0, 200),
-      timestamp: new Date().toISOString(),
-      channel: 'general'
+      content: (entry.message || '').substring(0, 200),
+      timestamp: entry.timestamp || new Date().toISOString(),
+      channel: entry.source || 'general'
     }));
   res.json({ messages });
 });
 
 function getTokenStats() {
-  const deptMap = {
-    'gongbu': '工部', 'hubu': '户部', 'libu': '吏部', 
-    'xingbu': '刑部', 'bingbu': '兵部', 'libu2': '礼部'
-  };
+  // [M-05] 统一使用顶部 AGENT_DEPT_MAP，不再维护重复的 deptMap
+  const deptMap = AGENT_DEPT_MAP;
 
   const byDepartment = [];
   let totalTokens = 0;
@@ -283,7 +348,7 @@ function getTokenStats() {
     }
   }
 
-  const rawConfig = getOpenClawConfig();
+  const rawConfig = getClawdbotConfig();
   const tokenPrice = rawConfig?.tokenPricePerM || 0.3;
   for (const d of byDepartment) {
     d.cost = (d.tokens / 1000000 * tokenPrice).toFixed(3);
@@ -310,7 +375,7 @@ app.get('/api/tokens', authMiddleware, (req, res) => {
 // Track cache stats
 let cacheHits = 0, cacheMisses = 0;
 
-app.get('/api/health', authMiddleware, (req, res) => {
+app.get('/api/health', authMiddleware, async (req, res) => {
   try {
     const uptime = process.uptime();
     const memUsage = process.memoryUsage();
@@ -321,12 +386,11 @@ app.get('/api/health', authMiddleware, (req, res) => {
     let endpointCount = 0;
     app._router.stack.forEach(r => { if (r.route) endpointCount++; });
 
-    // Disk usage
+    // Disk usage (async)
     let diskUsagePct = 'N/A', diskTotal = 'N/A', diskUsed = 'N/A';
     try {
-      const { execSync: ex } = require('child_process');
-      const dfLine = ex("df -h / | tail -1", { encoding: 'utf-8', timeout: 2000 }).trim();
-      const parts = dfLine.split(/\s+/);
+      const { stdout: dfLine } = await execAsync("df -h / | tail -1", { encoding: 'utf-8', timeout: 2000 });
+      const parts = dfLine.trim().split(/\s+/);
       diskTotal = parts[1] || 'N/A'; diskUsed = parts[2] || 'N/A'; diskUsagePct = parts[4] || 'N/A';
     } catch { }
 
@@ -357,9 +421,9 @@ app.get('/api/health', authMiddleware, (req, res) => {
       gateway: 'connected',
       endpoints: endpointCount,
       cache: { hits: cacheHits, misses: cacheMisses, keys: Object.keys(cache).length },
-      wsClients: typeof wss !== 'undefined' ? wss.clients.size : 0,
-      sseClients: typeof sseClients !== 'undefined' ? sseClients.size : 0,
-      metricsBufferSize: typeof metricsBuffer !== 'undefined' ? metricsBuffer.length : 0,
+      wsClients: wss?.clients?.size ?? 0,
+      sseClients: sseClients?.size ?? 0,
+      metricsBufferSize: metricsBuffer?.length ?? 0,
       timestamp: new Date().toISOString()
     });
   } catch (err) {
@@ -382,21 +446,47 @@ function setCache(key, data) {
   cache[key] = { data, ts: Date.now() };
 }
 
-// Count messages and usage from a JSONL session file
-function countSessionFile(filePath) {
+// [M-06] 手动清除缓存的 API
+function clearCache() {
+  const keys = Object.keys(cache);
+  for (const key of keys) delete cache[key];
+  return keys.length;
+}
+
+// Periodic cache cleanup — evict expired entries every 10 minutes
+setInterval(() => {
+  const now = Date.now();
+  for (const key of Object.keys(cache)) {
+    if (now - cache[key].ts > CACHE_TTL) {
+      delete cache[key];
+    }
+  }
+}, 10 * 60 * 1000);
+
+// [H-09] Count messages and usage from a JSONL session file (async streaming to avoid blocking event loop)
+async function countSessionFile(filePath) {
   const result = { messages: 0, userMessages: 0, assistantMessages: 0, inputTokens: 0, outputTokens: 0 };
   try {
     if (!filePath || !existsSync(filePath)) return result;
-    const content = readFileSync(filePath, 'utf-8');
-    const lines = content.split('\n').filter(l => l.trim());
-    for (const line of lines) {
+    const fileSize = statSync(filePath).size;
+    // Skip files larger than 50MB to avoid excessive processing
+    if (fileSize > 50 * 1024 * 1024) {
+      console.warn(`[Sessions] Skipping oversized session file (${(fileSize / 1024 / 1024).toFixed(1)}MB): ${filePath}`);
+      return result;
+    }
+    const rl = readline.createInterface({
+      input: createReadStream(filePath, { encoding: 'utf-8' }),
+      crlfDelay: Infinity,
+    });
+    for await (const line of rl) {
+      const trimmed = line.trim();
+      if (!trimmed) continue;
       try {
-        const entry = JSON.parse(line);
+        const entry = JSON.parse(trimmed);
         if (entry.type === 'message' && entry.message) {
           result.messages++;
           if (entry.message.role === 'user') result.userMessages++;
           else if (entry.message.role === 'assistant') result.assistantMessages++;
-          // Usage is nested in message.usage
           const usage = entry.message?.usage;
           if (usage) {
             result.inputTokens += usage.input || usage.input_tokens || usage.inputTokens || 0;
@@ -409,8 +499,8 @@ function countSessionFile(filePath) {
   return result;
 }
 
-// Build all sessions data (cached)
-function buildSessionsData() {
+// [H-09] Build all sessions data (cached, async to avoid blocking event loop)
+async function buildSessionsData() {
   const cached = getCached('sessions');
   if (cached) return cached;
   
@@ -424,12 +514,16 @@ function buildSessionsData() {
       if (existsSync(sessionsPath)) {
         try {
           const data = JSON.parse(readFileSync(sessionsPath, 'utf-8'));
-          for (const [sessionKey, session] of Object.entries(data)) {
+          // Collect count promises for parallel async processing
+          const entries = Object.entries(data);
+          const countPromises = entries.map(([, session]) =>
+            countSessionFile(session.sessionFile || '')
+          );
+          const allCounts = await Promise.all(countPromises);
+          
+          entries.forEach(([sessionKey, session], i) => {
             const updatedAt = session.updatedAt || 0;
-            const sessionFile = session.sessionFile || '';
-            
-            // Count messages and tokens from the JSONL file
-            const counts = countSessionFile(sessionFile);
+            const counts = allCounts[i];
             
             // 判定渠道
             let channel = session.channel || session.lastChannel || 'unknown';
@@ -454,7 +548,7 @@ function buildSessionsData() {
               model: session.model || '',
               displayName: session.displayName || '',
             });
-          }
+          });
         } catch (e) { }
       }
     }
@@ -470,10 +564,10 @@ function buildSessionsData() {
   return result;
 }
 
-app.get('/api/sessions', authMiddleware, (req, res) => {
+app.get('/api/sessions', authMiddleware, async (req, res) => {
   try {
     const limit = parseInt(req.query.limit) || 100;
-    const data = buildSessionsData();
+    const data = await buildSessionsData();
     res.json({ 
       sessions: data.sessions.slice(0, limit), 
       total: data.total,
@@ -484,13 +578,19 @@ app.get('/api/sessions', authMiddleware, (req, res) => {
   }
 });
 
+// [M-06] 手动刷新缓存的 API
+app.post('/api/cache/clear', authMiddleware, (req, res) => {
+  const cleared = clearCache();
+  res.json({ success: true, clearedKeys: cleared });
+});
+
 // ========== DASHBOARD SUMMARY ==========
-app.get('/api/dashboard/summary', authMiddleware, (req, res) => {
+app.get('/api/dashboard/summary', authMiddleware, async (req, res) => {
   try {
     const cached = getCached('dashboard_summary');
     if (cached) return res.json(cached);
 
-    const sessData = buildSessionsData();
+    const sessData = await buildSessionsData();
     const sessions = sessData.sessions;
     
     // Total tokens
@@ -524,7 +624,23 @@ app.get('/api/dashboard/summary', authMiddleware, (req, res) => {
               }
             }
             if (bestFile) {
-              const lines = readFileSync(bestFile, 'utf-8').split('\n').filter(l => l.trim());
+              // [M-16] 只读文件尾部 4KB，避免对大文件全量读取
+              const PREVIEW_TAIL = 4096;
+              let tailContent;
+              try {
+                const fStat = statSync(bestFile);
+                if (fStat.size > PREVIEW_TAIL) {
+                  const fd2 = openSync(bestFile, 'r');
+                  const buf2 = Buffer.alloc(PREVIEW_TAIL);
+                  readSync(fd2, buf2, 0, PREVIEW_TAIL, fStat.size - PREVIEW_TAIL);
+                  closeSync(fd2);
+                  const raw2 = buf2.toString('utf-8');
+                  tailContent = raw2.substring(raw2.indexOf('\n') + 1);
+                } else {
+                  tailContent = readFileSync(bestFile, 'utf-8');
+                }
+              } catch { tailContent = ''; }
+              const lines = tailContent.split('\n').filter(l => l.trim());
               for (let i = lines.length - 1; i >= Math.max(0, lines.length - 20); i--) {
                 try {
                   const e = JSON.parse(lines[i]);
@@ -581,11 +697,11 @@ app.get('/api/dashboard/summary', authMiddleware, (req, res) => {
     
     const dailyTrend = Object.entries(dailyTokens).map(([date, tokens]) => ({ date, tokens }));
     
-    // Disk usage
+    // Disk usage (async)
     let diskUsage = 'N/A';
     try {
-      const du = require('child_process').execSync("df -h / | tail -1 | awk '{print $5}'", { encoding: 'utf-8', timeout: 3000 }).trim();
-      diskUsage = du;
+      const { stdout: du } = await execAsync("df -h / | tail -1 | awk '{print $5}'", { encoding: 'utf-8', timeout: 3000 });
+      diskUsage = du.trim();
     } catch { }
 
     const summary = {
@@ -634,7 +750,8 @@ app.get('/api/sessions/:sessionId/timeline', authMiddleware, (req, res) => {
     if (cached) return res.json(cached);
     
     const parts = sessionId.split(':');
-    const agentId = parts[1] || 'main';
+    const agentId = sanitizeAgentId(parts[1]) || 'main';
+    if (!sanitizeAgentId(agentId)) return res.status(400).json({ error: 'Invalid agent ID', timeline: [] });
     const sessionKey = parts.slice(2).join(':');
     
     const sessionsPath = join(AGENTS_DIR, agentId, 'sessions', 'sessions.json');
@@ -682,7 +799,8 @@ app.get('/api/sessions/:sessionId/messages', authMiddleware, (req, res) => {
     const allMessages = [];
     
     const parts = sessionId.split(':');
-    const agentId = parts[1] || 'main';
+    const agentId = sanitizeAgentId(parts[1]) || 'main';
+    if (!sanitizeAgentId(agentId)) return res.status(400).json({ error: 'Invalid agent ID', messages: [], total: 0, page: 1, totalPages: 0 });
     const sessionKey = parts.slice(2).join(':');
     
     const sessionsPath = join(AGENTS_DIR, agentId, 'sessions', 'sessions.json');
@@ -690,17 +808,35 @@ app.get('/api/sessions/:sessionId/messages', authMiddleware, (req, res) => {
       const sessionsData = JSON.parse(readFileSync(sessionsPath, 'utf-8'));
       const session = sessionsData[sessionKey];
       if (session?.sessionFile && existsSync(session.sessionFile)) {
-        const lines = readFileSync(session.sessionFile, 'utf-8').split('\n').filter(Boolean);
+        // Q2: 大文件保护 — 超过 10MB 的 JSONL 只读最后 2MB（避免 OOM）
+        const fileStat = statSync(session.sessionFile);
+        const MAX_FULL_READ = 10 * 1024 * 1024; // 10MB
+        const TAIL_READ = 2 * 1024 * 1024; // 2MB
+        let content;
+        if (fileStat.size > MAX_FULL_READ && !search) {
+          // 只读尾部，避免内存爆炸
+          // [M-11] 统一使用 ESM import，不再混用 require('fs')
+          const fd = openSync(session.sessionFile, 'r');
+          const buf = Buffer.alloc(TAIL_READ);
+          readSync(fd, buf, 0, TAIL_READ, fileStat.size - TAIL_READ);
+          closeSync(fd);
+          // 丢弃第一行（可能不完整）
+          const raw = buf.toString('utf-8');
+          content = raw.substring(raw.indexOf('\n') + 1);
+        } else {
+          content = readFileSync(session.sessionFile, 'utf-8');
+        }
+        const lines = content.split('\n').filter(Boolean);
         for (const line of lines) {
           try {
             const entry = JSON.parse(line);
             if (entry.type === 'message' && entry.message) {
-              const content = entry.message.content;
+              const msgContent = entry.message.content;
               let text = '';
-              if (Array.isArray(content)) {
-                text = content.map(c => c.text || c.type).join('');
-              } else if (typeof content === 'string') {
-                text = content;
+              if (Array.isArray(msgContent)) {
+                text = msgContent.map(c => c.text || c.type).join('');
+              } else if (typeof msgContent === 'string') {
+                text = msgContent;
               }
               if (text) {
                 // Search filter
@@ -735,7 +871,8 @@ app.get('/api/sessions/:sessionId/summary', authMiddleware, (req, res) => {
   try {
     const { sessionId } = req.params;
     const parts = sessionId.split(':');
-    const agentId = parts[1] || 'main';
+    const agentId = sanitizeAgentId(parts[1]) || 'main';
+    if (!sanitizeAgentId(agentId)) return res.status(400).json({ error: 'Invalid agent ID' });
     const sessionKey = parts.slice(2).join(':');
     
     const sessionsPath = join(AGENTS_DIR, agentId, 'sessions', 'sessions.json');
@@ -857,7 +994,7 @@ app.get('/api/departments/:name/recent', authMiddleware, (req, res) => {
 // Gateway config (read-only, masks secrets)
 app.get('/api/config', authMiddleware, (req, res) => {
   try {
-    const config = getOpenClawConfig();
+    const config = getClawdbotConfig();
     if (!config) return res.json({ config: null, error: 'Config not found' });
     
     // Deep clone and mask sensitive fields
@@ -866,7 +1003,8 @@ app.get('/api/config', authMiddleware, (req, res) => {
       if (!obj || typeof obj !== 'object' || depth > 10) return;
       for (const key of Object.keys(obj)) {
         if (/token|secret|key|password|apiKey/i.test(key) && typeof obj[key] === 'string') {
-          obj[key] = obj[key].substring(0, 6) + '••••••';
+          // SEC-18: 完全脱敏，不保留任何前缀（Discord Token 前缀含 Bot ID）
+          obj[key] = `[REDACTED ${obj[key].length} chars]`;
         } else if (typeof obj[key] === 'object') {
           maskSecrets(obj[key], depth + 1);
         }
@@ -881,21 +1019,24 @@ app.get('/api/config', authMiddleware, (req, res) => {
 });
 
 app.get('/api/notion', authMiddleware, (req, res) => {
+  const NOTION_TOKEN = process.env.NOTION_TOKEN;
   res.json({
-    status: 'success',
-    lastSync: new Date().toISOString(),
-    pagesLinked: 12,
-    lastError: null
+    status: NOTION_TOKEN ? 'configured' : 'not_configured',
+    configured: !!NOTION_TOKEN,
+    lastSync: null,
+    pagesLinked: 0,
+    lastError: NOTION_TOKEN ? null : '未配置 NOTION_TOKEN 环境变量',
+    _note: 'placeholder — 尚未对接真实 Notion 同步'
   });
 });
 
 app.post('/api/notion/sync', authMiddleware, (req, res) => {
-  res.json({ success: true, message: '同步任务已触发' });
+  res.status(501).json({ success: false, message: 'Notion 同步功能尚未实现（placeholder）' });
 });
 
 app.get('/api/notion/data', authMiddleware, (req, res) => {
   const { type = 'daily' } = req.query;
-  const config = getOpenClawConfig();
+  const config = getClawdbotConfig();
   
   if (type === 'daily') {
     const data = [];
@@ -918,14 +1059,19 @@ app.get('/api/notion/data', authMiddleware, (req, res) => {
     res.json({ type: 'daily', data, lastSync: new Date().toISOString() });
   } else if (type === 'finance') {
     const tokenStats = getTokenStats();
-    const data = tokenStats.byDepartment.slice(0, 6).map((d, i) => ({
-      id: String(i + 1),
-      category: d.department,
-      income: Math.floor(Math.random() * 500000) + 100000,
-      expense: Math.floor(d.tokens * 0.001),
-      period: '2026-02',
-      balance: Math.floor(Math.random() * 300000)
-    }));
+    const tokenPrice = tokenStats.tokenPrice || 0.3;
+    const data = tokenStats.byDepartment.slice(0, 6).map((d, i) => {
+      const expense = Math.floor(d.tokens * 0.001);
+      return {
+        id: String(i + 1),
+        category: d.department,
+        income: 0,
+        expense: expense,
+        period: new Date().toISOString().substring(0, 7),
+        balance: -expense,
+        tokenCost: (d.tokens / 1000000 * tokenPrice).toFixed(3),
+      };
+    });
     res.json({ type: 'finance', data, lastSync: new Date().toISOString() });
   } else if (type === 'personnel') {
     const depts = ['工部', '户部', '吏部', '刑部', '兵部', '礼部'];
@@ -935,7 +1081,7 @@ app.get('/api/notion/data', authMiddleware, (req, res) => {
       title: name,
       department: name,
       status: 'active',
-      tenure: `${2024 + i}年任职`
+      tenure: `${new Date().getFullYear() - (depts.length - i - 1)}年任职`
     }));
     res.json({ type: 'personnel', data, lastSync: new Date().toISOString() });
   } else {
@@ -945,23 +1091,28 @@ app.get('/api/notion/data', authMiddleware, (req, res) => {
 
 const WEATHER_DEFAULT_LOCATION = process.env.WEATHER_LOCATION || 'Beijing';
 
-app.get('/api/weather', authMiddleware, (req, res) => {
-  const location = String(req.query.location || WEATHER_DEFAULT_LOCATION).replace(/[^a-zA-Z0-9,+\-_ .]/g, "");
+app.get('/api/weather', authMiddleware, async (req, res) => {
+  // SEC-01: 白名单过滤 location，用 fetch 替代 execAsync(curl) 防止命令注入
+  // [M-14] 增加最大长度限制，防止超长输入
+  const location = (req.query.location || WEATHER_DEFAULT_LOCATION)
+    .replace(/[^a-zA-Z0-9\s,.\-\u4e00-\u9fff]/g, '')
+    .substring(0, 100);
   
   try {
-    const output = require('child_process').execSync(`curl -s "wttr.in/${location}?format=j1"`, { 
-      timeout: 5000,
-      encoding: 'utf8'
-    }).trim();
+    const weatherResp = await fetch(`https://wttr.in/${encodeURIComponent(location)}?format=j1`, {
+      signal: AbortSignal.timeout(5000),
+      headers: { 'User-Agent': 'boluo-gui/1.0' }
+    });
+    if (!weatherResp.ok) throw new Error(`wttr.in returned ${weatherResp.status}`);
     
-    const data = JSON.parse(output);
+    const data = await weatherResp.json();
     const current = data.current_condition?.[0];
     
     if (current) {
-      const temp = current.temp_C?.[0] || 'N/A';
+      const temp = current.temp_C || 'N/A';
       const condition = current.weatherDesc?.[0]?.value || 'Unknown';
-      const humidity = current.humidity?.[0] || 'N/A';
-      const wind = current.windspeedKmph?.[0] || 'N/A';
+      const humidity = current.humidity || 'N/A';
+      const wind = current.windspeedKmph || 'N/A';
       
       res.json({
         location,
@@ -986,7 +1137,7 @@ app.get('/api/weather', authMiddleware, (req, res) => {
 app.get('/api/platforms', authMiddleware, (req, res) => {
   try {
     // 直接读取 gateway 配置和 agent 数据（不再 curl 自己）
-    const config = getOpenClawConfig();
+    const config = getClawdbotConfig();
     const channels = config?.channels || {};
     
     // 读取 agent 数据获取在线账号数和会话数
@@ -1010,22 +1161,44 @@ app.get('/api/platforms', authMiddleware, (req, res) => {
       { key: 'signal', name: 'Signal', icon: '🔒' },
       { key: 'whatsapp', name: 'WhatsApp', icon: '📱' },
       { key: 'slack', name: 'Slack', icon: '💼' },
+      { key: 'feishu', name: '飞书', icon: '🐦' },
+      { key: 'lark', name: 'Lark/飞书', icon: '🐦' },
     ];
+    
+    // Check for feishu under both 'feishu' and 'lark' keys
+    const feishuConf = channels['feishu'] || channels['lark'];
     
     const platforms = platformDefs
       .map(def => {
-        const chConf = channels[def.key];
+        // For feishu/lark, use the merged config
+        let chConf;
+        if (def.key === 'feishu' || def.key === 'lark') {
+          chConf = feishuConf;
+        } else {
+          chConf = channels[def.key];
+        }
         const isConfigured = !!chConf;
         // Count accounts: check if there's a token/credentials configured
-        const accounts = isConfigured ? (Array.isArray(chConf.accounts) ? chConf.accounts.length : 1) : 0;
+        const accounts = isConfigured ? (Array.isArray(chConf.accounts) ? chConf.accounts.length : (typeof chConf.accounts === 'object' ? Object.keys(chConf.accounts).length : 1)) : 0;
         return {
+          key: def.key,
           name: def.name,
+          icon: def.icon,
           status: isConfigured ? 'connected' : 'disconnected',
-          channels: def.key === 'discord' ? totalSessions : 0,
+          channels: 0,
           accounts: accounts,
         };
       })
-      .filter(p => p.status === 'connected' || ['Discord', 'Telegram', 'Signal', 'WhatsApp'].includes(p.name));
+      // Deduplicate feishu/lark: if both exist, keep the one that's configured, or just feishu
+      .filter((p, i, arr) => {
+        if (p.key === 'lark') {
+          const feishu = arr.find(x => x.key === 'feishu');
+          // If feishu is already connected, skip lark
+          if (feishu && feishu.status === 'connected') return false;
+        }
+        return true;
+      })
+      .filter(p => p.status === 'connected' || ['Discord', 'Telegram', 'Signal', 'WhatsApp', '飞书'].includes(p.name));
     
     // Discord 特殊处理：从 guilds 和 agents 统计
     const discordPlatform = platforms.find(p => p.name === 'Discord');
@@ -1045,60 +1218,59 @@ app.get('/api/platforms', authMiddleware, (req, res) => {
   }
 });
 
-app.get('/api/cron', authMiddleware, (req, res) => {
-  // 从 Gateway 获取真实 Cron Jobs
-  const { execSync } = require('child_process');
-  try {
-    const output = execSync('openclaw cron list --json 2>/dev/null', { encoding: 'utf-8', timeout: 5000 });
-    const data = JSON.parse(output);
-    const jobs = (data.jobs || []).map((j) => {
-      // 解析调度规则
-      let scheduleStr = '';
-      if (j.schedule) {
-        const s = j.schedule;
-        if (s.kind === 'cron') {
-          scheduleStr = (s.expr) || '';
-        } else if (s.kind === 'every') {
-          const ms = s.everyMs;
-          if (ms < 60000) scheduleStr = `every ${ms/1000}s`;
-          else if (ms < 3600000) scheduleStr = `every ${ms/60000}m`;
-          else scheduleStr = `every ${ms/3600000}h`;
-        }
+// SEC-02: Cron Job ID 白名单验证（防止命令注入）
+function validateCronId(id) {
+  return /^[a-zA-Z0-9_-]{1,64}$/.test(id);
+}
+
+// Helper: parse cron job list output
+function parseCronJobs(data) {
+  return (data.jobs || []).map((j) => {
+    let scheduleStr = '';
+    if (j.schedule) {
+      const s = j.schedule;
+      if (s.kind === 'cron') {
+        scheduleStr = (s.expr) || '';
+      } else if (s.kind === 'every') {
+        const ms = s.everyMs;
+        if (ms < 60000) scheduleStr = `every ${ms/1000}s`;
+        else if (ms < 3600000) scheduleStr = `every ${ms/60000}m`;
+        else scheduleStr = `every ${ms/3600000}h`;
       }
-      
-      // 解析状态
-      const state = j.state;
-      const nextRunMs = state.nextRunAtMs;
-      const lastRunMs = state.lastRunAtMs;
-      
-      return {
-        id: j.id,
-        name: j.name,
-        schedule: scheduleStr,
-        enabled: j.enabled,
-        nextRun: nextRunMs ? new Date(nextRunMs).toISOString() : null,
-        lastRun: lastRunMs ? new Date(lastRunMs).toISOString() : null,
-        status: state.lastStatus || 'unknown',
-        agent: j.agentId
-      };
-    });
-    res.json({ jobs, source: 'gateway' });
+    }
+    const state = j.state || {};
+    return {
+      id: j.id, name: j.name, schedule: scheduleStr, enabled: j.enabled,
+      nextRun: state.nextRunAtMs ? new Date(state.nextRunAtMs).toISOString() : null,
+      lastRun: state.lastRunAtMs ? new Date(state.lastRunAtMs).toISOString() : null,
+      status: state.lastStatus || 'unknown', agent: j.agentId
+    };
+  });
+}
+
+app.get('/api/cron', authMiddleware, async (req, res) => {
+  try {
+    const { stdout } = await execAsync(`${CLI_CMD} cron list --json 2>/dev/null`, { encoding: 'utf-8', timeout: 5000 });
+    const data = JSON.parse(stdout);
+    res.json({ jobs: parseCronJobs(data), source: 'gateway' });
   } catch (e) {
     // Fallback to demo data
     const jobs = [
-      { id: 'heartbeat-check', name: '心跳检查', schedule: '*/30 * * * *', enabled: true, nextRun: new Date().toISOString() },
-      { id: 'notion-sync', name: 'Notion同步', schedule: '0 2 * * *', enabled: true, nextRun: new Date().toISOString() },
+      { id: 'heartbeat-check', name: '心跳检查', schedule: '*/30 * * * *', enabled: true, nextRun: new Date(Date.now() + 30 * 60000).toISOString() },
+      { id: 'notion-sync', name: 'Notion同步', schedule: '0 2 * * *', enabled: true, nextRun: new Date(Date.now() + 24 * 3600000).toISOString() },
       { id: 'data-backup', name: '数据备份', schedule: '0 3 * * *', enabled: false, nextRun: null }
     ];
     res.json({ jobs, source: 'demo' });
   }
 });
 
-app.post('/api/cron/run/:id', authMiddleware, (req, res) => {
-  const id = req.params.id.replace(/[^a-zA-Z0-9_\-]/g, '');
-  const { execSync } = require('child_process');
+app.post('/api/cron/run/:id', authMiddleware, async (req, res) => {
+  const { id } = req.params;
+  if (!validateCronId(id)) {
+    return res.status(400).json({ success: false, message: 'Invalid cron job ID' });
+  }
   try {
-    execSync(`openclaw cron run ${id}`, { encoding: 'utf-8', timeout: 10000 });
+    await execAsync(`${CLI_CMD} cron run ${id}`, { encoding: 'utf-8', timeout: 10000 });
     res.json({ success: true, message: `任务 ${id} 已触发执行` });
   } catch (e) {
     res.json({ success: false, message: `任务 ${id} 执行失败: ${e.message}` });
@@ -1106,22 +1278,24 @@ app.post('/api/cron/run/:id', authMiddleware, (req, res) => {
 });
 
 // Cron enable/disable
-app.patch('/api/cron/jobs/:id', authMiddleware, (req, res) => {
+app.patch('/api/cron/jobs/:id', authMiddleware, async (req, res) => {
   try {
-    const id = req.params.id.replace(/[^a-zA-Z0-9_\-]/g, '');
+    const { id } = req.params;
+    if (!validateCronId(id)) {
+      return res.status(400).json({ success: false, message: 'Invalid cron job ID' });
+    }
     const { enabled } = req.body;
-    const { execSync } = require('child_process');
     
     if (typeof enabled === 'boolean') {
       const action = enabled ? 'enable' : 'disable';
-      // Try openclaw CLI
+      // Try clawdbot CLI
       try {
-        execSync(`openclaw cron ${action} ${id}`, { encoding: 'utf-8', timeout: 10000 });
+        await execAsync(`${CLI_CMD} cron ${action} ${id}`, { encoding: 'utf-8', timeout: 10000 });
         res.json({ success: true, message: `任务 ${id} 已${enabled ? '启用' : '禁用'}`, id, enabled });
       } catch (cliErr) {
         // Fallback: try to update config directly
         try {
-          const config = getOpenClawConfig();
+          const config = getClawdbotConfig();
           if (config?.cron?.jobs) {
             const job = config.cron.jobs.find(j => j.id === id);
             if (job) {
@@ -1147,92 +1321,87 @@ app.patch('/api/cron/jobs/:id', authMiddleware, (req, res) => {
 });
 
 // Alias: GET /api/cron/jobs → same handler as GET /api/cron
-app.get('/api/cron/jobs', authMiddleware, (req, res) => {
-  const { execSync } = require('child_process');
+app.get('/api/cron/jobs', authMiddleware, async (req, res) => {
   try {
-    const output = execSync('openclaw cron list --json 2>/dev/null', { encoding: 'utf-8', timeout: 5000 });
-    const data = JSON.parse(output);
-    const jobs = (data.jobs || []).map((j) => {
-      let scheduleStr = '';
-      if (j.schedule) {
-        const s = j.schedule;
-        if (s.kind === 'cron') scheduleStr = s.expr || '';
-        else if (s.kind === 'every') {
-          const ms = s.everyMs;
-          if (ms < 60000) scheduleStr = `every ${ms/1000}s`;
-          else if (ms < 3600000) scheduleStr = `every ${ms/60000}m`;
-          else scheduleStr = `every ${ms/3600000}h`;
-        }
-      }
-      const state = j.state || {};
-      return {
-        id: j.id, name: j.name, schedule: scheduleStr, enabled: j.enabled,
-        nextRun: state.nextRunAtMs ? new Date(state.nextRunAtMs).toISOString() : null,
-        lastRun: state.lastRunAtMs ? new Date(state.lastRunAtMs).toISOString() : null,
-        status: state.lastStatus || 'unknown', agent: j.agentId
-      };
-    });
-    res.json({ jobs, source: 'gateway' });
+    const { stdout } = await execAsync(`${CLI_CMD} cron list --json 2>/dev/null`, { encoding: 'utf-8', timeout: 5000 });
+    const data = JSON.parse(stdout);
+    res.json({ jobs: parseCronJobs(data), source: 'gateway' });
   } catch (e) {
     res.json({ jobs: [], source: 'error', error: e.message });
   }
 });
 
-// Read real gateway logs from journalctl or log files
+// Read real gateway logs from journalctl or log files (with time-based cache)
+let _gatewayLogsCache = { data: null, ts: 0 };
+const GATEWAY_LOGS_CACHE_TTL = 5000; // 5 seconds
+
 function readGatewayLogs(opts = {}) {
   const { level, search, limit = 200, since } = opts;
-  const logs = [];
-  
-  try {
-    // Try journalctl for openclaw service logs
-    const { execSync } = require('child_process');
-    let cmd = 'journalctl -u openclaw --no-pager -n 200 --output=short-iso 2>/dev/null';
-    if (since) cmd += ` --since="${String(since).replace(/[^a-zA-Z0-9:\-_ ]/g, "")}"`;
-    
-    let output = '';
+  // Use cached raw logs if within TTL (avoid re-reading files/journalctl every request)
+  let logs;
+  const now = Date.now();
+  if (_gatewayLogsCache.data && (now - _gatewayLogsCache.ts) < GATEWAY_LOGS_CACHE_TTL && !since) {
+    logs = _gatewayLogsCache.data;
+  } else {
+    logs = [];
     try {
-      output = execSync(cmd, { encoding: 'utf-8', timeout: 5000 });
-    } catch {
-      // Fallback: read from openclaw log file
-      const logPaths = [
-        `${HOME}/.openclaw/logs/gateway.log`,
-        '/tmp/openclaw.log',
-        '/tmp/boluo-gui.log',
-      ];
-      for (const p of logPaths) {
-        if (existsSync(p)) {
-          try { output = readFileSync(p, 'utf-8').split('\n').slice(-200).join('\n'); break; } catch { }
+      // Try journalctl for gateway service logs (openclaw or clawdbot)
+      const { execSync } = require('child_process');
+      const svcName = CLI_CMD === 'openclaw' ? 'openclaw-gateway' : 'clawdbot-gateway';
+      let cmd = `journalctl -u ${svcName} --no-pager -n 200 --output=short-iso 2>/dev/null`;
+      if (since) cmd += ` --since="${since}"`;
+      
+      let output = '';
+      try {
+        output = execSync(cmd, { encoding: 'utf-8', timeout: 5000 });
+      } catch {
+        // Fallback: read from log files
+        const logPaths = [
+          join(HOME, '.openclaw/logs/gateway.log'),
+          join(HOME, '.clawdbot/logs/gateway.log'),
+          '/tmp/clawdbot.log',
+          '/tmp/boluo-gui.log',
+        ];
+        for (const p of logPaths) {
+          if (existsSync(p)) {
+            try { output = readFileSync(p, 'utf-8').split('\n').slice(-200).join('\n'); break; } catch { }
+          }
         }
       }
+      
+      // Also read recent JSONL assistant messages as "log" entries
+      const agentLogs = getRecentLogs(100);
+      
+      // Parse output lines
+      const lines = output.split('\n').filter(l => l.trim());
+      let id = 0;
+      for (const line of lines) {
+        const tsMatch = line.match(/^(\d{4}-\d{2}-\d{2}T[\d:]+[^\s]*)/);
+        const lvlMatch = line.match(/\b(INFO|WARN|ERROR|DEBUG|FATAL)\b/i);
+        const entry = {
+          id: id++,
+          timestamp: tsMatch ? tsMatch[1] : new Date().toISOString(),
+          level: lvlMatch ? lvlMatch[1].toUpperCase() : 'INFO',
+          message: line.substring(0, 500),
+          source: 'gateway'
+        };
+        logs.push(entry);
+      }
+      
+      // Merge agent logs
+      for (const al of agentLogs) {
+        logs.push({ id: id++, ...al });
+      }
+      
+      // Sort by timestamp desc
+      logs.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
+    } catch { }
+    
+    // Cache raw logs (only when not filtering by 'since')
+    if (!since) {
+      _gatewayLogsCache = { data: logs, ts: now };
     }
-    
-    // Also read recent JSONL assistant messages as "log" entries
-    const agentLogs = getRecentLogs(100);
-    
-    // Parse output lines
-    const lines = output.split('\n').filter(l => l.trim());
-    let id = 0;
-    for (const line of lines) {
-      const tsMatch = line.match(/^(\d{4}-\d{2}-\d{2}T[\d:]+[^\s]*)/);
-      const lvlMatch = line.match(/\b(INFO|WARN|ERROR|DEBUG|FATAL)\b/i);
-      const entry = {
-        id: id++,
-        timestamp: tsMatch ? tsMatch[1] : new Date().toISOString(),
-        level: lvlMatch ? lvlMatch[1].toUpperCase() : 'INFO',
-        message: line.substring(0, 500),
-        source: 'gateway'
-      };
-      logs.push(entry);
-    }
-    
-    // Merge agent logs
-    for (const al of agentLogs) {
-      logs.push({ id: id++, ...al });
-    }
-    
-    // Sort by timestamp desc
-    logs.sort((a, b) => b.timestamp.localeCompare(a.timestamp));
-  } catch { }
+  }
   
   // Filter
   let filtered = logs;
@@ -1303,19 +1472,48 @@ setInterval(() => {
   } catch { }
 }, 10000);
 
-app.get('/api/nodes', authMiddleware, (req, res) => {
-  const nodes = [
-    { id: 'vibe-server', name: 'Vibe服务器', status: 'online', lastHeartbeat: Date.now(), os: 'Linux arm64', uptime: 432000 },
-    { id: 'desktop-mac', name: 'Mac桌面', status: 'offline', lastHeartbeat: Date.now() - 3600000, os: 'macOS x64', uptime: 0 },
-    { id: 'phone-iphone', name: 'iPhone', status: 'online', lastHeartbeat: Date.now(), os: 'iOS', uptime: 7200 }
-  ];
-  res.json({ nodes });
+app.get('/api/nodes', authMiddleware, async (req, res) => {
+  // Try to get real node data from clawdbot CLI
+  try {
+    const { stdout } = await execAsync(`${CLI_CMD} node list --json 2>/dev/null`, { encoding: 'utf-8', timeout: 5000 });
+    const data = JSON.parse(stdout);
+    const nodes = (data.nodes || []).map(n => ({
+      id: n.id || n.name,
+      name: n.name || n.id,
+      status: n.online ? 'online' : 'offline',
+      lastHeartbeat: n.lastSeenMs || Date.now(),
+      os: n.os || 'unknown',
+      uptime: n.uptimeSeconds || 0,
+    }));
+    res.json({ nodes, source: 'gateway' });
+  } catch {
+    // Fallback: at least report the current server
+    const nodes = [
+      {
+        id: 'vibe-server',
+        name: os.hostname(),
+        status: 'online',
+        lastHeartbeat: Date.now(),
+        os: `${os.platform()} ${os.arch()}`,
+        uptime: Math.floor(os.uptime()),
+      }
+    ];
+    res.json({ nodes, source: 'local' });
+  }
 });
 
 // Notion 数据库/页面查询路由
 app.get('/api/notion/:id', authMiddleware, async (req, res) => {
   const { id } = req.params;
-  const NOTION_TOKEN = process.env.NOTION_TOKEN || '';
+  const NOTION_TOKEN = process.env.NOTION_TOKEN;
+  if (!NOTION_TOKEN) {
+    return res.status(500).json({ success: false, error: '未配置 NOTION_TOKEN 环境变量。请设置: export NOTION_TOKEN=your_token' });
+  }
+  
+  // Validate Notion ID format (UUID with or without dashes)
+  if (!/^[a-f0-9-]{32,36}$/i.test(id)) {
+    return res.status(400).json({ success: false, error: 'Invalid Notion ID format' });
+  }
   
   try {
     // 先尝试查询数据库
@@ -1350,16 +1548,30 @@ app.get('/api/notion/:id', authMiddleware, async (req, res) => {
 
 // 获取Discord频道最新消息
 app.get('/api/channel-messages', authMiddleware, async (req, res) => {
-  const channelId = req.query.channel || '1474091579630293164';
+  // channel 必填，不使用硬编码默认值
+  const channelId = req.query.channel;
+  if (!channelId) {
+    return res.status(400).json({ error: 'channel query parameter is required', messages: [] });
+  }
+  // Validate channel ID is numeric (Discord snowflake)
+  if (!/^\d{17,20}$/.test(channelId)) {
+    return res.status(400).json({ error: 'Invalid channel ID format', messages: [] });
+  }
   const limit = Math.min(parseInt(req.query.limit) || 15, 50);
   
   try {
+    if (!existsSync(CONFIG_PATH)) {
+      return res.status(400).json({ error: 'Config not found', messages: [] });
+    }
     const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
-    const account = config.channels?.discord?.accounts?.['main'];
+    // 取第一个可用的 Discord account（不再硬编码 'main'）
+    const accounts = config.channels?.discord?.accounts || {};
+    const firstAccountKey = Object.keys(accounts)[0];
+    const account = firstAccountKey ? accounts[firstAccountKey] : null;
     const token = account?.token;
     
     if (!token) {
-      return res.status(400).json({ error: 'Main bot token not found' });
+      return res.status(400).json({ error: 'No Discord bot token configured (check channels.discord.accounts)' });
     }
 
     const r = await fetch(`https://discord.com/api/v10/channels/${channelId}/messages?limit=${limit}`, {
@@ -1407,111 +1619,57 @@ app.get('/api/channel-messages', authMiddleware, async (req, res) => {
 });
 
 // 发送指令到Discord频道
-// 获取 Discord 服务器频道列表（带缓存）
-let discordChannelsCache = { data: null, ts: 0 };
-const CHANNELS_CACHE_TTL = 300000; // 5分钟缓存
+// SEC-31: /api/command rate limiter — 每分钟最多 10 次
+const _cmdRateLimit = { count: 0, resetAt: 0 };
 
-app.get('/api/discord-channels', authMiddleware, async (req, res) => {
-  if (discordChannelsCache.data && Date.now() - discordChannelsCache.ts < CHANNELS_CACHE_TTL) {
-    return res.json(discordChannelsCache.data);
+app.post('/api/command', authMiddleware, async (req, res) => {
+  // Rate limit check
+  const now = Date.now();
+  if (now > _cmdRateLimit.resetAt) { _cmdRateLimit.count = 0; _cmdRateLimit.resetAt = now + 60000; }
+  _cmdRateLimit.count++;
+  if (_cmdRateLimit.count > 10) {
+    return res.status(429).json({ error: 'Rate limit exceeded (max 10/min)' });
   }
 
+  const { channel, message, botId } = req.body;
+  if (!message || typeof message !== 'string') {
+    return res.status(400).json({ error: 'Message is required and must be a string' });
+  }
+  // SEC-32: channel 必填，不使用硬编码默认值
+  if (!channel) {
+    return res.status(400).json({ error: 'Channel ID is required' });
+  }
+  const targetChannel = channel;
+  // Validate channel ID is numeric (Discord snowflake)
+  if (!/^\d{17,20}$/.test(targetChannel)) {
+    return res.status(400).json({ error: 'Invalid channel ID format' });
+  }
+  
+  // SEC-33: 验证 botId 防止原型链污染
+  const safeBotId = botId ? sanitizeAgentId(botId) : null;
+  
+  // 读取bot token - 使用指定的botId发送
   try {
-    const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
-    const mainAccount = config.channels?.discord?.accounts?.['main'];
-    const token = mainAccount?.token;
-    if (!token) return res.status(400).json({ error: 'Main bot token not found' });
-
-    // 先获取 bot 所在的 guild
-    const guildRes = await fetch('https://discord.com/api/v10/users/@me/guilds', {
-      headers: { 'Authorization': `Bot ${token}` }
-    });
-    if (!guildRes.ok) return res.status(guildRes.status).json({ error: 'Failed to fetch guilds' });
-    const guilds = await guildRes.json();
-    if (guilds.length === 0) return res.json({ channels: [] });
-
-    // 获取第一个 guild 的频道列表（文字频道）
-    const guildId = guilds[0].id;
-    const chRes = await fetch(`https://discord.com/api/v10/guilds/${guildId}/channels`, {
-      headers: { 'Authorization': `Bot ${token}` }
-    });
-    if (!chRes.ok) return res.status(chRes.status).json({ error: 'Failed to fetch channels' });
-    const allChannels = await chRes.json();
-
-    // 只返回文字频道 (type 0) 和公告频道 (type 5)，按 Discord position 排序
-    const textChannels = allChannels
-      .filter(ch => ch.type === 0 || ch.type === 5)
-      .map(ch => ({ id: ch.id, name: ch.name, parentId: ch.parent_id, position: ch.position ?? 0 }))
-      .sort((a, b) => a.position - b.position);
-
-    // 也返回分类 (type 4) 方便前端分组，按 position 排序
-    const categories = allChannels
-      .filter(ch => ch.type === 4)
-      .map(ch => ({ id: ch.id, name: ch.name, position: ch.position ?? 0 }))
-      .sort((a, b) => a.position - b.position);
-
-    const result = { channels: textChannels, categories, guildId };
-    discordChannelsCache = { data: result, ts: Date.now() };
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// 获取 bot 的 Discord user ID（用于正确 @mention），带内存缓存
-let botUserIdsCache = { data: null, ts: 0 };
-const BOT_USER_IDS_TTL = 600000; // 10分钟缓存
-
-app.get('/api/bot-user-ids', authMiddleware, async (req, res) => {
-  // 命中缓存直接返回
-  if (botUserIdsCache.data && Date.now() - botUserIdsCache.ts < BOT_USER_IDS_TTL) {
-    return res.json({ botUserIds: botUserIdsCache.data });
-  }
-
-  try {
+    if (!existsSync(CONFIG_PATH)) {
+      return res.status(400).json({ error: 'Config not found' });
+    }
     const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
     const accounts = config.channels?.discord?.accounts || {};
-    const results = {};
-
-    await Promise.all(Object.entries(accounts).map(async ([agentId, acc]) => {
-      if (!acc.token) return;
-      try {
-        const r = await fetch('https://discord.com/api/v10/users/@me', {
-          headers: { 'Authorization': `Bot ${acc.token}` }
-        });
-        if (r.ok) {
-          const user = await r.json();
-          results[agentId] = user.id;
-        }
-      } catch { /* skip */ }
-    }));
-
-    botUserIdsCache = { data: results, ts: Date.now() };
-    res.json({ botUserIds: results });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
-// 发送指令到Discord频道（始终用主bot发送，正确@mention目标bot）
-app.post('/api/command', authMiddleware, async (req, res) => {
-  const { channel, message, botId, mentionUserId } = req.body;
-  const targetChannel = channel || '1474091579630293164'; // 默认朝堂频道
-  
-  try {
-    const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
-    // 始终用主bot（司礼监）的token发送，模拟"用户下旨"
-    const mainAccount = config.channels?.discord?.accounts?.['main'];
-    const token = mainAccount?.token;
+    // Try target bot first, fall back to first available account
+    let account = safeBotId ? accounts[safeBotId] : null;
+    let usedBot = safeBotId || 'unknown';
+    if (!account?.token) {
+      const firstKey = Object.keys(accounts)[0];
+      account = firstKey ? accounts[firstKey] : null;
+      usedBot = firstKey || 'none';
+    }
+    const token = account?.token;
+    
+    // SEC-34: 审计日志
+    console.log(`[AUDIT] /api/command botId=${usedBot} channel=${targetChannel} msgLen=${message.length}`);
     
     if (!token) {
-      return res.status(400).json({ error: 'Main bot token not found' });
-    }
-
-    // 构建消息：如果指定了目标bot且有其Discord user ID，用真正的@mention
-    let finalMessage = message;
-    if (mentionUserId && botId !== 'main') {
-      finalMessage = `<@${mentionUserId}> ${message}`;
+      return res.status(400).json({ error: `Bot ${botId} token not found` });
     }
 
     const r = await fetch(`https://discord.com/api/v10/channels/${targetChannel}/messages`, {
@@ -1520,12 +1678,12 @@ app.post('/api/command', authMiddleware, async (req, res) => {
         'Authorization': `Bot ${token}`,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ content: finalMessage })
+      body: JSON.stringify({ content: message })
     });
     
     if (r.ok) {
       const data = await r.json();
-      res.json({ success: true, messageId: data.id, sentAs: 'main', channel: targetChannel });
+      res.json({ success: true, messageId: data.id, sentAs: usedBot });
     } else {
       const err = await r.text();
       res.status(r.status).json({ error: err });
@@ -1539,26 +1697,55 @@ app.post('/api/command', authMiddleware, async (req, res) => {
 app.get('/api/bots', authMiddleware, (req, res) => {
   try {
     const config = JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
-    const accounts = config.channels?.discord?.accounts || {};
-    const bots = Object.entries(accounts).map(([id, acc]) => ({
-      id,
-      name: AGENT_DEPT_MAP[id] || id,
-      displayName: acc.displayName || AGENT_DEPT_MAP[id] || id,
-      model: acc.model || config.defaultModel || 'default',
-      hasToken: !!acc.token,
-    }));
+    const channels = config.channels || {};
+    const botMap = {};
+    
+    // Collect bots from all platform channels
+    for (const [platform, chConf] of Object.entries(channels)) {
+      const accounts = chConf?.accounts || {};
+      for (const [id, acc] of Object.entries(accounts)) {
+        if (!botMap[id]) {
+          botMap[id] = {
+            id,
+            name: AGENT_DEPT_MAP[id] || id,
+            displayName: acc.displayName || AGENT_DEPT_MAP[id] || id,
+            model: acc.model || config.defaultModel || 'claude-opus-4-6',
+            hasToken: !!acc.token,
+            platforms: [],
+          };
+        }
+        const platName = platform === 'lark' ? 'feishu' : platform;
+        if (!botMap[id].platforms.includes(platName)) {
+          botMap[id].platforms.push(platName);
+        }
+        if (acc.token) botMap[id].hasToken = true;
+      }
+    }
+    
+    const bots = Object.values(botMap);
     res.json({ bots });
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err.message, bots: [] });
   }
 });
 
-// 三城天气 API (Open-Meteo, 免费无需key)
-const WEATHER_CITIES = [
-  { name: '苏黎世', lat: 47.37, lon: 8.55, tz: 'Europe/Zurich' },
-  { name: '南京', lat: 32.06, lon: 118.80, tz: 'Asia/Shanghai' },
-  { name: '杭州', lat: 30.25, lon: 120.17, tz: 'Asia/Shanghai' },
+// 天气城市 API (Open-Meteo, 免费无需key)
+// 可通过环境变量 WEATHER_CITIES 自定义，JSON 格式：
+// export WEATHER_CITIES='[{"name":"北京","lat":39.90,"lon":116.40,"tz":"Asia/Shanghai"}]'
+const DEFAULT_WEATHER_CITIES = [
+  { name: '北京', lat: 39.90, lon: 116.40, tz: 'Asia/Shanghai' },
+  { name: '上海', lat: 31.23, lon: 121.47, tz: 'Asia/Shanghai' },
+  { name: '广州', lat: 23.13, lon: 113.26, tz: 'Asia/Shanghai' },
 ];
+let WEATHER_CITIES = DEFAULT_WEATHER_CITIES;
+try {
+  if (process.env.WEATHER_CITIES) {
+    const parsed = JSON.parse(process.env.WEATHER_CITIES);
+    if (Array.isArray(parsed) && parsed.length > 0) WEATHER_CITIES = parsed;
+  }
+} catch (e) {
+  console.warn('[WARN] WEATHER_CITIES 环境变量 JSON 解析失败，使用默认城市');
+}
 
 let weatherCache = { data: null, ts: 0 };
 
@@ -1698,13 +1885,31 @@ app.use((err, req, res, _next) => {
   res.status(500).json({ error: 'Internal server error', message: err.message });
 });
 
-// Prevent uncaught exceptions from crashing the process
+// Graceful shutdown: close server and WS connections
+process.on('SIGTERM', () => {
+  console.log('[SHUTDOWN] SIGTERM received, shutting down gracefully');
+  server.close();
+  wss.close();
+  process.exit(0);
+});
+process.on('SIGINT', () => {
+  console.log('[SHUTDOWN] SIGINT received, shutting down gracefully');
+  server.close();
+  wss.close();
+  process.exit(0);
+});
+
+// Node.js 官方建议：uncaughtException 后进程状态不确定，应退出
+// 配合 systemd/PM2 自动重启
 process.on('uncaughtException', (err) => {
-  console.error('[FATAL] Uncaught exception:', err.message);
+  console.error('[FATAL] Uncaught exception — process will exit:', err.message);
   console.error(err.stack);
+  // 给日志一点时间写完，然后退出
+  setTimeout(() => process.exit(1), 1000);
 });
 process.on('unhandledRejection', (reason) => {
-  console.error('[FATAL] Unhandled rejection:', reason);
+  console.error('[WARN] Unhandled rejection:', reason);
+  // unhandledRejection 不一定需要退出，但记录下来
 });
 
 // ========== HTTP SERVER + WEBSOCKET ==========
@@ -1739,7 +1944,7 @@ wss.on('connection', (ws, req) => {
 });
 
 // Broadcast dashboard summary every 30 seconds
-setInterval(() => {
+setInterval(async () => {
   if (wss.clients.size === 0) return;
   
   try {
@@ -1747,7 +1952,7 @@ setInterval(() => {
     delete cache['dashboard_summary'];
     
     // Build fresh data using the status endpoint's logic
-    const sessData = buildSessionsData();
+    const sessData = await buildSessionsData();
     const sessions = sessData.sessions;
     let totalInput = 0, totalOutput = 0;
     const deptActivity = {};
@@ -1787,20 +1992,12 @@ setInterval(() => {
   }
 }, 30000);
 
-server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Boluo GUI running on http://0.0.0.0:${PORT} (HTTP + WebSocket)`);
-
-  // 打印 AUTH_TOKEN 信息
-  const tokenSource = process.env.BOLUO_AUTH_TOKEN ? '环境变量' : '持久化文件';
-  console.log('');
-  console.log('========================================');
-  console.log('  🔐 GUI 认证令牌 (AUTH_TOKEN)');
-  console.log('========================================');
-  console.log(`  来源: ${tokenSource}`);
-  console.log(`  Token: ${AUTH_TOKEN}`);
-  console.log('');
-  console.log('  💡 使用方法:');
-  console.log(`  在请求头中添加: Authorization: Bearer ${AUTH_TOKEN}`);
-  console.log('========================================');
-  console.log('');
+// SEC-30: Docker 内默认 0.0.0.0（否则容器外无法访问），非 Docker 默认 localhost
+const IS_DOCKER = existsSync('/.dockerenv') || (existsSync('/proc/1/cgroup') && readFileSync('/proc/1/cgroup', 'utf8').includes('docker'));
+const BIND_HOST = process.env.BOLUO_BIND_HOST || (IS_DOCKER ? '0.0.0.0' : '127.0.0.1');
+server.listen(PORT, BIND_HOST, () => {
+  console.log(`Boluo GUI running on http://${BIND_HOST}:${PORT} (HTTP + WebSocket)`);
+  if (BIND_HOST === '0.0.0.0') {
+    console.warn('⚠️  GUI 监听所有网口，确保已配置防火墙或反向代理');
+  }
 });
