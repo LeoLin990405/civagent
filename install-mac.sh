@@ -276,7 +276,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
         "name": "司礼监",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是AI朝廷的司礼监大内总管。负责日常对话、任务调度、统领六部。说话简练干脆。当用户交代复杂任务时，主动使用 sessions_spawn 将任务派发给对应的部门（内阁负责战略决策、都察院负责审查监察、兵部负责编码、户部负责财务、礼部负责营销、工部负责运维、吏部负责管理、刑部负责法务、翰林院负责研究文档）。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。完成后主动向用户汇报结果。" },
-        "sandbox": { "mode": "off" },
+        "sandbox": { "mode": "all", "scope": "agent" },
         "subagents": {
           "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlin_zhang"],
           "maxConcurrent": 4
@@ -297,11 +297,11 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
         "identity": { "theme": "你是都察院御史，专精监察审计、代码审查、质量把控、安全评估。回答用中文，铁面无私。审查代码时关注安全漏洞、性能问题、最佳实践。审计项目时检查进度偏差、资源浪费、风险隐患。发现问题直言不讳，给出具体改进建议。任务完成后主动汇报审查结论和整改建议。" },
         "sandbox": { "mode": "all", "scope": "agent" }
       },
-      { "id": "hubu", "name": "户部", "model": { "primary": "your-provider/strong-model" }, "identity": { "theme": "你是户部尚书，专精财务分析。回答用中文。" }, "sandbox": { "mode": "off" } },
-      { "id": "libu", "name": "礼部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是礼部尚书，专精品牌营销。回答用中文。" }, "sandbox": { "mode": "off" } },
-      { "id": "gongbu", "name": "工部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是工部尚书，专精 DevOps 运维。回答用中文。" }, "sandbox": { "mode": "off" } },
-      { "id": "libu2", "name": "吏部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是吏部尚书，专精项目管理。回答用中文。" }, "sandbox": { "mode": "off" } },
-      { "id": "xingbu", "name": "刑部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是刑部尚书，专精法务合规。回答用中文。" }, "sandbox": { "mode": "off" } },
+      { "id": "hubu", "name": "户部", "model": { "primary": "your-provider/strong-model" }, "identity": { "theme": "你是户部尚书，专精财务分析。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },
+      { "id": "libu", "name": "礼部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是礼部尚书，专精品牌营销。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },
+      { "id": "gongbu", "name": "工部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是工部尚书，专精 DevOps 运维。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },
+      { "id": "libu2", "name": "吏部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是吏部尚书，专精项目管理。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },
+      { "id": "xingbu", "name": "刑部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是刑部尚书，专精法务合规。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },
       {
         "id": "hanlin_zhang",
         "name": "翰林院·掌院学士",
@@ -419,7 +419,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
         "name": "司礼监",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是AI朝廷的司礼监大内总管。你的职责是【规划调度】，不是亲自执行。说话简练干脆。\n\n【核心原则】除了日常闲聊和简单问答，所有涉及实际工作的任务（写代码、查资料、分析数据、写文案、运维操作等），一律在当前频道 @对应部门 派发，让所有人可见工作流转。你是指挥官，不是搬砖工。\n\n【部门职责】内阁=战略决策、都察院=审查监察、兵部=编码开发、户部=财务分析、礼部=品牌营销、工部=运维部署、吏部=项目管理、刑部=法务合规、翰林院=研究文档。\n\n【派活方式】用 message 工具在当前 Discord 频道发消息，@对应部门bot 下达任务。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。禁止用 sessions_spawn 暗地里干活，一切工作流转必须在频道内公开可见。\n\n【审批流程】涉及代码提交 → @都察院 审查；涉及重大决策（预算、架构、方向变更）→ @内阁 审议。都察院审查不通过则打回修改，内阁有否决权。\n\n【什么时候自己回答】仅限：纯闲聊、确认信息、汇报进度、问澄清问题。其他一律派活。" },
-        "sandbox": { "mode": "off" },
+        "sandbox": { "mode": "all", "scope": "agent" },
         "subagents": {
           "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlin_zhang"],
           "maxConcurrent": 4
@@ -431,7 +431,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
         "name": "内阁",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是内阁首辅，专精战略决策、方案审议、全局规划。回答用中文，高屋建瓴。当收到重大决策请求时，从多角度分析利弊，给出明确建议。擅长将复杂问题拆解为可执行的步骤，协调各部门资源。【审议职责】当司礼监将重大决策（预算、架构变更、战略方向）提交审议时，必须独立评估可行性、风险和替代方案，给出明确的批准/驳回/修改建议。有权否决不合理的方案。任务完成后主动汇报决策建议和执行路径。" },
-        "sandbox": { "mode": "off" }
+        "sandbox": { "mode": "all", "scope": "agent" }
       },
       {
         "id": "duchayuan",
@@ -545,85 +545,71 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
         "silijian": {
           "name": "司礼监",
           "token": "YOUR_SILIJIAN_BOT_TOKEN",
-          "applicationId": "YOUR_SILIJIAN_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "neige": {
           "name": "内阁",
           "token": "YOUR_NEIGE_BOT_TOKEN",
-          "applicationId": "YOUR_NEIGE_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "duchayuan": {
           "name": "都察院",
           "token": "YOUR_DUCHAYUAN_BOT_TOKEN",
-          "applicationId": "YOUR_DUCHAYUAN_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "bingbu": {
           "name": "兵部",
           "token": "YOUR_BINGBU_BOT_TOKEN",
-          "applicationId": "YOUR_BINGBU_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "hubu": {
           "name": "户部",
           "token": "YOUR_HUBU_BOT_TOKEN",
-          "applicationId": "YOUR_HUBU_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "libu": {
           "name": "礼部",
           "token": "YOUR_LIBU_BOT_TOKEN",
-          "applicationId": "YOUR_LIBU_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "gongbu": {
           "name": "工部",
           "token": "YOUR_GONGBU_BOT_TOKEN",
-          "applicationId": "YOUR_GONGBU_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "libu2": {
           "name": "吏部",
           "token": "YOUR_LIBU2_BOT_TOKEN",
-          "applicationId": "YOUR_LIBU2_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "xingbu": {
           "name": "刑部",
           "token": "YOUR_XINGBU_BOT_TOKEN",
-          "applicationId": "YOUR_XINGBU_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "hanlin_zhang": {
           "name": "翰林院·掌院学士",
           "token": "YOUR_HANLIN_ZHANG_BOT_TOKEN",
-          "applicationId": "YOUR_HANLIN_ZHANG_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "hanlin_xiuzhuan": {
           "name": "翰林院·修撰",
           "token": "YOUR_HANLIN_XIUZHUAN_BOT_TOKEN",
-          "applicationId": "YOUR_HANLIN_XIUZHUAN_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "hanlin_bianxiu": {
           "name": "翰林院·编修",
           "token": "YOUR_HANLIN_BIANXIU_BOT_TOKEN",
-          "applicationId": "YOUR_HANLIN_BIANXIU_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "hanlin_jiantao": {
           "name": "翰林院·检讨",
           "token": "YOUR_HANLIN_JIANTAO_BOT_TOKEN",
-          "applicationId": "YOUR_HANLIN_JIANTAO_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "hanlin_shujishi": {
           "name": "翰林院·庶吉士",
           "token": "YOUR_HANLIN_SHUJISHI_BOT_TOKEN",
-          "applicationId": "YOUR_HANLIN_SHUJISHI_APPLICATION_ID",
           "groupPolicy": "open"
         }
       }

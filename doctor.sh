@@ -72,7 +72,7 @@ except: pass
     elif command -v node &>/dev/null; then
         JSON_FILE="$file" JSON_PATH="$path" node -e "
 try {
-    let d = require(process.env.JSON_FILE);
+    let d = JSON.parse(require('fs').readFileSync(process.env.JSON_FILE, 'utf8'));
     for (const k of process.env.JSON_PATH.split('.')) d = d && d[k];
     if (d && typeof d === 'object') Object.keys(d).forEach(k => console.log(k));
 } catch(e) {}
@@ -134,7 +134,7 @@ pass "配置文件: $CONFIG_FILE"
 # 检查JSON格式（通过环境变量传路径，避免特殊字符注入）
 if JSON_FILE="$CONFIG_FILE" python3 -c "import json, os; json.load(open(os.environ['JSON_FILE']))" 2>/dev/null; then
     pass "JSON 格式正确"
-elif JSON_FILE="$CONFIG_FILE" node -e "require(process.env.JSON_FILE)" 2>/dev/null; then
+elif JSON_FILE="$CONFIG_FILE" node -e "JSON.parse(require('fs').readFileSync(process.env.JSON_FILE, 'utf8'))" 2>/dev/null; then
     pass "JSON 格式正确"
 else
     fail "JSON 格式错误 — 请检查语法（多余逗号、缺少引号等）"
@@ -571,7 +571,7 @@ except: print(0)
 elif command -v node &>/dev/null; then
     AGENT_COUNT=$(JSON_FILE="$CONFIG_FILE" node -e "
 try {
-    const d = require(process.env.JSON_FILE);
+    const d = JSON.parse(require('fs').readFileSync(process.env.JSON_FILE, 'utf8'));
     console.log(((d.agents || {}).list || []).length);
 } catch(e) { console.log(0); }
 " 2>/dev/null)
@@ -632,7 +632,7 @@ except: pass
     elif command -v node &>/dev/null; then
         MISSING_IDENTITY=$(JSON_FILE="$CONFIG_FILE" node -e "
 try {
-    const d = require(process.env.JSON_FILE);
+    const d = JSON.parse(require('fs').readFileSync(process.env.JSON_FILE, 'utf8'));
     const agents = (d.agents || {}).list || [];
     const missing = agents.filter(a => !a.identity || !a.identity.theme).map(a => a.name || a.id);
     if (missing.length) console.log(missing.join(','));
