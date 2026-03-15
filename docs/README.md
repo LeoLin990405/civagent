@@ -35,6 +35,7 @@
 | 文档 | 说明 |
 |------|------|
 | [Notion 接入](./notion-setup.md) | 自动日报/周报/知识库归档 |
+| [语义记忆搜索](./memory-search.md) | Embedding 配置（DashScope / OpenAI / Gemini） |
 | [GUI 管理界面](./gui.md) | Web Dashboard + Discord + Notion 三层 GUI |
 | [安全须知](./security.md) | Workspace 权限 + Sandbox 沙箱配置 |
 | [配置诊断](./doctor.md) | 一键诊断 + @everyone 不触发排查 |

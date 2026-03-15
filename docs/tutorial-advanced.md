@@ -20,6 +20,7 @@
 8. [Web GUI — 浏览器管理朝廷](#八web-gui--浏览器管理朝廷)
 9. [预装 Skill](#九预装-skill--开箱即用的能力)
 10. [Docker 部署](#十docker-部署--容器化一键启动)
+11. [语义记忆搜索](#十一语义记忆搜索--让-ai-真正记住过去)
 
 ---
 
@@ -350,6 +351,50 @@ docker compose logs -f
 ```
 
 > 📖 完整 Docker 部署见 [Docker 部署指南](./setup-docker.md)
+
+---
+
+## 十一、语义记忆搜索 — 让 AI 真正记住过去
+
+Clawdbot 的 `memory-core` 插件支持用**向量索引**对记忆文件做语义搜索。但这需要一个 **Embedding API** — 没有配置的话，AI 只能靠关键词精确匹配来找历史笔记。
+
+### 为什么重要？
+
+- ❌ 没有 Embedding：问"上周聊的部署方案"→ 找不到
+- ✅ 有 Embedding：问"上周聊的部署方案"→ 能匹配到"Docker 容器化迁移"的记录
+
+### 三种方案（任选其一）
+
+| 方案 | 提供商 | 国内直连 | 推荐 |
+|------|--------|:--------:|:----:|
+| OpenAI | `text-embedding-3-small` | ❌ | 海外服务器 |
+| Google Gemini | `gemini-embedding-001` | ❌ | 免费额度大 |
+| 阿里 DashScope | `text-embedding-v3` | ✅ | 🌟 国内首选 |
+
+### DashScope 快速配置（国内推荐）
+
+```json5
+// openclaw.json → agents.defaults 中添加
+"memorySearch": {
+  "provider": "openai",
+  "model": "text-embedding-v3",
+  "remote": {
+    "baseUrl": "https://dashscope.aliyuncs.com/compatible-mode/v1/",
+    "apiKey": "sk-你的DashScope-Key",
+    "batch": { "enabled": false }  // ⚠️ 必须关闭
+  }
+}
+```
+
+验证：
+
+```bash
+clawdbot memory status --deep   # Embeddings: ready = 成功
+clawdbot memory index           # 建立索引
+clawdbot memory search "测试搜索"  # 测试语义搜索
+```
+
+> 📖 完整配置指南（含 OpenAI / Gemini / 本地模型 / 混合搜索 / 会话索引）见 [语义记忆搜索配置指南](./memory-search.md)
 
 ---
 

@@ -5,87 +5,81 @@ description: Manage Quadrants tasks and projects via natural language. Use when 
 
 # Quadrants Skill
 
-Manage tasks on the Quadrants Eisenhower Matrix (quadrants.ch) from OpenClaw.
+Manage tasks on the Quadrants Eisenhower Matrix (quadrants.ch) via Clawdbot.
 
-## Setup
+## API Access
 
-Requires env vars in the skill config or TOOLS.md:
-- `QUADRANTS_API_URL` — Base URL (default: `https://quadrants.ch`)
-- `QUADRANTS_API_KEY` — Service API key for authenticated access
+All operations go through `POST https://quadrants.ch/api/service` with header `X-API-Key`.
 
-## Available Commands
+Credentials stored in TOOLS.md:
+- `QUADRANTS_API_KEY` — Service API key
+- Default project: `proj_1761970830791_fhgaxrmo9`
 
-Use the `scripts/quadrants-cli.sh` script for all operations:
+## Direct API Calls (preferred over CLI)
 
 ```bash
-# List projects
-bash skills/quadrants/scripts/quadrants-cli.sh projects
-
-# Get project tasks (with project ID)
-bash skills/quadrants/scripts/quadrants-cli.sh tasks <projectId>
-
-# Get priority tasks (top 5 across all projects)
-bash skills/quadrants/scripts/quadrants-cli.sh priority
-
-# Create a task
-bash skills/quadrants/scripts/quadrants-cli.sh create <projectId> "<description>" <urgency> <importance>
-
-# Bulk create tasks (JSON array)
-bash skills/quadrants/scripts/quadrants-cli.sh bulk-create <projectId> '<json-tasks>'
-
-# Complete a task
-bash skills/quadrants/scripts/quadrants-cli.sh complete <taskId>
-
-# Update a task
-bash skills/quadrants/scripts/quadrants-cli.sh update <taskId> '{"urgency": 80, "importance": 90}'
-
-# Delete a task
-bash skills/quadrants/scripts/quadrants-cli.sh delete <taskId>
-
-# Get project overview (summary with quadrant distribution)
-bash skills/quadrants/scripts/quadrants-cli.sh overview <projectId>
+curl -sL -X POST "https://quadrants.ch/api/service" \
+  -H "Content-Type: application/json" \
+  -H "X-API-Key: $QUADRANTS_API_KEY" \
+  -d '{"action":"<ACTION>", ...params}'
 ```
 
-## Quadrant Reference
+## Actions Reference
 
-The Eisenhower Matrix has 4 quadrants based on urgency (0-100) and importance (0-100):
+| Action | Required params | Description |
+|--------|----------------|-------------|
+| `projects` | — | List all projects with task counts |
+| `tasks` | `projectId` | List active tasks (sorted by priority) |
+| `priority` | — | Top priority tasks across all projects |
+| `quadrant` | `projectId`, `quadrant` (Q1/Q2/Q3/Q4) | Filter tasks by quadrant |
+| `search` | `query` | Search tasks by description |
+| `create` | `projectId`, `description`, `urgency?`, `importance?` | Create one task |
+| `bulk-create` | `projectId`, `tasks[]` | Create multiple tasks |
+| `complete` | `taskId` | Archive/complete a task |
+| `update` | `taskId`, `updates{}` | Update task fields |
+| `delete` | `taskId` | Permanently delete a task |
+| `overview` | `projectId` | Project stats + quadrant distribution |
+| `stats` | — | Global stats across all projects |
 
-| Quadrant | Urgency | Importance | Action |
-|----------|---------|------------|--------|
-| Q1: Do First | High (>50) | High (>50) | Urgent + Important → Do immediately |
-| Q2: Schedule | Low (≤50) | High (>50) | Not Urgent + Important → Plan for later |
-| Q3: Delegate | High (>50) | Low (≤50) | Urgent + Not Important → Delegate |
-| Q4: Eliminate | Low (≤50) | Low (≤50) | Not Urgent + Not Important → Drop it |
+## Quadrant Mapping
 
-## Task Format for Bulk Create
+| Quadrant | Urgency | Importance | Meaning |
+|----------|---------|------------|---------|
+| Q1 | >50 | >50 | 🔴 Do First — urgent + important |
+| Q2 | ≤50 | >50 | 🟡 Schedule — important, not urgent |
+| Q3 | >50 | ≤50 | 🟠 Delegate — urgent, not important |
+| Q4 | ≤50 | ≤50 | ⚪ Eliminate — neither |
+
+## Natural Language → Action Mapping
+
+| User says | Action | Params |
+|-----------|--------|--------|
+| "加个任务：修bug" | `create` | description="修bug", urgency=80, importance=70 |
+| "今天做什么" / "priority" | `priority` | — |
+| "完成了 #412" | `complete` | taskId=412 |
+| "项目概览" | `overview` | projectId=default |
+| "Q1任务" / "紧急重要" | `quadrant` | quadrant=Q1 |
+| "搜索 登录" | `search` | query="登录" |
+| "看看项目" | `projects` | — |
+| "整体情况" | `stats` | — |
+
+## Urgency/Importance Inference
+
+When user doesn't specify values, infer from context:
+
+- **Bug/故障/宕机/紧急** → urgency: 85-95
+- **截止日期近** → urgency: 80-90
+- **战略/核心/发布** → importance: 85-95
+- **优化/美化/可选** → importance: 20-40, urgency: 20-30
+- **日常/常规** → both: 40-60
+- **Default** → urgency: 50, importance: 50
+
+## Example: Bulk Create
 
 ```json
-[
-  {"description": "Fix login bug", "urgency": 90, "importance": 85},
-  {"description": "Update docs", "urgency": 30, "importance": 70}
-]
+{"action":"bulk-create","projectId":"proj_xxx","tasks":[
+  {"description":"修复登录bug","urgency":90,"importance":85},
+  {"description":"更新文档","urgency":30,"importance":70},
+  {"description":"优化首页加载速度","urgency":60,"importance":75}
+]}
 ```
-
-## Integration with OpenClaw
-
-### Heartbeat Check
-Add to HEARTBEAT.md to periodically check priority tasks:
-```
-Check Quadrants priority tasks and remind user of urgent items
-```
-
-### Cron Reminder
-Schedule daily task briefings via cron jobs.
-
-### Natural Language Mapping
-When users say things like:
-- "加个任务" / "add a task" → `create`
-- "今天做什么" / "what should I do today" → `priority`
-- "完成了" / "done" / "mark complete" → `complete`
-- "看看项目" / "show projects" → `projects`
-- "任务概览" → `overview`
-
-Infer urgency/importance from context when not specified:
-- Bug fixes, deadlines → high urgency
-- Strategy, planning → high importance, low urgency
-- Nice-to-have → low both
