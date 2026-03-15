@@ -129,6 +129,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 ---
 
+<a id="技术架构"></a>
 <details>
 <summary><h2>🏗️ 技术架构</h2></summary>
 
@@ -231,7 +232,11 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 ---
 
+<a id="实战案例菠萝王朝"></a>
+
 > 以下是基于本项目搭建的**真实运行中的 AI 朝廷**——菠萝王朝，展示 14 个 Agent 协同运作的完整架构。
+
+<a id="快速开始三步登基"></a>
 
 > 🔴 **新手请用云服务器**，不要在个人电脑上安装。详见 [安全须知](./docs/security.md)。
 
@@ -342,6 +347,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 > 📖 **完整案例** → [菠萝王朝详解](./docs/pineapple-dynasty.md)
 
 ---
+
+<a id="朝廷架构三省六部制"></a>
 
 ## 朝廷架构——三省六部制
 
@@ -522,6 +529,7 @@ Agent 可以运行在 Docker 沙箱中，代码执行互不干扰。支持配置
 
 ---
 
+<a id="gui-管理界面"></a>
 <details>
 <summary><h2>🖥️ GUI 管理界面</h2></summary>
 
@@ -795,9 +803,13 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 **Q: Agent 报「只读文件系统」？**
 → sandbox mode 导致的。不跑代码的部门设 `"sandbox": { "mode": "off" }`。详见 [安全须知](./docs/security.md)。
 
+<a id="常见问题"></a>
+
 > 📖 **完整 FAQ** → [常见问题](./docs/faq.md)
 
 ---
+
+<a id="企业版become-ceo"></a>
 
 ## 企业版：Become CEO
 
