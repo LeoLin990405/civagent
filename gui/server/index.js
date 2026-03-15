@@ -1912,6 +1912,264 @@ function recordMetrics() {
 setInterval(recordMetrics, 30000);
 recordMetrics(); // initial
 
+// ==================== SKILLS MANAGEMENT ====================
+
+// Derive workspace skills dir from config
+function getSkillsDirs() {
+  const config = getClawdbotConfig();
+  const workspace = config?.workspace || join(HOME, 'clawd');
+  const localSkillsDir = join(workspace, 'skills');
+  // Built-in skills shipped with the package
+  const builtinSkillsDir = '/usr/lib/node_modules/clawdbot/skills';
+  // Alternative: openclaw package path
+  const builtinAlt = '/usr/lib/node_modules/openclaw/skills';
+  const builtinDir = existsSync(builtinSkillsDir) ? builtinSkillsDir : (existsSync(builtinAlt) ? builtinAlt : null);
+  return { localSkillsDir, builtinDir, workspace };
+}
+
+function readSkillMeta(skillDir, name) {
+  const info = { name, description: '', version: null, source: 'local', installed: false, hasSkillMd: false, files: 0 };
+
+  // Read SKILL.md for description
+  const skillMdPath = join(skillDir, 'SKILL.md');
+  if (existsSync(skillMdPath)) {
+    info.hasSkillMd = true;
+    try {
+      const content = readFileSync(skillMdPath, 'utf-8');
+      // Try YAML frontmatter first (---\n...\n---)
+      const fmMatch = content.match(/^---\n([\s\S]*?)\n---/);
+      if (fmMatch) {
+        const fmBlock = fmMatch[1];
+        // Extract description from frontmatter
+        const descMatch = fmBlock.match(/^description:\s*(.+)$/m);
+        if (descMatch) info.description = descMatch[1].trim().substring(0, 200);
+        // Extract name from frontmatter
+        const nameMatch = fmBlock.match(/^name:\s*(.+)$/m);
+        if (nameMatch) info.displayName = nameMatch[1].trim();
+        // Extract emoji
+        const metaMatch = fmBlock.match(/"emoji"\s*:\s*"([^"]+)"/);
+        if (metaMatch) info.emoji = metaMatch[1];
+      }
+      // Fallback: first non-heading, non-frontmatter line
+      if (!info.description) {
+        const bodyStart = fmMatch ? content.indexOf('---', 4) + 3 : 0;
+        const body = content.substring(bodyStart);
+        const lines = body.split('\n').filter(l => l.trim() && !l.startsWith('#') && !l.startsWith('---'));
+        if (lines.length > 0) {
+          info.description = lines[0].replace(/^[-*>\s]+/, '').trim().substring(0, 200);
+        }
+      }
+    } catch {}
+  }
+
+  // Read _meta.json for version/publisher info (clawdhub installed skills)
+  const metaPath = join(skillDir, '_meta.json');
+  if (existsSync(metaPath)) {
+    try {
+      const meta = JSON.parse(readFileSync(metaPath, 'utf-8'));
+      info.version = meta.version || null;
+      info.slug = meta.slug || name;
+      info.ownerId = meta.ownerId || null;
+      info.publishedAt = meta.publishedAt || null;
+    } catch {}
+  }
+
+  // Read .clawdhub/origin.json for install info
+  const originPath = join(skillDir, '.clawdhub', 'origin.json');
+  if (existsSync(originPath)) {
+    try {
+      const origin = JSON.parse(readFileSync(originPath, 'utf-8'));
+      info.source = 'clawdhub';
+      info.installedVersion = origin.installedVersion || null;
+      info.installedAt = origin.installedAt || null;
+      info.registry = origin.registry || null;
+      info.installed = true;
+    } catch {}
+  }
+
+  // Count files
+  try {
+    info.files = readdirSync(skillDir).filter(f => !f.startsWith('.')).length;
+  } catch {}
+
+  return info;
+}
+
+// GET /api/skills — list all skills (local + builtin)
+app.get('/api/skills', authMiddleware, (req, res) => {
+  try {
+    const { localSkillsDir, builtinDir } = getSkillsDirs();
+    const skills = [];
+    const seen = new Set();
+
+    // 1. Local/workspace skills (higher priority)
+    if (existsSync(localSkillsDir)) {
+      for (const name of readdirSync(localSkillsDir)) {
+        const fullPath = join(localSkillsDir, name);
+        if (!statSync(fullPath).isDirectory() || name.startsWith('.')) continue;
+        const info = readSkillMeta(fullPath, name);
+        info.location = 'workspace';
+        info.path = fullPath;
+        skills.push(info);
+        seen.add(name);
+      }
+    }
+
+    // 2. Built-in skills (only if not overridden by local)
+    if (builtinDir && existsSync(builtinDir)) {
+      for (const name of readdirSync(builtinDir)) {
+        if (seen.has(name)) continue;
+        const fullPath = join(builtinDir, name);
+        if (!statSync(fullPath).isDirectory() || name.startsWith('.')) continue;
+        const info = readSkillMeta(fullPath, name);
+        info.location = 'builtin';
+        info.path = fullPath;
+        skills.push(info);
+        seen.add(name);
+      }
+    }
+
+    // Sort: workspace first, then alphabetical
+    skills.sort((a, b) => {
+      if (a.location !== b.location) return a.location === 'workspace' ? -1 : 1;
+      return a.name.localeCompare(b.name);
+    });
+
+    res.json({
+      skills,
+      total: skills.length,
+      workspace: skills.filter(s => s.location === 'workspace').length,
+      builtin: skills.filter(s => s.location === 'builtin').length,
+      clawdhub: skills.filter(s => s.source === 'clawdhub').length,
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /api/skills/:name — get single skill detail
+app.get('/api/skills/:name', authMiddleware, (req, res) => {
+  try {
+    const name = req.params.name;
+    if (!name || /[\/\\]/.test(name) || name.includes('..')) {
+      return res.status(400).json({ error: 'Invalid skill name' });
+    }
+
+    const { localSkillsDir, builtinDir } = getSkillsDirs();
+    let skillPath = join(localSkillsDir, name);
+    let location = 'workspace';
+
+    if (!existsSync(skillPath) && builtinDir) {
+      skillPath = join(builtinDir, name);
+      location = 'builtin';
+    }
+
+    if (!existsSync(skillPath)) {
+      return res.status(404).json({ error: 'Skill not found' });
+    }
+
+    const info = readSkillMeta(skillPath, name);
+    info.location = location;
+    info.path = skillPath;
+
+    // Read full SKILL.md content
+    const skillMdPath = join(skillPath, 'SKILL.md');
+    if (existsSync(skillMdPath)) {
+      try {
+        info.skillMdContent = readFileSync(skillMdPath, 'utf-8');
+      } catch {}
+    }
+
+    // List all files
+    try {
+      info.fileList = readdirSync(skillPath).filter(f => !f.startsWith('.'));
+    } catch { info.fileList = []; }
+
+    res.json(info);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST /api/skills/search — search clawdhub registry
+app.post('/api/skills/search', authMiddleware, async (req, res) => {
+  try {
+    const { query } = req.body;
+    if (!query) return res.status(400).json({ error: 'Query required' });
+    const { stdout, stderr } = await execAsync(`clawdhub search "${query.replace(/"/g, '')}" --no-input 2>&1`, {
+      encoding: 'utf-8', timeout: 15000, cwd: getSkillsDirs().workspace,
+    });
+    // Parse clawdhub search output
+    const results = [];
+    const lines = stdout.split('\n');
+    for (const line of lines) {
+      // Format: slug  version  description (or similar)
+      const match = line.match(/^(\S+)\s+(\S+)\s+(.*)$/);
+      if (match && !match[1].startsWith('─') && !match[1].startsWith('Usage')) {
+        results.push({ slug: match[1], version: match[2], description: match[3].trim() });
+      }
+    }
+    res.json({ results, raw: stdout });
+  } catch (err) {
+    res.status(500).json({ error: err.message, raw: err.stderr || '' });
+  }
+});
+
+// POST /api/skills/install — install from clawdhub
+app.post('/api/skills/install', authMiddleware, async (req, res) => {
+  try {
+    const { slug } = req.body;
+    if (!slug || /[^a-zA-Z0-9_-]/.test(slug)) return res.status(400).json({ error: 'Invalid slug' });
+    const { workspace } = getSkillsDirs();
+    const { stdout, stderr } = await execAsync(
+      `clawdhub install ${slug} --no-input --workdir "${workspace}" 2>&1`,
+      { encoding: 'utf-8', timeout: 30000, cwd: workspace }
+    );
+    res.json({ success: true, output: stdout, slug });
+  } catch (err) {
+    res.status(500).json({ error: err.message, output: err.stdout || err.stderr || '' });
+  }
+});
+
+// POST /api/skills/update — update a skill (or all)
+app.post('/api/skills/update', authMiddleware, async (req, res) => {
+  try {
+    const { slug } = req.body; // if empty, update all
+    const { workspace } = getSkillsDirs();
+    const cmd = slug
+      ? `clawdhub update ${slug} --no-input --workdir "${workspace}" 2>&1`
+      : `clawdhub update --no-input --workdir "${workspace}" 2>&1`;
+    const { stdout } = await execAsync(cmd, { encoding: 'utf-8', timeout: 60000, cwd: workspace });
+    res.json({ success: true, output: stdout, slug: slug || 'all' });
+  } catch (err) {
+    res.status(500).json({ error: err.message, output: err.stdout || err.stderr || '' });
+  }
+});
+
+// POST /api/skills/explore — browse latest skills from registry
+app.post('/api/skills/explore', authMiddleware, async (req, res) => {
+  try {
+    const { workspace } = getSkillsDirs();
+    const { stdout } = await execAsync(`clawdhub explore --no-input 2>&1`, {
+      encoding: 'utf-8', timeout: 15000, cwd: workspace,
+    });
+    // Parse explore output
+    const results = [];
+    const lines = stdout.split('\n');
+    for (const line of lines) {
+      const match = line.match(/^(\S+)\s+(\S+)\s+(.*)$/);
+      if (match && !match[1].startsWith('─') && !match[1].startsWith('Usage') && !match[1].startsWith('Slug')) {
+        results.push({ slug: match[1], version: match[2], description: match[3].trim() });
+      }
+    }
+    res.json({ results, raw: stdout });
+  } catch (err) {
+    res.status(500).json({ error: err.message, raw: err.stderr || '' });
+  }
+});
+
+// ==================== END SKILLS MANAGEMENT ====================
+
 app.get('/api/system/metrics', authMiddleware, (req, res) => {
   try {
     res.json({ metrics: metricsBuffer, count: metricsBuffer.length, maxSize: METRICS_MAX });

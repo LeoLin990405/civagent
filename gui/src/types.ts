@@ -72,4 +72,4 @@ export interface LogEntry {
   source?: string
 }
 
-export type TabName = "dashboard" | "court" | "departments" | "tokens" | "sessions" | "logs" | "system" | "settings" | "channels" | "memorial" | "nodes" | "notion" | "search" | "cron"
+export type TabName = "dashboard" | "court" | "departments" | "tokens" | "sessions" | "logs" | "system" | "settings" | "channels" | "memorial" | "nodes" | "notion" | "search" | "cron" | "skills"

@@ -24,6 +24,7 @@ const Nodes = lazy(() => import("./pages/Nodes"))
 const NotionBoard = lazy(() => import("./pages/NotionBoard"))
 const Search = lazy(() => import("./pages/Search"))
 const CronJobs = lazy(() => import("./pages/CronJobs"))
+const Skills = lazy(() => import("./pages/Skills"))
 
 const tabs: { key: TabName; label: string; icon: string }[] = [
   { key: "dashboard", label: "总览", icon: "📊" },
@@ -38,6 +39,7 @@ const tabs: { key: TabName; label: string; icon: string }[] = [
   { key: "logs", label: "日志", icon: "📋" },
   { key: "search", label: "搜索", icon: "🔍" },
   { key: "cron", label: "定时", icon: "⏰" },
+  { key: "skills", label: "技能", icon: "🧩" },
   { key: "system", label: "系统", icon: "⚙️" },
   { key: "settings", label: "设置", icon: "🔧" },
 ]
@@ -96,6 +98,7 @@ function App() {
       case "logs": return <MessageLogs data={data} />
       case "search": return <Search />
       case "cron": return <CronJobs />
+      case "skills": return <Skills />
       case "system": return <SystemHealth data={data} />
       case "settings": return <Settings />
     }
