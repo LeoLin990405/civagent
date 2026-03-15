@@ -623,6 +623,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
         "hanlin_shujishi": {
           "name": "翰林院·庶吉士",
           "token": "YOUR_HANLIN_SHUJISHI_BOT_TOKEN",
+          "applicationId": "YOUR_HANLIN_SHUJISHI_APPLICATION_ID",
           "groupPolicy": "open"
         }
       }

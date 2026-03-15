@@ -4,6 +4,13 @@ sed_escape() {
   printf '%s' "$1" | sed 's/[\\|&\/]/\\&/g'
 }
 
+# Cross-platform sed -i (macOS BSD sed vs GNU sed)
+if [[ "$(uname)" == "Darwin" ]]; then
+  SED_I() { sed -i '' "$@"; }
+else
+  SED_I() { sed -i "$@"; }
+fi
+
 # ============================================
 # AI 朝廷一键部署脚本
 # 支持: Ubuntu/Debian, CentOS/RHEL, Alpine, macOS
@@ -915,6 +922,7 @@ cat > "$CONFIG_DIR/openclaw.json" << CONFIG_EOF
         "hanlin_shujishi": {
           "name": "翰林院·庶吉士",
           "token": "YOUR_HANLIN_SHUJISHI_BOT_TOKEN",
+          "applicationId": "YOUR_HANLIN_SHUJISHI_APPLICATION_ID",
           "groupPolicy": "open"
         }
       }
@@ -962,6 +970,11 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
   echo -e "  直接回车 = 跳过（稍后手动编辑 $CONFIG_FILE）"
   echo ""
 
+  # Skip config wizard in non-interactive mode (curl | bash)
+  if [ ! -t 0 ]; then
+    echo -e "  ${CYAN}非交互模式，跳过配置向导。请手动编辑: $CONFIG_FILE${NC}"
+  else
+
   # ---- API Key ----
   echo -e "${YELLOW}【1】LLM API Key${NC}"
   echo -e "  ${CYAN}获取地址: https://console.anthropic.com/settings/keys${NC}"
@@ -969,7 +982,7 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
   read -rp "  请粘贴你的 API Key: " USER_API_KEY
   if [ -n "$USER_API_KEY" ]; then
     SAFE_VAL=$(sed_escape "$USER_API_KEY")
-    sed -i "s|YOUR_LLM_API_KEY|$SAFE_VAL|g" "$CONFIG_FILE"
+    SED_I "s|YOUR_LLM_API_KEY|$SAFE_VAL|g" "$CONFIG_FILE"
     echo -e "  ${GREEN}✓ API Key 已填入${NC}"
   else
     echo -e "  ${YELLOW}↳ 跳过，稍后请手动替换 YOUR_LLM_API_KEY${NC}"
@@ -984,31 +997,31 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
   read -rp "  请粘贴 API Base URL（回车默认 Anthropic）: " USER_BASE_URL
   if [ -n "$USER_BASE_URL" ]; then
     SAFE_VAL=$(sed_escape "$USER_BASE_URL")
-    sed -i "s|https://your-llm-provider-api-url|$SAFE_VAL|g" "$CONFIG_FILE"
+    SED_I "s|https://your-llm-provider-api-url|$SAFE_VAL|g" "$CONFIG_FILE"
     echo -e "  ${GREEN}✓ API Base URL 已更新${NC}"
   else
-    sed -i "s|https://your-llm-provider-api-url|https://api.anthropic.com/v1|g" "$CONFIG_FILE"
+    SED_I "s|https://your-llm-provider-api-url|https://api.anthropic.com/v1|g" "$CONFIG_FILE"
     echo -e "  ${GREEN}✓ 已设为 Anthropic 默认地址${NC}"
   fi
   echo ""
 
   # ---- API 类型 ----
   if [ -n "$USER_BASE_URL" ] && echo "$USER_BASE_URL" | grep -qi "anthropic"; then
-    sed -i 's|"api": "openai"|"api": "anthropic-messages"|g' "$CONFIG_FILE"
+    SED_I 's|"api": "openai"|"api": "anthropic-messages"|g' "$CONFIG_FILE"
     echo -e "  ${GREEN}✓ API 类型自动设为 anthropic${NC}"
   elif [ -z "$USER_BASE_URL" ]; then
-    sed -i 's|"api": "openai"|"api": "anthropic-messages"|g' "$CONFIG_FILE"
+    SED_I 's|"api": "openai"|"api": "anthropic-messages"|g' "$CONFIG_FILE"
     echo -e "  ${GREEN}✓ API 类型自动设为 anthropic${NC}"
   fi
 
   # ---- 模型名称（Anthropic 用户自动替换）----
-  if grep -q '"api": "anthropic"' "$CONFIG_FILE"; then
-    sed -i 's|"id": "fast-model"|"id": "claude-sonnet-4-20250514"|g' "$CONFIG_FILE"
-    sed -i 's|"name": "快速模型"|"name": "Claude Sonnet 4"|g' "$CONFIG_FILE"
-    sed -i 's|"id": "strong-model"|"id": "claude-sonnet-4-20250514"|g' "$CONFIG_FILE"
-    sed -i 's|"name": "强力模型"|"name": "Claude Sonnet 4"|g' "$CONFIG_FILE"
-    sed -i 's|your-provider/fast-model|your-provider/claude-sonnet-4-20250514|g' "$CONFIG_FILE"
-    sed -i 's|your-provider/strong-model|your-provider/claude-sonnet-4-20250514|g' "$CONFIG_FILE"
+  if grep -q '"api": "anthropic-messages"' "$CONFIG_FILE"; then
+    SED_I 's|"id": "fast-model"|"id": "claude-sonnet-4-20250514"|g' "$CONFIG_FILE"
+    SED_I 's|"name": "快速模型"|"name": "Claude Sonnet 4"|g' "$CONFIG_FILE"
+    SED_I 's|"id": "strong-model"|"id": "claude-sonnet-4-20250514"|g' "$CONFIG_FILE"
+    SED_I 's|"name": "强力模型"|"name": "Claude Sonnet 4"|g' "$CONFIG_FILE"
+    SED_I 's|your-provider/fast-model|your-provider/claude-sonnet-4-20250514|g' "$CONFIG_FILE"
+    SED_I 's|your-provider/strong-model|your-provider/claude-sonnet-4-20250514|g' "$CONFIG_FILE"
     echo -e "  ${GREEN}✓ 模型已自动设为 Claude Sonnet 4${NC}"
   fi
   echo ""
@@ -1021,7 +1034,7 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
     echo -e "  直接回车 = 跳过该部门"
     echo ""
 
-    declare -a BOT_NAMES=("silijian:司礼监" "bingbu:兵部" "hubu:户部" "libu:礼部" "gongbu:工部" "libu2:吏部" "xingbu:刑部" "neige:内阁" "duchayuan:都察院" "hanlinyuan:翰林院")
+    declare -a BOT_NAMES=("silijian:司礼监" "bingbu:兵部" "hubu:户部" "libu:礼部" "gongbu:工部" "libu2:吏部" "xingbu:刑部" "neige:内阁" "duchayuan:都察院" "hanlin_zhang:翰林院·掌院学士" "hanlin_xiuzhuan:翰林院·修撰" "hanlin_bianxiu:翰林院·编修" "hanlin_jiantao:翰林院·检讨" "hanlin_shujishi:翰林院·庶吉士")
 
     FILLED_COUNT=0
     for entry in "${BOT_NAMES[@]}"; do
@@ -1032,7 +1045,7 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
       read -rp "  ${BOT_LABEL} (${BOT_ID}) Token: " BOT_TOKEN
       if [ -n "$BOT_TOKEN" ]; then
         SAFE_VAL=$(sed_escape "$BOT_TOKEN")
-        sed -i "s|$PLACEHOLDER|$SAFE_VAL|g" "$CONFIG_FILE"
+        SED_I "s|$PLACEHOLDER|$SAFE_VAL|g" "$CONFIG_FILE"
         echo -e "    ${GREEN}✓${NC}"
         FILLED_COUNT=$((FILLED_COUNT + 1))
       fi
@@ -1056,12 +1069,12 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
     read -rp "  飞书 App Secret: " FEISHU_APP_SECRET
     if [ -n "$FEISHU_APP_ID" ]; then
       SAFE_VAL=$(sed_escape "$FEISHU_APP_ID")
-      sed -i "s|YOUR_FEISHU_APP_ID|$SAFE_VAL|g" "$CONFIG_FILE"
+      SED_I "s|YOUR_FEISHU_APP_ID|$SAFE_VAL|g" "$CONFIG_FILE"
       echo -e "  ${GREEN}✓ App ID 已填入${NC}"
     fi
     if [ -n "$FEISHU_APP_SECRET" ]; then
       SAFE_VAL=$(sed_escape "$FEISHU_APP_SECRET")
-      sed -i "s|YOUR_FEISHU_APP_SECRET|$SAFE_VAL|g" "$CONFIG_FILE"
+      SED_I "s|YOUR_FEISHU_APP_SECRET|$SAFE_VAL|g" "$CONFIG_FILE"
       echo -e "  ${GREEN}✓ App Secret 已填入${NC}"
     fi
     echo ""
@@ -1104,13 +1117,14 @@ if $IS_MACOS || $IN_DOCKER; then
     echo -e "  ${CYAN}↳ 请手动启动: openclaw gateway --verbose${NC}"
 else
     openclaw gateway install 2>/dev/null \
-
-    echo -e "  ${YELLOW}提示: 运行 sudo loginctl enable-linger $USER 确保 SSH 退出后服务不停${NC}"
         && echo -e "  ${GREEN}✓ Gateway 服务已安装（开机自启）${NC}" \
         || echo -e "  ${YELLOW}⚠ Gateway 服务安装跳过（配置填好后运行 openclaw gateway install）${NC}"
+    echo -e "  ${YELLOW}提示: 运行 sudo loginctl enable-linger $USER 确保 SSH 退出后服务不停${NC}"
 fi
 
 echo ""
+fi  # end non-interactive check
+
 echo "================================"
 echo -e "${GREEN}部署完成！${NC}"
 echo "================================"

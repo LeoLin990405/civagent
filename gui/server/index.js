@@ -2171,7 +2171,8 @@ app.post('/api/skills/search', authMiddleware, async (req, res) => {
   try {
     const { query } = req.body;
     if (!query) return res.status(400).json({ error: 'Query required' });
-    const { stdout, stderr } = await execAsync(`clawdhub search "${query.replace(/"/g, '')}" --no-input 2>&1`, {
+    const safeQuery = query.replace(/[^a-zA-Z0-9_ -]/g, '');
+    const { stdout, stderr } = await execAsync(`clawdhub search "${safeQuery}" --no-input 2>&1`, {
       encoding: 'utf-8', timeout: 15000, cwd: getSkillsDirs().workspace,
     });
     // Parse clawdhub search output
@@ -2210,6 +2211,7 @@ app.post('/api/skills/install', authMiddleware, async (req, res) => {
 app.post('/api/skills/update', authMiddleware, async (req, res) => {
   try {
     const { slug } = req.body; // if empty, update all
+    if (slug && /[^a-zA-Z0-9_-]/.test(slug)) return res.status(400).json({ error: 'Invalid slug' });
     const { workspace } = getSkillsDirs();
     const cmd = slug
       ? `clawdhub update ${slug} --no-input --workdir "${workspace}" 2>&1`

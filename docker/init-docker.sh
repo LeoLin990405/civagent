@@ -197,7 +197,7 @@ silijian_identity = os.environ['CFG_SILIJIAN_IDENTITY']
 mode = os.environ['CFG_MODE']
 platform = os.environ['CFG_PLATFORM']
 bot_token = os.environ.get('CFG_BOT_TOKEN', '')
-app_id_discord = os.environ.get('CFG_APPLICATION_ID', '')
+# applicationId is auto-detected from token, no config key needed
 app_id = os.environ.get('CFG_APP_ID', '')
 app_secret = os.environ.get('CFG_APP_SECRET', '')
 config_file = os.environ['CFG_CONFIG_FILE']
@@ -259,13 +259,15 @@ if mode == "2":
 if platform == "1":
     config["channels"] = {"discord": {
         "enabled": True, "groupPolicy": "open", "allowBots": True,
-        "accounts": {"silijian": {"name": "司礼监", "token": bot_token, "applicationId": app_id_discord, "groupPolicy": "open"}}
+        "accounts": {"silijian": {"name": "司礼监", "token": bot_token, "groupPolicy": "open"}},
+        "guilds": {"YOUR_GUILD_ID": {"requireMention": True}}
     }}
     config["bindings"] = [{"agentId": "silijian", "match": {"channel": "discord", "accountId": "silijian"}}]
 elif platform == "2":
     config["channels"] = {"feishu": {
         "enabled": True,
-        "accounts": {"silijian": {"name": "司礼监", "appId": app_id, "appSecret": app_secret}}
+        "dmPolicy": "open", "groupPolicy": "open",
+        "accounts": {"silijian": {"name": "司礼监", "appId": app_id, "appSecret": app_secret, "groupPolicy": "open"}}
     }}
     config["bindings"] = [{"agentId": "silijian", "match": {"channel": "feishu", "accountId": "silijian"}}]
 else:
