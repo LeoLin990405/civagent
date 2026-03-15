@@ -323,6 +323,8 @@ BOLUO_AUTH_TOKEN=你的密码 node index.js
 3. 在 Notion 页面点 **··· → Connect to** 授权
 4. 在 Discord：`@司礼监 把今天的工作总结写到 Notion 日报里`
 
+</details>
+
 <details>
 <summary><h2>🧠 记忆备份</h2></summary>
 
