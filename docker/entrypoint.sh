@@ -24,7 +24,13 @@ if [ -d "$CONFIG_DIR/openclaw.json" ]; then
     echo "  docker exec -it ai-court /init-docker.sh"
     echo ""
     rmdir "$CONFIG_DIR/openclaw.json" 2>/dev/null || true
-    exit 1
+    echo "容器将保持运行，请修复后执行 init-court 初始化..."
+    echo ""
+    # 等待用户修复后创建配置文件，避免 exit 1 触发 restart 循环
+    while [ ! -f "$CONFIG_DIR/openclaw.json" ]; do
+        sleep 5
+    done
+    echo "✓ 检测到配置文件，继续启动..."
 fi
 
 # ---- 初始化工作区模板（仅首次）----
@@ -104,7 +110,7 @@ if [ -f "/opt/gui/server/index.js" ]; then
     echo "✓ Dashboard 已启动 (PID: $GUI_PID, 端口: 18795, 自动重启: 已启用)"
 fi
 
-# ---- 提示信息 ----
+# ---- 提示信息 & 无配置等待模式 ----
 if [ ! -f "$CONFIG_DIR/openclaw.json" ]; then
     echo ""
     echo "================================"
@@ -125,6 +131,15 @@ if [ ! -f "$CONFIG_DIR/openclaw.json" ]; then
     echo "  方式三：挂载已有配置文件"
     echo "    docker run -v ./openclaw.json:$CONFIG_DIR/openclaw.json ..."
     echo ""
+    echo "容器将保持运行，等待配置完成后自动启动 Gateway..."
+    echo ""
+
+    # 等待配置文件出现（每 5 秒检查一次），避免无配置时 gateway 崩溃导致容器反复重启
+    while [ ! -f "$CONFIG_DIR/openclaw.json" ]; do
+        sleep 5
+    done
+
+    echo "✓ 检测到配置文件，启动 Gateway..."
 fi
 
 echo ""
