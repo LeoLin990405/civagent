@@ -88,6 +88,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 **明朝初年** 废丞相，司礼监 + 内阁二元治理。
 本项目的Agent团队协作方式采用更贴近明朝六部的制度。
 
+**方式一：经司礼监调度（默认）**
+
 ```
 皇帝（你）下旨
   ▼
@@ -101,6 +103,17 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
   └─→ 都察院 ── 代码 push 到 GitHub 时自动审查
        └─→ ✅ 通过 / ❌ 打回修改
 ```
+
+**方式二：皇帝直接下旨给任意部门**（Discord 多 Bot 模式）
+
+```
+皇帝（你）
+  ├─→ @兵部 写个登录 API        ← 直接指挥，跳过司礼监
+  ├─→ @户部 查本月开销
+  └─→ @都察院 审查这个 PR
+```
+
+> 💡 Discord 多 Bot 模式下，每个部门都是独立 Bot，你可以直接 @任意部门下达指令，无需经过司礼监。复杂任务推荐走司礼监（自动内阁优化），简单任务直接 @对应部门更快。
 
 <details>
 <summary><b>查看完整机构表</b></summary>
