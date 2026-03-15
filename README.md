@@ -51,19 +51,13 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 | 章节 | 说明 |
 |------|------|
-| 📜 [这个项目是什么？](#这个项目是什么) | 项目介绍、设计理念、核心能力 |
+| 📜 [这个项目是什么？](#这个项目是什么) | 项目介绍、核心能力 |
 | 🆚 [为什么选这套方案？](#为什么选这套方案) | 与 ChatGPT / AutoGPT / CrewAI 对比 |
-| 🏗️ [技术架构](#技术架构) | 三省六部映射、架构图 |
-| 🎬 [效果展示](#效果展示) | Discord / 飞书 对话示例 |
 | 🚀 [**快速开始**](#快速开始三步登基) | **← 从这里开始安装** |
-| 🍍 [实战案例：菠萝王朝](#实战案例菠萝王朝) | 14 Agent 真实运行架构 |
-| 🏛️ [朝廷架构详解](#朝廷架构三省六部制) | 历史背景、角色对照、多模型混搭 |
-| 📝 [翰林院 — AI 小说创作](#翰林院--ai-小说创作) | 5 Agent 协作写小说，自动写作+审核+归档 |
-| ⚙️ [核心能力详解](#核心能力) | 协作、记忆、Skill、Cron、沙箱 |
-| 🖥️ [GUI 管理界面](#gui-管理界面) | Web Dashboard + Discord + Notion |
-| ❓ [常见问题](#常见问题) | 基础 + 技术 FAQ |
-| 🏢 [企业版 Become CEO](#企业版become-ceo) | 同架构的英文企业版 |
-| 🔗 [相关链接 & 社区](#加入朝会) | 小红书、公众号、微信群 |
+| 🏛️ [朝廷架构](#朝廷架构三省六部制) | 三省六部映射、角色分工 |
+| 📝 [翰林院 — AI 小说创作](#翰林院--ai-小说创作) | 5 Agent 协作写小说 |
+| ⚙️ [核心能力](#核心能力) | 协作、记忆、Skill、Cron、沙箱 |
+| ❓ [常见问题](#常见问题) | FAQ |
 
 ---
 
@@ -232,65 +226,39 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 ---
 
-<a id="实战案例菠萝王朝"></a>
-
-> 以下是基于本项目搭建的**真实运行中的 AI 朝廷**——菠萝王朝，展示 14 个 Agent 协同运作的完整架构。
-
 <a id="快速开始三步登基"></a>
+
+## 快速开始（三步登基）
 
 > 🔴 **新手请用云服务器**，不要在个人电脑上安装。详见 [安全须知](./docs/security.md)。
 
-### 📍 第零步：已安装 OpenClaw？
-
-> 已经在跑 OpenClaw 的老用户，不需要重新安装，用精简版脚本直接初始化朝廷工作区和配置模板：
-> ```bash
-> bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install-lite.sh)
-> ```
-> 跑完后跳到第三步填 Key 即可。**新用户请忽略，从第一步开始。**
-
-### 📍 第一步：有服务器吗？
+**第一步：有服务器吗？**
 
 | 情况 | 操作 |
 |------|------|
-| ✅ 已有 Linux 服务器 | 直接进入第二步 |
-| ✅ 已有 Mac | 直接进入第二步 |
-| ❌ 没有服务器 | → [**领一台云服务器**](./docs/server-setup.md)（Oracle Cloud / 阿里云 / 腾讯云 / AWS 均可） |
+| ✅ 已有 Linux / Mac | 直接进入第二步 |
+| ❌ 没有服务器 | → [**领一台云服务器**](./docs/server-setup.md)（Oracle / 阿里云 / AWS 均可） |
 
-### 📍 第二步：选平台
+**第二步：一键安装**
 
-```
-                           ┌──────────────────────┐
-                           │    菠萝皇帝（你）     │
-                           │   Discord + 多端推送   │
-                           └──────────┬───────────┘
-                                      │
-                 ┌────────────────────┼────────────────────┐
-                 ▼                    ▼                    ▼
-        ┌────────────────┐  ┌────────────────┐  ┌────────────────┐
-        │   司礼监        │  │   内阁首辅      │  │   都察院        │
-        │  大内总管       │  │  战略谋划       │  │  左都御史       │
-        │  批红·调度·统领 │  │  票拟·直谏     │  │  纠劾·审查·质控 │
-        └───────┬────────┘  └────────────────┘  └────────────────┘
-                │
-    ┌───────────┼───────────────────────────────────┐
-    │           │           │           │           │
-    ▼           ▼           ▼           ▼           ▼
-┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐ ┌────────┐
-│ 兵部   │ │ 户部   │ │ 礼部   │ │ 工部   │ │ 刑部   │ │ 吏部   │
-│软件工程│ │财务预算│ │品牌营销│ │基础设施│ │法务合规│ │人事考核│
-│架构部署│ │成本管控│ │社媒公关│ │DevOps │ │风控审查│ │团队管理│
-└────────┘ └────────┘ └────────┘ └────────┘ └────────┘ └────────┘
-
-    ┌───────────────────────────────────────────────┐
-    │              🏛️ 辅助机构                       │
-    ├────────┬────────┬────────┬────────┬────────────┤
-    │ 国子监 │ 翰林院 │ 太医院 │ 内务府 │ 御膳房   │
-    │教育培训 │文书起草 │健康管理 │日程后勤 │膳食推荐    │
-    │知识管理 │论文研究 │营养规划 │起居安排 │食谱研究    │
-    └────────┴────────┴────────┴────────┴────────────┘
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.sh)
 ```
 
-### 菠萝王朝运作实况
+> 已有 OpenClaw 的老用户？用精简版：`bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install-lite.sh)`
+
+**第三步：填 Key、启动**
+
+脚本会引导你填 LLM API Key 和 Discord Bot Token，填完自动启动 Gateway。在 Discord @你的 Bot 说话即可。
+
+---
+
+<a id="实战案例菠萝王朝"></a>
+
+<details>
+<summary><h2>🍍 实战案例：菠萝王朝</h2></summary>
+
+> 以下是基于本项目搭建的**真实运行中的 AI 朝廷**——菠萝王朝，展示 14 个 Agent 协同运作的完整架构。
 
 **14 个 Agent，各有专属 Discord Bot，24/7 在线运转：**
 
@@ -311,15 +279,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 | 内务府 | 总管 | 日程管理、天气查询、出行提醒 |
 | 御膳房 | 总管 | 美食推荐、食谱研究、外卖选择 |
 
-### 自动化 Cron 任务（实际运行中）
-
-```bash
-# 1️⃣ 一键安装（Linux 示例，其他路径见对应文档）
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.sh)
-
 ### Notion 史记式知识库
-
-菠萝王朝使用 Notion 作为「国史馆」，完整存档所有决策和数据：
 
 ```
 🏯 菠萝王朝
@@ -345,6 +305,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 > 💡 **这不是 demo，是每天在用的生产系统。** 菠萝王朝已稳定运行数周，处理过数百个实际任务——从代码开发到内容运营，从数据分析到项目管理。
 
 > 📖 **完整案例** → [菠萝王朝详解](./docs/pineapple-dynasty.md)
+
+</details>
 
 ---
 
@@ -749,6 +711,15 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 > ⚠️ 改完 Intent 后需要**重启 Gateway**：`openclaw gateway restart` 或 `systemctl --user restart openclaw-gateway`
 
+</details>
+
+---
+
+<a id="常见问题"></a>
+
+<details>
+<summary><h2>❓ 常见问题</h2></summary>
+
 **Q: 能用其他模型吗？**
 → 能。OpenClaw 支持 Anthropic、OpenAI、Google Gemini 等主流服务商，也可接入其他兼容 OpenAI API 格式的服务商。在 `openclaw.json` 里改 model 配置就行。不同部门可以用不同模型。
 
@@ -764,9 +735,9 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 **Q: Agent 报「只读文件系统」？**
 → sandbox mode 导致的。不跑代码的部门设 `"sandbox": { "mode": "off" }`。详见 [安全须知](./docs/security.md)。
 
-<a id="常见问题"></a>
-
 > 📖 **完整 FAQ** → [常见问题](./docs/faq.md)
+
+</details>
 
 ---
 
