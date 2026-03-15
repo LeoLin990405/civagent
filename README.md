@@ -1,5 +1,22 @@
 [English Version](./README_EN.md) | [🏢 企业版 Become CEO (English)](https://github.com/wanikua/become-ceo) | [📚 完整文档](./docs/README.md)
 
+> **⚠️ 维权声明 / Originality Notice**
+>
+> 本项目「当皇上 × OpenClaw」是**原创作品**，首发时间线：
+> - **2025-02-20**：小红书首发教程
+> - **2025-02-22**：GitHub 完整教程发布
+>
+> 「OpenClaw × 三省六部/六部制」的概念、架构设计、角色映射（司礼监/内阁/六部/都察院）、目录结构均为本项目原创。
+> 我们已保留完整的发布时间戳、commit 历史、社交媒体记录作为证据链。
+>
+> **🤝 欢迎共创**：本项目欢迎 PR 贡献、Fork 二次开发——但请**注明出处**并链接回本仓库。
+> 这是开源社区的基本礼仪，也是对每一位贡献者的尊重。
+>
+> **📋 已知侵权**：存在结构高度相似的项目，未注明引用。经沟通，对方拒绝标注原创出处。我们保留追究的权利。
+>
+> 🔗 [原创证据链 & 维权文章](./docs/originality.md)
+
+
 <!-- SEO 关键词 / Keywords：三省六部、明朝、六部制、司礼监、内阁、都察院、翰林院、兵部、户部、礼部、工部、刑部、吏部、AI朝廷、AI Agent、多Agent协作、人工智能管理、古代治国、现代管理、组织架构、OpenClaw、multi-agent、ancient-china -->
 
 <p align="center">
