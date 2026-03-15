@@ -254,6 +254,11 @@
           "token": "YOUR_HANLINYUAN_BOT_TOKEN",
           "groupPolicy": "open"
         }
+      },
+      "guilds": {
+        "YOUR_GUILD_ID": {
+          "requireMention": true
+        }
       }
     },
     "feishu": {
