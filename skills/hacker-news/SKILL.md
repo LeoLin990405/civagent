@@ -3,7 +3,7 @@ name: Hacker News
 slug: hacker-news
 version: 1.0.0
 description: Search and browse Hacker News with API access to stories, comments, users, and hiring threads.
-metadata: {"clawdbot":{"emoji":"🟠","requires":{"bins":[]},"os":["linux","darwin","win32"]}}
+metadata: {"openclaw":{"emoji":"🟠","requires":{"bins":[]},"os":["linux","darwin","win32"]}}
 ---
 
 ## Quick Reference

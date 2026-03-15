@@ -1,6 +1,6 @@
 #!/bin/bash
 # ============================================
-# AI 朝廷精简配置脚本（适用于已装好 OpenClaw 或 Clawdbot 的用户）
+# AI 朝廷精简配置脚本（适用于已装好 OpenClaw 的用户）
 # 跳过系统依赖，只初始化工作区 + 生成配置模板
 #
 # 用法:
@@ -29,18 +29,18 @@ done
 echo ""
 echo -e "${BLUE}🏛️ AI 朝廷 — 精简配置${NC}"
 echo "================================"
-echo -e "适用于已安装 OpenClaw/Clawdbot 的用户"
+echo -e "适用于已安装 OpenClaw 的用户"
 echo ""
 
 # ---- 检查 OpenClaw 是否已安装 ----
 if command -v openclaw &>/dev/null; then
     CLI_CMD="openclaw"
     echo -e "  ${GREEN}✓ 检测到 OpenClaw $(openclaw --version 2>/dev/null)${NC}"
-elif command -v clawdbot &>/dev/null; then
-    CLI_CMD="clawdbot"
-    echo -e "  ${GREEN}✓ 检测到 Clawdbot $(clawdbot --version 2>/dev/null)${NC}"
+elif command -v openclaw &>/dev/null; then
+    CLI_CMD="openclaw"
+    echo -e "  ${GREEN}✓ 检测到 OpenClaw $(openclaw --version 2>/dev/null)${NC}"
 else
-    echo -e "  ${RED}✗ 未检测到 OpenClaw 或 Clawdbot${NC}"
+    echo -e "  ${RED}✗ 未检测到 OpenClaw${NC}"
     echo ""
     echo "请先安装："
     echo "  npm install -g openclaw@latest"
@@ -91,8 +91,8 @@ if [ "$CLI_CMD" = "openclaw" ]; then
     CONFIG_DIR="$HOME/.openclaw"
     CONFIG_FILE="openclaw.json"
 else
-    CONFIG_DIR="$HOME/.clawdbot"
-    CONFIG_FILE="clawdbot.json"
+    CONFIG_DIR="$HOME/.openclaw"
+    CONFIG_FILE="openclaw.json"
 fi
 mkdir -p "$WORKSPACE"
 mkdir -p "$CONFIG_DIR"
@@ -299,11 +299,11 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
         "identity": { "theme": "你是兵部尚书，专精软件工程、系统架构。回答用中文，直接给方案。" },
         "sandbox": { "mode": "all", "scope": "agent" }
       },
-      { "id": "hubu", "name": "户部", "model": { "primary": "your-provider/strong-model" }, "identity": { "theme": "你是户部尚书，专精财务分析、成本管控。回答用中文，数据驱动。" }, "sandbox": { "mode": "all", "scope": "agent" } },
-      { "id": "libu", "name": "礼部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是礼部尚书，专精品牌营销、内容创作。回答用中文，风格活泼。" }, "sandbox": { "mode": "all", "scope": "agent" } },
+      { "id": "hubu", "name": "户部", "model": { "primary": "your-provider/strong-model" }, "identity": { "theme": "你是户部尚书，专精财务分析、成本管控。回答用中文，数据驱动。" }, "sandbox": { "mode": "off" } },
+      { "id": "libu", "name": "礼部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是礼部尚书，专精品牌营销、内容创作。回答用中文，风格活泼。" }, "sandbox": { "mode": "off" } },
       { "id": "gongbu", "name": "工部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是工部尚书，专精 DevOps、服务器运维。回答用中文，注重实操。" }, "sandbox": { "mode": "all", "scope": "agent" } },
-      { "id": "libu2", "name": "吏部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是吏部尚书，专精项目管理、创业孵化。回答用中文，条理清晰。" }, "sandbox": { "mode": "all", "scope": "agent" } },
-      { "id": "xingbu", "name": "刑部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是刑部尚书，专精法务合规、知识产权。回答用中文，严谨专业。" }, "sandbox": { "mode": "all", "scope": "agent" } },
+      { "id": "libu2", "name": "吏部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是吏部尚书，专精项目管理、创业孵化。回答用中文，条理清晰。" }, "sandbox": { "mode": "off" } },
+      { "id": "xingbu", "name": "刑部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是刑部尚书，专精法务合规、知识产权。回答用中文，严谨专业。" }, "sandbox": { "mode": "off" } },
       {
         "id": "hanlin_zhang",
         "name": "翰林院·掌院学士",

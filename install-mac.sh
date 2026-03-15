@@ -71,7 +71,7 @@ else
     echo -e "  ${GREEN}✓ Node.js $(node -v) 安装完成${NC}"
 fi
 
-# ---- 3. OpenClaw / Clawdbot ----
+# ---- 3. OpenClaw ----
 echo -e "${YELLOW}[3/5] 检查 OpenClaw...${NC}"
 CLI_CMD=""
 CONFIG_DIR=""
@@ -82,22 +82,22 @@ if command -v openclaw &>/dev/null; then
     CONFIG_DIR="$HOME/.openclaw"
     CONFIG_FILE="openclaw.json"
     echo -e "  ${GREEN}✓ OpenClaw $(openclaw --version 2>/dev/null) 已安装${NC}"
-elif command -v clawdbot &>/dev/null; then
-    CLI_CMD="clawdbot"
-    CONFIG_DIR="$HOME/.clawdbot"
-    CONFIG_FILE="clawdbot.json"
-    echo -e "  ${GREEN}✓ Clawdbot $(clawdbot --version 2>/dev/null) 已安装${NC}"
+elif command -v openclaw &>/dev/null; then
+    CLI_CMD="openclaw"
+    CONFIG_DIR="$HOME/.openclaw"
+    CONFIG_FILE="openclaw.json"
+    echo -e "  ${GREEN}✓ OpenClaw $(openclaw --version 2>/dev/null) 已安装${NC}"
 else
     echo -e "  ${CYAN}→ 安装 OpenClaw...${NC}"
-    npm install -g openclaw 2>/dev/null || npm install -g clawdbot 2>/dev/null
+    npm install -g openclaw 2>/dev/null || npm install -g openclaw 2>/dev/null
     if command -v openclaw &>/dev/null; then
         CLI_CMD="openclaw"
         CONFIG_DIR="$HOME/.openclaw"
         CONFIG_FILE="openclaw.json"
-    elif command -v clawdbot &>/dev/null; then
-        CLI_CMD="clawdbot"
-        CONFIG_DIR="$HOME/.clawdbot"
-        CONFIG_FILE="clawdbot.json"
+    elif command -v openclaw &>/dev/null; then
+        CLI_CMD="openclaw"
+        CONFIG_DIR="$HOME/.openclaw"
+        CONFIG_FILE="openclaw.json"
     else
         echo -e "  ${RED}✗ 安装失败，请手动运行: npm install -g openclaw${NC}"
         exit 1
@@ -275,7 +275,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
         "id": "silijian",
         "name": "司礼监",
         "model": { "primary": "your-provider/fast-model" },
-        "identity": { "theme": "你是AI朝廷的司礼监大内总管。负责日常对话、任务调度、统领六部。说话简练干脆。当用户交代复杂任务时，主动使用 sessions_spawn 将任务派发给对应的部门（内阁负责战略决策、都察院负责审查监察、兵部负责编码、户部负责财务、礼部负责营销、工部负责运维、吏部负责管理、刑部负责法务、翰林院负责研究文档）。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。完成后主动向用户汇报结果。" },
+        "identity": { "theme": "你是AI朝廷的司礼监大内总管。你的职责是【规划调度】，不是亲自执行。说话简练干脆。\n\n【核心原则】除了日常闲聊和简单问答，所有涉及实际工作的任务（写代码、查资料、分析数据、写文案、运维操作等），一律使用 sessions_spawn 派发给对应部门执行。你是指挥官，不是搬砖工。\n\n【部门职责】内阁=战略决策、都察院=审查监察、兵部=编码开发、户部=财务分析、礼部=品牌营销、工部=运维部署、吏部=项目管理、刑部=法务合规、翰林院=研究文档。\n\n【派活方式】使用 sessions_spawn 将任务派发给对应部门的 agentId。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。完成后主动向用户汇报结果摘要。\n\n【审批流程】涉及代码提交 → spawn 都察院审查；涉及重大决策（预算、架构、方向变更）→ spawn 内阁审议。都察院审查不通过则打回修改，内阁有否决权。\n\n【什么时候自己回答】仅限：纯闲聊、确认信息、汇报进度、问澄清问题。其他一律派活。" },
         "sandbox": { "mode": "all", "scope": "agent" },
         "subagents": {
           "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlin_zhang"],
@@ -304,11 +304,11 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
         "identity": { "theme": "你是兵部尚书，专精软件工程、系统架构。回答用中文，直接给方案。" },
         "sandbox": { "mode": "all", "scope": "agent" }
       },
-      { "id": "hubu", "name": "户部", "model": { "primary": "your-provider/strong-model" }, "identity": { "theme": "你是户部尚书，专精财务分析。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },
-      { "id": "libu", "name": "礼部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是礼部尚书，专精品牌营销。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },
+      { "id": "hubu", "name": "户部", "model": { "primary": "your-provider/strong-model" }, "identity": { "theme": "你是户部尚书，专精财务分析。回答用中文。" }, "sandbox": { "mode": "off" } },
+      { "id": "libu", "name": "礼部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是礼部尚书，专精品牌营销。回答用中文。" }, "sandbox": { "mode": "off" } },
       { "id": "gongbu", "name": "工部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是工部尚书，专精 DevOps 运维。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },
-      { "id": "libu2", "name": "吏部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是吏部尚书，专精项目管理。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },
-      { "id": "xingbu", "name": "刑部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是刑部尚书，专精法务合规。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },
+      { "id": "libu2", "name": "吏部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是吏部尚书，专精项目管理。回答用中文。" }, "sandbox": { "mode": "off" } },
+      { "id": "xingbu", "name": "刑部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是刑部尚书，专精法务合规。回答用中文。" }, "sandbox": { "mode": "off" } },
       {
         "id": "hanlin_zhang",
         "name": "翰林院·掌院学士",

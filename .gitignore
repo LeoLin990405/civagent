@@ -6,12 +6,10 @@ dist/
 .env
 .env.*
 openclaw.json
-clawdbot.json
 *.bak
 
 # 状态目录
 .openclaw/
-.clawdbot/
 
 # 系统文件
 *.log

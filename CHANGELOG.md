@@ -57,12 +57,12 @@
 ### 新功能
 - **飞书配置指南** — 完整的飞书接入文档（500+ 行）
 - **doctor.sh 飞书诊断** — 自动检测飞书 appId/appSecret/权限/事件订阅
-- **GUI 多框架支持** — 自动检测 OpenClaw/Clawdbot CLI 和配置目录
+- **GUI 多框架支持** — 自动检测 OpenClaw CLI 和配置目录
 - **Docker 部署** — Dockerfile + docker-compose + entrypoint 初始化
 
 ### Bug 修复
 - GUI 部门映射修正（libu=礼部, libu2=吏部）
-- GUI 兼容 `.openclaw` 和 `.clawdbot` 配置目录
+- GUI 兼容 `.openclaw` 和 `.openclaw` 配置目录
 - GUI 支持 silijian 和 main 两种 agent id
 - Dockerfile/docker-compose 路径参数化
 

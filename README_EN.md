@@ -2,7 +2,7 @@
 
 <!-- SEO Keywords: Three Departments and Six Ministries, Ming Dynasty, Six Ministries System, Zhongshu Province, Menxia Province, Shangshu Province, AI Court, AI Agent, Multi-Agent Collaboration, AI Management, Ancient China Governance, Modern Management, Organization Architecture, OpenClaw, multi-agent, ancient-china -->
 
-> **⚠️ Originality Notice:** This project was first published on **Feb 22, 2026** (promotional posts on Xiaohongshu as early as Feb 20). It is the original creator of the "Three Departments & Six Ministries × AI Multi-Agent" concept. A copycat project was created 21 hours later with 15/15 core design decisions identical, without any attribution. Full evidence: [GitHub Issue](https://github.com/cft0808/edict/issues/55). We welcome forks and derivatives — just give credit where it's due.
+> **⚠️ Originality Notice:** This project was first published on **Feb 22, 2025** (promotional posts on Xiaohongshu as early as Feb 20). It is the original creator of the "Three Departments & Six Ministries × AI Multi-Agent" concept. A copycat project was created 21 hours later with 15/15 core design decisions identical, without any attribution. Full evidence: [GitHub Issue](https://github.com/cft0808/edict/issues/55). We welcome forks and derivatives — just give credit where it's due.
 
 <p align="center">
   <img src="./images/boluobobo-mascot.png" alt="Boluobobo mascot" width="120" />
@@ -98,7 +98,7 @@ If you're more familiar with modern corporate management concepts, we have an **
 
 ---
 
-> 📌 **About Originality** — This project was first committed on **2026-02-22** ([commit history](https://github.com/wanikua/danghuangshang/commits/main)) and represents the original implementation of the concept "modeling AI multi-agent collaboration after China's imperial court system." We noticed that [cft0808/edict](https://github.com/cft0808/edict) (first committed 2026-02-23, approximately 21 hours later) shares striking similarities with this project in framework selection, SOUL.md persona files, install.sh deployment approach, and competitor comparison tables — see [Issue #55](https://github.com/cft0808/edict/issues/55) for details.
+> 📌 **About Originality** — This project was first committed on **2025-02-22** ([commit history](https://github.com/wanikua/danghuangshang/commits/main)) and represents the original implementation of the concept "modeling AI multi-agent collaboration after China's imperial court system." We noticed that [cft0808/edict](https://github.com/cft0808/edict) (first committed 2025-02-23, approximately 21 hours later) shares striking similarities with this project in framework selection, SOUL.md persona files, install.sh deployment approach, and competitor comparison tables — see [Issue #55](https://github.com/cft0808/edict/issues/55) for details.
 >
 > **Reposts welcome — please credit the source.**
 >
@@ -468,7 +468,7 @@ For the basics (server provisioning → installation → configuration → first
 
 ## ⚠️ Originality & Rights Notice
 
-This project was first published on **February 22, 2026**. Full evidence: [GitHub Issue](https://github.com/cft0808/edict/issues/55) | [Rights Article](https://mp.weixin.qq.com/s/erVkoANrpZQFawMCNn6p9g). Forks welcome — please credit the source.
+This project was first published on **February 22, 2025**. Full evidence: [GitHub Issue](https://github.com/cft0808/edict/issues/55) | [Rights Article](https://mp.weixin.qq.com/s/erVkoANrpZQFawMCNn6p9g). Forks welcome — please credit the source.
 
 ---
 

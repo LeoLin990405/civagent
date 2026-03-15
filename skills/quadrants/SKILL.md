@@ -5,7 +5,7 @@ description: Manage Quadrants tasks and projects via natural language. Use when 
 
 # Quadrants Skill
 
-Manage tasks on the Quadrants Eisenhower Matrix (quadrants.ch) via Clawdbot.
+Manage tasks on the Quadrants Eisenhower Matrix (quadrants.ch) via OpenClaw.
 
 ## API Access
 

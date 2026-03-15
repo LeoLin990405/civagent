@@ -27,7 +27,7 @@ When you deploy the Project, the following data is stored **exclusively on your 
 | Data | Location | Description |
 |------|----------|-------------|
 | Configuration | `~/.openclaw/openclaw.json` | API keys, bot tokens, agent settings |
-| Conversations | `~/.clawdbot/agents/*/sessions/` | Chat history per agent |
+| Conversations | `~/.openclaw/agents/*/sessions/` | Chat history per agent |
 | Memory files | `~/clawd/memory/` | Agent memory and notes |
 | Workspace files | `~/clawd/` | SOUL.md, USER.md, IDENTITY.md, etc. |
 

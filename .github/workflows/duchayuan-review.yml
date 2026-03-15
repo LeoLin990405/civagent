@@ -61,8 +61,6 @@ jobs:
           OPENCLAW_API_TOKEN: ${{ secrets.OPENCLAW_API_TOKEN }} # Gateway admin token
           DUCHAYUAN_CHANNEL: ${{ secrets.DUCHAYUAN_DISCORD_CHANNEL }}  # Discord channel ID for review reports
         run: |
-          DIFF_CONTENT=$(cat /tmp/diff.txt)
-
           REVIEW_PROMPT=$(cat <<'PROMPT_END'
           【都察院自动审查 — GitHub Push 触发】
 

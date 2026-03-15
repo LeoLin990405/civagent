@@ -7,24 +7,14 @@
 
 set -euo pipefail
 
-# ---------- CLI 检测 ----------
-if command -v openclaw &>/dev/null; then
-    CLI_CMD="openclaw"
-    CLI_HOME_DEFAULT="$HOME/.openclaw"
-    CLI_CONFIG_NAME="openclaw.json"
-elif command -v clawdbot &>/dev/null; then
-    CLI_CMD="clawdbot"
-    CLI_HOME_DEFAULT="$HOME/.clawdbot"
-    CLI_CONFIG_NAME="clawdbot.json"
-else
-    CLI_CMD="clawdbot"
-    CLI_HOME_DEFAULT="$HOME/.clawdbot"
-    CLI_CONFIG_NAME="clawdbot.json"
-fi
+# ---------- CLI 配置 ----------
+CLI_CMD="openclaw"
+CLI_HOME_DEFAULT="$HOME/.openclaw"
+CLI_CONFIG_NAME="openclaw.json"
 
 # ---------- 配置 ----------
-CLAWDBOT_HOME="${CLAWDBOT_HOME:-$CLI_HOME_DEFAULT}"
-WORKSPACE="${CLAWDBOT_WORKSPACE:-$HOME/clawd}"
+OPENCLAW_HOME="${OPENCLAW_HOME:-$CLI_HOME_DEFAULT}"
+WORKSPACE="${OPENCLAW_WORKSPACE:-$HOME/clawd}"
 BACKUP_ROOT="${BACKUP_ROOT:-$HOME/backups/${CLI_CMD}}"
 RETAIN_DAYS="${RETAIN_DAYS:-7}"
 RETAIN_WEEKLY="${RETAIN_WEEKLY:-4}"
@@ -47,7 +37,7 @@ usage() {
 用法: $(basename "$0") [选项]
 
 选项:
-  -d, --dest <路径>      备份目录 (默认: ~/backups/clawdbot)
+  -d, --dest <路径>      备份目录 (默认: ~/backups/openclaw)
   -r, --retain <天数>    每日备份保留天数 (默认: 7)
   -l, --list             列出现有备份
   -s, --restore <文件>   从备份恢复
@@ -121,9 +111,9 @@ if [[ -n "$RESTORE_FILE" ]]; then
     echo "  📁 $archive"
     echo ""
     echo "  将恢复:"
-    echo "    - $CLAWDBOT_HOME/memory/*.sqlite  (记忆数据库)"
+    echo "    - $OPENCLAW_HOME/memory/*.sqlite  (记忆数据库)"
     echo "    - $WORKSPACE/memory/              (工作区记忆)"
-    echo "    - $CLAWDBOT_HOME/$CLI_CONFIG_NAME    (配置文件)"
+    echo "    - $OPENCLAW_HOME/$CLI_CONFIG_NAME    (配置文件)"
     echo ""
     read -rp "确认恢复? (输入 yes): " confirm
     [[ "$confirm" == "yes" ]] || { echo "已取消"; exit 0; }
@@ -135,7 +125,7 @@ if [[ -n "$RESTORE_FILE" ]]; then
     tar -xzf "$archive" -C "$tmpdir" 2>/dev/null || tar -xf "$archive" -C "$tmpdir"
 
     if [[ -d "$tmpdir/memory-sqlite" ]]; then
-        cp -v "$tmpdir/memory-sqlite/"*.sqlite "$CLAWDBOT_HOME/memory/"
+        cp -v "$tmpdir/memory-sqlite/"*.sqlite "$OPENCLAW_HOME/memory/"
         ok "记忆数据库已恢复"
     fi
 
@@ -147,8 +137,8 @@ if [[ -n "$RESTORE_FILE" ]]; then
     if [[ -f "$tmpdir/config/$CLI_CONFIG_NAME" ]]; then
         read -rp "是否恢复配置文件? (y/N): " restore_config
         if [[ "$restore_config" == "y" ]]; then
-            cp "$CLAWDBOT_HOME/$CLI_CONFIG_NAME" "$CLAWDBOT_HOME/$CLI_CONFIG_NAME.pre-restore"
-            cp "$tmpdir/config/$CLI_CONFIG_NAME" "$CLAWDBOT_HOME/$CLI_CONFIG_NAME"
+            cp "$OPENCLAW_HOME/$CLI_CONFIG_NAME" "$OPENCLAW_HOME/$CLI_CONFIG_NAME.pre-restore"
+            cp "$tmpdir/config/$CLI_CONFIG_NAME" "$OPENCLAW_HOME/$CLI_CONFIG_NAME"
             ok "配置已恢复 (旧配置保存为 $CLI_CONFIG_NAME.pre-restore)"
         fi
     fi
@@ -181,8 +171,8 @@ trap cleanup_staging EXIT
 # 1) 备份记忆数据库 (SQLite)
 qlog "备份记忆数据库..."
 mkdir -p "$STAGING/memory-sqlite"
-if [[ -d "$CLAWDBOT_HOME/memory" ]]; then
-    for db in "$CLAWDBOT_HOME/memory/"*.sqlite; do
+if [[ -d "$OPENCLAW_HOME/memory" ]]; then
+    for db in "$OPENCLAW_HOME/memory/"*.sqlite; do
         [[ -f "$db" ]] || continue
         name=$(basename "$db")
         if [[ "$DRY_RUN" == "true" ]]; then
@@ -197,7 +187,7 @@ if [[ -d "$CLAWDBOT_HOME/memory" ]]; then
     done
     qok "记忆数据库: $(ls "$STAGING/memory-sqlite/" 2>/dev/null | wc -l) 个文件"
 else
-    warn "记忆目录不存在: $CLAWDBOT_HOME/memory"
+    warn "记忆目录不存在: $OPENCLAW_HOME/memory"
 fi
 
 # 2) 备份工作区记忆
@@ -217,7 +207,7 @@ fi
 # 3) 备份配置
 qlog "备份配置文件..."
 mkdir -p "$STAGING/config"
-for cfg in "$CLAWDBOT_HOME/$CLI_CONFIG_NAME" "$CLAWDBOT_HOME/agents/main/agent/auth-profiles.json"; do
+for cfg in "$OPENCLAW_HOME/$CLI_CONFIG_NAME" "$OPENCLAW_HOME/agents/main/agent/auth-profiles.json"; do
     if [[ -f "$cfg" ]]; then
         if [[ "$DRY_RUN" == "true" ]]; then
             qlog "  [dry-run] 会备份 $(basename "$cfg")"
@@ -232,13 +222,13 @@ qok "配置文件已备份"
 sqlite_count=$(ls "$STAGING/memory-sqlite/"*.sqlite 2>/dev/null | wc -l || echo 0)
 workspace_count=$(find "$STAGING/memory-workspace" -type f 2>/dev/null | wc -l || echo 0)
 total_bytes=$(du -sb "$STAGING" 2>/dev/null | cut -f1 || echo 0)
-clawdbot_ver=$($CLI_CMD --version 2>/dev/null || echo "unknown")
+openclaw_ver=$($CLI_CMD --version 2>/dev/null || echo "unknown")
 
 cat > "$STAGING/backup-meta.json" <<METAEOF
 {
   "timestamp": "$NOW",
   "hostname": "$(hostname)",
-  "cli_version": "$clawdbot_ver",
+  "cli_version": "$openclaw_ver",
   "sqlite_count": $sqlite_count,
   "workspace_files": $workspace_count,
   "total_size_bytes": $total_bytes

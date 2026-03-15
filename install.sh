@@ -365,10 +365,10 @@ if command -v openclaw &>/dev/null; then
     CLI_CMD="openclaw"
     CONFIG_DIR="$HOME/.openclaw"
     CONFIG_FILE_NAME="openclaw.json"
-elif command -v clawdbot &>/dev/null; then
-    CLI_CMD="clawdbot"
-    CONFIG_DIR="$HOME/.clawdbot"
-    CONFIG_FILE_NAME="clawdbot.json"
+elif command -v openclaw &>/dev/null; then
+    CLI_CMD="openclaw"
+    CONFIG_DIR="$HOME/.openclaw"
+    CONFIG_FILE_NAME="openclaw.json"
 else
     CLI_CMD="openclaw"
     CONFIG_DIR="$HOME/.openclaw"

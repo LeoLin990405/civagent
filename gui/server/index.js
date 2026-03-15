@@ -18,12 +18,12 @@ const execAsync = promisify(_exec);
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// 检测可用的 CLI 命令（openclaw 优先，clawdbot 兜底）
+// CLI 命令
 let CLI_CMD = 'openclaw';
 try {
-  const { stdout } = await execAsync('which openclaw 2>/dev/null || which clawdbot 2>/dev/null', { encoding: 'utf-8', timeout: 3000 });
-  CLI_CMD = stdout.trim().includes('openclaw') ? 'openclaw' : 'clawdbot';
-} catch { CLI_CMD = 'clawdbot'; }
+  await execAsync('which openclaw', { encoding: 'utf-8', timeout: 3000 });
+  CLI_CMD = 'openclaw';
+} catch { CLI_CMD = 'openclaw'; }
 
 const app = express();
 const PORT = process.env.BOLUO_GUI_PORT || 18795;
@@ -59,14 +59,14 @@ const AGENT_DEPT_MAP = {
 };
 
 const HOME = process.env.HOME || '/home/ubuntu';
-// 兼容 openclaw 和 clawdbot 两种安装方式
+// OpenClaw 配置目录
 const OPENCLAW_DIR = join(HOME, '.openclaw');
-const CLAWDBOT_DIR = join(HOME, '.clawdbot');
-const STATE_DIR = existsSync(OPENCLAW_DIR) ? OPENCLAW_DIR : CLAWDBOT_DIR;
+
+const STATE_DIR = OPENCLAW_DIR;
 const AGENTS_DIR = join(STATE_DIR, 'agents');
 const CONFIG_PATH = existsSync(join(OPENCLAW_DIR, 'openclaw.json'))
   ? join(OPENCLAW_DIR, 'openclaw.json')
-  : join(CLAWDBOT_DIR, 'clawdbot.json');
+  : join(OPENCLAW_DIR, 'openclaw.json');
 
 app.use(cors());
 app.use(express.json());
@@ -90,7 +90,7 @@ function formatUptime(seconds) {
   return parts.join(' ');
 }
 
-function getClawdbotConfig() {
+function getOpenclawConfig() {
   try {
     if (existsSync(CONFIG_PATH)) {
       return JSON.parse(readFileSync(CONFIG_PATH, 'utf-8'));
@@ -198,7 +198,7 @@ function detectAgentPlatforms(agentId) {
   }
 
   // Also check gateway config channels
-  const config = getClawdbotConfig();
+  const config = getOpenclawConfig();
   const channels = config?.channels || {};
   for (const key of Object.keys(channels)) {
     const plat = key.toLowerCase();
@@ -216,7 +216,7 @@ function detectAgentPlatforms(agentId) {
 }
 
 app.get('/api/status', authMiddleware, async (req, res) => {
-  const config = getClawdbotConfig();
+  const config = getOpenclawConfig();
   const defaultModel = config?.agents?.defaults?.model?.primary || 'minimax/MiniMax-M2.5';
 
   let agentIds = [];
@@ -354,7 +354,7 @@ function getTokenStats() {
     }
   }
 
-  const rawConfig = getClawdbotConfig();
+  const rawConfig = getOpenclawConfig();
   const tokenPrice = rawConfig?.tokenPricePerM || 0.3;
   for (const d of byDepartment) {
     d.cost = (d.tokens / 1000000 * tokenPrice).toFixed(3);
@@ -1034,7 +1034,7 @@ app.get('/api/departments/:name/recent', authMiddleware, (req, res) => {
 // Gateway config (read-only, masks secrets)
 app.get('/api/config', authMiddleware, (req, res) => {
   try {
-    const config = getClawdbotConfig();
+    const config = getOpenclawConfig();
     if (!config) return res.json({ config: null, error: 'Config not found' });
     
     // Deep clone and mask sensitive fields
@@ -1076,7 +1076,7 @@ app.post('/api/notion/sync', authMiddleware, (req, res) => {
 
 app.get('/api/notion/data', authMiddleware, (req, res) => {
   const { type = 'daily' } = req.query;
-  const config = getClawdbotConfig();
+  const config = getOpenclawConfig();
   
   if (type === 'daily') {
     const data = [];
@@ -1177,7 +1177,7 @@ app.get('/api/weather', authMiddleware, async (req, res) => {
 app.get('/api/platforms', authMiddleware, (req, res) => {
   try {
     // 直接读取 gateway 配置和 agent 数据（不再 curl 自己）
-    const config = getClawdbotConfig();
+    const config = getOpenclawConfig();
     const channels = config?.channels || {};
     
     // 读取 agent 数据获取在线账号数和会话数
@@ -1328,14 +1328,14 @@ app.patch('/api/cron/jobs/:id', authMiddleware, async (req, res) => {
     
     if (typeof enabled === 'boolean') {
       const action = enabled ? 'enable' : 'disable';
-      // Try clawdbot CLI
+      // Try openclaw CLI
       try {
         await execAsync(`${CLI_CMD} cron ${action} ${id}`, { encoding: 'utf-8', timeout: 10000 });
         res.json({ success: true, message: `任务 ${id} 已${enabled ? '启用' : '禁用'}`, id, enabled });
       } catch (cliErr) {
         // Fallback: try to update config directly
         try {
-          const config = getClawdbotConfig();
+          const config = getOpenclawConfig();
           if (config?.cron?.jobs) {
             const job = config.cron.jobs.find(j => j.id === id);
             if (job) {
@@ -1385,8 +1385,8 @@ async function readGatewayLogs(opts = {}) {
   } else {
     logs = [];
     try {
-      // Try journalctl for gateway service logs (openclaw or clawdbot)
-      const svcName = CLI_CMD === 'openclaw' ? 'openclaw-gateway' : 'clawdbot-gateway';
+      // Try journalctl for gateway service logs
+      const svcName = 'openclaw-gateway';
       let cmd = `journalctl -u ${svcName} --no-pager -n 200 --output=short-iso 2>/dev/null`;
       if (since && /^[\d\-T:+. ]+$/.test(since)) cmd += ` --since="${since}"`;
       
@@ -1398,8 +1398,8 @@ async function readGatewayLogs(opts = {}) {
         // Fallback: read from log files
         const logPaths = [
           join(HOME, '.openclaw/logs/gateway.log'),
-          join(HOME, '.clawdbot/logs/gateway.log'),
-          '/tmp/clawdbot.log',
+          join(HOME, '.openclaw/logs/gateway.log'),
+          '/tmp/openclaw.log',
           '/tmp/boluo-gui.log',
         ];
         for (const p of logPaths) {
@@ -1518,7 +1518,7 @@ setInterval(async () => {
 }, 10000);
 
 app.get('/api/nodes', authMiddleware, async (req, res) => {
-  // Try to get real node data from clawdbot CLI
+  // Try to get real node data from openclaw CLI
   try {
     const { stdout } = await execAsync(`${CLI_CMD} node list --json 2>/dev/null`, { encoding: 'utf-8', timeout: 5000 });
     const data = JSON.parse(stdout);
@@ -1695,7 +1695,7 @@ app.post('/api/command', authMiddleware, async (req, res) => {
   // 策略1: 如果提供了 Discord channel ID 且有 Discord token，走 Discord REST API（原有逻辑）
   if (channel && /^\d{17,20}$/.test(channel)) {
     try {
-      const config = getClawdbotConfig() || {};
+      const config = getOpenclawConfig() || {};
       const accounts = config.channels?.discord?.accounts || {};
       let account = safeBotId ? accounts[safeBotId] : null;
       if (!account?.token) {
@@ -1778,7 +1778,7 @@ app.post('/api/command', authMiddleware, async (req, res) => {
 // 获取bot列表（含状态）— 合并三个数据源：channels.accounts + agents.list + 文件系统
 app.get('/api/bots', authMiddleware, (req, res) => {
   try {
-    const config = getClawdbotConfig() || {};
+    const config = getOpenclawConfig() || {};
     const channels = config.channels || {};
     const defaultModel = config.agents?.defaults?.model?.primary || config.defaultModel || 'claude-opus-4-6';
     const botMap = {};
@@ -1830,7 +1830,7 @@ app.get('/api/bots', authMiddleware, (req, res) => {
       }
     }
     
-    // 数据源3: 文件系统 ~/.clawdbot/agents/ 或 ~/.openclaw/agents/（已有会话的 agent）
+    // 数据源3: 文件系统 ~/.openclaw/agents/（已有会话的 agent）
     if (existsSync(AGENTS_DIR)) {
       const agentDirs = readdirSync(AGENTS_DIR, { withFileTypes: true })
         .filter(d => d.isDirectory())
@@ -1991,11 +1991,11 @@ recordMetrics(); // initial
 
 // Derive workspace skills dir from config
 function getSkillsDirs() {
-  const config = getClawdbotConfig();
+  const config = getOpenclawConfig();
   const workspace = config?.workspace || join(HOME, 'clawd');
   const localSkillsDir = join(workspace, 'skills');
   // Built-in skills shipped with the package
-  const builtinSkillsDir = '/usr/lib/node_modules/clawdbot/skills';
+  const builtinSkillsDir = '/usr/lib/node_modules/openclaw/skills';
   // Alternative: openclaw package path
   const builtinAlt = '/usr/lib/node_modules/openclaw/skills';
   const builtinDir = existsSync(builtinSkillsDir) ? builtinSkillsDir : (existsSync(builtinAlt) ? builtinAlt : null);

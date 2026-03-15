@@ -92,12 +92,12 @@ if command -v openclaw &>/dev/null; then
     CLI_CMD="openclaw"
     CLI_VER=$(openclaw --version 2>/dev/null || echo "unknown")
     pass "OpenClaw 已安装 ($CLI_VER)"
-elif command -v clawdbot &>/dev/null; then
-    CLI_CMD="clawdbot"
-    CLI_VER=$(clawdbot --version 2>/dev/null || echo "unknown")
-    pass "Clawdbot 已安装 ($CLI_VER)"
+elif command -v openclaw &>/dev/null; then
+    CLI_CMD="openclaw"
+    CLI_VER=$(openclaw --version 2>/dev/null || echo "unknown")
+    pass "OpenClaw 已安装 ($CLI_VER)"
 else
-    fail "未检测到 OpenClaw 或 Clawdbot — 请先安装: npm install -g openclaw@latest"
+    fail "未检测到 OpenClaw — 请先安装: npm install -g openclaw@latest"
     CLI_CMD=""
 fi
 
@@ -117,8 +117,8 @@ echo -e "${YELLOW}[2/9] 检查配置文件...${NC}"
 CONFIG_FILE=""
 if [ -f "$HOME/.openclaw/openclaw.json" ]; then
     CONFIG_FILE="$HOME/.openclaw/openclaw.json"
-elif [ -f "$HOME/.clawdbot/clawdbot.json" ]; then
-    CONFIG_FILE="$HOME/.clawdbot/clawdbot.json"
+elif [ -f "$HOME/.openclaw/openclaw.json" ]; then
+    CONFIG_FILE="$HOME/.openclaw/openclaw.json"
 fi
 
 if [ -z "$CONFIG_FILE" ]; then
@@ -696,12 +696,12 @@ fi
 # Gateway 服务状态
 if systemctl --user is-active openclaw-gateway &>/dev/null; then
     pass "Gateway 服务运行中（openclaw-gateway）"
-elif systemctl --user is-active clawdbot-gateway &>/dev/null; then
-    pass "Gateway 服务运行中（clawdbot-gateway）"
+elif systemctl --user is-active openclaw-gateway &>/dev/null; then
+    pass "Gateway 服务运行中（openclaw-gateway）"
 elif systemctl is-active openclaw-gateway &>/dev/null 2>&1; then
     pass "Gateway 服务运行中（openclaw-gateway, system）"
-elif systemctl is-active clawdbot-gateway &>/dev/null 2>&1; then
-    pass "Gateway 服务运行中（clawdbot-gateway, system）"
+elif systemctl is-active openclaw-gateway &>/dev/null 2>&1; then
+    pass "Gateway 服务运行中（openclaw-gateway, system）"
 else
     warn "Gateway 服务未运行 — 可手动启动: $CLI_CMD gateway start"
     info "或前台调试: $CLI_CMD gateway --verbose"
