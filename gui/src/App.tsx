@@ -55,7 +55,7 @@ function App() {
   const { data, loading, error, lastUpdated, refresh } = useStatus()
 
   if (!isLoggedIn) {
-    return <Login onLogin={(_token: string) => setIsLoggedIn(true)} />
+    return <Login onLogin={() => setIsLoggedIn(true)} />
   }
 
   const renderPage = () => {

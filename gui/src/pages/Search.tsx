@@ -147,9 +147,9 @@ export default function Search() {
             placeholder="输入搜索关键词..."
             className={`flex-1 px-4 py-2 rounded border ${
               theme === 'light' 
-                ? 'bg-white border-gray-300' 
-                : 'bg-[#0d0d1a] border-[#d4a574]/30'
-            } text-[#e5e5e5] placeholder-[#a3a3a3]`}
+                ? 'bg-white border-gray-300 text-gray-800 placeholder-gray-400' 
+                : 'bg-[#0d0d1a] border-[#d4a574]/30 text-[#e5e5e5] placeholder-[#a3a3a3]'
+            }`}
           />
           <button
             onClick={handleSearch}

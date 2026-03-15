@@ -66,16 +66,14 @@ export default function Departments({ data }: Props) {
     if (!recentMsgs[botName]) {
       setMsgsLoading(botName)
       try {
-        // Find the session ID for this bot
-        const r = await fetch('/api/sessions?limit=100', { headers: { Authorization: `Bearer ${getAuthToken()}` } })
-        const d = await r.json()
-        const session = (d.sessions || []).find((s: DeptActivity & { id: string }) => s.agentId === botName)
-        if (session) {
-          const mr = await fetch(`/api/sessions/${encodeURIComponent(session.id)}/messages?limit=6`, {
-            headers: { Authorization: `Bearer ${getAuthToken()}` }
-          })
-          const md = await mr.json()
-          setRecentMsgs(prev => ({ ...prev, [botName]: md.messages || [] }))
+        // Use /api/departments/:name/recent instead of re-fetching all sessions
+        const deptName = data.botAccounts.find(b => b.name === botName)?.displayName || botName
+        const deptR = await fetch(`/api/departments/${encodeURIComponent(deptName)}/recent?limit=6`, {
+          headers: { Authorization: `Bearer ${getAuthToken()}` }
+        })
+        if (deptR.ok) {
+          const deptD = await deptR.json()
+          setRecentMsgs(prev => ({ ...prev, [botName]: deptD.messages || [] }))
         } else {
           setRecentMsgs(prev => ({ ...prev, [botName]: [] }))
         }

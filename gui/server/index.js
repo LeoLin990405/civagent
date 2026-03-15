@@ -161,7 +161,7 @@ function getRecentLogs(limit = 100) {
                   ? entry.content.substring(0, 200)
                   : JSON.stringify(entry.content).substring(0, 200);
                 logs.push({
-                  timestamp: new Date(file.mtime).toLocaleString('zh-CN', { timeZone: 'Asia/Shanghai' }),
+                  timestamp: new Date(file.mtime).toISOString(),
                   level: 'info',
                   message: text,
                   source: AGENT_DEPT_MAP[agentId] || agentId
@@ -984,7 +984,25 @@ app.get('/api/departments/:name/recent', authMiddleware, (req, res) => {
     
     if (!bestSession?.sessionFile || !existsSync(bestSession.sessionFile)) return res.json({ messages: [] });
     
-    const content = readFileSync(bestSession.sessionFile, 'utf-8');
+    // Guard against oversized files to prevent OOM (consistent with other endpoints)
+    const fileSize = statSync(bestSession.sessionFile).size;
+    if (fileSize > 50 * 1024 * 1024) {
+      return res.status(413).json({ error: 'Session file too large', messages: [] });
+    }
+    
+    // For files > 10MB, only read the tail (last 2MB) for recent messages
+    let content;
+    if (fileSize > 10 * 1024 * 1024) {
+      const TAIL_READ = 2 * 1024 * 1024;
+      const fd = openSync(bestSession.sessionFile, 'r');
+      const buf = Buffer.alloc(TAIL_READ);
+      readSync(fd, buf, 0, TAIL_READ, fileSize - TAIL_READ);
+      closeSync(fd);
+      const raw = buf.toString('utf-8');
+      content = raw.substring(raw.indexOf('\n') + 1);
+    } else {
+      content = readFileSync(bestSession.sessionFile, 'utf-8');
+    }
     const lines = content.split('\n').filter(l => l.trim());
     const messages = [];
     
@@ -1465,10 +1483,15 @@ app.get('/api/logs/stream', authMiddleware, (req, res) => {
   
   res.write('event: connected\ndata: {"status":"connected"}\n\n');
   
+  // Periodic keepalive comment to prevent proxy/LB timeout
+  const keepalive = setInterval(() => {
+    try { res.write(': keepalive\n\n'); } catch { clearInterval(keepalive); }
+  }, 15000);
+  
   const client = { res, level: req.query.level || null };
   sseClients.add(client);
   
-  req.on('close', () => { sseClients.delete(client); });
+  req.on('close', () => { clearInterval(keepalive); sseClients.delete(client); });
 });
 
 // Push log events to SSE clients (called from internal log sources)
@@ -1551,8 +1574,9 @@ app.get('/api/notion/:id', authMiddleware, async (req, res) => {
     
     let data = await response.json();
     
-    // 如果返回错误说明是页面而非数据库，尝试获取页面
-    if (data.object === 'error') {
+    // 如果返回的是 "not found" 或 "validation_error" 说明这不是数据库，尝试获取页面
+    // 但如果是 "unauthorized" / "restricted_resource" 则直接返回错误（不做 fallback）
+    if (data.object === 'error' && !['unauthorized', 'restricted_resource'].includes(data.code)) {
       response = await fetch(`https://api.notion.com/v1/pages/${id}`, {
         headers: {
           'Authorization': `Bearer ${NOTION_TOKEN}`,
@@ -1656,6 +1680,10 @@ app.post('/api/command', authMiddleware, async (req, res) => {
   if (!message || typeof message !== 'string') {
     return res.status(400).json({ error: 'Message is required and must be a string' });
   }
+  // SEC-36: 限制消息长度，防止超长输入导致内存问题或命令行溢出
+  if (message.length > 4000) {
+    return res.status(400).json({ error: 'Message too long (max 4000 chars)' });
+  }
   
   // SEC-33: 验证 botId 防止原型链污染
   const safeBotId = botId ? sanitizeAgentId(botId) : null;
@@ -1696,28 +1724,54 @@ app.post('/api/command', authMiddleware, async (req, res) => {
   // 策略2: 通过 gateway wake 发送（通用方案，支持所有平台）
   try {
     const wakeText = safeBotId ? `[Court指令→${AGENT_DEPT_MAP[safeBotId] || safeBotId}] ${message}` : message;
-    // 转义引号防止命令注入
-    const safeText = wakeText.replace(/'/g, "'\\''");
+    // SEC-35: 使用 Base64 编码传递用户文本，完全避免 shell 解释
+    const b64Text = Buffer.from(wakeText, 'utf-8').toString('base64');
     const { stdout, stderr } = await execAsync(
-      `${CLI_CMD} gateway wake --text '${safeText}' --mode now 2>&1`,
+      `echo '${b64Text}' | base64 -d | ${CLI_CMD} gateway wake --text-stdin --mode now 2>&1`,
       { encoding: 'utf-8', timeout: 10000 }
     );
     console.log(`[COMMAND] Gateway wake result: ${stdout.trim()}`);
     return res.json({ success: true, sentAs: usedBot, method: 'gateway', detail: stdout.trim() });
   } catch (wakeErr) {
-    console.error(`[COMMAND] Gateway wake failed: ${wakeErr.message}`);
+    // Fallback: try with simple single-quote escaping if stdin mode not supported
+    try {
+      const wakeText = safeBotId ? `[Court指令→${AGENT_DEPT_MAP[safeBotId] || safeBotId}] ${message}` : message;
+      // Strict shell escaping: replace all single quotes with '\'' (close, escape, reopen)
+      const safeText = wakeText.replace(/'/g, "'\\''");
+      // Truncate to prevent excessively long commands
+      const truncated = safeText.substring(0, 2000);
+      const { stdout } = await execAsync(
+        `${CLI_CMD} gateway wake --text '${truncated}' --mode now 2>&1`,
+        { encoding: 'utf-8', timeout: 10000 }
+      );
+      console.log(`[COMMAND] Gateway wake (fallback) result: ${stdout.trim()}`);
+      return res.json({ success: true, sentAs: usedBot, method: 'gateway', detail: stdout.trim() });
+    } catch (fallbackErr) {
+      console.error(`[COMMAND] Gateway wake failed: ${fallbackErr.message}`);
+    }
   }
   
   // 策略3: 直接写入 agent session（最后兜底）
   try {
-    const safeMsg = message.replace(/'/g, "'\\''");
+    // Same Base64 approach for safety
+    const b64Msg = Buffer.from(message, 'utf-8').toString('base64');
     const { stdout } = await execAsync(
-      `${CLI_CMD} session send --agent ${usedBot} --text '${safeMsg}' 2>&1`,
+      `echo '${b64Msg}' | base64 -d | ${CLI_CMD} session send --agent ${usedBot} --text-stdin 2>&1`,
       { encoding: 'utf-8', timeout: 10000 }
     );
     return res.json({ success: true, sentAs: usedBot, method: 'session', detail: stdout.trim() });
-  } catch (sessErr) {
-    return res.status(500).json({ error: `All delivery methods failed. Last: ${sessErr.message}`, sentAs: usedBot });
+  } catch {
+    // Final fallback with escaping
+    try {
+      const safeMsg = message.replace(/'/g, "'\\''").substring(0, 2000);
+      const { stdout } = await execAsync(
+        `${CLI_CMD} session send --agent ${usedBot} --text '${safeMsg}' 2>&1`,
+        { encoding: 'utf-8', timeout: 10000 }
+      );
+      return res.json({ success: true, sentAs: usedBot, method: 'session', detail: stdout.trim() });
+    } catch (sessErr) {
+      return res.status(500).json({ error: `All delivery methods failed. Last: ${sessErr.message}`, sentAs: usedBot });
+    }
   }
 });
 
@@ -2280,7 +2334,8 @@ setInterval(async () => {
   if (wss.clients.size === 0) return;
   
   try {
-    // Force refresh cache for broadcast
+    // Invalidate stale session and dashboard caches so next build uses fresh data
+    delete cache['sessions'];
     delete cache['dashboard_summary'];
     
     // Build fresh data using the status endpoint's logic

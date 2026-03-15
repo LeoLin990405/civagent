@@ -151,7 +151,26 @@ export default function Sessions({ initialFilter }: Props) {
   const fetchSessions = async () => {
     try {
       const r = await fetch('/api/sessions?limit=100', { headers: { Authorization: `Bearer ${getAuthToken()}` } })
-      if (r.ok) { const d = await r.json(); setSessions(d.sessions || []) }
+      if (r.ok) {
+        const d = await r.json()
+        setSessions(d.sessions || [])
+        // Clean up expanded state for sessions that no longer exist to prevent memory leak
+        const ids = new Set((d.sessions || []).map((s: Session) => s.id))
+        setExpandedSummary(prev => {
+          const cleaned: Record<string, SessionSummary | null> = {}
+          for (const key of Object.keys(prev)) {
+            if (ids.has(key)) cleaned[key] = prev[key]
+          }
+          return cleaned
+        })
+        setExpandedLoading(prev => {
+          const cleaned: Record<string, boolean> = {}
+          for (const key of Object.keys(prev)) {
+            if (ids.has(key)) cleaned[key] = prev[key]
+          }
+          return cleaned
+        })
+      }
     } catch { }
     setLoading(false)
   }

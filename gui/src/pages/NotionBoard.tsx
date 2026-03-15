@@ -236,7 +236,7 @@ export default function NotionBoard() {
                       ))}
                     </Pie>
                     <Tooltip 
-                      contentStyle={{ backgroundColor: '#1a1a2e', border: '1px solid #d4a574/30' }}
+                      contentStyle={{ backgroundColor: '#1a1a2e', border: '1px solid rgba(212,165,116,0.3)' }}
                     />
                     <Legend />
                   </PieChart>
@@ -258,7 +258,7 @@ export default function NotionBoard() {
                     />
                     <YAxis tick={{ fontSize: 10, fill: theme === 'light' ? '#666' : '#a3a3a3' }} />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: '#1a1a2e', border: '1px solid #d4a574/30' }}
+                      contentStyle={{ backgroundColor: '#1a1a2e', border: '1px solid rgba(212,165,116,0.3)' }}
                     />
                     <Legend />
                     <Bar dataKey="收入" fill="#22c55e" />
