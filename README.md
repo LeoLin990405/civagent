@@ -323,6 +323,42 @@ BOLUO_AUTH_TOKEN=你的密码 node index.js
 3. 在 Notion 页面点 **··· → Connect to** 授权
 4. 在 Discord：`@司礼监 把今天的工作总结写到 Notion 日报里`
 
+<details>
+<summary><h2>🧠 记忆备份</h2></summary>
+
+Agent 的记忆是长期积累的资产，丢失不可逆。内置备份脚本，一行命令守护所有 Agent 记忆。
+
+**备份内容：** 14 个 Agent 的 SQLite 记忆数据库 + 工作区记忆文件 + 核心配置
+
+```bash
+# 立即备份
+bash scripts/memory-backup.sh
+
+# 查看现有备份
+bash scripts/memory-backup.sh -l
+
+# 从备份恢复
+bash scripts/memory-backup.sh -s daily/2026-03-15.tar.gz
+
+# 预览（不实际执行）
+bash scripts/memory-backup.sh --dry-run
+```
+
+**自动定时备份（推荐）：**
+
+```bash
+# 每天凌晨 3 点自动备份
+(crontab -l 2>/dev/null; echo "0 3 * * * $HOME/danghuangshang/scripts/memory-backup.sh -q") | crontab -
+```
+
+| 策略 | 保留周期 | 说明 |
+|------|----------|------|
+| 每日备份 | 7 天 | 自动清理过期 |
+| 每周备份 | 4 周 | 每周日自动归档 |
+| 每月备份 | 6 个月 | 每月 1 号自动归档 |
+
+> 使用 `sqlite3 .backup` 保证数据库一致性，备份期间不影响 Agent 正常运行。
+
 </details>
 
 <details>
