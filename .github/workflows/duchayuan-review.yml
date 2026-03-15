@@ -38,11 +38,21 @@ jobs:
       - name: Get commit info
         if: steps.diff.outputs.skip != 'true'
         id: commit
+        env:
+          COMMIT_AUTHOR: ${{ github.event.head_commit.author.username || github.actor }}
+          COMMIT_MESSAGE: ${{ github.event.head_commit.message }}
+          COMMIT_SHA: ${{ github.sha }}
+          COMMIT_URL: ${{ github.event.head_commit.url }}
         run: |
-          echo "author=${{ github.event.head_commit.author.username || github.actor }}" >> "$GITHUB_OUTPUT"
-          echo "message=${{ github.event.head_commit.message }}" >> "$GITHUB_OUTPUT"
-          echo "sha=$(echo ${{ github.sha }} | cut -c1-7)" >> "$GITHUB_OUTPUT"
-          echo "url=${{ github.event.head_commit.url }}" >> "$GITHUB_OUTPUT"
+          echo "author=${COMMIT_AUTHOR}" >> "$GITHUB_OUTPUT"
+          # 多行 commit message 需要 heredoc 语法
+          {
+            echo "message<<MSGEOF"
+            echo "${COMMIT_MESSAGE}"
+            echo "MSGEOF"
+          } >> "$GITHUB_OUTPUT"
+          echo "sha=${COMMIT_SHA:0:7}" >> "$GITHUB_OUTPUT"
+          echo "url=${COMMIT_URL}" >> "$GITHUB_OUTPUT"
 
       - name: Send to 都察院 via OpenClaw API
         if: steps.diff.outputs.skip != 'true'

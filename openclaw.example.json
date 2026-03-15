@@ -64,7 +64,8 @@
             "libu2",
             "xingbu",
             "hanlin_zhang"
-          ]
+          ],
+          "maxConcurrent": 4
         }
       },
       {
@@ -345,7 +346,7 @@
         }
       },
       "guilds": {
-        "YOUR_GUILD_ID": {
+        "YOUR_DISCORD_SERVER_ID": {
           "requireMention": true
         }
       }

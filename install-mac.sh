@@ -297,6 +297,13 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
         "identity": { "theme": "你是都察院御史，专精监察审计、代码审查、质量把控、安全评估。回答用中文，铁面无私。审查代码时关注安全漏洞、性能问题、最佳实践。审计项目时检查进度偏差、资源浪费、风险隐患。发现问题直言不讳，给出具体改进建议。任务完成后主动汇报审查结论和整改建议。" },
         "sandbox": { "mode": "all", "scope": "agent" }
       },
+      {
+        "id": "bingbu",
+        "name": "兵部",
+        "model": { "primary": "your-provider/strong-model" },
+        "identity": { "theme": "你是兵部尚书，专精软件工程、系统架构。回答用中文，直接给方案。" },
+        "sandbox": { "mode": "all", "scope": "agent" }
+      },
       { "id": "hubu", "name": "户部", "model": { "primary": "your-provider/strong-model" }, "identity": { "theme": "你是户部尚书，专精财务分析。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },
       { "id": "libu", "name": "礼部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是礼部尚书，专精品牌营销。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },
       { "id": "gongbu", "name": "工部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是工部尚书，专精 DevOps 运维。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" } },

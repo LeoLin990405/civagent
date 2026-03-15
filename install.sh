@@ -360,7 +360,20 @@ if [[ "$HOME" == *" "* ]]; then
     echo -e "  ${YELLOW}⚠ HOME 路径含空格 ($HOME)，JSON 配置中的路径请手动检查${NC}"
 fi
 WORKSPACE="$HOME/clawd"
-CONFIG_DIR="$HOME/.openclaw"
+# ---- 检测 CLI 类型 ----
+if command -v openclaw &>/dev/null; then
+    CLI_CMD="openclaw"
+    CONFIG_DIR="$HOME/.openclaw"
+    CONFIG_FILE_NAME="openclaw.json"
+elif command -v clawdbot &>/dev/null; then
+    CLI_CMD="clawdbot"
+    CONFIG_DIR="$HOME/.clawdbot"
+    CONFIG_FILE_NAME="clawdbot.json"
+else
+    CLI_CMD="openclaw"
+    CONFIG_DIR="$HOME/.openclaw"
+    CONFIG_FILE_NAME="openclaw.json"
+fi
 mkdir -p "$WORKSPACE"
 mkdir -p "$CONFIG_DIR"
 cd "$WORKSPACE"
@@ -443,11 +456,11 @@ if [ -t 0 ]; then
 fi
 DEPLOY_MODE=${DEPLOY_MODE:-1}
 
-if [ ! -f "$CONFIG_DIR/openclaw.json" ]; then
+if [ ! -f "$CONFIG_DIR/$CONFIG_FILE_NAME" ]; then
 
 if [ "$DEPLOY_MODE" = "3" ]; then
 # ==================== 纯 WebUI 模式 ====================
-cat > "$CONFIG_DIR/openclaw.json" << CONFIG_EOF
+cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << CONFIG_EOF
 {
   "models": {
     "providers": {
@@ -492,7 +505,7 @@ elif [ "$DEPLOY_MODE" = "2" ]; then
 # - 用户只需创建 1 个飞书应用（司礼监）
 # - 10 个 Agent 全部保留，在后台通过 sessions_spawn 协作
 # - 用户只看到司礼监一个 Bot，背后整个朝廷都在干活
-cat > "$CONFIG_DIR/openclaw.json" << FEISHU_EOF
+cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << FEISHU_EOF
 {
   "models": {
     "providers": {
@@ -673,7 +686,7 @@ echo -e "  ${GREEN}✓ 飞书单Bot模式配置已生成（司礼监 + sessions_
 
 else
 # ==================== Discord 多Bot模式（默认）====================
-cat > "$CONFIG_DIR/openclaw.json" << CONFIG_EOF
+cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << CONFIG_EOF
 {
   "models": {
     "providers": {
@@ -959,7 +972,7 @@ fi
 # ============================================
 # 交互式配置填写（避免用户手动编辑 JSON 出错）
 # ============================================
-CONFIG_FILE="$CONFIG_DIR/openclaw.json"
+CONFIG_FILE="$CONFIG_DIR/$CONFIG_FILE_NAME"
 
 if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
   echo ""
@@ -1114,11 +1127,11 @@ mkdir -p "$WORKSPACE/memory"
 echo -e "${YELLOW}安装 Gateway 服务...${NC}"
 if $IS_MACOS || $IN_DOCKER; then
     echo -e "  ${CYAN}↳ 跳过 systemd 服务安装${NC}"
-    echo -e "  ${CYAN}↳ 请手动启动: openclaw gateway --verbose${NC}"
+    echo -e "  ${CYAN}↳ 请手动启动: $CLI_CMD gateway --verbose${NC}"
 else
-    openclaw gateway install 2>/dev/null \
+    $CLI_CMD gateway install 2>/dev/null \
         && echo -e "  ${GREEN}✓ Gateway 服务已安装（开机自启）${NC}" \
-        || echo -e "  ${YELLOW}⚠ Gateway 服务安装跳过（配置填好后运行 openclaw gateway install）${NC}"
+        || echo -e "  ${YELLOW}⚠ Gateway 服务安装跳过（配置填好后运行 $CLI_CMD gateway install）${NC}"
     echo -e "  ${YELLOW}提示: 运行 sudo loginctl enable-linger $USER 确保 SSH 退出后服务不停${NC}"
 fi
 
@@ -1132,7 +1145,7 @@ echo ""
 echo "接下来你需要完成以下配置："
 echo ""
 echo -e "  ${YELLOW}1. 设置 API Key${NC}"
-echo "     编辑 ~/.openclaw/openclaw.json"
+echo "     编辑 $CONFIG_DIR/$CONFIG_FILE_NAME"
 echo "     把 YOUR_LLM_API_KEY 替换成你的 LLM API Key"
 echo "     获取地址：你的 LLM 服务商控制台（如 Anthropic / OpenAI / Google 等）"
 echo ""
@@ -1146,7 +1159,7 @@ echo "     b) 创建应用（如「AI朝廷-司礼监」）→ 复制 App ID 和
 echo "     c) 权限管理 → 添加 im:message 等 8 个权限（见飞书配置指南）"
 echo "     d) 开启机器人能力，添加 im.message.receive_v1 事件"
 echo "     e) 事件接收选择 WebSocket 长连接"
-echo "     f) 把 appId/appSecret 填到 openclaw.json 的 silijian 位置"
+echo "     f) 把 appId/appSecret 填到 $CONFIG_FILE_NAME 的 silijian 位置"
 echo "     g) 创建版本并发布应用，邀请 Bot 到飞书群"
 echo ""
 echo -e "     📖 详细指南: ${CYAN}https://github.com/wanikua/danghuangshang/blob/main/飞书配置指南.md${NC}"
@@ -1158,29 +1171,29 @@ echo -e "  ${YELLOW}2. 创建 Discord Bot（每个部门一个）${NC}"
 echo "     a) 访问 https://discord.com/developers/applications"
 echo "     b) 创建 Application → Bot → 复制 Token"
 echo "     c) 重复创建多个 Bot（司礼监、兵部、户部...按需）"
-echo "     d) 把每个 Token 填到 openclaw.json 的 accounts 对应位置"
+echo "     d) 把每个 Token 填到 $CONFIG_FILE_NAME 的 accounts 对应位置"
 echo "     e) 每个 Bot 都要开启 Message Content Intent"
 echo "     f) 邀请所有 Bot 到你的 Discord 服务器"
 fi
 echo ""
 echo -e "  ${YELLOW}3. 启动朝廷${NC}"
 if $IS_MACOS; then
-    echo "     openclaw gateway --verbose"
+    echo "     $CLI_CMD gateway --verbose"
 else
-    echo "     systemctl --user start openclaw-gateway"
+    echo "     systemctl --user start ${CLI_CMD}-gateway"
 fi
 echo ""
 echo -e "  ${YELLOW}4. 验证${NC}"
 if $IS_MACOS; then
-    echo "     openclaw gateway status"
+    echo "     $CLI_CMD gateway status"
 else
-    echo "     systemctl --user status openclaw-gateway"
+    echo "     systemctl --user status ${CLI_CMD}-gateway"
 fi
 echo "     然后在 Discord @你的Bot 说话试试"
 echo ""
 echo -e "  ${YELLOW}5. 添加定时任务（可选）${NC}"
-echo "     获取 Token：openclaw gateway token"
-echo "     添加 cron： openclaw cron add --name '每日简报' \\"
+echo "     获取 Token：$CLI_CMD gateway token"
+echo "     添加 cron： $CLI_CMD cron add --name '每日简报' \\"
 echo "       --agent main --cron '0 22 * * *' --tz Asia/Shanghai \\"
 echo "       --message '生成今日简报' --session isolated --token <你的token>"
 echo ""
