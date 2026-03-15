@@ -47,7 +47,7 @@ except: pass
     elif command -v node &>/dev/null; then
         JSON_FILE="$file" JSON_PATH="$path" node -e "
 try {
-    const d = require(process.env.JSON_FILE);
+    const d = JSON.parse(require('fs').readFileSync(process.env.JSON_FILE, 'utf8'));
     const v = process.env.JSON_PATH.split('.').reduce((o,k) => o && o[k], d);
     if (v !== undefined) console.log(typeof v === 'object' ? JSON.stringify(v) : v);
 } catch(e) {}

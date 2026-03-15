@@ -690,7 +690,7 @@ echo "     e) 邀请所有 Bot 到你的 Discord 服务器"
 fi
 echo ""
 echo -e "  ${YELLOW}3. 启动朝廷${NC}"
-echo "     $CLI_CMD gateway start"
+echo "     $CLI_CMD gateway --verbose"
 echo ""
 echo -e "  ${YELLOW}4. 验证${NC}"
 echo "     $CLI_CMD status"

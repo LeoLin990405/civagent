@@ -17,8 +17,14 @@ start_server() {
 }
 
 is_running() {
-  # Check if port 18795 is listening
-  ss -tlnp 2>/dev/null | grep -q ':18795 ' && return 0
+  # Check if port 18795 is listening (ss -> lsof -> curl fallback)
+  if command -v ss &>/dev/null; then
+    ss -tlnp 2>/dev/null | grep -q ':18795 ' && return 0
+  elif command -v lsof &>/dev/null; then
+    lsof -i :18795 -sTCP:LISTEN &>/dev/null && return 0
+  else
+    curl -sf http://localhost:18795/api/health &>/dev/null && return 0
+  fi
   return 1
 }
 

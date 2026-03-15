@@ -68,10 +68,12 @@ jobs:
           PROMPT_END
           )
 
-          # 拼接 prompt + diff
-          FULL_PROMPT="${REVIEW_PROMPT}
-          ${DIFF_CONTENT}
-          --- DIFF 结束 ---"
+          # 拼接 prompt + diff（使用文件避免 shell 转义问题）
+          echo "${REVIEW_PROMPT}" > /tmp/prompt.txt
+          echo "" >> /tmp/prompt.txt
+          cat /tmp/diff.txt >> /tmp/prompt.txt
+          echo "" >> /tmp/prompt.txt
+          echo "--- DIFF 结束 ---" >> /tmp/prompt.txt
 
           # 通过 OpenClaw sessions API 发送给都察院
           curl -s -X POST "${OPENCLAW_API_URL}/api/sessions/send" \
@@ -79,7 +81,7 @@ jobs:
             -H "Authorization: Bearer ${OPENCLAW_API_TOKEN}" \
             -d "$(jq -n \
               --arg agentId "duchayuan" \
-              --arg message "$FULL_PROMPT" \
+              --rawfile message /tmp/prompt.txt \
               --arg label "duchayuan-review-${{ github.sha }}" \
               '{agentId: $agentId, message: $message, label: $label}'
             )" || echo "⚠️ Failed to reach OpenClaw API. Make sure OPENCLAW_API_URL and OPENCLAW_API_TOKEN secrets are configured."
