@@ -164,15 +164,15 @@ export default function CronJobs() {
 
           return (
             <div key={job.id} className={`${bg} rounded-lg p-3 sm:p-4 transition-all ${isLoading ? 'opacity-60' : ''}`}>
-              <div className="flex items-start justify-between gap-2">
+              <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-sm font-medium">{job.name}</span>
-                    <span className={`text-[9px] px-1.5 py-0.5 rounded ${st.bg} ${st.color}`}>
+                    <span className="text-sm font-medium truncate">{job.name}</span>
+                    <span className={`text-[9px] px-1.5 py-0.5 rounded whitespace-nowrap ${st.bg} ${st.color}`}>
                       {st.label}
                     </span>
                     {!job.enabled && (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-gray-500/20 text-gray-400">已禁用</span>
+                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-gray-500/20 text-gray-400 whitespace-nowrap">已禁用</span>
                     )}
                   </div>
                   <div className={`text-[10px] sm:text-xs mt-1 ${sub}`}>
@@ -186,16 +186,16 @@ export default function CronJobs() {
                   </div>
                 </div>
 
-                {/* Actions */}
-                <div className="flex items-center gap-2 flex-shrink-0">
+                {/* Actions — 垂直排列防止小屏重叠 */}
+                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-1.5 sm:gap-2 flex-shrink-0 pt-0.5">
                   {/* Enable/Disable toggle */}
                   <button
                     onClick={() => handleToggle(job.id, job.name, job.enabled)}
                     disabled={isLoading}
-                    className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer ${
+                    className={`relative w-10 h-5 rounded-full transition-colors cursor-pointer flex-shrink-0 ${
                       job.enabled
                         ? 'bg-green-500/30 border border-green-500/50'
-                        : (theme === 'light' ? 'bg-gray-200' : 'bg-gray-700')
+                        : (theme === 'light' ? 'bg-gray-200 border border-gray-300' : 'bg-gray-700 border border-gray-600')
                     }`}
                     title={job.enabled ? '点击禁用' : '点击启用'}
                   >
@@ -208,7 +208,7 @@ export default function CronJobs() {
                   <button
                     onClick={() => handleRun(job.id, job.name)}
                     disabled={isLoading}
-                    className="px-2 py-1 text-[10px] border border-[#d4a574]/30 text-[#d4a574] rounded hover:bg-[#d4a574]/10 cursor-pointer disabled:opacity-50"
+                    className="px-2 py-1 text-[10px] whitespace-nowrap border border-[#d4a574]/30 text-[#d4a574] rounded hover:bg-[#d4a574]/10 cursor-pointer disabled:opacity-50"
                     title="手动运行"
                   >
                     {isLoading ? '...' : '▶ 运行'}

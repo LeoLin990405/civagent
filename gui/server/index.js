@@ -1058,6 +1058,21 @@ app.get('/api/config', authMiddleware, (req, res) => {
   }
 });
 
+// 重启 Gateway（杀掉主进程，Docker restart policy 会自动重启容器）
+app.post('/api/gateway/restart', authMiddleware, async (req, res) => {
+  console.log('[AUDIT] Gateway restart requested');
+  res.json({ success: true, message: 'Gateway 正在重启，容器将自动恢复...' });
+  // 延迟发送 SIGTERM 给 PID 1（gateway 主进程），让响应先发出去
+  setTimeout(() => {
+    try {
+      process.kill(1, 'SIGTERM');
+    } catch (e) {
+      console.error('[RESTART] Failed to kill PID 1:', e.message);
+      process.exit(0);
+    }
+  }, 500);
+});
+
 app.get('/api/notion', authMiddleware, (req, res) => {
   const NOTION_TOKEN = process.env.NOTION_TOKEN;
   res.json({
@@ -1692,26 +1707,28 @@ app.post('/api/command', authMiddleware, async (req, res) => {
   // SEC-34: 审计日志
   console.log(`[AUDIT] /api/command botId=${usedBot} channel=${channel || 'none'} msgLen=${message.length}`);
   
-  // 策略1: 如果提供了 Discord channel ID 且有 Discord token，走 Discord REST API（原有逻辑）
+  // 策略1: 如果提供了 Discord channel ID 且有 Discord token，走 Discord REST API
+  // 始终用司礼监的 token 发送（代发），消息中已包含 @部门名 前缀
   if (channel && /^\d{17,20}$/.test(channel)) {
     try {
       const config = getOpenclawConfig() || {};
       const accounts = config.channels?.discord?.accounts || {};
-      let account = safeBotId ? accounts[safeBotId] : null;
-      if (!account?.token) {
+      // 优先用司礼监 token（代发旨意），而非目标部门自己发
+      let senderAccount = accounts['silijian'] || accounts['main'];
+      if (!senderAccount?.token) {
         const firstKey = Object.keys(accounts)[0];
-        account = firstKey ? accounts[firstKey] : null;
+        senderAccount = firstKey ? accounts[firstKey] : null;
       }
-      
-      if (account?.token) {
+
+      if (senderAccount?.token) {
         const r = await fetch(`https://discord.com/api/v10/channels/${channel}/messages`, {
           method: 'POST',
-          headers: { 'Authorization': `Bot ${account.token}`, 'Content-Type': 'application/json' },
+          headers: { 'Authorization': `Bot ${senderAccount.token}`, 'Content-Type': 'application/json' },
           body: JSON.stringify({ content: message })
         });
         if (r.ok) {
           const data = await r.json();
-          return res.json({ success: true, messageId: data.id, sentAs: usedBot, method: 'discord' });
+          return res.json({ success: true, messageId: data.id, sentAs: 'silijian', method: 'discord' });
         }
         // Discord 失败则 fallthrough 到 gateway
         console.warn(`[COMMAND] Discord API failed (${r.status}), falling back to gateway wake`);

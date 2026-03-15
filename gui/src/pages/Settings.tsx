@@ -23,6 +23,7 @@ export default function Settings() {
   const [saved, setSaved] = useState(false)
   const [gatewayConfig, setGatewayConfig] = useState<Record<string, unknown> | null>(null)
   const [configLoading, setConfigLoading] = useState(true)
+  const [restarting, setRestarting] = useState(false)
   const { theme: currentTheme, setTheme } = useTheme()
   const bg = currentTheme === 'light' ? 'bg-white border border-gray-200' : 'bg-[#1a1a2e]'
   const sub = currentTheme === 'light' ? 'text-gray-500' : 'text-[#a3a3a3]'
@@ -147,6 +148,33 @@ export default function Settings() {
           className={`px-6 py-3 border border-[#d4a574]/30 ${sub} rounded hover:border-[#d4a574] cursor-pointer transition-all`}>
           重置
         </button>
+      </div>
+
+      {/* Gateway 管理 */}
+      <div className={`${bg} p-4 sm:p-5 rounded-lg`}>
+        <h3 className={`text-xs uppercase tracking-wider mb-3 ${sub}`}>Gateway 管理</h3>
+        <button
+          onClick={async () => {
+            if (!confirm('确认重启 Gateway？所有连接将短暂中断。')) return
+            setRestarting(true)
+            try {
+              await fetch('/api/gateway/restart', {
+                method: 'POST',
+                headers: { Authorization: `Bearer ${getAuthToken()}` }
+              })
+            } catch { /* 重启时连接会断开，忽略错误 */ }
+            setTimeout(() => setRestarting(false), 10000)
+          }}
+          disabled={restarting}
+          className={`w-full py-3 border rounded cursor-pointer transition-all ${
+            restarting
+              ? 'border-yellow-500/50 text-yellow-400 bg-yellow-500/10 animate-pulse'
+              : 'border-red-500/30 text-red-400 hover:bg-red-500/10 hover:border-red-500/50'
+          }`}
+        >
+          {restarting ? '⏳ Gateway 重启中...' : '🔄 重启 Gateway'}
+        </button>
+        <p className={`text-xs mt-2 ${sub}`}>重启后容器会自动恢复，页面将在几秒后重新连接</p>
       </div>
 
       {/* Gateway 配置（只读） */}
