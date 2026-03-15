@@ -37,7 +37,13 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
   <img src="./images/flow-architecture.png" alt="系统架构流程图" width="80%" />
 </p>
 
+<p align="center">
+  <img src="./images/discord-architecture.png" alt="Discord 朝廷架构图" width="80%" />
+</p>
+
 ---
+
+**AI 朝廷**是一个开箱即用的多 Agent 协作系统。你是皇帝，AI 是你的大臣——在 Discord 或飞书 @某个 Agent，大臣们就会立刻执行。司礼监接旨、内阁优化 Prompt、六部各司其职、都察院自动审查代码。**古代治国的智慧，就是管理 AI 团队的最佳实践。**
 
 ## 目录
 
@@ -46,7 +52,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 - 🎬 [效果展示](#效果展示) — Discord / 飞书 对话示例
 - 📝 [翰林院](#翰林院) — 5 Agent 协作写小说（可选）
 - ⚙️ [核心能力](#核心能力) — 协作、记忆、60+ Skill、Cron、沙箱
-- 📦 [更多](#更多) — GUI 管理 · 飞书 · Notion · 诊断 · FAQ · 企业版
+- 🆚 [为什么选这套方案？](#为什么选这套方案) — 与 ChatGPT / AutoGPT / CrewAI 对比
+- 📦 [更多](#更多) — GUI · 飞书 · Notion · 诊断 · FAQ · 企业版 · 菠萝王朝
 
 ---
 
@@ -218,6 +225,19 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 | **沙箱隔离** | Docker 容器隔离，Agent 代码执行互不干扰 |
 | **多平台** | Discord / 飞书 / Slack / Telegram / WebUI |
 
+### 60+ 内置 Skill
+
+| 类别 | Skill |
+|------|-------|
+| 开发 | GitHub（Issue/PR/CI）、Coding Agent |
+| 文档 | Notion（数据库/页面/自动汇报） |
+| 信息 | 浏览器自动化、Web 搜索、Web 抓取 |
+| 自动化 | Cron 定时任务、心跳自检 |
+| 媒体 | TTS 语音、截图、视频帧提取 |
+| 运维 | tmux 远程控制、Shell 命令执行 |
+| 通信 | Discord、Slack、飞书、Telegram… |
+| 扩展 | [OpenClaw Hub](https://github.com/openclaw/openclaw) 社区 Skill |
+
 </details>
 
 ---
@@ -231,7 +251,15 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 <p align="center">
   <img src="./images/gui-court.png" alt="朝堂总览" width="90%" />
+  <br/><em>朝堂总览 — 御座、六部、诸院，在线状态一目了然</em>
 </p>
+
+<p align="center">
+  <img src="./images/gui-sessions.png" alt="会话管理" width="90%" />
+  <br/><em>会话管理 — Token 消耗、消息统计实时追踪</em>
+</p>
+
+功能：仪表盘 · 朝堂对话 · 会话管理 · Cron 可视化 · Token 统计 · 系统健康监控
 
 ```bash
 cd danghuangshang/gui && npm install && npm run build
@@ -304,7 +332,9 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 | 部署 | 无需 | Docker + 编码 | ✅ 一键脚本 |
 | 24h 在线 | ❌ | ✅ | ✅ Cron + 心跳 |
 
-**核心优势：不是框架，是成品。** 跑个脚本就能用。
+**核心优势：不是框架，是成品。** 跑个脚本就能用，在 Discord 里 @谁谁回复。
+
+> 📖 [架构详解](./docs/architecture.md) | [与 ChatGPT/AutoGPT/CrewAI 对比](./docs/architecture.md)
 
 </details>
 
