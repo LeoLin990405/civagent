@@ -6,7 +6,7 @@
 > - **2025-02-20**：小红书首发教程
 > - **2025-02-22**：GitHub 完整教程发布
 >
-> **📋 已知侵权**：[Edict](https://github.com/cft0808/edict) 项目结构与本项目高度相似，未注明引用任何出处。经多次沟通，作者拒绝标注原创出处。我们保留追究的权利。
+> **📋 已知侵权**：[Edict](https://github.com/cft0808/edict) 项目结构与本项目高度相似，未注明引用任何出处。经多次沟通，作者拒绝标注原创出处。
 >
 > 🔗 [原创证据链 & 维权文章](./docs/originality.md)
 
@@ -58,7 +58,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 ---
 
-**AI 朝廷**是一个开箱即用的多 Agent 协作系统。你是皇帝，AI 是你的大臣——在 Discord 或飞书 @某个 Agent，大臣们就会立刻执行。司礼监接旨、内阁优化 Prompt、六部各司其职、都察院自动审查代码。**古代治国的智慧，就是管理 AI 团队的最佳实践。**
+**AI 朝廷**是一个开箱即用的多 Agent 协作系统。你是皇帝，AI 是你的大臣。在 Discord 或飞书 @某个 Agent，大臣们就会立刻执行。司礼监接旨、内阁优化 Prompt、六部各司其职、都察院自动审查代码。**管理 AI 团队的高效模版。**
 
 ## 目录
 
@@ -411,15 +411,13 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 | <a href="https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d"><img src="./images/avatar-xiaohongshu.png" width="150" style="border-radius:50%"/></a> | <img src="./images/qr-wechat-official.jpg" width="150"/> | <img src="./images/qr-wechat-group.png" width="150"/> |
 
 <details>
-<summary>相关链接 · 安全须知 · 免责声明 · 维权声明</summary>
+<summary>相关链接 · 安全须知 · 免责声明</summary>
 
 **相关链接**
 - 🏢 [Become CEO — 企业版](https://github.com/wanikua/become-ceo) · 🔧 [OpenClaw 框架](https://github.com/openclaw/openclaw) · 📖 [OpenClaw 文档](https://docs.openclaw.ai) · 📚 [完整文档](./docs/README.md)
 - 🎁 [MiniMax Coding Plan](https://platform.minimaxi.com/subscribe/coding-plan?code=CIeSxc2iq2&source=link) — 88折优惠
 
 **安全须知** — 🔴 用云服务器，不要个人电脑 · workspace 设专用目录 · API Key 不提交公开仓库 · [详见](./docs/security.md)
-
-**维权声明** — 本项目 2026年2月22日首发（[小红书](https://www.xiaohongshu.com/discovery/item/6998638f000000000d0092fe)更早于2月20日），是「AI × 古代官制」原创。[证据链](https://github.com/cft0808/edict/issues/55) | [维权文章](https://mp.weixin.qq.com/s/erVkoANrpZQFawMCNn6p9g)
 
 **免责声明** — 按"原样"提供，AI 生成内容仅供参考，敏感操作请人工复核。[详见](./docs/security.md)
 
