@@ -168,7 +168,7 @@ export default function Dashboard({ data, onNavigate }: Props) {
   useEffect(() => {
     const h = { headers: { Authorization: `Bearer ${getAuthToken()}` } }
     fetch('/api/weather/cities', h).then(r => r.json()).then(d => setWeather(d.cities || [])).catch(() => {})
-    fetch('/api/location/track?role=emperor', h).then(r => r.json()).then(d => setLocations(d.locations || {})).catch(() => {})
+    // Only fetch /api/location/all (which includes all roles); skip /api/location/track to avoid redundant request and state overwrite
     fetch('/api/location/all', h).then(r => r.json()).then(d => setLocations(d.locations || {})).catch(() => {})
     fetch('/api/dashboard/summary', h).then(r => r.json()).then(d => setSummary(d)).catch(() => {})
   }, [])

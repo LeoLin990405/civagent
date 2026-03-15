@@ -98,16 +98,17 @@ export default function SystemHealth({ data }: Props) {
     return () => { if (timerRef.current) clearInterval(timerRef.current) }
   }, [])
 
-  // Format metrics for chart
+  // Format metrics for chart — normalize by CPU cores like Dashboard does
+  const cpuCores = data.cpuCores || 1
   const chartData = metrics.map(m => ({
     time: new Date(m.timestamp).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit', hour12: false }),
-    cpu1m: +(Number(m.cpu1m) * 100).toFixed(1),
-    cpu5m: +(Number(m.cpu5m) * 100).toFixed(1),
+    cpu1m: +((Number(m.cpu1m) / cpuCores) * 100).toFixed(1),
+    cpu5m: +((Number(m.cpu5m) / cpuCores) * 100).toFixed(1),
     memPct: +Number(m.memUsedPct).toFixed(1),
   }))
 
   const latestMetric = metrics.length > 0 ? metrics[metrics.length - 1] : null
-  const cpuPct = Number(latestMetric ? latestMetric.cpu1m : (data.cpuLoad?.[0] ?? 0)) * 100
+  const cpuPct = (Number(latestMetric ? latestMetric.cpu1m : (data.cpuLoad?.[0] ?? 0)) / cpuCores) * 100
   const memPct = Number(latestMetric?.memUsedPct ?? 0)
   const memGB = Number(latestMetric?.memUsedGB ?? 0)
 

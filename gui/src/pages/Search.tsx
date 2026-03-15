@@ -29,25 +29,23 @@ export default function Search() {
     const allResults: SearchResult[] = []
 
     try {
-      // 搜索日志
+      // 搜索日志 — use /api/logs/list with server-side search parameter
       if (searchType === 'all' || searchType === 'logs') {
         try {
-          const logsRes = await fetch('/api/logs?limit=200', {
+          const logsRes = await fetch(`/api/logs/list?limit=200&search=${encodeURIComponent(query)}`, {
             headers: { 'Authorization': `Bearer ${getAuthToken()}` }
           })
           const logsData = await logsRes.json()
           const logs = logsData.logs || []
           
           for (const log of logs) {
-            if (log.message?.toLowerCase().includes(query.toLowerCase())) {
-              allResults.push({
-                type: 'log',
-                id: String(log.id),
-                content: log.message,
-                timestamp: log.timestamp,
-                source: log.level
-              })
-            }
+            allResults.push({
+              type: 'log',
+              id: String(log.id),
+              content: log.message,
+              timestamp: log.timestamp,
+              source: log.level
+            })
           }
         } catch (e) { /* ignore */ }
       }

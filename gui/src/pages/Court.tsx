@@ -128,6 +128,8 @@ export default function Court() {
     fetch('/api/bots', { headers: { Authorization: `Bearer ${getAuthToken()}` } })
       .then(r => r.json()).then(d => setBots(d.bots || [])).catch(() => {})
     fetchChannelMessages()
+    // Only set up polling interval if a court channel is configured
+    if (!CONFIGURED_COURT_CHANNEL) return
     const interval = setInterval(fetchChannelMessages, 15000)
     return () => clearInterval(interval)
   }, [])

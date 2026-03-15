@@ -756,8 +756,10 @@ app.get('/api/sessions/:sessionId/timeline', authMiddleware, (req, res) => {
     if (cached) return res.json(cached);
     
     const parts = sessionId.split(':');
-    const agentId = sanitizeAgentId(parts[1]) || 'main';
-    if (!sanitizeAgentId(agentId)) return res.status(400).json({ error: 'Invalid agent ID', timeline: [] });
+    // Only fallback to 'main' if no agent part is provided; if provided but invalid, reject
+    const rawAgentId = parts[1];
+    const agentId = rawAgentId ? sanitizeAgentId(rawAgentId) : 'main';
+    if (!agentId) return res.status(400).json({ error: 'Invalid agent ID', timeline: [] });
     const sessionKey = parts.slice(2).join(':');
     
     const sessionsPath = join(AGENTS_DIR, agentId, 'sessions', 'sessions.json');
@@ -766,6 +768,12 @@ app.get('/api/sessions/:sessionId/timeline', authMiddleware, (req, res) => {
     const sessionsData = JSON.parse(readFileSync(sessionsPath, 'utf-8'));
     const session = sessionsData[sessionKey];
     if (!session?.sessionFile || !existsSync(session.sessionFile)) return res.json({ timeline: [] });
+    
+    // Guard against oversized files to prevent OOM
+    const fileSize = statSync(session.sessionFile).size;
+    if (fileSize > 50 * 1024 * 1024) {
+      return res.status(413).json({ error: `Session file too large (${(fileSize / 1024 / 1024).toFixed(1)}MB)`, timeline: [] });
+    }
     
     const content = readFileSync(session.sessionFile, 'utf-8');
     const lines = content.split('\n').filter(l => l.trim());
@@ -805,8 +813,9 @@ app.get('/api/sessions/:sessionId/messages', authMiddleware, (req, res) => {
     const allMessages = [];
     
     const parts = sessionId.split(':');
-    const agentId = sanitizeAgentId(parts[1]) || 'main';
-    if (!sanitizeAgentId(agentId)) return res.status(400).json({ error: 'Invalid agent ID', messages: [], total: 0, page: 1, totalPages: 0 });
+    const rawAgentId = parts[1];
+    const agentId = rawAgentId ? sanitizeAgentId(rawAgentId) : 'main';
+    if (!agentId) return res.status(400).json({ error: 'Invalid agent ID', messages: [], total: 0, page: 1, totalPages: 0 });
     const sessionKey = parts.slice(2).join(':');
     
     const sessionsPath = join(AGENTS_DIR, agentId, 'sessions', 'sessions.json');
@@ -877,8 +886,9 @@ app.get('/api/sessions/:sessionId/summary', authMiddleware, (req, res) => {
   try {
     const { sessionId } = req.params;
     const parts = sessionId.split(':');
-    const agentId = sanitizeAgentId(parts[1]) || 'main';
-    if (!sanitizeAgentId(agentId)) return res.status(400).json({ error: 'Invalid agent ID' });
+    const rawAgentId = parts[1];
+    const agentId = rawAgentId ? sanitizeAgentId(rawAgentId) : 'main';
+    if (!agentId) return res.status(400).json({ error: 'Invalid agent ID' });
     const sessionKey = parts.slice(2).join(':');
     
     const sessionsPath = join(AGENTS_DIR, agentId, 'sessions', 'sessions.json');
@@ -887,6 +897,12 @@ app.get('/api/sessions/:sessionId/summary', authMiddleware, (req, res) => {
     const sessionsData = JSON.parse(readFileSync(sessionsPath, 'utf-8'));
     const session = sessionsData[sessionKey];
     if (!session?.sessionFile || !existsSync(session.sessionFile)) return res.json({ error: 'Session file not found' });
+    
+    // Guard against oversized files to prevent OOM
+    const fileSize = statSync(session.sessionFile).size;
+    if (fileSize > 50 * 1024 * 1024) {
+      return res.status(413).json({ error: `Session file too large (${(fileSize / 1024 / 1024).toFixed(1)}MB), max 50MB` });
+    }
     
     const content = readFileSync(session.sessionFile, 'utf-8');
     const lines = content.split('\n').filter(l => l.trim());
@@ -1341,7 +1357,7 @@ app.get('/api/cron/jobs', authMiddleware, async (req, res) => {
 let _gatewayLogsCache = { data: null, ts: 0 };
 const GATEWAY_LOGS_CACHE_TTL = 5000; // 5 seconds
 
-function readGatewayLogs(opts = {}) {
+async function readGatewayLogs(opts = {}) {
   const { level, search, limit = 200, since } = opts;
   // Use cached raw logs if within TTL (avoid re-reading files/journalctl every request)
   let logs;
@@ -1352,14 +1368,14 @@ function readGatewayLogs(opts = {}) {
     logs = [];
     try {
       // Try journalctl for gateway service logs (openclaw or clawdbot)
-      const { execSync } = require('child_process');
       const svcName = CLI_CMD === 'openclaw' ? 'openclaw-gateway' : 'clawdbot-gateway';
       let cmd = `journalctl -u ${svcName} --no-pager -n 200 --output=short-iso 2>/dev/null`;
       if (since) cmd += ` --since="${since}"`;
       
       let output = '';
       try {
-        output = execSync(cmd, { encoding: 'utf-8', timeout: 5000 });
+        const result = await execAsync(cmd, { encoding: 'utf-8', timeout: 5000 });
+        output = result.stdout;
       } catch {
         // Fallback: read from log files
         const logPaths = [
@@ -1426,10 +1442,10 @@ function readGatewayLogs(opts = {}) {
   return filtered.slice(0, parseInt(limit) || 200);
 }
 
-app.get('/api/logs/list', authMiddleware, (req, res) => {
+app.get('/api/logs/list', authMiddleware, async (req, res) => {
   try {
     const { level, search, limit = 200, since } = req.query;
-    const logs = readGatewayLogs({ level, search, limit: parseInt(limit), since });
+    const logs = await readGatewayLogs({ level, search, limit: parseInt(limit), since });
     res.json({ logs, total: logs.length });
   } catch (err) {
     res.status(500).json({ error: err.message, logs: [], total: 0 });
@@ -1467,10 +1483,10 @@ function pushLogEvent(log) {
 
 // Poll for new logs every 10 seconds and push to SSE clients
 let lastLogCheck = Date.now();
-setInterval(() => {
+setInterval(async () => {
   if (sseClients.size === 0) return;
   try {
-    const logs = readGatewayLogs({ since: new Date(lastLogCheck).toISOString(), limit: 20 });
+    const logs = await readGatewayLogs({ since: new Date(lastLogCheck).toISOString(), limit: 20 });
     for (const log of logs) {
       pushLogEvent(log);
     }
@@ -1586,8 +1602,7 @@ app.get('/api/channel-messages', authMiddleware, async (req, res) => {
     
     if (r.ok) {
       const data = await r.json();
-      // Map bot IDs to display names
-      const accounts = config.channels?.discord?.accounts || {};
+      // Map bot IDs to display names (reuse `accounts` from above)
       const botIdToName = {};
       for (const [agentId, acc] of Object.entries(accounts)) {
         if (acc.appId) botIdToName[acc.appId] = AGENT_DEPT_MAP[agentId] || acc.displayName || agentId;

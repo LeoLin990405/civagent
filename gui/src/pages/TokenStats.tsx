@@ -18,12 +18,10 @@ function fmt(n: number): string {
 }
 
 interface DeptTokens { department: string; tokens: number; cost: string }
-interface TrendPoint { date: string; tokens: number }
 
 export default function TokenStats({ data }: Props) {
   const { theme } = useTheme()
   const [deptTokens, setDeptTokens] = useState<DeptTokens[]>([])
-  const [, setTrend] = useState<TrendPoint[]>([])
   const [tokenPrice, setTokenPrice] = useState(0.3)
   const [totalApiTokens, setTotalApiTokens] = useState(0)
   const [loading, setLoading] = useState(true)
@@ -35,7 +33,6 @@ export default function TokenStats({ data }: Props) {
       .then(r => r.json())
       .then(d => {
         setDeptTokens(d.byDepartment || [])
-        setTrend(d.trend || [])
         setTokenPrice(d.tokenPrice || 0.3)
         setTotalApiTokens(d.totalTokens || 0)
         setLoading(false)

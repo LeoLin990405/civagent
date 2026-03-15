@@ -1,10 +1,23 @@
 import { useState, useEffect, useCallback, useRef } from "react"
 import type { SystemStatus } from "../types"
 
-const REFRESH_INTERVAL = 30000
+const DEFAULT_REFRESH_INTERVAL = 30000
 
 function getAuthToken(): string {
   return localStorage.getItem('boluo_auth_token') || ''
+}
+
+function getRefreshInterval(): number {
+  try {
+    const raw = localStorage.getItem('boluo_settings')
+    if (raw) {
+      const settings = JSON.parse(raw)
+      if (typeof settings.refreshInterval === 'number' && settings.refreshInterval >= 5000) {
+        return settings.refreshInterval
+      }
+    }
+  } catch {}
+  return DEFAULT_REFRESH_INTERVAL
 }
 
 export function useStatus() {
@@ -47,7 +60,7 @@ export function useStatus() {
 
   useEffect(() => {
     fetchStatus()
-    const interval = setInterval(fetchStatus, REFRESH_INTERVAL)
+    const interval = setInterval(fetchStatus, getRefreshInterval())
     return () => {
       clearInterval(interval)
       abortRef.current?.abort()
