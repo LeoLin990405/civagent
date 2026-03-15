@@ -3,7 +3,7 @@ import { useState } from "react"
 const BRAND_NAME = import.meta.env.VITE_BRAND_NAME || '菠萝王朝'
 
 interface LoginProps {
-  onLogin: (token: string) => void
+  onLogin: () => void
 }
 
 export default function Login({ onLogin }: LoginProps) {
@@ -28,7 +28,7 @@ export default function Login({ onLogin }: LoginProps) {
       
       if (res.ok) {
         localStorage.setItem('boluo_auth_token', token)
-        onLogin(token)
+        onLogin()
       } else {
         setError('令牌验证失败，请检查后重试')
       }

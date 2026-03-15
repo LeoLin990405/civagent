@@ -54,10 +54,11 @@ function loadColor(pct: number): string {
   if (pct >= 50) return 'text-yellow-400'
   return 'text-green-400'
 }
-function loadBg(pct: number): string {
-  if (pct >= 80) return 'bg-red-500/20'
-  if (pct >= 50) return 'bg-yellow-500/20'
-  return 'bg-green-500/20'
+/** Solid bar color for progress indicators */
+function loadBarColor(pct: number): string {
+  if (pct >= 80) return 'bg-red-500'
+  if (pct >= 50) return 'bg-yellow-500'
+  return 'bg-green-500'
 }
 
 function Clock({ tz, label, emoji }: { tz: string; label: string; emoji: string }) {
@@ -275,14 +276,14 @@ export default function Dashboard({ data, onNavigate }: Props) {
           <div className={`text-[10px] ${sub}`}>📊 CPU</div>
           <div className={`font-mono text-sm mt-1 ${loadColor(cpuPct)}`}>{cpuPct.toFixed(1)}%</div>
           <div className={`h-1 rounded-full mt-1.5 ${theme === 'light' ? 'bg-gray-200' : 'bg-[#0d0d1a]'}`}>
-            <div className={`h-full rounded-full ${loadBg(cpuPct).replace('/20', '')}`} style={{ width: `${Math.min(cpuPct, 100)}%` }} />
+            <div className={`h-full rounded-full ${loadBarColor(cpuPct)}`} style={{ width: `${Math.min(cpuPct, 100)}%` }} />
           </div>
         </div>
         <div className={`${bg} rounded-lg p-3 text-center`}>
           <div className={`text-[10px] ${sub}`}>💾 内存</div>
           <div className={`font-mono text-sm mt-1 ${loadColor(memPct)}`}>{memPct.toFixed(0)}%</div>
           <div className={`h-1 rounded-full mt-1.5 ${theme === 'light' ? 'bg-gray-200' : 'bg-[#0d0d1a]'}`}>
-            <div className={`h-full rounded-full ${loadBg(memPct).replace('/20', '')}`} style={{ width: `${Math.min(memPct, 100)}%` }} />
+            <div className={`h-full rounded-full ${loadBarColor(memPct)}`} style={{ width: `${Math.min(memPct, 100)}%` }} />
           </div>
         </div>
       </div>
