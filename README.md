@@ -3,7 +3,7 @@
 > **⚠️ 维权声明 / Originality Notice**
 >
 > 本项目是「三省六部 × OpenClaw」架构的 **首发作品**，架构设计、角色功能映射、目录结构均为本项目原创。时间线：
-> - **2025-02-20**：小红书首发教程 https://www.xiaohongshu.com/explore/6998638f000000000d0092fe?source=webshare&xhsshare=pc_web&xsec_token=AB_ow3QZT1mG6YOfslMKHumgqbFc0YKFt-cMXPPkQxhhs=&xsec_source=pc_share
+> - **2025-02-20**：小红书首发教程
 > - **2025-02-22**：GitHub 完整教程发布
 >
 > **📋 已知侵权**：[Edict](https://github.com/cft0808/edict) 项目结构与本项目高度相似，未注明引用任何出处。经多次沟通，作者拒绝标注原创出处。我们保留追究的权利。
