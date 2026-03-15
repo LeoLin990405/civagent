@@ -16,7 +16,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/架构灵感-三省六部制-gold?style=for-the-badge" />
   <img src="https://img.shields.io/badge/框架-OpenClaw-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Agent数-12+-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Agent数-14-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/OpenClaw_Skill生态-60+-orange?style=for-the-badge" />
   <img src="https://img.shields.io/badge/部署-5分钟-red?style=for-the-badge" />
 </p>
@@ -869,6 +869,6 @@ npm update -g openclaw && systemctl --user restart openclaw-gateway
 
 ---
 
-v3.5.1 | MIT License | [User Agreement](./docs/user-agreement.md) | [Privacy Policy](./docs/privacy-policy.md)
+v3.5.2 | MIT License | [User Agreement](./docs/user-agreement.md) | [Privacy Policy](./docs/privacy-policy.md)
 
 > 📜 Licensed under MIT. Derivative works please credit: [danghuangshang](https://github.com/wanikua/danghuangshang) by [@wanikua](https://github.com/wanikua)

@@ -30,7 +30,11 @@ echo ""
 echo "  1) 单 Agent（司礼监）— 最简模式，一个 Bot 管所有事"
 echo "  2) 全六部（10 Agent）— 司礼监调度，各部门独立执行"
 echo ""
+if [ -t 0 ]; then
 read -p "请选择 [1/2，默认 1]: " MODE
+else
+  MODE=""
+fi
 MODE=${MODE:-1}
 
 # ---- 步骤 2：选择平台 ----
@@ -41,7 +45,11 @@ echo "  1) Discord（海外推荐）"
 echo "  2) 飞书（国内推荐）"
 echo "  3) 纯 WebUI（不需要 Bot）"
 echo ""
+if [ -t 0 ]; then
 read -p "请选择 [1/2/3，默认 1]: " PLATFORM
+else
+  PLATFORM=""
+fi
 PLATFORM=${PLATFORM:-1}
 
 # ---- 步骤 3：配置模型 ----
@@ -54,9 +62,21 @@ echo "  - OpenAI: https://platform.openai.com"
 echo "  - DeepSeek: https://platform.deepseek.com"
 echo "  - OpenRouter: https://openrouter.ai"
 echo ""
+if [ -t 0 ]; then
 read -p "API Base URL（如 https://api.deepseek.com/v1）: " API_URL
+else
+  API_URL=""
+fi
+if [ -t 0 ]; then
 read -p "API Key: " API_KEY
+else
+  API_KEY=""
+fi
+if [ -t 0 ]; then
 read -p "模型 ID（如 deepseek-chat、gpt-4o、claude-sonnet-4-20250514）: " MODEL_ID
+else
+  MODEL_ID=""
+fi
 
 if [ -z "$API_URL" ] || [ -z "$API_KEY" ] || [ -z "$MODEL_ID" ]; then
     echo -e "${RED}✗ API 配置不能为空${NC}"
@@ -83,7 +103,11 @@ if [ "$PLATFORM" = "1" ]; then
     echo "  2. 开启 Message Content Intent + Server Members Intent"
     echo "  3. 邀请 Bot 到你的服务器"
     echo ""
+    if [ -t 0 ]; then
     read -p "Discord Bot Token: " BOT_TOKEN
+    else
+      BOT_TOKEN=""
+    fi
     if [ -z "$BOT_TOKEN" ]; then
         echo -e "${RED}✗ Bot Token 不能为空${NC}"
         exit 1
@@ -98,8 +122,16 @@ elif [ "$PLATFORM" = "2" ]; then
     echo "  2. 添加「机器人」能力"
     echo "  3. 事件接收方式选择「WebSocket 长连接」（无需配置回调 URL）"
     echo ""
+    if [ -t 0 ]; then
     read -p "App ID: " APP_ID
+    else
+      APP_ID=""
+    fi
+    if [ -t 0 ]; then
     read -p "App Secret: " APP_SECRET
+    else
+      APP_SECRET=""
+    fi
     if [ -z "$APP_ID" ] || [ -z "$APP_SECRET" ]; then
         echo -e "${RED}✗ App ID 和 App Secret 不能为空${NC}"
         exit 1
@@ -265,7 +297,11 @@ echo -e "${GREEN}✓ SOUL.md 已创建${NC}"
 fi
 
 if [ ! -f "$WORKSPACE/USER.md" ]; then
+    if [ -t 0 ]; then
     read -p "你希望 AI 怎么称呼你？（默认：陛下）: " NICKNAME
+    else
+      NICKNAME=""
+    fi
     NICKNAME=${NICKNAME:-陛下}
     cat > "$WORKSPACE/USER.md" << EOF
 # USER.md - 关于你

@@ -536,6 +536,11 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       "enabled": true,
       "groupPolicy": "open",
       "allowBots": true,
+      "guilds": {
+        "YOUR_DISCORD_SERVER_ID": {
+          "requireMention": true
+        }
+      },
       "accounts": {
         "silijian": {
           "name": "司礼监",

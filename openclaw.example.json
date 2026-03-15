@@ -196,61 +196,51 @@
       "accounts": {
         "silijian": {
           "name": "司礼监",
-          "applicationId": "YOUR_SILIJIAN_APPLICATION_ID",
           "token": "YOUR_SILIJIAN_BOT_TOKEN",
           "groupPolicy": "open"
         },
         "neige": {
           "name": "内阁",
-          "applicationId": "YOUR_NEIGE_APPLICATION_ID",
           "token": "YOUR_NEIGE_BOT_TOKEN",
           "groupPolicy": "open"
         },
         "duchayuan": {
           "name": "都察院",
-          "applicationId": "YOUR_DUCHAYUAN_APPLICATION_ID",
           "token": "YOUR_DUCHAYUAN_BOT_TOKEN",
           "groupPolicy": "open"
         },
         "bingbu": {
           "name": "兵部",
-          "applicationId": "YOUR_BINGBU_APPLICATION_ID",
           "token": "YOUR_BINGBU_BOT_TOKEN",
           "groupPolicy": "open"
         },
         "hubu": {
           "name": "户部",
-          "applicationId": "YOUR_HUBU_APPLICATION_ID",
           "token": "YOUR_HUBU_BOT_TOKEN",
           "groupPolicy": "open"
         },
         "libu": {
           "name": "礼部",
-          "applicationId": "YOUR_LIBU_APPLICATION_ID",
           "token": "YOUR_LIBU_BOT_TOKEN",
           "groupPolicy": "open"
         },
         "gongbu": {
           "name": "工部",
-          "applicationId": "YOUR_GONGBU_APPLICATION_ID",
           "token": "YOUR_GONGBU_BOT_TOKEN",
           "groupPolicy": "open"
         },
         "libu2": {
           "name": "吏部",
-          "applicationId": "YOUR_LIBU2_APPLICATION_ID",
           "token": "YOUR_LIBU2_BOT_TOKEN",
           "groupPolicy": "open"
         },
         "xingbu": {
           "name": "刑部",
-          "applicationId": "YOUR_XINGBU_APPLICATION_ID",
           "token": "YOUR_XINGBU_BOT_TOKEN",
           "groupPolicy": "open"
         },
         "hanlinyuan": {
           "name": "翰林院",
-          "applicationId": "YOUR_HANLINYUAN_APPLICATION_ID",
           "token": "YOUR_HANLINYUAN_BOT_TOKEN",
           "groupPolicy": "open"
         }

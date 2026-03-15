@@ -18,7 +18,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Inspired_By-Six_Ministries_System-gold?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Framework-OpenClaw-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Agents-12+-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Agents-14-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/OpenClaw_Skill_Ecosystem-60+-orange?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Deploy-5_min-red?style=for-the-badge" />
 </p>
@@ -506,6 +506,6 @@ This project is provided "as is" without any warranties. AI-generated content is
 
 ---
 
-v3.5.1 | MIT License
+v3.5.2 | MIT License
 
 > 📜 Licensed under MIT. Derivative works please credit: [danghuangshang](https://github.com/wanikua/danghuangshang) by [@wanikua](https://github.com/wanikua)

@@ -1,4 +1,9 @@
 #!/bin/bash
+# Escape special sed characters in user input to prevent injection
+sed_escape() {
+  printf '%s' "$1" | sed 's/[\\|&\/]/\\&/g'
+}
+
 # ============================================
 # AI 朝廷一键部署脚本
 # 支持: Ubuntu/Debian, CentOS/RHEL, Alpine, macOS
@@ -823,6 +828,11 @@ cat > "$CONFIG_DIR/openclaw.json" << CONFIG_EOF
       "enabled": true,
       "groupPolicy": "open",
       "allowBots": true,
+      "guilds": {
+        "YOUR_DISCORD_SERVER_ID": {
+          "requireMention": true
+        }
+      },
       "accounts": {
         "silijian": {
           "name": "司礼监",
@@ -958,7 +968,8 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
   echo -e "  （支持 Anthropic / OpenAI / 其他 OpenAI 兼容 API）"
   read -rp "  请粘贴你的 API Key: " USER_API_KEY
   if [ -n "$USER_API_KEY" ]; then
-    sed -i "s|YOUR_LLM_API_KEY|$USER_API_KEY|g" "$CONFIG_FILE"
+    SAFE_VAL=$(sed_escape "$USER_API_KEY")
+    sed -i "s|YOUR_LLM_API_KEY|$SAFE_VAL|g" "$CONFIG_FILE"
     echo -e "  ${GREEN}✓ API Key 已填入${NC}"
   else
     echo -e "  ${YELLOW}↳ 跳过，稍后请手动替换 YOUR_LLM_API_KEY${NC}"
@@ -972,7 +983,8 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
   echo -e "  其他服务商请填写对应的 API 地址"
   read -rp "  请粘贴 API Base URL（回车默认 Anthropic）: " USER_BASE_URL
   if [ -n "$USER_BASE_URL" ]; then
-    sed -i "s|https://your-llm-provider-api-url|$USER_BASE_URL|g" "$CONFIG_FILE"
+    SAFE_VAL=$(sed_escape "$USER_BASE_URL")
+    sed -i "s|https://your-llm-provider-api-url|$SAFE_VAL|g" "$CONFIG_FILE"
     echo -e "  ${GREEN}✓ API Base URL 已更新${NC}"
   else
     sed -i "s|https://your-llm-provider-api-url|https://api.anthropic.com/v1|g" "$CONFIG_FILE"
@@ -982,10 +994,10 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
 
   # ---- API 类型 ----
   if [ -n "$USER_BASE_URL" ] && echo "$USER_BASE_URL" | grep -qi "anthropic"; then
-    sed -i 's|"api": "openai"|"api": "anthropic"|g' "$CONFIG_FILE"
+    sed -i 's|"api": "openai"|"api": "anthropic-messages"|g' "$CONFIG_FILE"
     echo -e "  ${GREEN}✓ API 类型自动设为 anthropic${NC}"
   elif [ -z "$USER_BASE_URL" ]; then
-    sed -i 's|"api": "openai"|"api": "anthropic"|g' "$CONFIG_FILE"
+    sed -i 's|"api": "openai"|"api": "anthropic-messages"|g' "$CONFIG_FILE"
     echo -e "  ${GREEN}✓ API 类型自动设为 anthropic${NC}"
   fi
 
@@ -1019,7 +1031,8 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
 
       read -rp "  ${BOT_LABEL} (${BOT_ID}) Token: " BOT_TOKEN
       if [ -n "$BOT_TOKEN" ]; then
-        sed -i "s|$PLACEHOLDER|$BOT_TOKEN|g" "$CONFIG_FILE"
+        SAFE_VAL=$(sed_escape "$BOT_TOKEN")
+        sed -i "s|$PLACEHOLDER|$SAFE_VAL|g" "$CONFIG_FILE"
         echo -e "    ${GREEN}✓${NC}"
         FILLED_COUNT=$((FILLED_COUNT + 1))
       fi
@@ -1042,11 +1055,13 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
     read -rp "  飞书 App ID: " FEISHU_APP_ID
     read -rp "  飞书 App Secret: " FEISHU_APP_SECRET
     if [ -n "$FEISHU_APP_ID" ]; then
-      sed -i "s|YOUR_FEISHU_APP_ID|$FEISHU_APP_ID|g" "$CONFIG_FILE"
+      SAFE_VAL=$(sed_escape "$FEISHU_APP_ID")
+      sed -i "s|YOUR_FEISHU_APP_ID|$SAFE_VAL|g" "$CONFIG_FILE"
       echo -e "  ${GREEN}✓ App ID 已填入${NC}"
     fi
     if [ -n "$FEISHU_APP_SECRET" ]; then
-      sed -i "s|YOUR_FEISHU_APP_SECRET|$FEISHU_APP_SECRET|g" "$CONFIG_FILE"
+      SAFE_VAL=$(sed_escape "$FEISHU_APP_SECRET")
+      sed -i "s|YOUR_FEISHU_APP_SECRET|$SAFE_VAL|g" "$CONFIG_FILE"
       echo -e "  ${GREEN}✓ App Secret 已填入${NC}"
     fi
     echo ""
@@ -1089,6 +1104,8 @@ if $IS_MACOS || $IN_DOCKER; then
     echo -e "  ${CYAN}↳ 请手动启动: openclaw gateway --verbose${NC}"
 else
     openclaw gateway install 2>/dev/null \
+
+    echo -e "  ${YELLOW}提示: 运行 sudo loginctl enable-linger $USER 确保 SSH 退出后服务不停${NC}"
         && echo -e "  ${GREEN}✓ Gateway 服务已安装（开机自启）${NC}" \
         || echo -e "  ${YELLOW}⚠ Gateway 服务安装跳过（配置填好后运行 openclaw gateway install）${NC}"
 fi
