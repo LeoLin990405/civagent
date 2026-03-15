@@ -371,46 +371,15 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 | **吏部** | 官员选拔 | 项目管理 | 快速模型 | 创业孵化、任务追踪、团队协调 |
 | **刑部** | 司法刑狱 | 法务合规 | 快速模型 | 合同审查、知识产权、合规检查 |
 
-> 💡 模型分层策略：重活（编码/分析）用 强力模型，轻活（文案/管理）用 快速模型，能省 5 倍成本。也可以接入 经济模型 等国产模型进一步降本。
-
-### 多 Provider 混搭（可选）
-
-默认模板用单一 Provider，但你可以同时接入多家，给不同部门分配不同模型：
-
-```json5
-// openclaw.json 中的 models.providers 支持多个
-{
-  "models": {
-    "providers": {
-      "anthropic": {
-        "baseUrl": "https://api.anthropic.com",
-        "apiKey": "sk-ant-xxx",
-        "api": "anthropic-messages",
-        "models": [
-          { "id": "claude-sonnet-4-5", "name": "Claude Sonnet 4.5", "input": ["text", "image"], "contextWindow": 200000, "maxTokens": 8192 }
-        ]
-      },
-      "deepseek": {
-        "baseUrl": "https://api.deepseek.com/v1",
-        "apiKey": "sk-xxx",
-        "api": "openai-completions",
-        "models": [
-          { "id": "deepseek-chat", "name": "DeepSeek V3", "input": ["text"], "contextWindow": 128000, "maxTokens": 8192 }
-        ]
-      }
-    }
-  }
-}
-```
-
-然后在 `agents.list` 里按需分配：
-
-```json5
-{ "id": "bingbu", "model": { "primary": "anthropic/claude-sonnet-4-5" } },  // 重活用 Claude
-{ "id": "libu",   "model": { "primary": "deepseek/deepseek-chat" } }        // 轻活用 DeepSeek 省钱
-```
-
-> 格式：`provider名/模型id`。支持任何兼容 OpenAI API 格式的服务商（Ollama、通义千问、Gemini 等），详见 [OpenClaw 模型配置文档](https://docs.openclaw.ai/concepts/models)。
+> 💡 **模型分层策略**：不同部门按需分配模型，重活用贵的、轻活用便宜的，能省 5 倍成本：
+>
+> | 层级 | 适用部门 | 推荐模型举例 | 特点 |
+> |------|----------|-------------|------|
+> | **强力模型** | 兵部（编码）、户部（分析） | Claude Sonnet 4.5、GPT-4o | 推理强，适合复杂任务 |
+> | **快速模型** | 司礼监、礼部、工部、吏部、刑部 | Claude Haiku、GPT-4o-mini、DeepSeek V3 | 响应快、成本低 |
+> | **经济模型** | 都察院（审查）、翰林院·检讨 | DeepSeek V3、Qwen | 极低成本，适合批量审核 |
+>
+> 在 `openclaw.json` 的 `models.providers` 中可接入多家服务商（Anthropic、OpenAI、DeepSeek、Ollama 等），然后在各 Agent 的 `model.primary` 中指定 `provider名/模型id`。详见 [OpenClaw 模型配置文档](https://docs.openclaw.ai/concepts/models)。
 
 ---
 
