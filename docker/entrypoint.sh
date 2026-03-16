@@ -87,6 +87,12 @@ fi
 
 mkdir -p "$WORKSPACE/memory"
 
+# ---- [D-29] 同步内置 skills（volume 不会自动获取新镜像的文件）----
+if [ -d /opt/skills-dist ]; then
+    mkdir -p "$WORKSPACE/skills"
+    cp -ru /opt/skills-dist/* "$WORKSPACE/skills/" 2>/dev/null || true
+fi
+
 # ---- OpenViking 初始化（如果配置了）----
 if [ -f "$HOME/.openviking/ov.conf" ] || [ -n "$OPENVIKING_CONFIG_FILE" ]; then
     echo "✓ OpenViking 配置已检测到"
@@ -132,7 +138,11 @@ if [ -f "/opt/gui/server/index.js" ]; then
         cd /opt/gui
         BACKOFF=2
         while true; do
+            START_TS=$(date +%s)
             node server/index.js || true
+            ELAPSED=$(( $(date +%s) - START_TS ))
+            # 运行超过 30s 说明不是立即崩溃，重置退避
+            [ $ELAPSED -gt 30 ] && BACKOFF=2
             sleep $BACKOFF
             # Exponential backoff capped at 30s to avoid crash-loop CPU burn
             BACKOFF=$((BACKOFF < 30 ? BACKOFF * 2 : 30))
