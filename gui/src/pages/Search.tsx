@@ -23,10 +23,12 @@ export default function Search() {
   const prevTypeRef = useRef(searchType)
 
   // Re-trigger search when searchType changes (if already searched)
+  const queryRef = useRef(query)
+  queryRef.current = query
   useEffect(() => {
     if (prevTypeRef.current !== searchType) {
       prevTypeRef.current = searchType
-      if (searched && query.trim()) handleSearch()
+      if (searched && queryRef.current.trim()) handleSearch()
     }
   }, [searchType])
 

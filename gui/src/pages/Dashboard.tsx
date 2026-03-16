@@ -190,7 +190,7 @@ export default function Dashboard({ data, onNavigate }: Props) {
 
   // System load — normalize by CPU core count to get meaningful percentage
   const cpuCores = data.cpuCores || 1
-  const cpuPct = (Number(summary?.systemLoad?.cpu1m ?? data.cpuLoad?.[0] ?? 0) / cpuCores) * 100
+  const cpuPct = Math.min((Number(summary?.systemLoad?.cpu1m ?? data.cpuLoad?.[0] ?? 0) / cpuCores) * 100, 100)
   const memPct = Number(summary?.systemLoad?.memUsedPct ?? 0)
 
   const handleDeptClick = useCallback((deptName: string) => {

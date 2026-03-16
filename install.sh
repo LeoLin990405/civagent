@@ -1,7 +1,7 @@
 #!/bin/bash
 # Escape special sed characters in user input to prevent injection
 sed_escape() {
-  printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e 's/&/\\&/g' -e 's/\//\\\//g' -e 's/|/\\|/g'
+  printf '%s' "$1" | sed 's/[\/&.*^$[\\|]/\\&/g'
 }
 
 # Cross-platform sed -i (macOS BSD sed vs GNU sed)

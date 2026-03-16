@@ -716,22 +716,23 @@ app.get('/api/dashboard/summary', authMiddleware, async (req, res) => {
       dailyTokens[key] = 0;
     }
     
-    // Try to estimate daily distribution from session file modification times
+    // Distribute total tokens across days based on session updatedAt timestamps
     if (existsSync(AGENTS_DIR)) {
       const agentDirs = readdirSync(AGENTS_DIR, { withFileTypes: true }).filter(d => d.isDirectory()).map(d => d.name);
       for (const agentId of agentDirs) {
-        const sessDir = join(AGENTS_DIR, agentId, 'sessions');
-        if (!existsSync(sessDir)) continue;
+        const sessionsPath = join(AGENTS_DIR, agentId, 'sessions', 'sessions.json');
+        if (!existsSync(sessionsPath)) continue;
         try {
-          const files = readdirSync(sessDir).filter(f => f.endsWith('.jsonl'));
-          for (const f of files) {
-            try {
-              const stat = statSync(join(sessDir, f));
-              const dateKey = stat.mtime.toISOString().split('T')[0];
-              if (dailyTokens[dateKey] !== undefined) {
-                dailyTokens[dateKey] += Math.floor(stat.size / 100); // rough estimate
-              }
-            } catch { }
+          const sessData = JSON.parse(readFileSync(sessionsPath, 'utf-8'));
+          for (const sess of Object.values(sessData)) {
+            const tokens = (sess.inputTokens || 0) + (sess.outputTokens || 0);
+            if (tokens <= 0) continue;
+            const updatedAt = sess.updatedAt ? new Date(sess.updatedAt) : null;
+            if (!updatedAt) continue;
+            const dateKey = updatedAt.toISOString().split('T')[0];
+            if (dailyTokens[dateKey] !== undefined) {
+              dailyTokens[dateKey] += tokens;
+            }
           }
         } catch { }
       }
@@ -871,7 +872,7 @@ app.get('/api/sessions/:sessionId/messages', authMiddleware, (req, res) => {
         const MAX_FULL_READ = 10 * 1024 * 1024; // 10MB
         const TAIL_READ = 2 * 1024 * 1024; // 2MB
         let content;
-        if (fileStat.size > MAX_FULL_READ && !search) {
+        if (fileStat.size > MAX_FULL_READ) {
           // 只读尾部，避免内存爆炸
           // [M-11] 统一使用 ESM import，不再混用 require('fs')
           const fd = openSync(session.sessionFile, 'r');
@@ -1365,13 +1366,8 @@ app.get('/api/cron', authMiddleware, async (req, res) => {
     const data = JSON.parse(stdout);
     res.json({ jobs: parseCronJobs(data), source: 'gateway' });
   } catch (e) {
-    // Fallback to demo data
-    const jobs = [
-      { id: 'heartbeat-check', name: '心跳检查', schedule: '*/30 * * * *', enabled: true, nextRun: new Date(Date.now() + 30 * 60000).toISOString() },
-      { id: 'notion-sync', name: 'Notion同步', schedule: '0 2 * * *', enabled: true, nextRun: new Date(Date.now() + 24 * 3600000).toISOString() },
-      { id: 'data-backup', name: '数据备份', schedule: '0 3 * * *', enabled: false, nextRun: null }
-    ];
-    res.json({ jobs, source: 'demo' });
+    // CLI not available or no cron jobs — return empty list instead of fake data
+    res.json({ jobs: [], source: 'unavailable', error: e.message });
   }
 });
 
@@ -1411,8 +1407,13 @@ app.patch('/api/cron/jobs/:id', authMiddleware, async (req, res) => {
             const job = config.cron.jobs.find(j => j.id === id);
             if (job) {
               job.enabled = enabled;
-              // Note: we don't write config here — change is NOT persisted
-              res.json({ success: false, message: `CLI 操作失败，请手动修改配置文件`, requiresManualEdit: true });
+              try {
+                const { writeFileSync } = await import('fs');
+                writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2), 'utf-8');
+                res.json({ success: true, message: `任务 ${id} 已${enabled ? '启用' : '禁用'}（已写入配置文件）`, id, enabled });
+              } catch (writeErr) {
+                res.json({ success: false, message: `配置写入失败: ${writeErr.message}`, requiresManualEdit: true });
+              }
             } else {
               res.status(404).json({ success: false, message: `任务 ${id} 不存在` });
             }
@@ -1764,7 +1765,7 @@ app.post('/api/command', authMiddleware, async (req, res) => {
   // SEC-33: 验证 botId 防止原型链污染
   const safeBotId = botId ? sanitizeAgentId(botId) : null;
   const usedBot = safeBotId || 'silijian';
-  const agentId = resolveAgentId(usedBot); // 转换为实际 clawdbot agent id
+  const agentId = resolveAgentId(usedBot); // 转换为实际 agent id
   
   // SEC-34: 审计日志
   console.log(`[AUDIT] /api/command botId=${usedBot} channel=${channel || 'none'} msgLen=${message.length}`);
@@ -1772,7 +1773,7 @@ app.post('/api/command', authMiddleware, async (req, res) => {
   // 确定回复目标频道（下旨发到朝堂频道或指定频道）
   const targetChannel = channel && /^\d{17,20}$/.test(channel) ? channel : null;
 
-  // 策略1（推荐）: 通过 clawdbot agent 发送指令给目标 agent
+  // 策略1（推荐）: 通过 openclaw agent 发送指令给目标 agent
   // agent 会处理消息并通过 --deliver 把结果发到 Discord 频道
   try {
     const args = [
@@ -1805,7 +1806,7 @@ app.post('/api/command', authMiddleware, async (req, res) => {
   } catch (agentErr) {
     console.error(`[COMMAND] Agent deliver failed: ${agentErr.message}`);
     
-    // 策略2（兜底）: 通过 clawdbot message send 直接发消息到 Discord 频道
+    // 策略2（兜底）: 通过 openclaw message send 直接发消息到 Discord 频道
     if (targetChannel) {
       try {
         const { stdout } = await execFileAsync(
@@ -1915,7 +1916,7 @@ app.get('/api/bots', authMiddleware, async (req, res) => {
             name: AGENT_DEPT_MAP[id] || id,
             displayName: AGENT_DEPT_MAP[id] || id,
             model: sessData.model || defaultModel,
-            hasToken: true,  // 有会话数据说明 agent 已运行过
+            hasToken: false,  // 仅文件系统发现，未确认有 token
             platforms: detectAgentPlatforms(id),
           };
         }
@@ -2299,8 +2300,8 @@ app.post('/api/skills/install', authMiddleware, async (req, res) => {
     const { slug } = req.body;
     if (!slug || /[^a-zA-Z0-9_-]/.test(slug)) return res.status(400).json({ error: 'Invalid slug' });
     const { workspace } = getSkillsDirs();
-    const { stdout, stderr } = await execAsync(
-      `clawdhub install ${slug} --no-input --workdir "${workspace}" 2>&1`,
+    const { stdout, stderr } = await execFileAsync(
+      'clawdhub', ['install', slug, '--no-input', '--workdir', workspace],
       { encoding: 'utf-8', timeout: 30000, cwd: workspace }
     );
     res.json({ success: true, output: stdout, slug });
@@ -2315,10 +2316,10 @@ app.post('/api/skills/update', authMiddleware, async (req, res) => {
     const { slug } = req.body; // if empty, update all
     if (slug && /[^a-zA-Z0-9_-]/.test(slug)) return res.status(400).json({ error: 'Invalid slug' });
     const { workspace } = getSkillsDirs();
-    const cmd = slug
-      ? `clawdhub update ${slug} --no-input --workdir "${workspace}" 2>&1`
-      : `clawdhub update --no-input --workdir "${workspace}" 2>&1`;
-    const { stdout } = await execAsync(cmd, { encoding: 'utf-8', timeout: 60000, cwd: workspace });
+    const args = slug
+      ? ['update', slug, '--no-input', '--workdir', workspace]
+      : ['update', '--no-input', '--workdir', workspace];
+    const { stdout } = await execFileAsync('clawdhub', args, { encoding: 'utf-8', timeout: 60000, cwd: workspace });
     res.json({ success: true, output: stdout, slug: slug || 'all' });
   } catch (err) {
     res.status(500).json({ error: err.message, output: err.stdout || err.stderr || '' });

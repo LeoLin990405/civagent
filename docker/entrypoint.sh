@@ -145,8 +145,12 @@ fi
 
 # ---- 信号处理：清理后台进程 ----
 cleanup() {
-    # Kill process groups to ensure child node processes are also terminated
-    [ -n "$GUI_PID" ] && kill -- -"$GUI_PID" 2>/dev/null || kill "$GUI_PID" 2>/dev/null
+    # Kill GUI background process and its children
+    if [ -n "$GUI_PID" ]; then
+        kill "$GUI_PID" 2>/dev/null
+        # Also kill child node processes spawned by the subshell
+        pkill -P "$GUI_PID" 2>/dev/null
+    fi
     [ -n "$GATEWAY_PID" ] && kill "$GATEWAY_PID" 2>/dev/null
     wait 2>/dev/null
     exit 0
