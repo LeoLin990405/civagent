@@ -42,7 +42,8 @@
       },
       "sandbox": {
         "mode": "non-main"
-      }
+      },
+      "skipBootstrap": true
     },
     "list": [
       {
@@ -276,7 +277,7 @@
     "discord": {
       "enabled": true,
       "groupPolicy": "open",
-      "allowBots": true,
+      "allowBots": "mentions",
       "accounts": {
         "silijian": {
           "name": "司礼监",
@@ -359,7 +360,7 @@
       "enabled": false,
       "dmPolicy": "open",
       "groupPolicy": "open",
-      "allowBots": true,
+      "allowBots": "mentions",
       "accounts": {
         "silijian": {
           "appId": "YOUR_FEISHU_APP_ID",
@@ -469,5 +470,13 @@
         "accountId": "hanlin_shujishi"
       }
     }
-  ]
+  ],
+  "messages": {
+    "groupChat": {
+      "mentionPatterns": [
+        "@everyone",
+        "@here"
+      ]
+    }
+  }
 }

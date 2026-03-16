@@ -370,7 +370,7 @@ cd "$WORKSPACE"
 
 # SOUL.md
 if [ ! -f SOUL.md ]; then
-cat > SOUL.md << 'SOUL_EOF'
+cat > SOUL.md.example << 'SOUL_EOF'
 # SOUL.md - 朝廷行为准则
 
 ## 铁律
@@ -401,7 +401,7 @@ cat > SOUL.md << 'SOUL_EOF'
 | 执行层（重） | 强力模型 | 编码、深度分析 |
 | 执行层（轻） | 经济模型（可选） | 轻量任务，省钱 |
 SOUL_EOF
-echo -e "  ${GREEN}✓ SOUL.md 已创建${NC}"
+echo -e "  ${GREEN}✓ SOUL.md.example 已创建（如需自定义人设请重命名为 SOUL.md）${NC}"
 fi
 
 # IDENTITY.md
@@ -477,6 +477,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << CONFIG_EOF
   "agents": {
     "defaults": {
       "workspace": "$HOME/clawd",
+      "skipBootstrap": true,
       "model": { "primary": "your-provider/fast-model" }
     },
     "list": [
@@ -533,6 +534,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << FEISHU_EOF
   "agents": {
     "defaults": {
       "workspace": "$HOME/clawd",
+      "skipBootstrap": true,
       "model": { "primary": "your-provider/fast-model" },
       "sandbox": { "mode": "non-main" }
     },
@@ -677,7 +679,12 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << FEISHU_EOF
   },
   "bindings": [
     { "agentId": "silijian", "match": { "channel": "feishu", "accountId": "silijian" } }
-  ]
+  ],
+  "messages": {
+    "groupChat": {
+      "mentionPatterns": ["@everyone", "@here"]
+    }
+  }
 }
 FEISHU_EOF
 echo -e "  ${GREEN}✓ 飞书单Bot模式配置已生成（司礼监 + sessions_spawn 后台调度）${NC}"
@@ -718,6 +725,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << CONFIG_EOF
   "agents": {
     "defaults": {
       "workspace": "$HOME/clawd",
+      "skipBootstrap": true,
       "model": { "primary": "your-provider/fast-model" },
       "sandbox": { "mode": "non-main" }
     },
@@ -849,7 +857,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << CONFIG_EOF
     "discord": {
       "enabled": true,
       "groupPolicy": "open",
-      "allowBots": true,
+      "allowBots": "mentions",
       "guilds": {
         "YOUR_DISCORD_SERVER_ID": {
           "requireMention": true
@@ -945,7 +953,12 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << CONFIG_EOF
     { "agentId": "hanlin_bianxiu", "match": { "channel": "discord", "accountId": "hanlin_bianxiu" } },
     { "agentId": "hanlin_jiantao", "match": { "channel": "discord", "accountId": "hanlin_jiantao" } },
     { "agentId": "hanlin_shujishi", "match": { "channel": "discord", "accountId": "hanlin_shujishi" } }
-  ]
+  ],
+  "messages": {
+    "groupChat": {
+      "mentionPatterns": ["@everyone", "@here"]
+    }
+  }
 }
 CONFIG_EOF
 echo -e "  ${GREEN}✓ Discord 多Bot模式配置已生成${NC}"
