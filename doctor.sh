@@ -112,7 +112,7 @@ echo -e "${YELLOW}[2/9] 检查配置文件...${NC}"
 
 CONFIG_FILE="$HOME/.openclaw/openclaw.json"
 
-if [ -z "$CONFIG_FILE" ]; then
+if [ ! -f "$CONFIG_FILE" ]; then
     fail "配置文件不存在 — 请运行 $CLI_CMD onboard 或手动创建"
     echo ""
     echo -e "${RED}配置文件缺失，后续检查无法进行${NC}"

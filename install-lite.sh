@@ -84,13 +84,8 @@ echo ""
 # ---- 初始化工作区 ----
 echo -e "${YELLOW}[1/4] 初始化朝廷工作区...${NC}"
 WORKSPACE="$HOME/clawd"
-if [ "$CLI_CMD" = "openclaw" ]; then
-    CONFIG_DIR="$HOME/.openclaw"
-    CONFIG_FILE="openclaw.json"
-else
-    CONFIG_DIR="$HOME/.openclaw"
-    CONFIG_FILE="openclaw.json"
-fi
+CONFIG_DIR="$HOME/.openclaw"
+CONFIG_FILE="openclaw.json"
 mkdir -p "$WORKSPACE"
 mkdir -p "$CONFIG_DIR"
 cd "$WORKSPACE"
@@ -268,7 +263,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
         "name": "司礼监",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是AI朝廷的司礼监大内总管。你的职责是【规划调度】，不是亲自执行。说话简练干脆。\n\n【核心原则】除了日常闲聊和简单问答，所有涉及实际工作的任务（写代码、查资料、分析数据、写文案、运维操作等），一律使用 sessions_spawn 派发给对应部门执行。你是指挥官，不是搬砖工。\n\n【部门职责】内阁=战略决策、都察院=审查监察、兵部=编码开发、户部=财务分析、礼部=品牌营销、工部=运维部署、吏部=项目管理、刑部=法务合规、翰林院=研究文档。\n\n【派活方式】使用 sessions_spawn 将任务派发给对应部门的 agentId。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。完成后主动向用户汇报结果摘要。\n\n【审批流程】涉及代码提交 → spawn 都察院审查；涉及重大决策（预算、架构、方向变更）→ spawn 内阁审议。都察院审查不通过则打回修改，内阁有否决权。\n\n【什么时候自己回答】仅限：纯闲聊、确认信息、汇报进度、问澄清问题。其他一律派活。" },
-        "sandbox": { "mode": "all", "scope": "agent" },
+        "sandbox": { "mode": "off" },
         "subagents": {
           "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlin_zhang"],
           "maxConcurrent": 4
@@ -418,7 +413,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
         "name": "司礼监",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是AI朝廷的司礼监大内总管。你的职责是【规划调度】，不是亲自执行。说话简练干脆。\n\n【核心原则】除了日常闲聊和简单问答，所有涉及实际工作的任务（写代码、查资料、分析数据、写文案、运维操作等），一律在当前频道 @对应部门 派发，让所有人可见工作流转。你是指挥官，不是搬砖工。\n\n【部门职责】内阁=战略决策、都察院=审查监察、兵部=编码开发、户部=财务分析、礼部=品牌营销、工部=运维部署、吏部=项目管理、刑部=法务合规、翰林院=研究文档。\n\n【派活方式】用 message 工具在当前 Discord 频道发消息，@对应部门bot 下达任务。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。禁止用 sessions_spawn 暗地里干活，一切工作流转必须在频道内公开可见。\n\n【审批流程】涉及代码提交 → @都察院 审查；涉及重大决策（预算、架构、方向变更）→ @内阁 审议。都察院审查不通过则打回修改，内阁有否决权。\n\n【什么时候自己回答】仅限：纯闲聊、确认信息、汇报进度、问澄清问题。其他一律派活。" },
-        "sandbox": { "mode": "all", "scope": "agent" },
+        "sandbox": { "mode": "off" },
         "subagents": {
           "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlin_zhang"],
           "maxConcurrent": 4
@@ -729,7 +724,7 @@ echo "  2. 创建 Discord Bot（每个部门一个）："
 echo "     a) 访问 https://discord.com/developers/applications"
 echo "     b) 创建 Application → Bot → 复制 Token"
 echo "     c) 重复创建多个 Bot（司礼监、兵部、户部...按需）"
-echo "     d) 把每个 Token 填到 $CONFIG_FILE 的 accounts 对应位置"
+echo "     d) 把每个 Token 填到 $CONFIG_DIR/$CONFIG_FILE 的 accounts 对应位置"
 echo "     e) 每个 Bot 都要开启 Message Content Intent"
 echo "     f) 邀请所有 Bot 到你的 Discord 服务器"
 echo ""

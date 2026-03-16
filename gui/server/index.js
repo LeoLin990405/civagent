@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import { readFileSync, readdirSync, existsSync, statSync, createReadStream, openSync, readSync, closeSync } from 'fs';
 import { readFile } from 'fs/promises';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 import readline from 'readline';
@@ -64,6 +64,13 @@ const OPENCLAW_DIR = join(HOME, '.openclaw');
 
 const STATE_DIR = OPENCLAW_DIR;
 const AGENTS_DIR = join(STATE_DIR, 'agents');
+
+// SEC: 验证 session 文件路径在合法目录内
+function isValidSessionPath(filePath) {
+  if (!filePath) return false;
+  const resolved = resolve(filePath);
+  return resolved.startsWith(AGENTS_DIR) || resolved.startsWith(STATE_DIR);
+}
 const CONFIG_PATH = join(OPENCLAW_DIR, 'openclaw.json');
 
 app.use(cors());
@@ -521,7 +528,7 @@ async function buildSessionsData() {
           // Collect count promises for parallel async processing
           const entries = Object.entries(data);
           const countPromises = entries.map(([, session]) =>
-            countSessionFile(session.sessionFile || '')
+            isValidSessionPath(session.sessionFile) ? countSessionFile(session.sessionFile) : Promise.resolve({ messages: 0, userMessages: 0, assistantMessages: 0, inputTokens: 0, outputTokens: 0 })
           );
           const allCounts = await Promise.all(countPromises);
           
@@ -627,7 +634,7 @@ app.get('/api/dashboard/summary', authMiddleware, async (req, res) => {
                 bestTime = sess.updatedAt; bestFile = sess.sessionFile;
               }
             }
-            if (bestFile) {
+            if (bestFile && isValidSessionPath(bestFile)) {
               // [M-16] 只读文件尾部 4KB，避免对大文件全量读取
               const PREVIEW_TAIL = 4096;
               let tailContent;
@@ -766,7 +773,11 @@ app.get('/api/sessions/:sessionId/timeline', authMiddleware, (req, res) => {
     const sessionsData = JSON.parse(readFileSync(sessionsPath, 'utf-8'));
     const session = sessionsData[sessionKey];
     if (!session?.sessionFile || !existsSync(session.sessionFile)) return res.json({ timeline: [] });
-    
+
+    if (!isValidSessionPath(session.sessionFile)) {
+      return res.status(403).json({ error: 'Invalid session file path' });
+    }
+
     // Guard against oversized files to prevent OOM
     const fileSize = statSync(session.sessionFile).size;
     if (fileSize > 50 * 1024 * 1024) {
@@ -821,6 +832,9 @@ app.get('/api/sessions/:sessionId/messages', authMiddleware, (req, res) => {
       const sessionsData = JSON.parse(readFileSync(sessionsPath, 'utf-8'));
       const session = sessionsData[sessionKey];
       if (session?.sessionFile && existsSync(session.sessionFile)) {
+        if (!isValidSessionPath(session.sessionFile)) {
+          return res.status(403).json({ error: 'Invalid session file path', messages: [], total: 0, page: 1, totalPages: 0 });
+        }
         // Q2: 大文件保护 — 超过 10MB 的 JSONL 只读最后 2MB（避免 OOM）
         const fileStat = statSync(session.sessionFile);
         const MAX_FULL_READ = 10 * 1024 * 1024; // 10MB
@@ -895,16 +909,20 @@ app.get('/api/sessions/:sessionId/summary', authMiddleware, (req, res) => {
     const sessionsData = JSON.parse(readFileSync(sessionsPath, 'utf-8'));
     const session = sessionsData[sessionKey];
     if (!session?.sessionFile || !existsSync(session.sessionFile)) return res.json({ error: 'Session file not found' });
-    
+
+    if (!isValidSessionPath(session.sessionFile)) {
+      return res.status(403).json({ error: 'Invalid session file path' });
+    }
+
     // Guard against oversized files to prevent OOM
     const fileSize = statSync(session.sessionFile).size;
     if (fileSize > 50 * 1024 * 1024) {
       return res.status(413).json({ error: `Session file too large (${(fileSize / 1024 / 1024).toFixed(1)}MB), max 50MB` });
     }
-    
+
     const content = readFileSync(session.sessionFile, 'utf-8');
     const lines = content.split('\n').filter(l => l.trim());
-    
+
     let totalTokens = 0, messageCount = 0, firstTs = null, lastTs = null;
     let firstMessage = '', lastMessage = '';
     const responseTimes = [];
@@ -981,7 +999,11 @@ app.get('/api/departments/:name/recent', authMiddleware, (req, res) => {
     }
     
     if (!bestSession?.sessionFile || !existsSync(bestSession.sessionFile)) return res.json({ messages: [] });
-    
+
+    if (!isValidSessionPath(bestSession.sessionFile)) {
+      return res.status(403).json({ error: 'Invalid session file path' });
+    }
+
     // Guard against oversized files to prevent OOM (consistent with other endpoints)
     const fileSize = statSync(bestSession.sessionFile).size;
     if (fileSize > 50 * 1024 * 1024) {
@@ -1070,7 +1092,7 @@ app.post('/api/gateway/restart', authMiddleware, async (req, res) => {
       } else {
         // 非容器：杀 gateway 进程
         const { execSync } = require('child_process');
-        execSync('pkill -f "openclaw.*gateway" || pkill -f "clawdbot.*gateway" || true');
+        execSync('pkill -f "openclaw gateway" || pkill -f "clawdbot gateway" || true');
       }
     } catch (e) {
       console.error('[RESTART] Failed:', e.message);
@@ -1418,13 +1440,18 @@ async function readGatewayLogs(opts = {}) {
         // Fallback: read from log files
         const logPaths = [
           join(HOME, '.openclaw/logs/gateway.log'),
-          join(HOME, '.openclaw/logs/gateway.log'),
           '/tmp/openclaw.log',
           '/tmp/boluo-gui.log',
         ];
         for (const p of logPaths) {
           if (existsSync(p)) {
-            try { output = readFileSync(p, 'utf-8').split('\n').slice(-200).join('\n'); break; } catch { }
+            try {
+              const stat = statSync(p);
+              if (stat.size > 50 * 1024 * 1024) continue; // skip files > 50MB
+              const content = readFileSync(p, 'utf-8');
+              output = content.split('\n').slice(-200).join('\n');
+              break;
+            } catch { }
           }
         }
       }
@@ -1953,7 +1980,13 @@ app.get('/api/location/track', authMiddleware, async (req, res) => {
   } catch {
     ipLocations[role] = { ip: clientIp, city: '未知', region: '', country: '', lastSeen: Date.now() };
   }
-  
+
+  // 限制条目数防止内存泄漏
+  const keys = Object.keys(ipLocations);
+  if (keys.length > 100) {
+    delete ipLocations[keys[0]];
+  }
+
   res.json({ locations: ipLocations });
 });
 
