@@ -50,7 +50,7 @@ if (!AUTH_TOKEN || AUTH_TOKEN === 'changeme') {
 }
 
 const AGENT_DEPT_MAP = {
-  'silijian': '司礼监', 'main': '司礼监', 'gongbu': '工部', 'hubu': '户部',
+  'silijian': '司礼监', 'gongbu': '工部', 'hubu': '户部',
   'libu': '礼部', 'libu2': '吏部',
   'xingbu': '刑部', 'bingbu': '兵部',
   'neige': '内阁', 'duchayuan': '都察院', 'neiwufu': '内务府',
@@ -64,8 +64,8 @@ const AGENT_DEPT_MAP = {
   'yushanfang': '御膳房'
 };
 
-// GUI botId → clawdbot agent id 映射（silijian 在 GUI 里是司礼监，但实际 agent id 是 main）
-const BOT_TO_AGENT = { 'silijian': 'main' };
+// GUI botId → openclaw agent id 映射（迁移后 silijian 就是实际 agent id）
+const BOT_TO_AGENT = {};
 function resolveAgentId(botId) {
   return BOT_TO_AGENT[botId] || botId;
 }
@@ -285,7 +285,7 @@ app.get('/api/status', authMiddleware, async (req, res) => {
   let gatewayStatus = 'unknown';
   try {
     const pingStart = Date.now();
-    const pingRes = await fetch('http://100.125.166.54:18789/health', { signal: AbortSignal.timeout(3000) });
+    const pingRes = await fetch(`${process.env.GATEWAY_URL || 'http://127.0.0.1:18789'}/health`, { signal: AbortSignal.timeout(3000) });
     if (pingRes.ok) {
       gatewayPing = Date.now() - pingStart;
       gatewayStatus = 'ready';
@@ -775,7 +775,7 @@ app.get('/api/sessions/:sessionId/timeline', authMiddleware, (req, res) => {
     const parts = sessionId.split(':');
     // Only fallback to 'main' if no agent part is provided; if provided but invalid, reject
     const rawAgentId = parts[1];
-    const agentId = rawAgentId ? sanitizeAgentId(rawAgentId) : 'main';
+    const agentId = rawAgentId ? sanitizeAgentId(rawAgentId) : 'silijian';
     if (!agentId) return res.status(400).json({ error: 'Invalid agent ID', timeline: [] });
     const sessionKey = parts.slice(2).join(':');
     
@@ -835,7 +835,7 @@ app.get('/api/sessions/:sessionId/messages', authMiddleware, (req, res) => {
     
     const parts = sessionId.split(':');
     const rawAgentId = parts[1];
-    const agentId = rawAgentId ? sanitizeAgentId(rawAgentId) : 'main';
+    const agentId = rawAgentId ? sanitizeAgentId(rawAgentId) : 'silijian';
     if (!agentId) return res.status(400).json({ error: 'Invalid agent ID', messages: [], total: 0, page: 1, totalPages: 0 });
     const sessionKey = parts.slice(2).join(':');
     
@@ -911,7 +911,7 @@ app.get('/api/sessions/:sessionId/summary', authMiddleware, (req, res) => {
     const { sessionId } = req.params;
     const parts = sessionId.split(':');
     const rawAgentId = parts[1];
-    const agentId = rawAgentId ? sanitizeAgentId(rawAgentId) : 'main';
+    const agentId = rawAgentId ? sanitizeAgentId(rawAgentId) : 'silijian';
     if (!agentId) return res.status(400).json({ error: 'Invalid agent ID' });
     const sessionKey = parts.slice(2).join(':');
     
@@ -1364,7 +1364,7 @@ app.post('/api/cron/run/:id', authMiddleware, async (req, res) => {
     return res.status(400).json({ success: false, message: 'Invalid cron job ID' });
   }
   try {
-    await execAsync(`${CLI_CMD} cron run ${id}`, { encoding: 'utf-8', timeout: 10000 });
+    await execFileAsync(CLI_CMD, ['cron', 'run', id], { encoding: 'utf-8', timeout: 10000 });
     res.json({ success: true, message: `任务 ${id} 已触发执行` });
   } catch (e) {
     res.json({ success: false, message: `任务 ${id} 执行失败: ${e.message}` });
@@ -1384,7 +1384,7 @@ app.patch('/api/cron/jobs/:id', authMiddleware, async (req, res) => {
       const action = enabled ? 'enable' : 'disable';
       // Try openclaw CLI
       try {
-        await execAsync(`${CLI_CMD} cron ${action} ${id}`, { encoding: 'utf-8', timeout: 10000 });
+        await execFileAsync(CLI_CMD, ['cron', action, id], { encoding: 'utf-8', timeout: 10000 });
         res.json({ success: true, message: `任务 ${id} 已${enabled ? '启用' : '禁用'}`, id, enabled });
       } catch (cliErr) {
         // Fallback: try to update config directly
@@ -1809,7 +1809,7 @@ app.post('/api/command', authMiddleware, async (req, res) => {
       try {
         const config = getOpenclawConfig() || {};
         const accounts = config.channels?.discord?.accounts || {};
-        const senderAccount = accounts[agentId] || accounts[usedBot] || accounts['main'] || accounts[Object.keys(accounts)[0]];
+        const senderAccount = accounts[agentId] || accounts[usedBot] || accounts['silijian'] || accounts[Object.keys(accounts)[0]];
         if (senderAccount?.token) {
           const r = await fetch(`https://discord.com/api/v10/channels/${targetChannel}/messages`, {
             method: 'POST',
@@ -2233,7 +2233,7 @@ app.post('/api/skills/search', authMiddleware, async (req, res) => {
     const { query } = req.body;
     if (!query) return res.status(400).json({ error: 'Query required' });
     const safeQuery = query.replace(/[^a-zA-Z0-9_ -]/g, '');
-    const { stdout, stderr } = await execAsync(`clawdhub search "${safeQuery}" --no-input 2>&1`, {
+    const { stdout, stderr } = await execFileAsync('clawdhub', ['search', safeQuery, '--no-input'], {
       encoding: 'utf-8', timeout: 15000, cwd: getSkillsDirs().workspace,
     });
     // Parse clawdhub search output
