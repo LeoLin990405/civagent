@@ -170,8 +170,8 @@ export default function Departments({ data }: Props) {
                   <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4 text-xs">
                     <div><span className={sub}>内部名称: </span><span className="font-mono">{bot.name}</span></div>
                     <div><span className={sub}>模型: </span><span className="font-mono">{bot.model?.replace(/^[^/]+\//, '')}</span></div>
-                    <div><span className={sub}>输入Token: </span><span className="font-mono text-[#d4a574]">{bot.inputTokens.toLocaleString()}</span></div>
-                    <div><span className={sub}>输出Token: </span><span className="font-mono text-[#d4a574]">{bot.outputTokens.toLocaleString()}</span></div>
+                    <div><span className={sub}>输入Token: </span><span className="font-mono text-[#d4a574]">{(bot.inputTokens || 0).toLocaleString()}</span></div>
+                    <div><span className={sub}>输出Token: </span><span className="font-mono text-[#d4a574]">{(bot.outputTokens || 0).toLocaleString()}</span></div>
                     <div><span className={sub}>总Token: </span><span className="font-mono text-[#d4a574]">{bot.totalTokens.toLocaleString()}</span></div>
                     {activity && <div><span className={sub}>最近活跃: </span><span>{relTime(activity.updatedAt)}</span></div>}
                   </div>

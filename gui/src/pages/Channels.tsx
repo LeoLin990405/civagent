@@ -73,7 +73,7 @@ export default function Channels() {
         status: b.status,
         sessions: b.sessions || 0,
         model: b.model || '',
-        channel: platformDisplayName(b.platform || 'discord'),
+        channel: b.platform || 'discord',
         platforms: (b.platforms || [b.platform || 'discord']).map((p: string) => platformDisplayName(p)),
       })))
     } catch { }

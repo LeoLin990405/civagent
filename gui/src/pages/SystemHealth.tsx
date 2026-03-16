@@ -131,7 +131,7 @@ export default function SystemHealth({ data }: Props) {
         <div className={`${bg} rounded-lg p-3`}>
           <div className={`text-[10px] uppercase ${sub}`}>🌐 Gateway</div>
           <div className={`font-mono text-sm mt-1 ${health?.gateway === 'connected' || data.gateway?.status === 'ready' ? 'text-green-400' : 'text-red-400'}`}>
-            {health?.gateway || data.gateway?.status} · {data.gateway?.ping}ms
+            {health?.gateway || data.gateway?.status} · {data.gateway?.ping ?? '-'}ms
           </div>
         </div>
       </div>
@@ -215,7 +215,7 @@ export default function SystemHealth({ data }: Props) {
             </div>
             <div className="flex justify-between">
               <span className={sub}>Ping</span>
-              <span className="font-mono text-[#d4a574]">{data.gateway?.ping}ms</span>
+              <span className="font-mono text-[#d4a574]">{data.gateway?.ping ?? '-'}ms</span>
             </div>
             <div className="flex justify-between">
               <span className={sub}>Guilds</span>

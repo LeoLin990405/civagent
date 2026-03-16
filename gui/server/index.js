@@ -670,8 +670,7 @@ app.get('/api/dashboard/summary', authMiddleware, async (req, res) => {
                 if (fStat.size > PREVIEW_TAIL) {
                   const fd2 = openSync(bestFile, 'r');
                   const buf2 = Buffer.alloc(PREVIEW_TAIL);
-                  readSync(fd2, buf2, 0, PREVIEW_TAIL, fStat.size - PREVIEW_TAIL);
-                  closeSync(fd2);
+                  try { readSync(fd2, buf2, 0, PREVIEW_TAIL, fStat.size - PREVIEW_TAIL); } finally { closeSync(fd2); }
                   const raw2 = buf2.toString('utf-8');
                   tailContent = raw2.substring(raw2.indexOf('\n') + 1);
                 } else {
@@ -872,8 +871,7 @@ app.get('/api/sessions/:sessionId/messages', authMiddleware, (req, res) => {
           // [M-11] 统一使用 ESM import，不再混用 require('fs')
           const fd = openSync(session.sessionFile, 'r');
           const buf = Buffer.alloc(TAIL_READ);
-          readSync(fd, buf, 0, TAIL_READ, fileStat.size - TAIL_READ);
-          closeSync(fd);
+          try { readSync(fd, buf, 0, TAIL_READ, fileStat.size - TAIL_READ); } finally { closeSync(fd); }
           // 丢弃第一行（可能不完整）
           const raw = buf.toString('utf-8');
           content = raw.substring(raw.indexOf('\n') + 1);
@@ -1043,8 +1041,7 @@ app.get('/api/departments/:name/recent', authMiddleware, (req, res) => {
       const TAIL_READ = 2 * 1024 * 1024;
       const fd = openSync(bestSession.sessionFile, 'r');
       const buf = Buffer.alloc(TAIL_READ);
-      readSync(fd, buf, 0, TAIL_READ, fileSize - TAIL_READ);
-      closeSync(fd);
+      try { readSync(fd, buf, 0, TAIL_READ, fileSize - TAIL_READ); } finally { closeSync(fd); }
       const raw = buf.toString('utf-8');
       content = raw.substring(raw.indexOf('\n') + 1);
     } else {

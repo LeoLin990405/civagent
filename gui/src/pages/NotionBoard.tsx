@@ -97,13 +97,13 @@ export default function NotionBoard() {
     : financeData.filter(f => f.category === filterDept)
 
   // 图表数据
-  const expenseChartData = financeData.map(f => ({
+  const expenseChartData = filteredFinance.map(f => ({
     name: f.category,
     支出: f.expense,
     收入: f.income
   }))
 
-  const pieData = financeData.map(f => ({
+  const pieData = filteredFinance.map(f => ({
     name: f.category,
     value: f.expense || 1
   }))
