@@ -857,7 +857,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << CONFIG_EOF
     "discord": {
       "enabled": true,
       "groupPolicy": "open",
-      "allowBots": "mentions",
+      "allowBots": true,
       "guilds": {
         "YOUR_DISCORD_SERVER_ID": {
           "requireMention": true

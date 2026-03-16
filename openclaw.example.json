@@ -277,7 +277,7 @@
     "discord": {
       "enabled": true,
       "groupPolicy": "open",
-      "allowBots": "mentions",
+      "allowBots": true,
       "accounts": {
         "silijian": {
           "name": "司礼监",
@@ -360,7 +360,7 @@
       "enabled": false,
       "dmPolicy": "open",
       "groupPolicy": "open",
-      "allowBots": "mentions",
+      "allowBots": true,
       "accounts": {
         "silijian": {
           "appId": "YOUR_FEISHU_APP_ID",
