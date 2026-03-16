@@ -11,9 +11,10 @@ import http from 'http';
 import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 import { WebSocketServer } from 'ws';
-import { exec as _exec } from 'child_process';
+import { exec as _exec, execFile as _execFile } from 'child_process';
 import { promisify } from 'util';
 const execAsync = promisify(_exec);
+const execFileAsync = promisify(_execFile);
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -1710,7 +1711,7 @@ app.get('/api/channel-messages', authMiddleware, async (req, res) => {
   }
 });
 
-// 发送指令 — 支持 Discord 直连 + 通用 gateway wake 兜底
+// 发送指令 — 支持 Discord 直连 + agent call + message send 三级兜底
 // SEC-31: /api/command rate limiter — 每分钟最多 10 次
 const _cmdRateLimit = { count: 0, resetAt: 0 };
 
@@ -1763,39 +1764,38 @@ app.post('/api/command', authMiddleware, async (req, res) => {
           return res.json({ success: true, messageId: data.id, sentAs: 'silijian', method: 'discord' });
         }
         // Discord 失败则 fallthrough 到 gateway
-        console.warn(`[COMMAND] Discord API failed (${r.status}), falling back to gateway wake`);
+        console.warn(`[COMMAND] Discord API failed (${r.status}), falling back to agent call`);
       }
     } catch (e) {
-      console.warn(`[COMMAND] Discord path error: ${e.message}, falling back to gateway wake`);
+      console.warn(`[COMMAND] Discord path error: ${e.message}, falling back to agent call`);
     }
   }
   
-  // 策略2: 通过 gateway wake 发送（通用方案，支持所有平台）
+  // 策略2: 通过 clawdbot agent 发送（通用方案，支持所有平台）
+  // 使用 execFileAsync 避免 shell 注入，参数直接传递不经过 shell 解释
   try {
-    const wakeText = safeBotId ? `[Court指令→${AGENT_DEPT_MAP[safeBotId] || safeBotId}] ${message}` : message;
-    // SEC-35: 使用 Base64 编码传递用户文本，完全避免 shell 解释
-    const b64Text = Buffer.from(wakeText, 'utf-8').toString('base64');
-    const { stdout, stderr } = await execAsync(
-      `echo '${b64Text}' | base64 -d | ${CLI_CMD} gateway wake --text-stdin --mode now 2>&1`,
-      { encoding: 'utf-8', timeout: 10000 }
+    const agentMsg = safeBotId ? `[Court指令→${AGENT_DEPT_MAP[safeBotId] || safeBotId}] ${message}` : message;
+    const { stdout } = await execFileAsync(
+      CLI_CMD,
+      ['agent', '--agent', usedBot, '--message', agentMsg, '--json'],
+      { encoding: 'utf-8', timeout: 30000 }
     );
-    console.log(`[COMMAND] Gateway wake result: ${stdout.trim()}`);
-    return res.json({ success: true, sentAs: usedBot, method: 'gateway', detail: stdout.trim() });
-  } catch (wakeErr) {
-    console.error(`[COMMAND] Gateway wake failed: ${wakeErr.message}`);
+    console.log(`[COMMAND] Agent call result: ${stdout.substring(0, 200)}`);
+    return res.json({ success: true, sentAs: usedBot, method: 'agent', detail: stdout.trim().substring(0, 500) });
+  } catch (agentErr) {
+    console.error(`[COMMAND] Agent call failed: ${agentErr.message}`);
   }
-  
-  // 策略3: 直接写入 agent session（最后兜底）
+
+  // 策略3: 通过 message send 直接发送到 Discord 频道（兜底）
   try {
-    // Same Base64 approach for safety
-    const b64Msg = Buffer.from(message, 'utf-8').toString('base64');
-    const { stdout } = await execAsync(
-      `echo '${b64Msg}' | base64 -d | ${CLI_CMD} session send --agent ${usedBot} --text-stdin 2>&1`,
+    const { stdout } = await execFileAsync(
+      CLI_CMD,
+      ['message', 'send', '--channel', 'discord', '--account', usedBot, '--message', message, '--json'],
       { encoding: 'utf-8', timeout: 10000 }
     );
-    return res.json({ success: true, sentAs: usedBot, method: 'session', detail: stdout.trim() });
-  } catch (sessErr) {
-    return res.status(500).json({ error: `All delivery methods failed. Last: ${sessErr.message}`, sentAs: usedBot });
+    return res.json({ success: true, sentAs: usedBot, method: 'message', detail: stdout.trim().substring(0, 500) });
+  } catch (msgErr) {
+    return res.status(500).json({ error: `All delivery methods failed. Last: ${msgErr.message}`, sentAs: usedBot });
   }
 });
 
