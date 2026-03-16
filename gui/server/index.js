@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { readFileSync, readdirSync, existsSync, statSync, createReadStream, openSync, readSync, closeSync } from 'fs';
+import { readFileSync, readdirSync, existsSync, statSync, createReadStream, openSync, readSync, closeSync, realpathSync } from 'fs';
 import { readFile } from 'fs/promises';
 import { join, resolve } from 'path';
 import { fileURLToPath } from 'url';
@@ -74,12 +74,14 @@ const HOME = process.env.HOME || '/home/ubuntu';
 // OpenClaw 配置目录
 const OPENCLAW_DIR = join(HOME, '.openclaw');
 
-const STATE_DIR = OPENCLAW_DIR;
+// Resolve symlinks so path checks work when ~/.openclaw -> ~/.clawdbot
+const STATE_DIR = (() => { try { return realpathSync(OPENCLAW_DIR); } catch { return OPENCLAW_DIR; } })();
 const AGENTS_DIR = join(STATE_DIR, 'agents');
 
 // SEC: 验证 session 文件路径在合法目录内
 function isValidSessionPath(filePath) {
   if (!filePath) return false;
+  try { filePath = realpathSync(filePath); } catch { /* file may not exist yet */ }
   const resolved = resolve(filePath);
   return resolved.startsWith(AGENTS_DIR) || resolved.startsWith(STATE_DIR);
 }
@@ -173,10 +175,13 @@ function getRecentLogs(limit = 100) {
           for (const line of lines) {
             try {
               const entry = JSON.parse(line);
-              if (entry.role === 'assistant' && entry.content) {
-                const text = typeof entry.content === 'string'
-                  ? entry.content.substring(0, 200)
-                  : JSON.stringify(entry.content).substring(0, 200);
+              // Support both flat format (role/content) and nested format (message.role/message.content)
+              const role = entry.message?.role || entry.role;
+              const msgContent = entry.message?.content || entry.content;
+              if (role === 'assistant' && msgContent) {
+                const text = typeof msgContent === 'string'
+                  ? msgContent.substring(0, 200)
+                  : JSON.stringify(msgContent).substring(0, 200);
                 logs.push({
                   timestamp: new Date(file.mtime).toISOString(),
                   level: 'info',
@@ -1843,7 +1848,7 @@ app.post('/api/command', authMiddleware, async (req, res) => {
 });
 
 // 获取bot列表（含状态）— 合并三个数据源：channels.accounts + agents.list + 文件系统
-app.get('/api/bots', authMiddleware, (req, res) => {
+app.get('/api/bots', authMiddleware, async (req, res) => {
   try {
     const config = getOpenclawConfig() || {};
     const channels = config.channels || {};
@@ -1917,7 +1922,31 @@ app.get('/api/bots', authMiddleware, (req, res) => {
       }
     }
     
-    const bots = Object.values(botMap);
+    // Enrich with online/offline status from gateway
+    let gwStatus = {};
+    try {
+      const gwBind = config.gateway?.bind;
+      let gwHost = '127.0.0.1';
+      if (gwBind === 'tailnet') {
+        const tsIface = os.networkInterfaces()['tailscale0'];
+        const tsAddr = tsIface?.find(a => a.family === 'IPv4');
+        gwHost = tsAddr?.address || '127.0.0.1';
+      }
+      const gwPort = config.gateway?.port || 18789;
+      const r = await fetch(`http://${gwHost}:${gwPort}/api/status`, { signal: AbortSignal.timeout(2000) });
+      if (r.ok) {
+        const d = await r.json();
+        const agents = d.agents || d.data?.agents || [];
+        for (const a of agents) {
+          if (a.id) gwStatus[a.id] = a.online !== false;
+        }
+      }
+    } catch { /* gateway may not be reachable */ }
+
+    const bots = Object.values(botMap).map(b => ({
+      ...b,
+      status: gwStatus[b.id] !== undefined ? (gwStatus[b.id] ? 'online' : 'offline') : (b.hasToken ? 'online' : 'offline'),
+    }));
     res.json({ bots });
   } catch (err) {
     res.status(500).json({ error: err.message, bots: [] });
