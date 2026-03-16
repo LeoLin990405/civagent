@@ -40,9 +40,11 @@ export function useStatus() {
         signal: controller.signal
       })
       if (res.status === 401) {
-        // Token invalid/expired — clear and redirect to login
-        localStorage.removeItem('boluo_auth_token')
-        window.location.reload()
+        // Only clear+reload if we had a token (prevents infinite loop)
+        if (getAuthToken()) {
+          localStorage.removeItem('boluo_auth_token')
+          window.location.reload()
+        }
         return
       }
       if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`)
