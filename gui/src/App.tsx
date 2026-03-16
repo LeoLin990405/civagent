@@ -72,9 +72,14 @@ function App() {
           <div className="text-center">
             <div className="text-[#ef4444] text-lg mb-2">连接失败</div>
             <div className="text-[#a3a3a3] text-sm mb-4">{error}</div>
-            <button onClick={refresh} className="px-4 py-2 bg-[#1a1a2e] text-[#d4a574] border border-[#d4a574] hover:bg-[#16213e] cursor-pointer">
-              重试
-            </button>
+            <div className="flex gap-3 justify-center">
+              <button onClick={refresh} className="px-4 py-2 bg-[#1a1a2e] text-[#d4a574] border border-[#d4a574] hover:bg-[#16213e] cursor-pointer">
+                重试
+              </button>
+              <button onClick={() => { localStorage.removeItem('boluo_auth_token'); setIsLoggedIn(false) }} className="px-4 py-2 bg-[#1a1a2e] text-[#a3a3a3] border border-[#a3a3a3]/30 hover:bg-[#16213e] cursor-pointer">
+                重新登录
+              </button>
+            </div>
           </div>
         </div>
       )
