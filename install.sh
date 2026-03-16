@@ -1,7 +1,7 @@
 #!/bin/bash
 # Escape special sed characters in user input to prevent injection
 sed_escape() {
-  printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e 's/&/\\&/g' -e 's/\//\\\//g'
+  printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e 's/&/\\&/g' -e 's/\//\\\//g' -e 's/|/\\|/g'
 }
 
 # Cross-platform sed -i (macOS BSD sed vs GNU sed)
@@ -1043,7 +1043,8 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
     for entry in "${BOT_NAMES[@]}"; do
       BOT_ID="${entry%%:*}"
       BOT_LABEL="${entry##*:}"
-      PLACEHOLDER="YOUR_${BOT_ID^^}_BOT_TOKEN"
+      BOT_ID_UPPER=$(printf '%s' "$BOT_ID" | tr '[:lower:]' '[:upper:]')
+      PLACEHOLDER="YOUR_${BOT_ID_UPPER}_BOT_TOKEN"
 
       read -rp "  ${BOT_LABEL} (${BOT_ID}) Token: " BOT_TOKEN
       if [ -n "$BOT_TOKEN" ]; then

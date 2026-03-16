@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useTheme } from "../theme"
 import { getAuthToken } from "../utils/auth"
 
@@ -20,6 +20,15 @@ export default function Search() {
   const [loading, setLoading] = useState(false)
   const [searched, setSearched] = useState(false)
   const { theme } = useTheme()
+  const prevTypeRef = useRef(searchType)
+
+  // Re-trigger search when searchType changes (if already searched)
+  useEffect(() => {
+    if (prevTypeRef.current !== searchType) {
+      prevTypeRef.current = searchType
+      if (searched && query.trim()) handleSearch()
+    }
+  }, [searchType])
 
   const handleSearch = async () => {
     if (!query.trim()) return

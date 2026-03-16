@@ -84,7 +84,7 @@ if command -v openclaw &>/dev/null; then
     echo -e "  ${GREEN}✓ OpenClaw $(openclaw --version 2>/dev/null) 已安装${NC}"
 else
     echo -e "  ${CYAN}→ 安装 OpenClaw...${NC}"
-    npm install -g openclaw 2>/dev/null || npm install -g openclaw 2>/dev/null
+    npm install -g openclaw 2>/dev/null
     if command -v openclaw &>/dev/null; then
         CLI_CMD="openclaw"
         CONFIG_DIR="$HOME/.openclaw"
@@ -299,7 +299,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
       { "id": "libu", "name": "礼部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是礼部尚书，专精品牌营销。回答用中文。" }, "sandbox": { "mode": "off" } },
       { "id": "gongbu", "name": "工部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是工部尚书，专精 DevOps 运维。回答用中文。" }, "sandbox": { "mode": "off" } },
       { "id": "libu2", "name": "吏部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是吏部尚书，专精项目管理。回答用中文。" }, "sandbox": { "mode": "off" } },
-      { "id": "xingbu", "name": "刑部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是刑部尚书，专精法务合规。回答用中文。" }, "sandbox": { "mode": "off" } },
+      { "id": "xingbu", "name": "刑部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是刑部尚书，专精法务合规。回答用中文。" }, "sandbox": { "mode": "all", "scope": "agent" }, "runTimeoutSeconds": 300 },
       {
         "id": "hanlin_zhang",
         "name": "翰林院·掌院学士",
