@@ -1,3 +1,13 @@
+# ---- 前端构建阶段 ----
+FROM node:22-slim AS gui-builder
+WORKDIR /build
+COPY gui/package.json gui/tsconfig.json gui/tsconfig.app.json gui/tsconfig.node.json gui/vite.config.ts gui/index.html ./
+RUN npm install --loglevel=error
+COPY gui/src/ ./src/
+COPY gui/public/ ./public/
+RUN npx tsc -b && npx vite build
+
+# ---- 主镜像 ----
 FROM node:22-slim
 
 LABEL maintainer="wanikua" \
@@ -51,7 +61,8 @@ RUN chmod +x /entrypoint.sh /init-docker.sh && \
 # 复制 skill 和模板
 COPY skills/ ${WORKSPACE}/skills/
 
-# [M-02] 只复制 GUI server（前端源码不需要进镜像）
+# GUI: 复制构建好的前端 + 后端
+COPY --from=gui-builder /build/dist/ /opt/gui/dist/
 COPY gui/server/ /opt/gui/server/
 COPY gui/package.json /opt/gui/package.json
 RUN cd /opt/gui && npm install --production --loglevel=error 2>/dev/null || true && \
