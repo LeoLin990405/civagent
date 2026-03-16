@@ -150,14 +150,19 @@ export default function Court() {
         body: JSON.stringify({ ...(CONFIGURED_COURT_CHANNEL ? { channel: CONFIGURED_COURT_CHANNEL } : {}), message: finalMessage, botId: target })
       })
       const d = await r.json()
+      const now = new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' })
       setMessages(prev => [...prev, {
-        bot: botName, text: command,
-        time: new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
-        ok: d.success
+        bot: botName, text: command, time: now, ok: d.success
       }])
+      // Web-only 模式: agent 回复直接显示在 GUI 中
+      if (d.success && d.reply && d.method === 'web-direct') {
+        setMessages(prev => [...prev, {
+          bot: `${botName} 回奏`, text: d.reply.substring(0, 2000), time: now, ok: true
+        }])
+      }
       if (d.success) {
         setCommand('')
-        setTimeout(fetchChannelMessages, 1500)
+        if (d.method !== 'web-direct') setTimeout(fetchChannelMessages, 1500)
       }
     } catch {
       setMessages(prev => [...prev, { bot: botName, text: command, time: new Date().toLocaleTimeString('zh-CN'), ok: false }])
