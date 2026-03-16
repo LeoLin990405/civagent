@@ -353,13 +353,13 @@ export default function Sessions({ initialFilter }: Props) {
                       {smry.firstMessage && (
                         <div className={`p-2 rounded text-[10px] ${theme === 'light' ? 'bg-gray-50' : 'bg-[#0d0d1a]'}`}>
                           <div className={`${sub} mb-0.5`}>📌 首条消息 · {new Date(smry.firstMessage.timestamp).toLocaleString('zh-CN')}</div>
-                          <div className="leading-relaxed break-all">{smry.firstMessage.preview.substring(0, 150)}...</div>
+                          <div className="leading-relaxed break-all">{smry.firstMessage.preview.substring(0, 150)}{smry.firstMessage.preview.length > 150 ? '...' : ''}</div>
                         </div>
                       )}
                       {smry.lastMessage && (
                         <div className={`p-2 rounded text-[10px] ${theme === 'light' ? 'bg-gray-50' : 'bg-[#0d0d1a]'}`}>
                           <div className={`${sub} mb-0.5`}>🕐 最新消息 · {new Date(smry.lastMessage.timestamp).toLocaleString('zh-CN')}</div>
-                          <div className="leading-relaxed break-all">{smry.lastMessage.preview.substring(0, 150)}...</div>
+                          <div className="leading-relaxed break-all">{smry.lastMessage.preview.substring(0, 150)}{smry.lastMessage.preview.length > 150 ? '...' : ''}</div>
                         </div>
                       )}
                     </div>

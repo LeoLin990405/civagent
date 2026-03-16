@@ -170,7 +170,20 @@ function getRecentLogs(limit = 100) {
 
       for (const file of jsonlFiles) {
         try {
-          const content = readFileSync(join(sessDir, file.name), 'utf-8');
+          // [M-17] 只读文件尾部避免大文件 OOM
+          const filePath = join(sessDir, file.name);
+          const fSize = statSync(filePath).size;
+          let content;
+          if (fSize > 5 * 1024 * 1024) { // >5MB: 只读尾部 64KB
+            const TAIL = 65536;
+            const fd = openSync(filePath, 'r');
+            const buf = Buffer.alloc(TAIL);
+            try { readSync(fd, buf, 0, TAIL, fSize - TAIL); } finally { closeSync(fd); }
+            const raw = buf.toString('utf-8');
+            content = raw.substring(raw.indexOf('\n') + 1);
+          } else {
+            content = readFileSync(filePath, 'utf-8');
+          }
           const lines = content.split('\n').filter(l => l.trim()).slice(-5);
           for (const line of lines) {
             try {
@@ -1203,6 +1216,7 @@ app.get('/api/notion/data', authMiddleware, (req, res) => {
         title: AGENT_DEPT_MAP[id] || id,
         department: AGENT_DEPT_MAP[id] || id,
         status: sessData.sessions > 0 ? 'active' : 'idle',
+        tenure: sessData.sessions > 0 ? `${sessData.sessions} 次会话` : '待命中',
         sessions: sessData.sessions,
         totalTokens: sessData.totalTokens,
       });
@@ -2342,7 +2356,7 @@ app.post('/api/skills/update', authMiddleware, async (req, res) => {
 app.post('/api/skills/explore', authMiddleware, async (req, res) => {
   try {
     const { workspace } = getSkillsDirs();
-    const { stdout } = await execAsync(`clawdhub explore --no-input 2>&1`, {
+    const { stdout } = await execFileAsync('clawdhub', ['explore', '--no-input'], {
       encoding: 'utf-8', timeout: 15000, cwd: workspace,
     });
     // Parse explore output
