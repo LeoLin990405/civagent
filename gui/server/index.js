@@ -773,7 +773,7 @@ app.get('/api/sessions/:sessionId/timeline', authMiddleware, (req, res) => {
     if (cached) return res.json(cached);
     
     const parts = sessionId.split(':');
-    // Only fallback to 'main' if no agent part is provided; if provided but invalid, reject
+    // Fallback to 'silijian' (primary agent) if no agent part is provided; if provided but invalid, reject
     const rawAgentId = parts[1];
     const agentId = rawAgentId ? sanitizeAgentId(rawAgentId) : 'silijian';
     if (!agentId) return res.status(400).json({ error: 'Invalid agent ID', timeline: [] });

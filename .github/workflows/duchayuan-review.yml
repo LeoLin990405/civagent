@@ -31,7 +31,7 @@ jobs:
             echo "No code changes detected, skipping review."
           else
             # 写入文件避免 shell 转义问题
-            echo "$DIFF" > /tmp/diff.txt
+            printf '%s\n' "$DIFF" > /tmp/diff.txt
             echo "skip=false" >> "$GITHUB_OUTPUT"
           fi
 
@@ -60,14 +60,19 @@ jobs:
           OPENCLAW_API_URL: ${{ secrets.OPENCLAW_API_URL }}     # e.g. http://your-server:18789
           OPENCLAW_API_TOKEN: ${{ secrets.OPENCLAW_API_TOKEN }} # Gateway admin token
           DUCHAYUAN_CHANNEL: ${{ secrets.DUCHAYUAN_DISCORD_CHANNEL }}  # Discord channel ID for review reports
+          COMMIT_AUTHOR: ${{ steps.commit.outputs.author }}
+          COMMIT_SHA_SHORT: ${{ steps.commit.outputs.sha }}
+          COMMIT_MSG: ${{ steps.commit.outputs.message }}
+          COMMIT_URL: ${{ steps.commit.outputs.url }}
         run: |
-          REVIEW_PROMPT=$(cat <<'PROMPT_END'
+          # SEC: Use env vars instead of ${{ }} to prevent shell injection via commit messages
+          REVIEW_PROMPT=$(cat <<PROMPT_END
           【都察院自动审查 — GitHub Push 触发】
 
-          提交者: ${{ steps.commit.outputs.author }}
-          Commit: ${{ steps.commit.outputs.sha }}
-          消息: ${{ steps.commit.outputs.message }}
-          链接: ${{ steps.commit.outputs.url }}
+          提交者: ${COMMIT_AUTHOR}
+          Commit: ${COMMIT_SHA_SHORT}
+          消息: ${COMMIT_MSG}
+          链接: ${COMMIT_URL}
 
           请审查以下代码变更，检查：安全漏洞、性能问题、逻辑错误、代码规范。
           审查完毕后将结论发送到 Discord 频道。
