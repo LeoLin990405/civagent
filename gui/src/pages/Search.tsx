@@ -118,14 +118,7 @@ export default function Search() {
     setLoading(false)
   }
 
-  // Re-trigger search when searchType changes (if there's already a query)
-  const searchTypeRef = useRef(searchType)
-  useEffect(() => {
-    if (searchTypeRef.current !== searchType) {
-      searchTypeRef.current = searchType
-      if (query.trim()) handleSearch()
-    }
-  }, [searchType])
+
 
   const typeLabels: Record<SearchType, string> = {
     all: '全部',

@@ -54,9 +54,9 @@ usage() {
 
 Cron 示例:
   # 每天凌晨 3 点备份
-  0 3 * * * \$HOME/danghuangshang/scripts/memory-backup.sh -q
+  0 3 * * * \$HOME/clawd/scripts/memory-backup.sh -q
   # 每周日额外做一次完整备份
-  0 4 * * 0 \$HOME/danghuangshang/scripts/memory-backup.sh -q
+  0 4 * * 0 \$HOME/clawd/scripts/memory-backup.sh -q
 EOF
     exit 0
 }

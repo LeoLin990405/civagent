@@ -20,15 +20,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // CLI 命令
-let CLI_CMD = 'clawdbot';
+let CLI_CMD = 'openclaw';
 try {
-  await execAsync('which clawdbot', { encoding: 'utf-8', timeout: 3000 });
-  CLI_CMD = 'clawdbot';
+  await execAsync('which openclaw', { encoding: 'utf-8', timeout: 3000 });
+  CLI_CMD = 'openclaw';
 } catch {
   try {
-    await execAsync('which openclaw', { encoding: 'utf-8', timeout: 3000 });
-    CLI_CMD = 'openclaw';
-  } catch { CLI_CMD = 'clawdbot'; }
+    await execAsync('which clawdbot', { encoding: 'utf-8', timeout: 3000 });
+    CLI_CMD = 'clawdbot';
+  } catch { CLI_CMD = 'openclaw'; }
 }
 
 const app = express();

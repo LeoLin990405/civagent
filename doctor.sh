@@ -232,6 +232,17 @@ print(d.get('username','?') + '|' + d.get('id','?'))
                     continue
                 fi
 
+                # --- 检查 per-account groupPolicy ---
+                ACCT_GP=$(json_get "$CONFIG_FILE" "channels.discord.accounts.$acct.groupPolicy")
+                if [ "$ACCT_GP" = "open" ]; then
+                    pass "[$DISPLAY_NAME] groupPolicy: open ✓"
+                elif [ -n "$ACCT_GP" ]; then
+                    warn "[$DISPLAY_NAME] groupPolicy: $ACCT_GP — 群聊消息可能被丢弃，建议设为 \"open\""
+                else
+                    fail "[$DISPLAY_NAME] groupPolicy 未设置 — 全局 groupPolicy 不会继承到 account，群聊消息会被丢弃！"
+                    info "在 channels.discord.accounts.$acct 中添加 \"groupPolicy\": \"open\""
+                fi
+
                 # --- 检查 Privileged Intents ---
                 APP_RESP=$(curl -sS -w "\n%{http_code}" -H @<(echo "Authorization: Bot $TOKEN") \
                     "https://discord.com/api/v10/applications/@me" 2>/dev/null)
