@@ -104,7 +104,7 @@ cd "$WORKSPACE"
 
 # SOUL.md
 if [ ! -f "$WORKSPACE/SOUL.md" ]; then
-cat > "$WORKSPACE/SOUL.md.example" << 'SOUL_EOF'
+cat > "$WORKSPACE/SOUL.md" << 'SOUL_EOF'
 # SOUL.md - 朝廷行为准则
 
 ## 铁律
@@ -226,7 +226,10 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
         "identity": { "theme": "你是AI朝廷的总管，负责日常对话和任务调度。回答用中文，简洁高效。" }
       }
     ]
-  }
+  },
+  "bindings": [
+    { "agentId": "silijian", "match": {} }
+  ]
 }
 CONFIG_EOF
 echo -e "  ${GREEN}✓ WebUI 模式配置已生成${NC}"

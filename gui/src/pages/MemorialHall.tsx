@@ -65,7 +65,7 @@ export default function MemorialHall() {
         // 检查长时间未活跃的会话
         const now = Date.now()
         for (const session of sessions) {
-          const inactiveMs = now - session.updatedAt
+          const inactiveMs = now - new Date(session.updatedAt).getTime()
           if (inactiveMs > 24 * 60 * 60 * 1000) { // 超过24小时
             pendingItems.push({
               id: `session-${session.id}`,

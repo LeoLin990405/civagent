@@ -114,8 +114,10 @@ export default function NotionBoard() {
     { key: 'personnel', label: '臣工表', icon: '👥' }
   ]
 
-  // 获取部门列表用于筛选
-  const depts = [...new Set(dailyData.map(d => d.author).filter(Boolean))]
+  // 获取部门列表用于筛选（根据当前 tab 使用不同字段）
+  const dailyDepts = [...new Set(dailyData.map(d => d.author).filter(Boolean))]
+  const financeDepts = [...new Set(financeData.map(f => f.category).filter(Boolean))]
+  const depts = activeTab === 'finance' ? financeDepts : dailyDepts
 
   if (loading) {
     return <div className="text-[#a3a3a3]">加载中...</div>
