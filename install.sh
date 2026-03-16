@@ -1,7 +1,7 @@
 #!/bin/bash
 # Escape special sed characters in user input to prevent injection
 sed_escape() {
-  printf '%s' "$1" | sed 's/[\\|&\/]/\\&/g'
+  printf '%s' "$1" | sed 's/[\\|&\/\.\*\[\]\^\$]/\\&/g'
 }
 
 # Cross-platform sed -i (macOS BSD sed vs GNU sed)
@@ -361,19 +361,9 @@ if [[ "$HOME" == *" "* ]]; then
 fi
 WORKSPACE="$HOME/clawd"
 # ---- 检测 CLI 类型 ----
-if command -v openclaw &>/dev/null; then
-    CLI_CMD="openclaw"
-    CONFIG_DIR="$HOME/.openclaw"
-    CONFIG_FILE_NAME="openclaw.json"
-elif command -v openclaw &>/dev/null; then
-    CLI_CMD="openclaw"
-    CONFIG_DIR="$HOME/.openclaw"
-    CONFIG_FILE_NAME="openclaw.json"
-else
-    CLI_CMD="openclaw"
-    CONFIG_DIR="$HOME/.openclaw"
-    CONFIG_FILE_NAME="openclaw.json"
-fi
+CLI_CMD="openclaw"
+CONFIG_DIR="$HOME/.openclaw"
+CONFIG_FILE_NAME="openclaw.json"
 mkdir -p "$WORKSPACE"
 mkdir -p "$CONFIG_DIR"
 cd "$WORKSPACE"
@@ -1104,7 +1094,7 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
       echo -e "  ${YELLOW}↳ 请用 nano $CONFIG_FILE 手动修复${NC}"
     fi
   elif command -v python3 &>/dev/null; then
-    if python3 -c "import json; json.load(open('$CONFIG_FILE'))" 2>/dev/null; then
+    if CONFIG_FILE="$CONFIG_FILE" python3 -c "import json, os; json.load(open(os.environ['CONFIG_FILE']))" 2>/dev/null; then
       echo -e "  ${GREEN}✓ JSON 格式正确${NC}"
     else
       echo -e "  ${RED}✗ JSON 格式有误，请检查 $CONFIG_FILE${NC}"

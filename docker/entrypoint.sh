@@ -143,6 +143,7 @@ fi
 # ---- 信号处理：清理后台进程 ----
 cleanup() {
     [ -n "$GUI_PID" ] && kill "$GUI_PID" 2>/dev/null
+    [ -n "$GATEWAY_PID" ] && kill "$GATEWAY_PID" 2>/dev/null
     exit 0
 }
 trap cleanup SIGTERM SIGINT
@@ -156,4 +157,6 @@ echo "  Dashboard: http://localhost:18795"
 echo "  初始化:    docker exec -it ai-court init-court"
 echo ""
 
-exec "$@"
+"$@" &
+GATEWAY_PID=$!
+wait $GATEWAY_PID

@@ -1,3 +1,8 @@
+---
+name: openviking
+description: OpenViking 集成 — 浏览器自动化与 Web 搜索工具
+---
+
 # OpenViking Skill
 
 OpenViking 上下文数据库集成 — 给 AI 朝廷加上长期记忆和知识库。

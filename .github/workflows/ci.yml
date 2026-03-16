@@ -28,11 +28,9 @@ jobs:
           scandir: '.'
           additional_files: 'install.sh install-lite.sh install-mac.sh doctor.sh'
           severity: warning
-        continue-on-error: true
 
       - name: Check Dockerfile builds
         run: docker build --no-cache -t ai-court-test . 2>&1 | tail -5
-        continue-on-error: true
 
       - name: GUI server syntax check
         uses: actions/setup-node@v4

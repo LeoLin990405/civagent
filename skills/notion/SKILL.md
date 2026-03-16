@@ -7,7 +7,7 @@ metadata: {"openclaw":{"emoji":"📝"}}
 
 # notion
 
-Use the Notion API to create/read/update pages, data sources (databases), and blocks.
+Use the Notion API to create/read/update pages, databases (databases), and blocks.
 
 ## Setup
 
@@ -27,19 +27,19 @@ All requests need:
 NOTION_KEY=$(cat ~/.config/notion/api_key)
 curl -X GET "https://api.notion.com/v1/..." \
   -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2025-09-03" \
+  -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json"
 ```
 
-> **Note:** The `Notion-Version` header is required. This skill uses `2025-09-03` (latest). In this version, databases are called "data sources" in the API.
+> **Note:** The `Notion-Version` header is required. This skill uses `2022-06-28` (latest). In this version, databases are called "databases" in the API.
 
 ## Common Operations
 
-**Search for pages and data sources:**
+**Search for pages and databases:**
 ```bash
 curl -X POST "https://api.notion.com/v1/search" \
   -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2025-09-03" \
+  -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
   -d '{"query": "page title"}'
 ```
@@ -48,21 +48,21 @@ curl -X POST "https://api.notion.com/v1/search" \
 ```bash
 curl "https://api.notion.com/v1/pages/{page_id}" \
   -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2025-09-03"
+  -H "Notion-Version: 2022-06-28"
 ```
 
 **Get page content (blocks):**
 ```bash
 curl "https://api.notion.com/v1/blocks/{page_id}/children" \
   -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2025-09-03"
+  -H "Notion-Version: 2022-06-28"
 ```
 
-**Create page in a data source:**
+**Create page in a database:**
 ```bash
 curl -X POST "https://api.notion.com/v1/pages" \
   -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2025-09-03" \
+  -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
   -d '{
     "parent": {"database_id": "xxx"},
@@ -73,11 +73,11 @@ curl -X POST "https://api.notion.com/v1/pages" \
   }'
 ```
 
-**Query a data source (database):**
+**Query a database (database):**
 ```bash
-curl -X POST "https://api.notion.com/v1/data_sources/{data_source_id}/query" \
+curl -X POST "https://api.notion.com/v1/databases/{data_source_id}/query" \
   -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2025-09-03" \
+  -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
   -d '{
     "filter": {"property": "Status", "select": {"equals": "Active"}},
@@ -85,11 +85,11 @@ curl -X POST "https://api.notion.com/v1/data_sources/{data_source_id}/query" \
   }'
 ```
 
-**Create a data source (database):**
+**Create a database (database):**
 ```bash
-curl -X POST "https://api.notion.com/v1/data_sources" \
+curl -X POST "https://api.notion.com/v1/databases" \
   -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2025-09-03" \
+  -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
   -d '{
     "parent": {"page_id": "xxx"},
@@ -106,7 +106,7 @@ curl -X POST "https://api.notion.com/v1/data_sources" \
 ```bash
 curl -X PATCH "https://api.notion.com/v1/pages/{page_id}" \
   -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2025-09-03" \
+  -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
   -d '{"properties": {"Status": {"select": {"name": "Done"}}}}'
 ```
@@ -115,7 +115,7 @@ curl -X PATCH "https://api.notion.com/v1/pages/{page_id}" \
 ```bash
 curl -X PATCH "https://api.notion.com/v1/blocks/{page_id}/children" \
   -H "Authorization: Bearer $NOTION_KEY" \
-  -H "Notion-Version: 2025-09-03" \
+  -H "Notion-Version: 2022-06-28" \
   -H "Content-Type: application/json" \
   -d '{
     "children": [
@@ -138,19 +138,19 @@ Common property formats for database items:
 - **Email:** `{"email": "a@b.com"}`
 - **Relation:** `{"relation": [{"id": "page_id"}]}`
 
-## Key Differences in 2025-09-03
+## Key Differences in 2022-06-28
 
-- **Databases → Data Sources:** Use `/data_sources/` endpoints for queries and retrieval
+- **Databases → Data Sources:** Use `/databases/` endpoints for queries and retrieval
 - **Two IDs:** Each database now has both a `database_id` and a `data_source_id`
   - Use `database_id` when creating pages (`parent: {"database_id": "..."}`)
-  - Use `data_source_id` when querying (`POST /v1/data_sources/{id}/query`)
+  - Use `data_source_id` when querying (`POST /v1/databases/{id}/query`)
 - **Search results:** Databases return as `"object": "data_source"` with their `data_source_id`
 - **Parent in responses:** Pages show `parent.data_source_id` alongside `parent.database_id`
-- **Finding the data_source_id:** Search for the database, or call `GET /v1/data_sources/{data_source_id}`
+- **Finding the data_source_id:** Search for the database, or call `GET /v1/databases/{data_source_id}`
 
 ## Notes
 
 - Page/database IDs are UUIDs (with or without dashes)
 - The API cannot set database view filters — that's UI-only
 - Rate limit: ~3 requests/second average
-- Use `is_inline: true` when creating data sources to embed them in pages
+- Use `is_inline: true` when creating databases to embed them in pages

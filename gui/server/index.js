@@ -64,9 +64,7 @@ const OPENCLAW_DIR = join(HOME, '.openclaw');
 
 const STATE_DIR = OPENCLAW_DIR;
 const AGENTS_DIR = join(STATE_DIR, 'agents');
-const CONFIG_PATH = existsSync(join(OPENCLAW_DIR, 'openclaw.json'))
-  ? join(OPENCLAW_DIR, 'openclaw.json')
-  : join(OPENCLAW_DIR, 'openclaw.json');
+const CONFIG_PATH = join(OPENCLAW_DIR, 'openclaw.json');
 
 app.use(cors());
 app.use(express.json());
@@ -217,7 +215,7 @@ function detectAgentPlatforms(agentId) {
 
 app.get('/api/status', authMiddleware, async (req, res) => {
   const config = getOpenclawConfig();
-  const defaultModel = config?.agents?.defaults?.model?.primary || 'minimax/MiniMax-M2.5';
+  const defaultModel = config?.agents?.defaults?.model?.primary || config?.defaultModel || 'unknown';
 
   let agentIds = [];
   if (existsSync(AGENTS_DIR)) {
@@ -1061,14 +1059,21 @@ app.get('/api/config', authMiddleware, (req, res) => {
 // 重启 Gateway（杀掉主进程，Docker restart policy 会自动重启容器）
 app.post('/api/gateway/restart', authMiddleware, async (req, res) => {
   console.log('[AUDIT] Gateway restart requested');
-  res.json({ success: true, message: 'Gateway 正在重启，容器将自动恢复...' });
-  // 延迟发送 SIGTERM 给 PID 1（gateway 主进程），让响应先发出去
+  // 检测是否在容器内运行
+  const isContainer = existsSync('/.dockerenv') || existsSync('/run/.containerenv');
+  res.json({ success: true, message: 'Gateway 正在重启...' });
   setTimeout(() => {
     try {
-      process.kill(1, 'SIGTERM');
+      if (isContainer) {
+        // 容器内：杀 PID 1，Docker restart policy 自动重启
+        process.kill(1, 'SIGTERM');
+      } else {
+        // 非容器：杀 gateway 进程
+        const { execSync } = require('child_process');
+        execSync('pkill -f "openclaw.*gateway" || pkill -f "clawdbot.*gateway" || true');
+      }
     } catch (e) {
-      console.error('[RESTART] Failed to kill PID 1:', e.message);
-      process.exit(0);
+      console.error('[RESTART] Failed:', e.message);
     }
   }, 500);
 });
@@ -1355,8 +1360,8 @@ app.patch('/api/cron/jobs/:id', authMiddleware, async (req, res) => {
             const job = config.cron.jobs.find(j => j.id === id);
             if (job) {
               job.enabled = enabled;
-              // Note: we don't write config here — that requires gateway restart
-              res.json({ success: true, message: `任务 ${id} 状态更新（需重启生效）`, id, enabled, pending: true });
+              // Note: we don't write config here — change is NOT persisted
+              res.json({ success: false, message: `CLI 操作失败，请手动修改配置文件`, requiresManualEdit: true });
             } else {
               res.status(404).json({ success: false, message: `任务 ${id} 不存在` });
             }
@@ -1750,22 +1755,7 @@ app.post('/api/command', authMiddleware, async (req, res) => {
     console.log(`[COMMAND] Gateway wake result: ${stdout.trim()}`);
     return res.json({ success: true, sentAs: usedBot, method: 'gateway', detail: stdout.trim() });
   } catch (wakeErr) {
-    // Fallback: try with simple single-quote escaping if stdin mode not supported
-    try {
-      const wakeText = safeBotId ? `[Court指令→${AGENT_DEPT_MAP[safeBotId] || safeBotId}] ${message}` : message;
-      // Strict shell escaping: replace all single quotes with '\'' (close, escape, reopen)
-      const safeText = wakeText.replace(/'/g, "'\\''");
-      // Truncate to prevent excessively long commands
-      const truncated = safeText.substring(0, 2000);
-      const { stdout } = await execAsync(
-        `${CLI_CMD} gateway wake --text '${truncated}' --mode now 2>&1`,
-        { encoding: 'utf-8', timeout: 10000 }
-      );
-      console.log(`[COMMAND] Gateway wake (fallback) result: ${stdout.trim()}`);
-      return res.json({ success: true, sentAs: usedBot, method: 'gateway', detail: stdout.trim() });
-    } catch (fallbackErr) {
-      console.error(`[COMMAND] Gateway wake failed: ${fallbackErr.message}`);
-    }
+    console.error(`[COMMAND] Gateway wake failed: ${wakeErr.message}`);
   }
   
   // 策略3: 直接写入 agent session（最后兜底）
@@ -1777,18 +1767,8 @@ app.post('/api/command', authMiddleware, async (req, res) => {
       { encoding: 'utf-8', timeout: 10000 }
     );
     return res.json({ success: true, sentAs: usedBot, method: 'session', detail: stdout.trim() });
-  } catch {
-    // Final fallback with escaping
-    try {
-      const safeMsg = message.replace(/'/g, "'\\''").substring(0, 2000);
-      const { stdout } = await execAsync(
-        `${CLI_CMD} session send --agent ${usedBot} --text '${safeMsg}' 2>&1`,
-        { encoding: 'utf-8', timeout: 10000 }
-      );
-      return res.json({ success: true, sentAs: usedBot, method: 'session', detail: stdout.trim() });
-    } catch (sessErr) {
-      return res.status(500).json({ error: `All delivery methods failed. Last: ${sessErr.message}`, sentAs: usedBot });
-    }
+  } catch (sessErr) {
+    return res.status(500).json({ error: `All delivery methods failed. Last: ${sessErr.message}`, sentAs: usedBot });
   }
 });
 
@@ -1951,7 +1931,7 @@ const ipLocations = {};
 
 app.get('/api/location/track', authMiddleware, async (req, res) => {
   const clientIp = req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
-  const role = req.query.role || 'unknown'; // 'emperor' or 'queen'
+  const role = (req.query.role || 'unknown').replace(/[^a-zA-Z0-9_-]/g, '').substring(0, 32);
   
   try {
     const r = await fetch(`http://ip-api.com/json/${clientIp}?lang=zh-CN&fields=status,country,regionName,city,lat,lon,query`, { signal: AbortSignal.timeout(5000) });
@@ -2276,6 +2256,10 @@ const distPath = join(__dirname, '../dist');
 app.use(express.static(distPath));
 
 app.get('*', (req, res) => {
+  // API 路径返回 JSON 404，不返回 HTML
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'API endpoint not found' });
+  }
   const indexPath = join(distPath, 'index.html');
   if (existsSync(indexPath)) {
     res.sendFile(indexPath);

@@ -36,9 +36,6 @@ echo ""
 if command -v openclaw &>/dev/null; then
     CLI_CMD="openclaw"
     echo -e "  ${GREEN}✓ 检测到 OpenClaw $(openclaw --version 2>/dev/null)${NC}"
-elif command -v openclaw &>/dev/null; then
-    CLI_CMD="openclaw"
-    echo -e "  ${GREEN}✓ 检测到 OpenClaw $(openclaw --version 2>/dev/null)${NC}"
 else
     echo -e "  ${RED}✗ 未检测到 OpenClaw${NC}"
     echo ""

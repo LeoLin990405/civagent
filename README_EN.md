@@ -275,7 +275,6 @@ systemctl --user start openclaw-gateway
 
 ---
 
-| `novel-memory` | File-based memory system: chapter summaries, character states, foreshadowing tracking (default) | All roles |
 
 ### Hanlin Academy OpenViking Integration
 

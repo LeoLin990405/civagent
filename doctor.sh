@@ -92,10 +92,6 @@ if command -v openclaw &>/dev/null; then
     CLI_CMD="openclaw"
     CLI_VER=$(openclaw --version 2>/dev/null || echo "unknown")
     pass "OpenClaw 已安装 ($CLI_VER)"
-elif command -v openclaw &>/dev/null; then
-    CLI_CMD="openclaw"
-    CLI_VER=$(openclaw --version 2>/dev/null || echo "unknown")
-    pass "OpenClaw 已安装 ($CLI_VER)"
 else
     fail "未检测到 OpenClaw — 请先安装: npm install -g openclaw@latest"
     CLI_CMD=""
@@ -114,12 +110,7 @@ fi
 echo ""
 echo -e "${YELLOW}[2/9] 检查配置文件...${NC}"
 
-CONFIG_FILE=""
-if [ -f "$HOME/.openclaw/openclaw.json" ]; then
-    CONFIG_FILE="$HOME/.openclaw/openclaw.json"
-elif [ -f "$HOME/.openclaw/openclaw.json" ]; then
-    CONFIG_FILE="$HOME/.openclaw/openclaw.json"
-fi
+CONFIG_FILE="$HOME/.openclaw/openclaw.json"
 
 if [ -z "$CONFIG_FILE" ]; then
     fail "配置文件不存在 — 请运行 $CLI_CMD onboard 或手动创建"
@@ -696,10 +687,6 @@ fi
 # Gateway 服务状态
 if systemctl --user is-active openclaw-gateway &>/dev/null; then
     pass "Gateway 服务运行中（openclaw-gateway）"
-elif systemctl --user is-active openclaw-gateway &>/dev/null; then
-    pass "Gateway 服务运行中（openclaw-gateway）"
-elif systemctl is-active openclaw-gateway &>/dev/null 2>&1; then
-    pass "Gateway 服务运行中（openclaw-gateway, system）"
 elif systemctl is-active openclaw-gateway &>/dev/null 2>&1; then
     pass "Gateway 服务运行中（openclaw-gateway, system）"
 else

@@ -11,9 +11,9 @@ Manage tasks on the Quadrants Eisenhower Matrix (quadrants.ch) via OpenClaw.
 
 All operations go through `POST https://quadrants.ch/api/service` with header `X-API-Key`.
 
-Credentials stored in TOOLS.md:
+Credentials should be configured via environment variables or openclaw.json:
 - `QUADRANTS_API_KEY` — Service API key
-- Default project: `proj_1761970830791_fhgaxrmo9`
+- Default project: `YOUR_PROJECT_ID`
 
 ## Direct API Calls (preferred over CLI)
 

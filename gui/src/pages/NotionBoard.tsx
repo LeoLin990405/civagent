@@ -337,7 +337,11 @@ export default function NotionBoard() {
               <div>{person.title}</div>
               <div className="text-[#d4a574]">{person.department}</div>
               <div>
-                <span className="px-2 py-0.5 text-xs rounded bg-green-500/20 text-green-500">
+                <span className={`px-2 py-0.5 text-xs rounded ${
+                  person.status === 'active'
+                    ? 'bg-green-500/20 text-green-500'
+                    : 'bg-gray-500/20 text-gray-400'
+                }`}>
                   {person.status === 'active' ? '在任' : '离任'}
                 </span>
               </div>
