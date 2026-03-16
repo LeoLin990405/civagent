@@ -325,7 +325,7 @@ export default function Dashboard({ data, onNavigate }: Props) {
               >
                 <span className={`w-4 text-[10px] sm:text-xs font-mono ${i < 3 ? 'text-[#d4a574] font-bold' : sub}`}>{i + 1}</span>
                 <span className="w-12 sm:w-16 text-[10px] sm:text-xs truncate">{bot.displayName || bot.name}</span>
-                <div className={`flex-1 h-4 sm:h-5 rounded overflow-hidden ${theme === 'light' ? 'bg-gray-200' : 'bg-[#0d0d1a]'}`}>
+                <div className={`flex-1 h-4 sm:h-5 rounded overflow-hidden ${theme === 'light' ? 'bg-gray-100' : 'bg-[#0d0d1a]'}`}>
                   <div
                     className={`h-full rounded ${i === 0 ? 'bg-gradient-to-r from-[#d4a574] to-[#e5b584]' : i < 3 ? 'bg-[#d4a574]/70' : 'bg-[#d4a574]/40'}`}
                     style={{ width: `${pct}%` }}

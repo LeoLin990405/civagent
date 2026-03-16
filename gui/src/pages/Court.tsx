@@ -154,7 +154,6 @@ export default function Court() {
       setMessages(prev => [...prev, {
         bot: botName, text: command, time: now, ok: d.success
       }])
-      // Web-only 模式: agent 回复直接显示在 GUI 中
       if (d.success && d.reply && d.method === 'web-direct') {
         setMessages(prev => [...prev, {
           bot: `${botName} 回奏`, text: d.reply.substring(0, 2000), time: now, ok: true
