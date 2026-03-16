@@ -60,8 +60,12 @@ const AGENT_DEPT_MAP = {
 };
 
 const HOME = process.env.HOME || '/home/ubuntu';
-// OpenClaw 配置目录
-const OPENCLAW_DIR = join(HOME, '.openclaw');
+// 兼容 OpenClaw (.openclaw) 和 Clawdbot (.clawdbot) 两种目录结构
+const OPENCLAW_DIR = existsSync(join(HOME, '.openclaw'))
+  ? join(HOME, '.openclaw')
+  : existsSync(join(HOME, '.clawdbot'))
+    ? join(HOME, '.clawdbot')
+    : join(HOME, '.openclaw'); // fallback
 
 const STATE_DIR = OPENCLAW_DIR;
 const AGENTS_DIR = join(STATE_DIR, 'agents');
@@ -72,7 +76,10 @@ function isValidSessionPath(filePath) {
   const resolved = resolve(filePath);
   return resolved.startsWith(AGENTS_DIR) || resolved.startsWith(STATE_DIR);
 }
-const CONFIG_PATH = join(OPENCLAW_DIR, 'openclaw.json');
+// 兼容配置文件名
+const CONFIG_PATH = existsSync(join(OPENCLAW_DIR, 'openclaw.json'))
+  ? join(OPENCLAW_DIR, 'openclaw.json')
+  : join(OPENCLAW_DIR, 'clawdbot.json');
 
 app.use(cors());
 app.use(express.json());
@@ -269,12 +276,15 @@ app.get('/api/status', authMiddleware, async (req, res) => {
 
   const logs = getRecentLogs(100);
 
-  // Measure real gateway ping
+  // Measure real gateway ping — auto-detect gateway host:port from config
   let gatewayPing = -1;
   let gatewayStatus = 'unknown';
   try {
+    const gwConfig = loadConfig()?.gateway || {};
+    const gwHost = gwConfig.host || 'localhost';
+    const gwPort = gwConfig.port || 18789;
     const pingStart = Date.now();
-    const pingRes = await fetch('http://localhost:18789/health', { signal: AbortSignal.timeout(3000) });
+    const pingRes = await fetch(`http://${gwHost}:${gwPort}/health`, { signal: AbortSignal.timeout(3000) });
     if (pingRes.ok) {
       gatewayPing = Date.now() - pingStart;
       gatewayStatus = 'ready';
@@ -1429,7 +1439,10 @@ async function readGatewayLogs(opts = {}) {
     logs = [];
     try {
       // Try journalctl for gateway service logs
-      const svcName = 'openclaw-gateway';
+      // Try both service names (openclaw-gateway / clawdbot-gateway)
+      const svcName = existsSync('/etc/systemd/system/clawdbot-gateway.service')
+        || existsSync(join(HOME, '.config/systemd/user/clawdbot-gateway.service'))
+        ? 'clawdbot-gateway' : 'openclaw-gateway';
       let cmd = `journalctl -u ${svcName} --no-pager -n 200 --output=short-iso 2>/dev/null`;
       if (since && /^[\d\-T:+. ]+$/.test(since)) cmd += ` --since="${since}"`;
       
@@ -1441,6 +1454,7 @@ async function readGatewayLogs(opts = {}) {
         // Fallback: read from log files
         const logPaths = [
           join(HOME, '.openclaw/logs/gateway.log'),
+          join(HOME, '.clawdbot/logs/gateway.log'),
           '/tmp/openclaw.log',
           '/tmp/boluo-gui.log',
         ];
