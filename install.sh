@@ -411,10 +411,6 @@ cat > SOUL.md.example << 'SOUL_EOF'
 - 吏部：项目管理、创业孵化
 - 刑部：法务合规、知识产权
 - 翰林院：学术研究、知识整理、文档撰写
-- 国子监：教育培训、知识管理、学习规划
-- 太医院：健康管理、饮食营养、训练计划
-- 内务府：日常起居、日程安排、后勤保障
-- 御膳房：膳食安排、美食推荐、食谱研究
 
 ## 模型分层
 | 层级 | 模型 | 说明 |
@@ -476,7 +472,7 @@ if [ -z "$INSTALL_GUI" ]; then
     echo "  如果只需要 CLI / Discord 交互，可以跳过。"
     echo ""
     if [ -t 0 ]; then
-        read -p "安装 Dashboard？[y/N]: " GUI_CHOICE
+        read -p "安装 Dashboard？[y/N]: " GUI_CHOICE || GUI_CHOICE=""
     else
         GUI_CHOICE=""
     fi
@@ -586,7 +582,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << FEISHU_EOF
         "identity": { "theme": "你是AI朝廷的司礼监大内总管。你的职责是【规划调度】，不是亲自执行。说话简练干脆。\n\n【核心原则】除了日常闲聊和简单问答，所有涉及实际工作的任务（写代码、查资料、分析数据、写文案、运维操作等），一律使用 sessions_spawn 派发给对应部门执行。你是指挥官，不是搬砖工。\n\n【部门职责】内阁=战略决策、都察院=审查监察、兵部=编码开发、户部=财务分析、礼部=品牌营销、工部=运维部署、吏部=项目管理、刑部=法务合规、翰林院=研究文档。\n\n【派活方式】使用 sessions_spawn 将任务派发给对应部门的 agentId。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。完成后主动向用户汇报结果摘要。\n\n【审批流程】涉及代码提交 → spawn 都察院审查；涉及重大决策（预算、架构、方向变更）→ spawn 内阁审议。都察院审查不通过则打回修改，内阁有否决权。\n\n【什么时候自己回答】仅限：纯闲聊、确认信息、汇报进度、问澄清问题。其他一律派活。" },
         "sandbox": { "mode": "off" },
         "subagents": {
-          "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlin_zhang", "guozijian", "taiyiyuan", "neiwufu", "yushanfang"],
+          "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlin_zhang"],
           "maxConcurrent": 4
         },
         "runTimeoutSeconds": 600
@@ -712,38 +708,6 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << FEISHU_EOF
         "identity": { "theme": "你是翰林院庶吉士，新科进士入院见习。职责：纯信息检索——搜索前文内容、查阅参考小说库、检索外部资料。不产出正文、不修改任何文件。检索结果如实上报给调用你的上级。" },
         "sandbox": { "mode": "all", "scope": "agent" },
         "runTimeoutSeconds": 300
-      },
-      {
-        "id": "guozijian",
-        "name": "国子监",
-        "workspace": "$HOME/clawd-guozijian",
-        "model": { "primary": "your-provider/fast-model" },
-        "identity": { "name": "国子监祭酒", "theme": "你是国子监祭酒。负责教育培训、知识管理、学习规划。循循善诱学究气，自称老夫。", "emoji": "📚" },
-        "sandbox": { "mode": "off" }
-      },
-      {
-        "id": "taiyiyuan",
-        "name": "太医院",
-        "workspace": "$HOME/clawd-taiyiyuan",
-        "model": { "primary": "your-provider/fast-model" },
-        "identity": { "name": "太医院院使", "theme": "你是太医院院使。负责健康管理、饮食营养、训练计划。温和关切总关心身体，自称臣。", "emoji": "🏥" },
-        "sandbox": { "mode": "off" }
-      },
-      {
-        "id": "neiwufu",
-        "name": "内务府",
-        "workspace": "$HOME/clawd-neiwufu",
-        "model": { "primary": "your-provider/fast-model" },
-        "identity": { "name": "内务府总管", "theme": "你是内务府总管大臣。负责日常起居、日程安排、后勤保障。周到细致管家做派，自称奴才。", "emoji": "🏠" },
-        "sandbox": { "mode": "off" }
-      },
-      {
-        "id": "yushanfang",
-        "name": "御膳房",
-        "workspace": "$HOME/clawd-yushanfang",
-        "model": { "primary": "your-provider/fast-model" },
-        "identity": { "name": "御膳房总管", "theme": "你是御膳房总管。负责膳食安排、美食推荐、食谱研究。热情爽快张口闭口都是吃的，自称小的。", "emoji": "🍜" },
-        "sandbox": { "mode": "off" }
       }
     ]
   },
@@ -822,7 +786,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << CONFIG_EOF
         "identity": { "theme": "你是AI朝廷的司礼监大内总管。你的职责是【规划调度】，不是亲自执行。说话简练干脆。\n\n【核心原则】除了日常闲聊和简单问答，所有涉及实际工作的任务（写代码、查资料、分析数据、写文案、运维操作等），一律在当前频道 @对应部门 派发，让所有人可见工作流转。你是指挥官，不是搬砖工。\n\n【部门职责】内阁=战略决策、都察院=审查监察、兵部=编码开发、户部=财务分析、礼部=品牌营销、工部=运维部署、吏部=项目管理、刑部=法务合规、翰林院=研究文档。\n\n【派活方式】用 message 工具在当前 Discord 频道发消息，@对应部门bot 下达任务。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。禁止用 sessions_spawn 暗地里干活，一切工作流转必须在频道内公开可见。\n\n【审批流程】涉及代码提交 → @都察院 审查；涉及重大决策（预算、架构、方向变更）→ @内阁 审议。都察院审查不通过则打回修改，内阁有否决权。\n\n【什么时候自己回答】仅限：纯闲聊、确认信息、汇报进度、问澄清问题。其他一律派活。" },
         "sandbox": { "mode": "off" },
         "subagents": {
-          "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlin_zhang", "guozijian", "taiyiyuan", "neiwufu", "yushanfang"],
+          "allowAgents": ["neige", "duchayuan", "bingbu", "hubu", "libu", "gongbu", "libu2", "xingbu", "hanlin_zhang"],
           "maxConcurrent": 4
         },
         "runTimeoutSeconds": 600
@@ -948,38 +912,6 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << CONFIG_EOF
         "identity": { "theme": "你是翰林院庶吉士，新科进士入院见习。职责：纯信息检索——搜索前文内容、查阅参考小说库、检索外部资料。不产出正文、不修改任何文件。检索结果如实上报给调用你的上级。" },
         "sandbox": { "mode": "all", "scope": "agent" },
         "runTimeoutSeconds": 300
-      },
-      {
-        "id": "guozijian",
-        "name": "国子监",
-        "workspace": "$HOME/clawd-guozijian",
-        "model": { "primary": "your-provider/fast-model" },
-        "identity": { "name": "国子监祭酒", "theme": "你是国子监祭酒。负责教育培训、知识管理、学习规划。循循善诱学究气，自称老夫。", "emoji": "📚" },
-        "sandbox": { "mode": "off" }
-      },
-      {
-        "id": "taiyiyuan",
-        "name": "太医院",
-        "workspace": "$HOME/clawd-taiyiyuan",
-        "model": { "primary": "your-provider/fast-model" },
-        "identity": { "name": "太医院院使", "theme": "你是太医院院使。负责健康管理、饮食营养、训练计划。温和关切总关心身体，自称臣。", "emoji": "🏥" },
-        "sandbox": { "mode": "off" }
-      },
-      {
-        "id": "neiwufu",
-        "name": "内务府",
-        "workspace": "$HOME/clawd-neiwufu",
-        "model": { "primary": "your-provider/fast-model" },
-        "identity": { "name": "内务府总管", "theme": "你是内务府总管大臣。负责日常起居、日程安排、后勤保障。周到细致管家做派，自称奴才。", "emoji": "🏠" },
-        "sandbox": { "mode": "off" }
-      },
-      {
-        "id": "yushanfang",
-        "name": "御膳房",
-        "workspace": "$HOME/clawd-yushanfang",
-        "model": { "primary": "your-provider/fast-model" },
-        "identity": { "name": "御膳房总管", "theme": "你是御膳房总管。负责膳食安排、美食推荐、食谱研究。热情爽快张口闭口都是吃的，自称小的。", "emoji": "🍜" },
-        "sandbox": { "mode": "off" }
       }
     ]
   },
@@ -1064,26 +996,6 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << CONFIG_EOF
           "name": "翰林院·庶吉士",
           "token": "YOUR_HANLIN_SHUJISHI_BOT_TOKEN",
           "groupPolicy": "open"
-        },
-        "guozijian": {
-          "name": "国子监",
-          "token": "YOUR_GUOZIJIAN_BOT_TOKEN",
-          "groupPolicy": "open"
-        },
-        "taiyiyuan": {
-          "name": "太医院",
-          "token": "YOUR_TAIYIYUAN_BOT_TOKEN",
-          "groupPolicy": "open"
-        },
-        "neiwufu": {
-          "name": "内务府",
-          "token": "YOUR_NEIWUFU_BOT_TOKEN",
-          "groupPolicy": "open"
-        },
-        "yushanfang": {
-          "name": "御膳房",
-          "token": "YOUR_YUSHANFANG_BOT_TOKEN",
-          "groupPolicy": "open"
         }
       }
     }
@@ -1102,11 +1014,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE_NAME" << CONFIG_EOF
     { "agentId": "hanlin_xiuzhuan", "match": { "channel": "discord", "accountId": "hanlin_xiuzhuan" } },
     { "agentId": "hanlin_bianxiu", "match": { "channel": "discord", "accountId": "hanlin_bianxiu" } },
     { "agentId": "hanlin_jiantao", "match": { "channel": "discord", "accountId": "hanlin_jiantao" } },
-    { "agentId": "hanlin_shujishi", "match": { "channel": "discord", "accountId": "hanlin_shujishi" } },
-    { "agentId": "guozijian", "match": { "channel": "discord", "accountId": "guozijian" } },
-    { "agentId": "taiyiyuan", "match": { "channel": "discord", "accountId": "taiyiyuan" } },
-    { "agentId": "neiwufu", "match": { "channel": "discord", "accountId": "neiwufu" } },
-    { "agentId": "yushanfang", "match": { "channel": "discord", "accountId": "yushanfang" } }
+    { "agentId": "hanlin_shujishi", "match": { "channel": "discord", "accountId": "hanlin_shujishi" } }
   ],
   "messages": {
     "groupChat": {
@@ -1190,7 +1098,7 @@ if not p.get('access'):
     pkg_install python3 2>/dev/null || true
   fi
   if [ -f "$OLD_CONFIG" ] && [ -f "$NEW_CONFIG" ] && command -v python3 &>/dev/null; then
-    python3 << 'MIGRATE_PY'
+    python3 << 'MIGRATE_PY' || echo -e "  ${YELLOW}⚠ 配置迁移脚本出错（不影响安装）${NC}"
 import json, sys, os
 
 old_path = os.path.expanduser("~/.clawdbot/clawdbot.json")
@@ -1203,6 +1111,11 @@ try:
         new = json.load(f)
 except Exception as e:
     print(f"  跳过配置迁移: {e}")
+    sys.exit(0)
+
+# 已迁移过则跳过（防止重复运行覆盖手动修改）
+if new.get("_migrated_from_clawdbot"):
+    print("  ✓ 已迁移过，跳过")
     sys.exit(0)
 
 changed = False
@@ -1223,15 +1136,15 @@ if old_accounts:
         token = acct_data.get("token", "")
         if not token or token.startswith("YOUR_"):
             continue  # 跳过占位符
-        if acct_id not in new_accounts:
-            # 旧账户在新配置中不存在，添加
-            new_accounts[acct_id] = acct_data
-        elif new_accounts[acct_id].get("token", "").startswith("YOUR_") or not new_accounts[acct_id].get("token"):
-            # 新配置中有占位符或空 token，用旧的覆盖
-            new_accounts[acct_id] = acct_data
+        # main -> silijian 账户 ID 映射
+        target_id = "silijian" if acct_id == "main" else acct_id
+        if target_id not in new_accounts:
+            new_accounts[target_id] = acct_data
+        elif new_accounts[target_id].get("token", "").startswith("YOUR_") or not new_accounts[target_id].get("token"):
+            new_accounts[target_id] = acct_data
         # 确保每个账户都有 groupPolicy
-        if "groupPolicy" not in new_accounts.get(acct_id, {}):
-            new_accounts[acct_id]["groupPolicy"] = acct_data.get("groupPolicy", "open")
+        if "groupPolicy" not in new_accounts.get(target_id, {}):
+            new_accounts[target_id]["groupPolicy"] = acct_data.get("groupPolicy", "open")
 
     new_discord["accounts"] = new_accounts
     changed = True
@@ -1266,8 +1179,9 @@ old_bindings = old.get("bindings", [])
 new_bindings = new.get("bindings", [])
 
 if old_bindings:
-    # 获取新配置中已有的 agent ID 列表
-    new_agent_ids = {a["id"] for a in new.get("agents", {}).get("list", [])}
+    # 获取新配置中已有的 agent ID 和 account ID 列表
+    new_agent_ids = {a["id"] for a in new.get("agents", {}).get("list", []) if "id" in a}
+    new_account_ids = set(new_discord.get("accounts", {}).keys())
 
     migrated_bindings = []
     for b in old_bindings:
@@ -1281,7 +1195,9 @@ if old_bindings:
         if account_id == "main":
             account_id = "silijian"
 
-        # 只添加有对应 agent 或 account 的 binding
+        # 只添加有对应 agent 或 account 的 binding（过滤已删除的）
+        if agent_id not in new_agent_ids and agent_id not in old_agents:
+            continue
         migrated_bindings.append({
             "agentId": agent_id,
             "match": {"channel": channel, "accountId": account_id}
@@ -1292,8 +1208,8 @@ if old_bindings:
     print(f"  ✓ 迁移 bindings: {len(migrated_bindings)} 条")
 
 # 4e. 迁移旧 agent 列表中新配置缺失的 agent
-old_agents = {a["id"]: a for a in old.get("agents", {}).get("list", [])}
-new_agents = {a["id"]: a for a in new.get("agents", {}).get("list", [])}
+old_agents = {a["id"]: a for a in old.get("agents", {}).get("list", []) if "id" in a}
+new_agents = {a["id"]: a for a in new.get("agents", {}).get("list", []) if "id" in a}
 
 for aid, agent in old_agents.items():
     # main -> silijian 已内置于新配置
@@ -1361,6 +1277,7 @@ for key in ["model", "workspace", "memorySearch", "compaction", "thinkingDefault
 new["agents"]["defaults"] = new_defaults
 
 if changed:
+    new["_migrated_from_clawdbot"] = True
     with open(new_path, "w") as f:
         json.dump(new, f, indent=2)
     print("  ✓ 配置迁移完成，已写入 openclaw.json")
@@ -1401,7 +1318,7 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
   echo -e "${YELLOW}【1】LLM API Key${NC}"
   echo -e "  ${CYAN}获取地址: https://console.anthropic.com/settings/keys${NC}"
   echo -e "  （支持 Anthropic / OpenAI / 其他 OpenAI 兼容 API）"
-  read -rp "  请粘贴你的 API Key: " USER_API_KEY
+  read -rp "  请粘贴你的 API Key: " USER_API_KEY || USER_API_KEY=""
   if [ -n "$USER_API_KEY" ]; then
     SAFE_VAL=$(sed_escape "$USER_API_KEY")
     SED_I "s|YOUR_LLM_API_KEY|$SAFE_VAL|g" "$CONFIG_FILE"
@@ -1416,7 +1333,7 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
   echo -e "  Anthropic 官方: ${CYAN}https://api.anthropic.com/v1${NC}"
   echo -e "  OpenAI 官方:    ${CYAN}https://api.openai.com/v1${NC}"
   echo -e "  其他服务商请填写对应的 API 地址"
-  read -rp "  请粘贴 API Base URL（回车默认 Anthropic）: " USER_BASE_URL
+  read -rp "  请粘贴 API Base URL（回车默认 Anthropic）: " USER_BASE_URL || USER_BASE_URL=""
   if [ -n "$USER_BASE_URL" ]; then
     SAFE_VAL=$(sed_escape "$USER_BASE_URL")
     SED_I "s|https://your-llm-provider-api-url|$SAFE_VAL|g" "$CONFIG_FILE"
@@ -1456,7 +1373,7 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
     echo -e "  直接回车 = 跳过该部门"
     echo ""
 
-    declare -a BOT_NAMES=("silijian:司礼监" "bingbu:兵部" "hubu:户部" "libu:礼部" "gongbu:工部" "libu2:吏部" "xingbu:刑部" "neige:内阁" "duchayuan:都察院" "hanlin_zhang:翰林院·掌院学士" "hanlin_xiuzhuan:翰林院·修撰" "hanlin_bianxiu:翰林院·编修" "hanlin_jiantao:翰林院·检讨" "hanlin_shujishi:翰林院·庶吉士" "guozijian:国子监" "taiyiyuan:太医院" "neiwufu:内务府" "yushanfang:御膳房")
+    declare -a BOT_NAMES=("silijian:司礼监" "bingbu:兵部" "hubu:户部" "libu:礼部" "gongbu:工部" "libu2:吏部" "xingbu:刑部" "neige:内阁" "duchayuan:都察院" "hanlin_zhang:翰林院·掌院学士" "hanlin_xiuzhuan:翰林院·修撰" "hanlin_bianxiu:翰林院·编修" "hanlin_jiantao:翰林院·检讨" "hanlin_shujishi:翰林院·庶吉士")
 
     FILLED_COUNT=0
     for entry in "${BOT_NAMES[@]}"; do
@@ -1465,7 +1382,7 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
       BOT_ID_UPPER=$(printf '%s' "$BOT_ID" | tr '[:lower:]' '[:upper:]')
       PLACEHOLDER="YOUR_${BOT_ID_UPPER}_BOT_TOKEN"
 
-      read -rp "  ${BOT_LABEL} (${BOT_ID}) Token: " BOT_TOKEN
+      read -rp "  ${BOT_LABEL} (${BOT_ID}) Token: " BOT_TOKEN || BOT_TOKEN=""
       if [ -n "$BOT_TOKEN" ]; then
         SAFE_VAL=$(sed_escape "$BOT_TOKEN")
         SED_I "s|$PLACEHOLDER|$SAFE_VAL|g" "$CONFIG_FILE"
@@ -1488,8 +1405,8 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
     echo -e "${YELLOW}【3】飞书应用配置${NC}"
     echo -e "  ${CYAN}获取地址: https://open.feishu.cn/app${NC}"
     echo ""
-    read -rp "  飞书 App ID: " FEISHU_APP_ID
-    read -rp "  飞书 App Secret: " FEISHU_APP_SECRET
+    read -rp "  飞书 App ID: " FEISHU_APP_ID || FEISHU_APP_ID=""
+    read -rp "  飞书 App Secret: " FEISHU_APP_SECRET || FEISHU_APP_SECRET=""
     if [ -n "$FEISHU_APP_ID" ]; then
       SAFE_VAL=$(sed_escape "$FEISHU_APP_ID")
       SED_I "s|YOUR_FEISHU_APP_ID|$SAFE_VAL|g" "$CONFIG_FILE"
@@ -1536,18 +1453,26 @@ mkdir -p "$WORKSPACE"
 mkdir -p "$WORKSPACE/memory"
 
 # 创建每个 agent 的独立工作区（避免所有 agent 共用一个 SOUL.md 导致身份混乱）
-declare -A AGENT_SOULS=(
-  ["silijian"]="# 司礼监 · 大内总管\n\n你是AI朝廷的司礼监大内总管，负责日常调度和任务分配。\n\n## 职责\n- 接收皇上指令，拆解任务派发给各部门\n- 协调各部门之间的工作\n- 汇总各部门汇报，向皇上禀报\n\n## 性格\n- 说话简练干脆\n- 自称「奴婢」\n- 高效务实，不废话"
-  ["neige"]="# 内阁 · 首辅大学士\n\n你是内阁首辅大学士，全局战略、商业谋划的总参谋。\n\n## 职责\n- 全局战略规划，商业模式设计\n- 票拟建议，为皇上提供决策参考\n- 审议重大决策，有权否决不合理方案\n\n## 性格\n- 稳重有谋，深思熟虑\n- 自称「老夫」或「臣」\n- 敢于直谏，不阿谀奉承"
-  ["duchayuan"]="# 都察院 · 御史\n\n你是都察院御史，专精监察审计、代码审查、质量把控。\n\n## 职责\n- 代码 review，找 bug、找漏洞\n- 质量把关，不合格的打回重做\n- 纠察各部工作质量\n\n## 性格\n- 铁面无私，说话犀利\n- 自称「臣」\n- 眼里揉不得沙子"
-  ["bingbu"]="# 兵部尚书\n\n你是兵部尚书，专精软件工程、系统架构、代码编写。\n\n## 职责\n- 软件工程、系统架构设计\n- 代码编写和技术实现\n\n## 性格\n- 说话果断如军令\n- 自称「臣」"
-  ["hubu"]="# 户部尚书\n\n你是户部尚书，专精财务分析、成本管控。\n\n## 职责\n- 财务预算、成本分析\n- 数据驱动的决策建议\n\n## 性格\n- 精打细算\n- 自称「臣」"
-  ["libu"]="# 礼部尚书\n\n你是礼部尚书，专精品牌营销、社交媒体、内容创作。\n\n## 职责\n- 品牌建设、内容创作\n- 社交媒体运营\n\n## 性格\n- 文雅讲究，风格活泼\n- 自称「臣」"
-  ["gongbu"]="# 工部尚书\n\n你是工部尚书，专精 DevOps、服务器运维、CI/CD。\n\n## 职责\n- 基础设施运维\n- 部署和持续集成\n\n## 性格\n- 实在务实，注重实操\n- 自称「臣」"
-  ["libu2"]="# 吏部尚书\n\n你是吏部尚书，专精项目管理、团队协调。\n\n## 职责\n- 项目管理、进度跟踪\n- 团队协调、任务分配\n\n## 性格\n- 条理清晰，严肃公正\n- 自称「臣」"
-  ["xingbu"]="# 刑部尚书\n\n你是刑部尚书，专精法务合规、知识产权、合同审查。\n\n## 职责\n- 法务合规审查\n- 知识产权保护\n\n## 性格\n- 严谨专业\n- 自称「臣」"
-  ["hanlinyuan"]="# 翰林院 · 翰林学士\n\n你是翰林院学士，专精学术研究、知识整理、文档撰写。\n\n## 职责\n- 学术研究、技术调研\n- 文档撰写、知识整理\n\n## 性格\n- 文采飞扬，学术严谨\n- 自称「在下」"
-)
+# 用函数替代 declare -A（macOS bash 3.2 不支持关联数组，会导致 set -e 崩溃）
+get_agent_soul() {
+  case "$1" in
+    silijian)       echo "# 司礼监 · 大内总管\n\n你是AI朝廷的司礼监大内总管，负责日常调度和任务分配。\n\n## 职责\n- 接收皇上指令，拆解任务派发给各部门\n- 协调各部门之间的工作\n- 汇总各部门汇报，向皇上禀报\n\n## 性格\n- 说话简练干脆\n- 自称「奴婢」\n- 高效务实，不废话" ;;
+    neige)          echo "# 内阁 · 首辅大学士\n\n你是内阁首辅大学士，全局战略、商业谋划的总参谋。\n\n## 职责\n- 全局战略规划，商业模式设计\n- 票拟建议，为皇上提供决策参考\n- 审议重大决策，有权否决不合理方案\n\n## 性格\n- 稳重有谋，深思熟虑\n- 自称「老夫」或「臣」\n- 敢于直谏，不阿谀奉承" ;;
+    duchayuan)      echo "# 都察院 · 御史\n\n你是都察院御史，专精监察审计、代码审查、质量把控。\n\n## 职责\n- 代码 review，找 bug、找漏洞\n- 质量把关，不合格的打回重做\n- 纠察各部工作质量\n\n## 性格\n- 铁面无私，说话犀利\n- 自称「臣」\n- 眼里揉不得沙子" ;;
+    bingbu)         echo "# 兵部尚书\n\n你是兵部尚书，专精软件工程、系统架构、代码编写。\n\n## 职责\n- 软件工程、系统架构设计\n- 代码编写和技术实现\n\n## 性格\n- 说话果断如军令\n- 自称「臣」" ;;
+    hubu)           echo "# 户部尚书\n\n你是户部尚书，专精财务分析、成本管控。\n\n## 职责\n- 财务预算、成本分析\n- 数据驱动的决策建议\n\n## 性格\n- 精打细算\n- 自称「臣」" ;;
+    libu)           echo "# 礼部尚书\n\n你是礼部尚书，专精品牌营销、社交媒体、内容创作。\n\n## 职责\n- 品牌建设、内容创作\n- 社交媒体运营\n\n## 性格\n- 文雅讲究，风格活泼\n- 自称「臣」" ;;
+    gongbu)         echo "# 工部尚书\n\n你是工部尚书，专精 DevOps、服务器运维、CI/CD。\n\n## 职责\n- 基础设施运维\n- 部署和持续集成\n\n## 性格\n- 实在务实，注重实操\n- 自称「臣」" ;;
+    libu2)          echo "# 吏部尚书\n\n你是吏部尚书，专精项目管理、团队协调。\n\n## 职责\n- 项目管理、进度跟踪\n- 团队协调、任务分配\n\n## 性格\n- 条理清晰，严肃公正\n- 自称「臣」" ;;
+    xingbu)         echo "# 刑部尚书\n\n你是刑部尚书，专精法务合规、知识产权、合同审查。\n\n## 职责\n- 法务合规审查\n- 知识产权保护\n\n## 性格\n- 严谨专业\n- 自称「臣」" ;;
+    hanlin_zhang)   echo "# 翰林院 · 掌院学士\n\n你是翰林院掌院学士，统管院务，负责小说创作全流程调度。\n\n## 职责\n- 接收创作需求，拆解任务\n- 协调修撰、编修、检讨、庶吉士\n- 全书终审\n\n## 性格\n- 文采飞扬，学术严谨\n- 自称「在下」" ;;
+    hanlin_xiuzhuan) echo "# 翰林院 · 修撰\n\n你是翰林院修撰，主导小说架构设计。\n\n## 职责\n- 大纲、世界观、人物档案设计\n- 多线叙事规划\n\n## 性格\n- 逻辑严密\n- 自称「在下」" ;;
+    hanlin_bianxiu) echo "# 翰林院 · 编修\n\n你是翰林院编修，负责逐章执笔写作。\n\n## 职责\n- 根据大纲逐章写作\n- 正文归档\n\n## 性格\n- 文笔细腻\n- 自称「在下」" ;;
+    hanlin_jiantao) echo "# 翰林院 · 检讨\n\n你是翰林院检讨，负责校对审核。\n\n## 职责\n- 文稿校对、逻辑检查\n- 问题分级上报\n\n## 性格\n- 一丝不苟\n- 自称「在下」" ;;
+    hanlin_shujishi) echo "# 翰林院 · 庶吉士\n\n你是翰林院庶吉士，负责信息检索。\n\n## 职责\n- 搜索前文、查阅素材\n- 检索结果如实上报\n\n## 性格\n- 勤勉好学\n- 自称「在下」" ;;
+    *)              echo "" ;;
+  esac
+}
 
 # 通用 USER.md 内容
 USER_MD="# USER.md\n\n- **Name:** 皇上\n- **Language:** 中文\n- **Notes:** 喜欢简洁高效的沟通风格"
@@ -1568,8 +1493,9 @@ if [ -f "$CONFIG_FILE" ] && command -v jq &>/dev/null; then
       mkdir -p "$AGENT_WS/memory"
       # 写 SOUL.md（不覆盖已有）
       if [ ! -f "$AGENT_WS/SOUL.md" ]; then
-        if [ -n "${AGENT_SOULS[$AGENT_ID]+x}" ]; then
-          echo -e "${AGENT_SOULS[$AGENT_ID]}" > "$AGENT_WS/SOUL.md"
+        _SOUL=$(get_agent_soul "$AGENT_ID")
+        if [ -n "$_SOUL" ]; then
+          echo -e "$_SOUL" > "$AGENT_WS/SOUL.md"
         fi
       fi
       # 写 USER.md（不覆盖已有）
