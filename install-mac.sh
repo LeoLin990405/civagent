@@ -2,6 +2,10 @@
 # ============================================
 # AI 朝廷 — macOS 本地安装脚本
 # 适用于 macOS (Intel / Apple Silicon)
+# 用法:
+#   bash install-mac.sh              # 交互式安装
+#   bash install-mac.sh --no-gui     # 跳过 Dashboard Web UI
+#   bash install-mac.sh --with-gui   # 包含 Dashboard Web UI
 # ============================================
 set -e
 
@@ -11,6 +15,15 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m'
+
+# ---- 解析命令行参数 ----
+INSTALL_GUI=""
+for arg in "$@"; do
+    case "$arg" in
+        --no-gui)  INSTALL_GUI="no" ;;
+        --with-gui) INSTALL_GUI="yes" ;;
+    esac
+done
 
 echo ""
 echo -e "${BLUE}🏛️ AI 朝廷 — macOS 本地安装${NC}"
@@ -35,7 +48,7 @@ echo -e "  macOS $(sw_vers -productVersion)"
 echo ""
 
 # ---- 1. Homebrew ----
-echo -e "${YELLOW}[1/5] 检查 Homebrew...${NC}"
+echo -e "${YELLOW}[1/6] 检查 Homebrew...${NC}"
 if command -v brew &>/dev/null; then
     echo -e "  ${GREEN}✓ Homebrew 已安装${NC}"
 else
@@ -53,7 +66,7 @@ else
 fi
 
 # ---- 2. Node.js ----
-echo -e "${YELLOW}[2/5] 检查 Node.js...${NC}"
+echo -e "${YELLOW}[2/6] 检查 Node.js...${NC}"
 if command -v node &>/dev/null; then
     NODE_MAJOR=$(node -v | sed 's/v\([0-9]*\).*/\1/')
     if [ "$NODE_MAJOR" -ge 22 ] 2>/dev/null; then
@@ -72,7 +85,7 @@ else
 fi
 
 # ---- 3. OpenClaw ----
-echo -e "${YELLOW}[3/5] 检查 OpenClaw...${NC}"
+echo -e "${YELLOW}[3/6] 检查 OpenClaw...${NC}"
 CLI_CMD=""
 CONFIG_DIR=""
 CONFIG_FILE=""
@@ -97,7 +110,7 @@ else
 fi
 
 # ---- 4. 初始化工作区 ----
-echo -e "${YELLOW}[4/5] 初始化工作区...${NC}"
+echo -e "${YELLOW}[4/6] 初始化工作区...${NC}"
 WORKSPACE="$HOME/clawd"
 mkdir -p "$WORKSPACE/memory"
 cd "$WORKSPACE"
@@ -168,7 +181,7 @@ echo -e "  ${GREEN}✓ USER.md 已创建${NC}"
 fi
 
 # ---- 5. 生成配置文件 ----
-echo -e "${YELLOW}[5/5] 生成配置文件...${NC}"
+echo -e "${YELLOW}[5/6] 生成配置文件...${NC}"
 mkdir -p "$CONFIG_DIR"
 
 echo ""
@@ -183,6 +196,24 @@ else
     DEPLOY_MODE=""
 fi
 DEPLOY_MODE=${DEPLOY_MODE:-1}
+
+# ---- 是否安装 Dashboard Web UI ----
+if [ -z "$INSTALL_GUI" ]; then
+    echo ""
+    echo -e "${CYAN}是否安装 Dashboard Web UI（朝廷可视化面板）？${NC}"
+    echo "  Dashboard 提供会话管理、Token 统计、系统监控等功能。"
+    echo "  如果只需要 CLI / Discord 交互，可以跳过。"
+    echo ""
+    if [ -t 0 ]; then
+        read -p "安装 Dashboard？[y/N]: " GUI_CHOICE
+    else
+        GUI_CHOICE=""
+    fi
+    case "$GUI_CHOICE" in
+        [yY]|[yY][eE][sS]) INSTALL_GUI="yes" ;;
+        *) INSTALL_GUI="no" ;;
+    esac
+fi
 
 if [ ! -f "$CONFIG_DIR/$CONFIG_FILE" ]; then
 
@@ -668,6 +699,40 @@ fi # end DEPLOY_MODE
 else
     echo -e "  ${YELLOW}⚠ 配置文件已存在，跳过 ($CONFIG_DIR/$CONFIG_FILE)${NC}"
 fi # end config file exists check
+
+
+# ---- 可选：安装 Dashboard Web UI ----
+echo ""
+echo -e "${YELLOW}[6/6] Dashboard Web UI...${NC}"
+if [ "$INSTALL_GUI" = "yes" ]; then
+    REPO_URL="https://github.com/wanikua/danghuangshang"
+    GUI_DIR="$WORKSPACE/gui"
+    if [ -d "$GUI_DIR" ]; then
+        echo -e "  ${GREEN}✓ gui/ 目录已存在，跳过克隆${NC}"
+    else
+        echo -e "  ${CYAN}正在下载 Dashboard...${NC}"
+        BOLUO_GUI_TMP=$(mktemp -d /tmp/boluo_gui_XXXXXX)
+        git clone --depth 1 --filter=blob:none --sparse "$REPO_URL" "$BOLUO_GUI_TMP" 2>/dev/null || true
+        cd "$BOLUO_GUI_TMP" && git sparse-checkout set gui 2>/dev/null || true
+        if [ -d "$BOLUO_GUI_TMP/gui" ]; then
+            cp -r "$BOLUO_GUI_TMP/gui" "$GUI_DIR"
+            rm -rf "$BOLUO_GUI_TMP"
+            echo -e "  ${GREEN}✓ Dashboard 已下载到 $GUI_DIR${NC}"
+        else
+            rm -rf "$BOLUO_GUI_TMP"
+            echo -e "  ${YELLOW}⚠ Dashboard 下载失败，可稍后手动安装${NC}"
+        fi
+    fi
+    if [ -d "$GUI_DIR" ] && [ -f "$GUI_DIR/package.json" ]; then
+        cd "$GUI_DIR"
+        if command -v npm &>/dev/null; then
+            npm install --silent 2>/dev/null && echo -e "  ${GREEN}✓ Dashboard 依赖已安装${NC}" || echo -e "  ${YELLOW}⚠ npm install 失败，请手动运行: cd $GUI_DIR && npm install${NC}"
+        fi
+        cd "$WORKSPACE"
+    fi
+else
+    echo -e "  ${CYAN}跳过 Dashboard 安装（可后续用 --with-gui 安装）${NC}"
+fi
 
 echo ""
 echo "================================"

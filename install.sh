@@ -14,6 +14,10 @@ fi
 # ============================================
 # AI 朝廷一键部署脚本
 # 支持: Ubuntu/Debian, CentOS/RHEL, Alpine, macOS
+# 用法:
+#   bash install.sh              # 交互式安装
+#   bash install.sh --no-gui     # 跳过 Dashboard Web UI
+#   bash install.sh --with-gui   # 包含 Dashboard Web UI
 # ============================================
 set -e
 
@@ -23,6 +27,15 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m'
+
+# ---- 解析命令行参数 ----
+INSTALL_GUI=""
+for arg in "$@"; do
+    case "$arg" in
+        --no-gui)  INSTALL_GUI="no" ;;
+        --with-gui) INSTALL_GUI="yes" ;;
+    esac
+done
 
 # ---- 系统检测 ----
 detect_os() {
@@ -445,6 +458,24 @@ if [ -t 0 ]; then
     read -p "请选择 [1/2/3]（默认1）: " DEPLOY_MODE || DEPLOY_MODE=""
 fi
 DEPLOY_MODE=${DEPLOY_MODE:-1}
+
+# ---- 是否安装 Dashboard Web UI ----
+if [ -z "$INSTALL_GUI" ]; then
+    echo ""
+    echo -e "${CYAN}是否安装 Dashboard Web UI（朝廷可视化面板）？${NC}"
+    echo "  Dashboard 提供会话管理、Token 统计、系统监控等功能。"
+    echo "  如果只需要 CLI / Discord 交互，可以跳过。"
+    echo ""
+    if [ -t 0 ]; then
+        read -p "安装 Dashboard？[y/N]: " GUI_CHOICE
+    else
+        GUI_CHOICE=""
+    fi
+    case "$GUI_CHOICE" in
+        [yY]|[yY][eE][sS]) INSTALL_GUI="yes" ;;
+        *) INSTALL_GUI="no" ;;
+    esac
+fi
 
 if [ ! -f "$CONFIG_DIR/$CONFIG_FILE_NAME" ]; then
 
@@ -1164,6 +1195,41 @@ fi  # end config wizard (YOUR_LLM_API_KEY check)
 # 创建工作区和 memory 目录（OpenClaw 不会自动创建，缺少会导致 agent 被跳过）
 mkdir -p "$WORKSPACE"
 mkdir -p "$WORKSPACE/memory"
+
+# ---- 可选：安装 Dashboard Web UI ----
+echo ""
+echo -e "${YELLOW}安装 Dashboard Web UI...${NC}"
+if [ "$INSTALL_GUI" = "yes" ]; then
+    REPO_URL="https://github.com/wanikua/danghuangshang"
+    GUI_DIR="$WORKSPACE/gui"
+    if [ -d "$GUI_DIR" ]; then
+        echo -e "  ${GREEN}✓ gui/ 目录已存在，跳过克隆${NC}"
+    else
+        echo -e "  ${CYAN}正在下载 Dashboard...${NC}"
+        # 只克隆 gui 目录（sparse checkout）
+        BOLUO_GUI_TMP=$(mktemp -d /tmp/boluo_gui_XXXXXX)
+        git clone --depth 1 --filter=blob:none --sparse "$REPO_URL" "$BOLUO_GUI_TMP" 2>/dev/null || true
+        cd "$BOLUO_GUI_TMP" && git sparse-checkout set gui 2>/dev/null || true
+        if [ -d "$BOLUO_GUI_TMP/gui" ]; then
+            cp -r "$BOLUO_GUI_TMP/gui" "$GUI_DIR"
+            rm -rf "$BOLUO_GUI_TMP"
+            echo -e "  ${GREEN}✓ Dashboard 已下载到 $GUI_DIR${NC}"
+        else
+            rm -rf "$BOLUO_GUI_TMP"
+            echo -e "  ${YELLOW}⚠ Dashboard 下载失败，可稍后手动安装${NC}"
+        fi
+    fi
+    # 安装依赖并构建
+    if [ -d "$GUI_DIR" ] && [ -f "$GUI_DIR/package.json" ]; then
+        cd "$GUI_DIR"
+        if command -v npm &>/dev/null; then
+            npm install --silent 2>/dev/null && echo -e "  ${GREEN}✓ Dashboard 依赖已安装${NC}" || echo -e "  ${YELLOW}⚠ npm install 失败，请手动运行: cd $GUI_DIR && npm install${NC}"
+        fi
+        cd "$WORKSPACE"
+    fi
+else
+    echo -e "  ${CYAN}跳过 Dashboard 安装（可后续用 --with-gui 安装）${NC}"
+fi
 
 # ---- 安装 Gateway 服务（开机自启）----
 echo -e "${YELLOW}安装 Gateway 服务...${NC}"
