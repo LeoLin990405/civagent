@@ -1,7 +1,7 @@
 #!/bin/bash
 # Escape special sed characters in user input to prevent injection
 sed_escape() {
-  printf '%s' "$1" | sed 's/[\/&.*^$[\\|]/\\&/g'
+  printf '%s' "$1" | tr -d '\n\r' | sed 's/[\/&.*^$[\\|]/\\&/g'
 }
 
 # Cross-platform sed -i (macOS BSD sed vs GNU sed)
@@ -73,9 +73,14 @@ else
     fi
 fi
 
-# 检测 Docker
+# 检测 Docker / 容器环境（兼容 cgroup v2、Podman、Kubernetes）
 IN_DOCKER=false
-if [ -f /.dockerenv ] || grep -q docker /proc/1/cgroup 2>/dev/null || grep -q containerd /proc/1/cgroup 2>/dev/null; then
+if [ -f /.dockerenv ] || \
+   [ -f /run/.containerenv ] || \
+   grep -qsE 'docker|containerd|lxc' /proc/1/cgroup 2>/dev/null || \
+   grep -qs 'overlay\|aufs' /proc/1/mountinfo 2>/dev/null || \
+   [ "${container:-}" = "docker" ] || [ "${container:-}" = "podman" ] || [ "${container:-}" = "oci" ] || \
+   [ -n "${KUBERNETES_SERVICE_HOST:-}" ]; then
     IN_DOCKER=true
 fi
 
@@ -1120,6 +1125,13 @@ fi # end config file exists check
 # ============================================
 OLD_STATE_DIR="$HOME/.clawdbot"
 NEW_STATE_DIR="$CONFIG_DIR"  # ~/.openclaw
+OLD_CONFIG="$OLD_STATE_DIR/clawdbot.json"
+NEW_CONFIG="$CONFIG_DIR/$CONFIG_FILE_NAME"
+
+# 确保新 agents 目录存在（升级时不会自动创建，缺少会导致整个迁移被跳过）
+if [ -d "$OLD_STATE_DIR/agents" ]; then
+  mkdir -p "$NEW_STATE_DIR/agents"
+fi
 
 if [ -d "$OLD_STATE_DIR/agents" ] && [ -d "$NEW_STATE_DIR/agents" ]; then
   echo -e "${YELLOW}[迁移] 检测到旧版 clawdbot 数据，开始迁移...${NC}"
@@ -1147,6 +1159,215 @@ if [ -d "$OLD_STATE_DIR/agents" ] && [ -d "$NEW_STATE_DIR/agents" ]; then
       fi
     fi
   done
+
+  # 3. 迁移 auth-profiles.json（OAuth token）
+  for agent_dir in "$OLD_STATE_DIR/agents"/*/; do
+    agent_id=$(basename "$agent_dir")
+    old_auth="$agent_dir/agent/auth-profiles.json"
+    [ ! -f "$old_auth" ] && continue
+    # main -> silijian 映射
+    target_id="$agent_id"
+    [ "$agent_id" = "main" ] && target_id="silijian"
+    target_auth="$NEW_STATE_DIR/agents/$target_id/agent/auth-profiles.json"
+    if [ ! -f "$target_auth" ] || ! python3 -c "
+import json, sys
+with open(sys.argv[1]) as f:
+    d = json.load(f)
+p = d.get('profiles', {}).get('anthropic:claude-cli', {})
+if not p.get('access'):
+    sys.exit(1)
+" "$target_auth" 2>/dev/null; then
+      mkdir -p "$(dirname "$target_auth")"
+      cp -a "$old_auth" "$target_auth"
+      echo -e "  ${GREEN}✓ 迁移 $agent_id → $target_id auth-profiles${NC}"
+    fi
+  done
+
+  # 4. 迁移 Discord 配置（accounts、bindings、guilds）
+  # 确保 python3 可用（Docker 最小镜像可能没有）
+  if ! command -v python3 &>/dev/null; then
+    echo -e "  ${YELLOW}安装 python3（配置迁移需要）...${NC}"
+    pkg_install python3 2>/dev/null || true
+  fi
+  if [ -f "$OLD_CONFIG" ] && [ -f "$NEW_CONFIG" ] && command -v python3 &>/dev/null; then
+    python3 << 'MIGRATE_PY'
+import json, sys, os
+
+old_path = os.path.expanduser("~/.clawdbot/clawdbot.json")
+new_path = os.path.expanduser("~/.openclaw/openclaw.json")
+
+try:
+    with open(old_path) as f:
+        old = json.load(f)
+    with open(new_path) as f:
+        new = json.load(f)
+except Exception as e:
+    print(f"  跳过配置迁移: {e}")
+    sys.exit(0)
+
+changed = False
+
+# 4a. 迁移 Discord accounts（保留用户已填写的 token）
+old_discord = old.get("channels", {}).get("discord", {})
+new_discord = new.get("channels", {}).get("discord", {})
+old_accounts = old_discord.get("accounts", {})
+new_accounts = new_discord.get("accounts", {})
+
+if old_accounts:
+    # 移除空 token 的 default 账户
+    if "default" in new_accounts and not new_accounts["default"].get("token"):
+        del new_accounts["default"]
+
+    # 合并旧账户（保留旧的真实 token，不覆盖新配置中已有 token 的账户）
+    for acct_id, acct_data in old_accounts.items():
+        token = acct_data.get("token", "")
+        if not token or token.startswith("YOUR_"):
+            continue  # 跳过占位符
+        if acct_id not in new_accounts:
+            # 旧账户在新配置中不存在，添加
+            new_accounts[acct_id] = acct_data
+        elif new_accounts[acct_id].get("token", "").startswith("YOUR_") or not new_accounts[acct_id].get("token"):
+            # 新配置中有占位符或空 token，用旧的覆盖
+            new_accounts[acct_id] = acct_data
+        # 确保每个账户都有 groupPolicy
+        if "groupPolicy" not in new_accounts.get(acct_id, {}):
+            new_accounts[acct_id]["groupPolicy"] = acct_data.get("groupPolicy", "open")
+
+    new_discord["accounts"] = new_accounts
+    changed = True
+    print(f"  ✓ 迁移 Discord accounts: {len(new_accounts)} 个")
+
+# 4b. 迁移 guilds 配置
+old_guilds = old_discord.get("guilds", {})
+new_guilds = new_discord.get("guilds", {})
+if old_guilds:
+    has_placeholder = any("YOUR_" in gid for gid in new_guilds)
+    if has_placeholder or not new_guilds:
+        # 新配置有占位符或为空，用旧的替换
+        new_guilds_clean = {k: v for k, v in old_guilds.items() if "YOUR_" not in k}
+        if new_guilds_clean:
+            new_discord["guilds"] = new_guilds_clean
+            changed = True
+            print(f"  ✓ 迁移 guilds: {list(new_guilds_clean.keys())}")
+
+# 4c. 迁移 groupPolicy 和 historyLimit
+if old_discord.get("groupPolicy"):
+    new_discord["groupPolicy"] = old_discord["groupPolicy"]
+if old_discord.get("historyLimit"):
+    new_discord["historyLimit"] = old_discord["historyLimit"]
+if old_discord.get("allowBots") is not None:
+    new_discord["allowBots"] = old_discord["allowBots"]
+
+if old_discord or new_discord:
+    new.setdefault("channels", {})["discord"] = new_discord
+
+# 4d. 迁移 bindings（将 main -> silijian 映射）
+old_bindings = old.get("bindings", [])
+new_bindings = new.get("bindings", [])
+
+if old_bindings:
+    # 获取新配置中已有的 agent ID 列表
+    new_agent_ids = {a["id"] for a in new.get("agents", {}).get("list", [])}
+
+    migrated_bindings = []
+    for b in old_bindings:
+        agent_id = b.get("agentId", "")
+        account_id = b.get("match", {}).get("accountId", "")
+        channel = b.get("match", {}).get("channel", "discord")
+
+        # main -> silijian 映射（agent ID 和 account ID 都要改）
+        if agent_id == "main":
+            agent_id = "silijian"
+        if account_id == "main":
+            account_id = "silijian"
+
+        # 只添加有对应 agent 或 account 的 binding
+        migrated_bindings.append({
+            "agentId": agent_id,
+            "match": {"channel": channel, "accountId": account_id}
+        })
+
+    new["bindings"] = migrated_bindings
+    changed = True
+    print(f"  ✓ 迁移 bindings: {len(migrated_bindings)} 条")
+
+# 4e. 迁移旧 agent 列表中新配置缺失的 agent
+old_agents = {a["id"]: a for a in old.get("agents", {}).get("list", [])}
+new_agents = {a["id"]: a for a in new.get("agents", {}).get("list", [])}
+
+for aid, agent in old_agents.items():
+    # main -> silijian 已内置于新配置
+    if aid == "main":
+        continue
+    if aid not in new_agents:
+        new["agents"]["list"].append(agent)
+        changed = True
+        print(f"  ✓ 迁移缺失 agent: {aid} ({agent.get('identity', {}).get('name', agent.get('name', aid))})")
+
+# 4f. 迁移 Signal 配置（如果有）
+old_signal = old.get("channels", {}).get("signal")
+if old_signal and old_signal.get("enabled"):
+    new.setdefault("channels", {})["signal"] = old_signal
+    changed = True
+    print("  ✓ 迁移 Signal 配置")
+
+# 4g. 迁移 gateway 配置（保留 auth token 和 bind 设置）
+old_gw = old.get("gateway", {})
+new_gw = new.get("gateway", {})
+if old_gw.get("auth"):
+    new_gw["auth"] = old_gw["auth"]
+    changed = True
+if old_gw.get("bind"):
+    new_gw["bind"] = old_gw["bind"]
+    changed = True
+if old_gw.get("tailscale"):
+    new_gw["tailscale"] = old_gw["tailscale"]
+    changed = True
+new["gateway"] = new_gw
+
+# 4h. 迁移 models 配置（保留用户的 provider 和 API key）
+old_models = old.get("models", {})
+new_models = new.get("models", {})
+old_providers = old_models.get("providers", {})
+new_providers = new_models.get("providers", {})
+
+for pid, pdata in old_providers.items():
+    api_key = pdata.get("apiKey", "")
+    if api_key and not api_key.startswith("YOUR_"):
+        if pid not in new_providers or new_providers[pid].get("apiKey", "").startswith("YOUR_"):
+            new_providers[pid] = pdata
+            changed = True
+            print(f"  ✓ 迁移 model provider: {pid}")
+
+# 清理 your-provider 占位符（如果已有真实 provider）
+real_providers = {k: v for k, v in new_providers.items()
+                  if k != "your-provider" and v.get("apiKey") and not v["apiKey"].startswith("YOUR_")}
+if real_providers and "your-provider" in new_providers:
+    del new_providers["your-provider"]
+
+new_models["providers"] = new_providers
+if old_models.get("mode"):
+    new_models["mode"] = old_models["mode"]
+new["models"] = new_models
+
+# 4i. 迁移 agents.defaults（模型配置、workspace、memorySearch 等）
+old_defaults = old.get("agents", {}).get("defaults", {})
+new_defaults = new.get("agents", {}).get("defaults", {})
+for key in ["model", "workspace", "memorySearch", "compaction", "thinkingDefault",
+            "maxConcurrent", "subagents", "models"]:
+    if key in old_defaults:
+        new_defaults[key] = old_defaults[key]
+        changed = True
+new["agents"]["defaults"] = new_defaults
+
+if changed:
+    with open(new_path, "w") as f:
+        json.dump(new, f, indent=2)
+    print("  ✓ 配置迁移完成，已写入 openclaw.json")
+else:
+    print("  ✓ 无需迁移配置")
+MIGRATE_PY
+  fi
 
   echo -e "  ${GREEN}✓ 数据迁移完成${NC}"
 fi
@@ -1337,11 +1558,12 @@ AGENTS_MD="# AGENTS.md\n\n## 每次会话\n1. 读 SOUL.md — 你是谁\n2. 读 
 # 获取配置中所有 agent 的 workspace 路径并创建
 if [ -f "$CONFIG_FILE" ] && command -v jq &>/dev/null; then
   AGENT_WORKSPACES=$(jq -r '.agents.list[]? | "\(.id):\(.workspace // empty)"' "$CONFIG_FILE" 2>/dev/null)
-  for entry in $AGENT_WORKSPACES; do
+  echo "$AGENT_WORKSPACES" | while IFS= read -r entry; do
+    [ -z "$entry" ] && continue
     AGENT_ID="${entry%%:*}"
     AGENT_WS="${entry##*:}"
-    # 展开 $HOME
-    AGENT_WS=$(eval echo "$AGENT_WS")
+    # 安全展开 $HOME（不用 eval 避免注入）
+    AGENT_WS="${AGENT_WS/\$HOME/$HOME}"
     if [ -n "$AGENT_WS" ] && [ "$AGENT_WS" != "$WORKSPACE" ]; then
       mkdir -p "$AGENT_WS/memory"
       # 写 SOUL.md（不覆盖已有）
@@ -1372,7 +1594,7 @@ if [ "$INSTALL_GUI" = "yes" ]; then
         # 只克隆 gui 目录（sparse checkout）
         BOLUO_GUI_TMP=$(mktemp -d /tmp/boluo_gui_XXXXXX)
         git clone --depth 1 --filter=blob:none --sparse "$REPO_URL" "$BOLUO_GUI_TMP" 2>/dev/null || true
-        cd "$BOLUO_GUI_TMP" && git sparse-checkout set gui 2>/dev/null || true
+        (cd "$BOLUO_GUI_TMP" && git sparse-checkout set gui 2>/dev/null) || true
         if [ -d "$BOLUO_GUI_TMP/gui" ]; then
             cp -r "$BOLUO_GUI_TMP/gui" "$GUI_DIR"
             rm -rf "$BOLUO_GUI_TMP"
@@ -1392,6 +1614,24 @@ if [ "$INSTALL_GUI" = "yes" ]; then
     fi
 else
     echo -e "  ${CYAN}跳过 Dashboard 安装（可后续用 --with-gui 安装）${NC}"
+fi
+
+# ---- 停止旧版 clawdbot-gateway（避免端口冲突）----
+if ! $IS_MACOS && ! $IN_DOCKER; then
+  if systemctl --user is-active clawdbot-gateway &>/dev/null 2>&1; then
+    echo -e "${YELLOW}[升级] 停止旧版 clawdbot-gateway 服务...${NC}"
+    systemctl --user stop clawdbot-gateway 2>/dev/null || true
+    systemctl --user disable clawdbot-gateway 2>/dev/null || true
+    echo -e "  ${GREEN}✓ 旧版 gateway 已停止并禁用${NC}"
+  fi
+  # 检查端口 18789 是否被占用（僵尸进程）
+  OLD_GW_PID=$(lsof -ti :18789 2>/dev/null || true)
+  if [ -n "$OLD_GW_PID" ]; then
+    echo -e "${YELLOW}[升级] 端口 18789 被占用 (PID: $OLD_GW_PID)，正在清理...${NC}"
+    kill $OLD_GW_PID 2>/dev/null || true
+    sleep 1
+    echo -e "  ${GREEN}✓ 端口已释放${NC}"
+  fi
 fi
 
 # ---- 安装 Gateway 服务（开机自启）----
