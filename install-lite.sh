@@ -175,7 +175,6 @@ create_agent_workspaces() {
     local workspaces
     workspaces=$(jq -r '.agents.list[]? | "\(.id):\(.workspace // empty)"' "$config_file" 2>/dev/null)
     for entry in $workspaces; do
-      local aid="${entry%%:*}"
       local aws="${entry##*:}"
       aws=$(eval echo "$aws")
       if [ -n "$aws" ] && [ "$aws" != "$WORKSPACE" ]; then

@@ -311,7 +311,7 @@ for g in guilds:
                     if [ "${GUILD_COUNT:-0}" -gt 0 ]; then
                         pass "[$DISPLAY_NAME] 已加入 $GUILD_COUNT 个服务器"
 
-                        echo "$GUILD_LINES" | tail -n +2 | while IFS='|' read -r gid gname can_view can_send can_read can_embed; do
+                        echo "$GUILD_LINES" | tail -n +2 | while IFS='|' read -r gid gname can_view can_send can_read _can_embed; do
                             [ -z "$gid" ] && continue
                             MISSING=""
                             [ "$can_view" = "False" ] && MISSING="${MISSING} View_Channels"
@@ -612,7 +612,6 @@ fi
 
 # 检查 identity 配置
 if [ "$AGENT_COUNT" -gt 0 ]; then
-    AGENT_IDS=$(json_keys "$CONFIG_FILE" "agents.list" 2>/dev/null)
     # 用 python/node 获取缺 identity 的 agent 列表
     MISSING_IDENTITY=""
     if command -v python3 &>/dev/null; then

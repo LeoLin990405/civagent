@@ -207,7 +207,8 @@ install_nodejs() {
             # [M-13] 优先尝试当前版本仓库，仅在版本不够时才 fallback 到 edge
             pkg_install nodejs npm 2>/dev/null || true
             if command -v node &>/dev/null; then
-                local _ALPINE_NODE_VER=$(node -v | sed 's/v\([0-9]*\).*/\1/')
+                local _ALPINE_NODE_VER
+                _ALPINE_NODE_VER=$(node -v | sed 's/v\([0-9]*\).*/\1/')
                 if [ "$_ALPINE_NODE_VER" -ge 22 ] 2>/dev/null; then
                     true  # 当前仓库版本够用
                 else
@@ -272,7 +273,7 @@ fi
 echo -e "${YELLOW}[6/8] 安装 Chromium 浏览器...${NC}"
 if command -v chromium &>/dev/null || command -v chromium-browser &>/dev/null || command -v google-chrome &>/dev/null; then
     echo -e "  ${GREEN}✓ 浏览器已安装，跳过${NC}"
-elif $IS_MACOS && [ -d "/Applications/Google Chrome.app" -o -d "/Applications/Chromium.app" ]; then
+elif $IS_MACOS && { [ -d "/Applications/Google Chrome.app" ] || [ -d "/Applications/Chromium.app" ]; }; then
     echo -e "  ${GREEN}✓ 浏览器已安装，跳过${NC}"
 elif ! $IN_DOCKER && command -v snap &>/dev/null && snap list chromium &>/dev/null 2>&1; then
     echo -e "  ${GREEN}✓ Chromium 已安装（snap），跳过${NC}"
