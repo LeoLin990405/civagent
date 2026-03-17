@@ -18,7 +18,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/Inspired_By-Six_Ministries_System-gold?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Framework-OpenClaw-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Agents-14-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Agents-18-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/OpenClaw_Skill_Ecosystem-60+-orange?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Deploy-5_min-red?style=for-the-badge" />
 </p>
@@ -66,7 +66,7 @@ These concepts map perfectly to modern multi-agent system design needs. **Ancien
 
 | Capability | Description |
 |-----------|-------------|
-| 🤖 **Multi-Agent Collaboration** | 14+ independent AI Agents, each specialized, working in concert |
+| 🤖 **Multi-Agent Collaboration** | 18+ independent AI Agents, each specialized, working in concert |
 | 🧠 **Independent Memory** | Each agent has its own workspace and memory files — the more you use it, the better it knows you |
 | 🛠️ **60+ Built-in Skills** | GitHub, Notion, Browser, Cron, TTS and more, ready out of the box |
 | ⏰ **Automated Tasks** | Cron scheduling + heartbeat self-checks, 24/7 unattended operation |

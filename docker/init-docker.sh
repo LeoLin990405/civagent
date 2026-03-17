@@ -35,7 +35,7 @@ echo ""
 echo -e "${YELLOW}📋 步骤 1/4：选择部署模式${NC}"
 echo ""
 echo "  1) 单 Agent（司礼监）— 最简模式，一个 Bot 管所有事"
-echo "  2) 全六部（10 Agent）— 司礼监调度，各部门独立执行"
+echo "  2) 全朝廷（18 Agent）— 司礼监调度，各部门独立执行"
 echo ""
 if [ -t 0 ]; then
 read -p "请选择 [1/2，默认 1]: " MODE
@@ -234,10 +234,10 @@ config = {
     "bindings": []
 }
 
-# 全六部模式：添加 subagents 和其他部门
+# 全朝廷模式：添加 subagents 和其他部门
 if mode == "2":
     config["agents"]["list"][0]["subagents"] = {
-        "allowAgents": ["neige","duchayuan","bingbu","hubu","libu","gongbu","libu2","xingbu","hanlin_zhang"]
+        "allowAgents": ["neige","duchayuan","bingbu","hubu","libu","gongbu","libu2","xingbu","hanlin_zhang","guozijian","taiyiyuan","neiwufu","yushanfang"]
     }
     departments = [
         ("neige", "内阁", "你是内阁首辅，专精战略决策、方案审议、全局规划。回答用中文。", "off"),
@@ -249,6 +249,10 @@ if mode == "2":
         ("libu2", "吏部", "你是吏部尚书，专精项目管理、团队协调。回答用中文。", "off"),
         ("xingbu", "刑部", "你是刑部尚书，专精法务合规、知识产权。回答用中文。", "off"),
         ("hanlin_zhang", "翰林院", "你是翰林院学士，专精学术研究、知识整理、文档撰写。回答用中文。", "off"),
+        ("guozijian", "国子监", "你是国子监祭酒。负责教育培训、知识管理、学习规划。回答用中文。", "off"),
+        ("taiyiyuan", "太医院", "你是太医院院使。负责健康管理、饮食营养、训练计划。回答用中文。", "off"),
+        ("neiwufu", "内务府", "你是内务府总管大臣。负责日常起居、日程安排、后勤保障。回答用中文。", "off"),
+        ("yushanfang", "御膳房", "你是御膳房总管。负责膳食安排、美食推荐、食谱研究。回答用中文。", "off"),
     ]
     for did, dname, dtheme, smode in departments:
         agent = {"id": did, "name": dname, "identity": {"theme": dtheme}, "sandbox": {"mode": smode}}

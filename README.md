@@ -31,7 +31,7 @@
 <p align="center">
   <img src="https://img.shields.io/badge/架构-明朝内阁制-gold?style=for-the-badge" />
   <img src="https://img.shields.io/badge/框架-OpenClaw-blue?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Agent-14+-green?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Agent-18+-green?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Skill-60+-orange?style=for-the-badge" />
   <img src="https://img.shields.io/badge/部署-5分钟-red?style=for-the-badge" />
 </p>
@@ -245,7 +245,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 | 能力 | 说明 |
 |------|------|
-| **多 Agent 协作** | 14+ 独立 Bot，@谁谁回复，@everyone 全员响应 |
+| **多 Agent 协作** | 18+ 独立 Bot，@谁谁回复，@everyone 全员响应 |
 | **内阁前置优化** | 用户指令自动经内阁 Prompt 增强后再派发 |
 | **都察院自动审查** | 代码 push 到 GitHub 自动触发代码审查 |
 | **独立记忆** | 每个 Agent 独立工作区 + memory，越用越懂你 |
@@ -330,7 +330,7 @@ BOLUO_AUTH_TOKEN=你的密码 node index.js
 
 Agent 的记忆是长期积累的资产，丢失不可逆。内置备份脚本，一行命令守护所有 Agent 记忆。
 
-**备份内容：** 14 个 Agent 的 SQLite 记忆数据库 + 工作区记忆文件 + 核心配置
+**备份内容：** 18 个 Agent 的 SQLite 记忆数据库 + 工作区记忆文件 + 核心配置
 
 ```bash
 # 立即备份
@@ -426,7 +426,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 <details>
 <summary><h2>🍍 实战案例：菠萝王朝</h2></summary>
 
-14 个 Agent，24/7 运行的真实生产系统。
+18 个 Agent，24/7 运行的真实生产系统。
 
 ```
 🏯 菠萝王朝
