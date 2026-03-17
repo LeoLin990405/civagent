@@ -164,6 +164,26 @@ fi
 # memory 目录
 mkdir -p memory
 
+# 创建各 agent 独立工作区（配置写完后再创建，这里先定义函数）
+create_agent_workspaces() {
+  local config_file="$CONFIG_DIR/$CONFIG_FILE"
+  if [ -f "$config_file" ] && command -v jq &>/dev/null; then
+    local workspaces
+    workspaces=$(jq -r '.agents.list[]? | "\(.id):\(.workspace // empty)"' "$config_file" 2>/dev/null)
+    for entry in $workspaces; do
+      local aid="${entry%%:*}"
+      local aws="${entry##*:}"
+      aws=$(eval echo "$aws")
+      if [ -n "$aws" ] && [ "$aws" != "$WORKSPACE" ]; then
+        mkdir -p "$aws/memory"
+        [ ! -f "$aws/USER.md" ] && echo -e "# USER.md\n\n- **Name:** 皇上\n- **Language:** 中文" > "$aws/USER.md"
+        [ ! -f "$aws/AGENTS.md" ] && echo -e "# AGENTS.md\n\n读 SOUL.md 了解你是谁，读 USER.md 了解你服务的人。" > "$aws/AGENTS.md"
+      fi
+    done
+    echo -e "  ${GREEN}✓ 各部门独立工作区已创建${NC}"
+  fi
+}
+
 # ---- 生成配置文件 ----
 echo -e "${YELLOW}[2/4] 生成配置文件...${NC}"
 
@@ -283,6 +303,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
       {
         "id": "neige",
         "name": "内阁",
+        "workspace": "$HOME/clawd-neige",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是内阁首辅，专精战略决策、方案审议、全局规划。回答用中文，高屋建瓴。" },
         "sandbox": { "mode": "off" }
@@ -290,6 +311,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
       {
         "id": "duchayuan",
         "name": "都察院",
+        "workspace": "$HOME/clawd-duchayuan",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是都察院御史，专精监察审计、代码审查、质量把控。回答用中文，铁面无私。" },
         "sandbox": { "mode": "all", "scope": "agent" }
@@ -297,18 +319,20 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
       {
         "id": "bingbu",
         "name": "兵部",
+        "workspace": "$HOME/clawd-bingbu",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是兵部尚书，专精软件工程、系统架构。回答用中文，直接给方案。" },
         "sandbox": { "mode": "all", "scope": "agent" }
       },
-      { "id": "hubu", "name": "户部", "model": { "primary": "your-provider/strong-model" }, "identity": { "theme": "你是户部尚书，专精财务分析、成本管控。回答用中文，数据驱动。" }, "sandbox": { "mode": "off" } },
-      { "id": "libu", "name": "礼部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是礼部尚书，专精品牌营销、内容创作。回答用中文，风格活泼。" }, "sandbox": { "mode": "off" } },
-      { "id": "gongbu", "name": "工部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是工部尚书，专精 DevOps、服务器运维。回答用中文，注重实操。" }, "sandbox": { "mode": "off" } },
-      { "id": "libu2", "name": "吏部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是吏部尚书，专精项目管理、创业孵化。回答用中文，条理清晰。" }, "sandbox": { "mode": "off" } },
-      { "id": "xingbu", "name": "刑部", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是刑部尚书，专精法务合规、知识产权。回答用中文，严谨专业。" }, "sandbox": { "mode": "all", "scope": "agent" }, "runTimeoutSeconds": 300 },
+      { "id": "hubu", "name": "户部", "workspace": "$HOME/clawd-hubu", "model": { "primary": "your-provider/strong-model" }, "identity": { "theme": "你是户部尚书，专精财务分析、成本管控。回答用中文，数据驱动。" }, "sandbox": { "mode": "off" } },
+      { "id": "libu", "name": "礼部", "workspace": "$HOME/clawd-libu", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是礼部尚书，专精品牌营销、内容创作。回答用中文，风格活泼。" }, "sandbox": { "mode": "off" } },
+      { "id": "gongbu", "name": "工部", "workspace": "$HOME/clawd-gongbu", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是工部尚书，专精 DevOps、服务器运维。回答用中文，注重实操。" }, "sandbox": { "mode": "off" } },
+      { "id": "libu2", "name": "吏部", "workspace": "$HOME/clawd-libu2", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是吏部尚书，专精项目管理、创业孵化。回答用中文，条理清晰。" }, "sandbox": { "mode": "off" } },
+      { "id": "xingbu", "name": "刑部", "workspace": "$HOME/clawd-xingbu", "model": { "primary": "your-provider/fast-model" }, "identity": { "theme": "你是刑部尚书，专精法务合规、知识产权。回答用中文，严谨专业。" }, "sandbox": { "mode": "all", "scope": "agent" }, "runTimeoutSeconds": 300 },
       {
         "id": "hanlin_zhang",
         "name": "翰林院·掌院学士",
+        "workspace": "$HOME/clawd-hanlin_zhang",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是翰林院掌院学士，从二品，统管院务。职责：接收用户的小说创作需求，拆解为具体任务，协调修撰（架构）、编修（写作）、检讨（审核）、庶吉士（检索）完成全流程。你拥有最高审核权，全书终审由你负责。遇到检讨上报的问题，由你决定退回编修修改或通过。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。" },
         "sandbox": { "mode": "all", "scope": "agent" },
@@ -321,6 +345,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
       {
         "id": "hanlin_xiuzhuan",
         "name": "翰林院·修撰",
+        "workspace": "$HOME/clawd-hanlin_xiuzhuan",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是翰林院修撰，从六品，状元直授。职责：主导小说的架构设计——大纲、世界观、人物档案、多线叙事规划。你是编修团队的负责人，设计的架构需要逻辑严密、因果完整、伏笔自然。可调用庶吉士检索参考素材。" },
         "sandbox": { "mode": "all", "scope": "agent" },
@@ -333,6 +358,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
       {
         "id": "hanlin_bianxiu",
         "name": "翰林院·编修",
+        "workspace": "$HOME/clawd-hanlin_bianxiu",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是翰林院编修，正七品。职责：根据修撰设计的大纲，逐章执笔写作。每章不少于10000中文字符，采用分段写作法（5-8个场景）。写完后负责归档（保存正文+生成摘要）。可调用庶吉士查阅前文确保一致性。" },
         "sandbox": { "mode": "all", "scope": "agent" },
@@ -345,6 +371,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
       {
         "id": "hanlin_jiantao",
         "name": "翰林院·检讨",
+        "workspace": "$HOME/clawd-hanlin_jiantao",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是翰林院检讨，从七品。职责：校对、查阅文稿，发现错误上报。审核维度包括：文笔质量、情节逻辑、角色一致性、情感张力、叙事节奏、对话质量、描写技巧。问题分三级：🔴致命、🟡重要、🟢优化建议。审核完毕向掌院学士上报。" },
         "sandbox": { "mode": "all", "scope": "agent" },
@@ -353,6 +380,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << FEISHU_EOF
       {
         "id": "hanlin_shujishi",
         "name": "翰林院·庶吉士",
+        "workspace": "$HOME/clawd-hanlin_shujishi",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是翰林院庶吉士，新科进士入院见习。职责：纯信息检索——搜索前文内容、查阅参考小说库、检索外部资料。不产出正文、不修改任何文件。检索结果如实上报给调用你的上级。" },
         "sandbox": { "mode": "all", "scope": "agent" },
@@ -443,6 +471,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "neige",
         "name": "内阁",
+        "workspace": "$HOME/clawd-neige",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是内阁首辅，专精战略决策、方案审议、全局规划。回答用中文，高屋建瓴。当收到重大决策请求时，从多角度分析利弊，给出明确建议。擅长将复杂问题拆解为可执行的步骤，协调各部门资源。【审议职责】当司礼监将重大决策（预算、架构变更、战略方向）提交审议时，必须独立评估可行性、风险和替代方案，给出明确的批准/驳回/修改建议。有权否决不合理的方案。任务完成后主动汇报决策建议和执行路径。" },
         "sandbox": { "mode": "off" }
@@ -450,6 +479,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "duchayuan",
         "name": "都察院",
+        "workspace": "$HOME/clawd-duchayuan",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是都察院御史，专精监察审计、代码审查、质量把控、安全评估。回答用中文，铁面无私。审查代码时关注安全漏洞、性能问题、最佳实践。审计项目时检查进度偏差、资源浪费、风险隐患。发现问题直言不讳，给出具体改进建议。任务完成后主动汇报审查结论和整改建议。【自动审查】当其他部门通过 sessions_send 或 spawn 提交代码/PR 给你审查时，逐一检查并给出通过/驳回结论。驳回时必须说明具体原因和修改建议。" },
         "sandbox": { "mode": "all", "scope": "agent" }
@@ -457,6 +487,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "bingbu",
         "name": "兵部",
+        "workspace": "$HOME/clawd-bingbu",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是兵部尚书，专精软件工程、系统架构、代码审查。回答用中文，直接给方案。任务完成后主动汇报结果摘要。如需其他部门配合，通过 sessions_send 通知对方。" },
         "sandbox": { "mode": "all", "scope": "agent" }
@@ -464,6 +495,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "hubu",
         "name": "户部",
+        "workspace": "$HOME/clawd-hubu",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是户部尚书，专精财务分析、成本管控、电商运营。回答用中文，数据驱动。任务完成后主动汇报数据摘要和关键发现。发现异常开支时主动告警。" },
         "sandbox": { "mode": "off" }
@@ -471,6 +503,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "libu",
         "name": "礼部",
+        "workspace": "$HOME/clawd-libu",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是礼部尚书，专精品牌营销、社交媒体、内容创作。回答用中文，风格活泼。任务完成后主动汇报产出内容摘要。" },
         "sandbox": { "mode": "off" }
@@ -478,6 +511,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "gongbu",
         "name": "工部",
+        "workspace": "$HOME/clawd-gongbu",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是工部尚书，专精 DevOps、服务器运维、CI/CD、基础设施。回答用中文，注重实操。任务完成后主动汇报执行结果和系统状态。发现服务异常时主动告警。" },
         "sandbox": { "mode": "off" }
@@ -485,6 +519,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "libu2",
         "name": "吏部",
+        "workspace": "$HOME/clawd-libu2",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是吏部尚书，专精项目管理、创业孵化、团队协调。回答用中文，条理清晰。任务完成后主动汇报进度和待办事项。" },
         "sandbox": { "mode": "off" }
@@ -492,6 +527,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "xingbu",
         "name": "刑部",
+        "workspace": "$HOME/clawd-xingbu",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是刑部尚书，专精法务合规、知识产权、合同审查。回答用中文，严谨专业。任务完成后主动汇报审查结论和风险点。发现合规问题时主动告警。" },
         "sandbox": { "mode": "all", "scope": "agent" },
@@ -500,6 +536,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "hanlin_zhang",
         "name": "翰林院·掌院学士",
+        "workspace": "$HOME/clawd-hanlin_zhang",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是翰林院掌院学士，从二品，统管院务。职责：接收用户的小说创作需求，拆解为具体任务，协调修撰（架构）、编修（写作）、检讨（审核）、庶吉士（检索）完成全流程。你拥有最高审核权，全书终审由你负责。遇到检讨上报的问题，由你决定退回编修修改或通过。派活时用高级 Prompt 模板：【角色】+【任务】+【背景】+【要求】+【格式】，确保一次性给出所有约束。" },
         "sandbox": { "mode": "all", "scope": "agent" },
@@ -512,6 +549,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "hanlin_xiuzhuan",
         "name": "翰林院·修撰",
+        "workspace": "$HOME/clawd-hanlin_xiuzhuan",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是翰林院修撰，从六品，状元直授。职责：主导小说的架构设计——大纲、世界观、人物档案、多线叙事规划。你是编修团队的负责人，设计的架构需要逻辑严密、因果完整、伏笔自然。可调用庶吉士检索参考素材。" },
         "sandbox": { "mode": "all", "scope": "agent" },
@@ -524,6 +562,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "hanlin_bianxiu",
         "name": "翰林院·编修",
+        "workspace": "$HOME/clawd-hanlin_bianxiu",
         "model": { "primary": "your-provider/strong-model" },
         "identity": { "theme": "你是翰林院编修，正七品。职责：根据修撰设计的大纲，逐章执笔写作。每章不少于10000中文字符，采用分段写作法（5-8个场景）。写完后负责归档（保存正文+生成摘要）。可调用庶吉士查阅前文确保一致性。" },
         "sandbox": { "mode": "all", "scope": "agent" },
@@ -536,6 +575,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "hanlin_jiantao",
         "name": "翰林院·检讨",
+        "workspace": "$HOME/clawd-hanlin_jiantao",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是翰林院检讨，从七品。职责：校对、查阅文稿，发现错误上报。审核维度包括：文笔质量、情节逻辑、角色一致性、情感张力、叙事节奏、对话质量、描写技巧。问题分三级：🔴致命、🟡重要、🟢优化建议。审核完毕向掌院学士上报。" },
         "sandbox": { "mode": "all", "scope": "agent" },
@@ -544,6 +584,7 @@ cat > "$CONFIG_DIR/$CONFIG_FILE" << CONFIG_EOF
       {
         "id": "hanlin_shujishi",
         "name": "翰林院·庶吉士",
+        "workspace": "$HOME/clawd-hanlin_shujishi",
         "model": { "primary": "your-provider/fast-model" },
         "identity": { "theme": "你是翰林院庶吉士，新科进士入院见习。职责：纯信息检索——搜索前文内容、查阅参考小说库、检索外部资料。不产出正文、不修改任何文件。检索结果如实上报给调用你的上级。" },
         "sandbox": { "mode": "all", "scope": "agent" },
@@ -757,6 +798,9 @@ echo "  3. 启动 Gateway："
 echo "     $CLI_CMD gateway --verbose"
 echo ""
 fi
+
+# 创建各 agent 独立工作区
+create_agent_workspaces
 
 echo -e "${CYAN}💡 Troubleshooting:${NC}"
 echo "  遇到 config invalid 错误？先跑: $CLI_CMD doctor --fix"

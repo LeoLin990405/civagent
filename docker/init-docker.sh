@@ -318,6 +318,22 @@ EOF
     echo -e "${GREEN}✓ USER.md 已创建${NC}"
 fi
 
+# 创建各 agent 独立工作区
+if [ -f "$CONFIG_FILE" ] && command -v jq &>/dev/null; then
+  AGENT_WORKSPACES=$(jq -r '.agents.list[]? | "\(.id):\(.workspace // empty)"' "$CONFIG_FILE" 2>/dev/null)
+  for entry in $AGENT_WORKSPACES; do
+    AGENT_ID="${entry%%:*}"
+    AGENT_WS="${entry##*:}"
+    AGENT_WS=$(eval echo "$AGENT_WS")
+    if [ -n "$AGENT_WS" ] && [ "$AGENT_WS" != "$WORKSPACE" ]; then
+      mkdir -p "$AGENT_WS/memory"
+      [ ! -f "$AGENT_WS/USER.md" ] && echo -e "# USER.md\n\n- **Name:** 皇上\n- **Language:** 中文" > "$AGENT_WS/USER.md"
+      [ ! -f "$AGENT_WS/AGENTS.md" ] && echo -e "# AGENTS.md\n\n读 SOUL.md 了解你是谁。" > "$AGENT_WS/AGENTS.md"
+    fi
+  done
+  echo -e "${GREEN}✓ 各部门独立工作区已创建${NC}"
+fi
+
 # ---- 完成 ----
 echo ""
 echo "================================"
