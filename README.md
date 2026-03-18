@@ -78,21 +78,39 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 > 🔴 **新手请用云服务器**，不要在个人电脑上安装。[→ 领一台免费服务器](./docs/server-setup.md)
 
-**1. 一键安装**
+### Linux / macOS
 
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.sh)
 ```
 
+### Windows (PowerShell)
+
+> 以**管理员身份**打开 PowerShell，运行：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.ps1')
+```
+
+或下载 [`install.ps1`](./install.ps1) 后右键 → 使用 PowerShell 运行。
+
+### 已有 OpenClaw？用精简版
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install-lite.sh)
+```
+
+---
+
 **2. 按提示填入** LLM API Key + Discord Bot Token
 
 **3. 在 Discord @你的 Bot 说话** — 完成！
 
-> 🏥 遇到问题？`bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/doctor.sh)` 一键诊断
+> 🏥 遇到问题？
+> - Linux/macOS: `bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/doctor.sh)`
+> - Windows: `openclaw doctor`
 >
 > 🤖 不想看文档？把 [这段 Prompt](./docs/install-prompt.md) 丢给 AI 助手，让它带你装
->
-> 已有 OpenClaw？用精简版：`bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install-lite.sh)`
 
 ---
 

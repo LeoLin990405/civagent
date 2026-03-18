@@ -1,5 +1,23 @@
 # 📜 Changelog
 
+## v3.5.3 (2026-03-18)
+
+### 新功能
+- **Windows 原生安装脚本** — `install.ps1` 支持 Windows 10/11 一键安装（无需 WSL2）
+  - 自动安装 Node.js 22 LTS
+  - 自动安装 OpenClaw CLI
+  - 生成配置文件和快速开始指南
+
+### 文档更新
+- **README.md** — 新增 Windows PowerShell 安装命令
+- **docs/faq.md** — Windows 支持说明更新（原生 vs WSL2 对比）
+- **docs/windows-wsl.md** — 重构为两种安装方式指南
+
+### Bug 修复
+- 修复 Windows 用户找不到安装指南的问题 (closes #99)
+
+---
+
 ## v3.5.2 (2026-03-13)
 
 ### Bug 修复

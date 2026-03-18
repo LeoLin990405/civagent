@@ -117,7 +117,29 @@ openclaw doctor
 新版 OpenClaw 移除了过期字段（如 `runTimeoutSeconds`），运行 `openclaw doctor --fix` 自动修复。
 
 ### Q: Windows 能用吗？
-可以！通过 WSL2 运行。详见 [Windows WSL2 安装指南](./windows-wsl.md)。
+可以！有两种方式：
+
+**方式一：原生 Windows（推荐新手）**
+
+以管理员身份打开 PowerShell，运行：
+```powershell
+powershell -ExecutionPolicy Bypass -File (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.ps1')
+```
+
+会自动安装 Node.js 22 + OpenClaw，生成配置文件和快速开始指南。
+
+**方式二：WSL2（推荐高级用户）**
+
+详见 [Windows WSL2 安装指南](./windows-wsl.md)。WSL2 是完整的 Linux 环境，功能更完整，但需要额外配置。
+
+---
+
+**对比：**
+
+| 方式 | 优点 | 缺点 |
+|------|------|------|
+| 原生 Windows | 一键安装，无需额外配置 | 部分 Linux 命令需要用 PowerShell 替代 |
+| WSL2 | 完整 Linux 环境，与服务器一致 | 需要学习 WSL2 基本操作 |
 
 ---
 
