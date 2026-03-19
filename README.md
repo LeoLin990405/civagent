@@ -78,29 +78,34 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 > 🔴 **新手请用云服务器**，不要在个人电脑上安装。[→ 领一台免费服务器](./docs/server-setup.md)
 
-### Linux / macOS
+### 1️⃣ 选择制度
 
+安装时可选择三种制度：
+
+| 制度 | 特点 | 适用场景 | Agent |
+|------|------|---------|-------|
+| **明朝内阁制** | 司礼监 + 内阁 + 六部，快速迭代 | 个人项目、开源维护 | 18 个 |
+| **唐朝三省制** | 中书→门下→尚书，制衡审核 | 企业应用、严谨流程 | 14 个 |
+| **现代企业制** | CEO/CTO/CFO，国际化 | 创业团队、商业项目 | 14 个 |
+
+### 2️⃣ 一键安装
+
+**Linux / macOS**:
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.sh)
 ```
 
-### Windows (PowerShell)
-
-> 以**管理员身份**打开 PowerShell，运行：
-
+**Windows (PowerShell)**:
 ```powershell
 powershell -ExecutionPolicy Bypass -File (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.ps1')
 ```
 
-或下载 [`install.ps1`](./install.ps1) 后右键 → 使用 PowerShell 运行。
-
-### 已有 OpenClaw？用精简版
-
+**已有 OpenClaw？精简版**:
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install-lite.sh)
 ```
 
----
+### 3️⃣ 配置 + 启动
 
 **2. 按提示填入** LLM API Key + Discord Bot Token
 

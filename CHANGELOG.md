@@ -1,12 +1,14 @@
 # 📜 Changelog
 
-## v3.5.3 (2026-03-18)
+## v3.5.3 (2026-03-19)
 
 ### 新功能
-- **Windows 原生安装脚本** — `install.ps1` 支持 Windows 10/11 一键安装（无需 WSL2）
-  - 自动安装 Node.js 22 LTS
-  - 自动安装 OpenClaw CLI
-  - 生成配置文件和快速开始指南
+- **多制度支持** — 安装时可选择三种制度
+  - **唐朝三省制**：中书→门下→尚书，制衡审核（14 Agent）
+  - **明朝内阁制**：司礼监 + 内阁，快速迭代（18 Agent）
+  - **现代企业制**：CEO/CTO/CFO，国际化（14 Agent）
+- **配置模板分离** — `configs/{tang-sansheng,modern-ceo,ming-neige}/`
+- **独立审查机制** — 御史台通过 GitHub webhook 触发代码审查
 
 ### 配置修复
 - **openclaw.example.json** — 所有 18 个 Discord accounts 补充 `applicationId` 字段
@@ -15,6 +17,9 @@
 - **install-mac.sh** — Discord 配置模板同步补充 `applicationId`
 
 ### 文档更新
+- **docs/regimes.md** — 新增制度选择指南（详细对比 + 工作流程）
+- **configs/tang-sansheng/** — 唐朝三省制配置 + SOUL.md
+- **configs/modern-ceo/** — 现代企业制配置 + SOUL.md
 - **README.md** — 新增 Windows PowerShell 安装命令，版本号更新为 v3.5.3
 - **README_EN.md** — 版本号更新为 v3.5.3
 - **docs/faq.md** — Windows 支持说明更新（原生 vs WSL2 对比表）
@@ -24,6 +29,10 @@
 ### Bug 修复
 - 修复 Windows 用户找不到安装指南的问题 (closes #99)
 - 修复 Discord 配置缺少 `applicationId` 导致新手配置失败的问题
+
+---
+
+## v3.5.2 (2026-03-13)
 
 ---
 
