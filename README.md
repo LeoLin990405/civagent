@@ -111,6 +111,21 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 **3. 在 Discord @你的 Bot 说话** — 完成！
 
+### 🔄 切换制度
+
+安装后想切换制度？运行：
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/scripts/switch-regime.sh)
+```
+
+或手动选择：
+```bash
+bash scripts/switch-regime.sh tang-sansheng  # 唐朝三省制
+bash scripts/switch-regime.sh modern-ceo     # 现代企业制
+bash scripts/switch-regime.sh ming-neige     # 明朝内阁制
+```
+
 > 🏥 遇到问题？
 > - Linux/macOS: `bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/doctor.sh)`
 > - Windows: `openclaw doctor`
