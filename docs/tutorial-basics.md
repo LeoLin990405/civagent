@@ -333,7 +333,7 @@ nano ~/.openclaw/openclaw.json
     "discord": {
       "enabled": true,
       "groupPolicy": "open",
-      "allowBots": true,
+      "allowBots": "mentions",
       "accounts": {
         "silijian": { "name": "司礼监", "token": "司礼监的Bot Token", "applicationId": "司礼监的Application ID", "groupPolicy": "open" },
         "bingbu": { "name": "兵部", "token": "兵部的Bot Token", "applicationId": "兵部的Application ID", "groupPolicy": "open" },
@@ -354,7 +354,7 @@ nano ~/.openclaw/openclaw.json
 > ⚠️ **重要配置说明**：
 > - `workspace` 是 Agent 的"领地"，设为 `/home/ubuntu/clawd` ✅，不要设成家目录 ❌
 > - `groupPolicy: "open"` 在 channels 和每个 account 里都要加，否则群聊消息会被丢弃
-> - `allowBots: true` 让 Bot 之间能互相触发回复
+> - `allowBots: "mentions"` Bot 只在被@时响应其他 Bot（防止无限循环）
 
 ### 5.3 创建 Discord Bot（每个部门一个）
 

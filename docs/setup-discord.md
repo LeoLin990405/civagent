@@ -88,7 +88,7 @@ nano ~/.openclaw/openclaw.json
     "discord": {
       "enabled": true,
       "groupPolicy": "open",
-      "allowBots": true,
+      "allowBots": "mentions",
       "accounts": {
         "silijian": {
           "name": "司礼监",
@@ -115,7 +115,7 @@ nano ~/.openclaw/openclaw.json
 > ⚠️ **关键配置**：
 > - `applicationId` — **必填**，从 Discord Developer Portal → General Information 复制，不填会报 "Failed to resolve Discord application id"
 > - `groupPolicy: "open"` — channels 和每个 account 里**都要加**，否则群聊消息被静默丢弃
-> - `allowBots: true` — 让 Bot 之间互相看到消息、互相触发回复
+> - `allowBots: "mentions"` — Bot 只在被@时响应其他 Bot（防止无限循环对话）
 > - account key（如 `silijian`、`bingbu`）要和 bindings 里的 `accountId` **一致**
 
 ---

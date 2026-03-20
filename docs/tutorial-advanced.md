@@ -264,7 +264,7 @@ openclaw cron add \
 
 - 每个 Bot 在 Developer Portal 都要开启 **Message Content Intent** + **Server Members Intent**
 - `groupPolicy: "open"` 在 channels 和每个 account 里都要加
-- `allowBots: true` 让 Bot 之间能互相触发
+- `allowBots: "mentions"` Bot 只在被@时响应其他 Bot（防止无限循环）
 
 ---
 

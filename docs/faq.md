@@ -157,5 +157,5 @@ powershell -ExecutionPolicy Bypass -File (New-Object Net.WebClient).DownloadStri
 
 如果被 @ 的 Bot 也报 `no-mention`，检查：
 1. 是否用了 `<@用户ID>` 格式（不是纯文本 `@名字`）
-2. `allowBots: true` 是否已配置（Bot 间互相触发需要）
+2. `allowBots: "mentions"` 是否已配置（Bot 间互相触发需要，且防止无限循环）
 3. Bot 的 Message Content Intent 是否已开启

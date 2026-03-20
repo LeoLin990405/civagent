@@ -144,7 +144,7 @@
                               └── ❌ 否决 → 汇报皇帝另议
 ```
 
-> ⚠️ 想让 Bot 之间互相触发，需在 `openclaw.json` 的 `channels.discord` 中加上 `"allowBots": true`，同时每个 account 设置 `"groupPolicy": "open"`。
+> ⚠️ 想让 Bot 之间互相触发，需在 `openclaw.json` 的 `channels.discord` 中加上 `"allowBots": "mentions"`（防止无限循环），同时每个 account 设置 `"groupPolicy": "open"`。
 
 ### 独立记忆系统
 
