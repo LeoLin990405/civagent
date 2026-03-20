@@ -916,6 +916,7 @@ echo "     b) 每个部门创建一个 Bot → 复制 Token"
 echo "     c) 填入配置文件对应位置"
 echo "     d) 每个 Bot 开启 Message Content Intent"
 echo "     e) 邀请所有 Bot 到你的 Discord 服务器"
+echo "     f) 服务器设置 → 角色 → @everyone → 关闭「提及 @everyone」（防止 Bot 回复 ping 全员）"
 fi
 echo ""
 echo -e "  ${YELLOW}3. 启动朝廷${NC}"

@@ -444,6 +444,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 **@everyone 不触发？** → 每个 Bot 都要开 Message Content Intent + Server Members Intent（[Discord Developer Portal](https://discord.com/developers/applications) → Bot 页面 → Privileged Gateway Intents）
 
+**Bot 回复触发 @everyone 通知？** → 服务器设置 → 角色 → @everyone → 关闭「提及 @everyone」权限（Owner 不受影响）
+
 </details>
 
 <details>
