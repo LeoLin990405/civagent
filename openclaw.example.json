@@ -290,7 +290,7 @@
     "discord": {
       "enabled": true,
       "groupPolicy": "open",
-      "allowBots": false,
+      "allowBots": "mentions",  // ✅ 必须是 "mentions"：防止消息循环，保留多 Bot 协作
       "accounts": {
         "silijian": {
           "name": "司礼监",
