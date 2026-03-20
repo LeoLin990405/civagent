@@ -1,0 +1,21 @@
+{
+  "name": "@danghuangshang/discord-message-guard",
+  "version": "1.0.0",
+  "description": "Discord 消息循环防护中间件 - Issue #107 解决方案",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "discord.js": "^14.14.1"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0",
+    "@types/node": "^20.10.0"
+  }
+}

@@ -75,7 +75,8 @@ else
   API_URL=""
 fi
 if [ -t 0 ]; then
-read -p "API Key: " API_KEY
+read -s -p "API Key: " API_KEY
+echo
 else
   API_KEY=""
 fi
@@ -336,7 +337,7 @@ if [ -f "$CONFIG_FILE" ] && command -v jq &>/dev/null; then
   AGENT_WORKSPACES=$(jq -r '.agents.list[]? | "\(.id):\(.workspace // empty)"' "$CONFIG_FILE" 2>/dev/null)
   for entry in $AGENT_WORKSPACES; do
     AGENT_WS="${entry##*:}"
-    AGENT_WS=$(eval echo "$AGENT_WS")
+    AGENT_WS="${AGENT_WS/\$HOME/$HOME}"
     if [ -n "$AGENT_WS" ] && [ "$AGENT_WS" != "$WORKSPACE" ]; then
       mkdir -p "$AGENT_WS/memory"
       [ ! -f "$AGENT_WS/USER.md" ] && echo -e "# USER.md\n\n- **Name:** 皇上\n- **Language:** 中文" > "$AGENT_WS/USER.md"

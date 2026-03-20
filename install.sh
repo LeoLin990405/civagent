@@ -1,7 +1,7 @@
 #!/bin/bash
 # Escape special sed characters in user input to prevent injection
 sed_escape() {
-  printf '%s' "$1" | tr -d '\n\r' | sed 's/[\/&.*^$[\\|]/\\&/g'
+  printf '%s' "$1" | tr -d '\n\r' | sed 's/[][\/&.*^$\\|]/\\&/g'
 }
 
 # Cross-platform sed -i (macOS BSD sed vs GNU sed)
@@ -175,7 +175,7 @@ else
         $SUDO chmod 600 /swapfile
         $SUDO mkswap /swapfile
         $SUDO swapon /swapfile
-        echo '/swapfile none swap sw 0 0' | $SUDO tee -a /etc/fstab > /dev/null
+        grep -q '/swapfile' /etc/fstab 2>/dev/null || echo '/swapfile none swap sw 0 0' | $SUDO tee -a /etc/fstab > /dev/null
         echo -e "  ${GREEN}✓ 4GB Swap 已创建${NC}"
         fi
     else
@@ -374,7 +374,7 @@ echo -e "  ${GREEN}✓ OpenClaw $(openclaw --version 2>/dev/null) 安装完成${
 # ---- 8. 初始化工作区 ----
 echo -e "${YELLOW}[8/8] 初始化朝廷工作区...${NC}"
 # [H-07] 确保 HOME 非空且路径安全（macOS 用户名可能含空格）
-HOME="${HOME:-/root}"
+HOME="${HOME:-$(eval echo ~"$(id -un)")}"
 if [[ "$HOME" == *" "* ]]; then
     echo -e "  ${YELLOW}⚠ HOME 路径含空格 ($HOME)，JSON 配置中的路径请手动检查${NC}"
 fi
@@ -1285,6 +1285,8 @@ if old_discord or new_discord:
     new.setdefault("channels", {})["discord"] = new_discord
 
 # 4d. 迁移 bindings（将 main -> silijian 映射）
+old_agents = {a["id"]: a for a in old.get("agents", {}).get("list", []) if "id" in a}
+
 old_bindings = old.get("bindings", [])
 new_bindings = new.get("bindings", [])
 
@@ -1318,7 +1320,6 @@ if old_bindings:
     print(f"  ✓ 迁移 bindings: {len(migrated_bindings)} 条")
 
 # 4e. 迁移旧 agent 列表中新配置缺失的 agent
-old_agents = {a["id"]: a for a in old.get("agents", {}).get("list", []) if "id" in a}
 new_agents = {a["id"]: a for a in new.get("agents", {}).get("list", []) if "id" in a}
 
 for aid, agent in old_agents.items():
@@ -1467,11 +1468,11 @@ if [ -f "$CONFIG_FILE" ] && grep -q "YOUR_LLM_API_KEY" "$CONFIG_FILE"; then
   if grep -q '"api": "anthropic-messages"' "$CONFIG_FILE"; then
     SED_I 's|"id": "fast-model"|"id": "claude-sonnet-4-20250514"|g' "$CONFIG_FILE"
     SED_I 's|"name": "快速模型"|"name": "Claude Sonnet 4"|g' "$CONFIG_FILE"
-    SED_I 's|"id": "strong-model"|"id": "claude-sonnet-4-20250514"|g' "$CONFIG_FILE"
-    SED_I 's|"name": "强力模型"|"name": "Claude Sonnet 4"|g' "$CONFIG_FILE"
+    SED_I 's|"id": "strong-model"|"id": "claude-opus-4-6"|g' "$CONFIG_FILE"
+    SED_I 's|"name": "强力模型"|"name": "Claude Opus 4.6"|g' "$CONFIG_FILE"
     SED_I 's|your-provider/fast-model|your-provider/claude-sonnet-4-20250514|g' "$CONFIG_FILE"
-    SED_I 's|your-provider/strong-model|your-provider/claude-sonnet-4-20250514|g' "$CONFIG_FILE"
-    echo -e "  ${GREEN}✓ 模型已自动设为 Claude Sonnet 4${NC}"
+    SED_I 's|your-provider/strong-model|your-provider/claude-opus-4-6|g' "$CONFIG_FILE"
+    echo -e "  ${GREEN}✓ 模型已自动设为 Claude Sonnet 4 / Opus 4.6${NC}"
   fi
   echo ""
 
@@ -1620,6 +1621,9 @@ fi
 # ---- 安装默认 Skill: self-improving-agent ----
 echo ""
 echo -e "${YELLOW}安装默认 Skill...${NC}"
+if ! command -v clawdhub &>/dev/null; then
+  npm install -g clawdhub 2>/dev/null || true
+fi
 if command -v clawdhub &>/dev/null; then
   # 主工作区
   clawdhub install self-improving-agent --workdir "$WORKSPACE" --force 2>/dev/null && \
@@ -1690,7 +1694,7 @@ if ! $IS_MACOS && ! $IN_DOCKER; then
   OLD_GW_PID=$(lsof -ti :18789 2>/dev/null || true)
   if [ -n "$OLD_GW_PID" ]; then
     echo -e "${YELLOW}[升级] 端口 18789 被占用 (PID: $OLD_GW_PID)，正在清理...${NC}"
-    kill $OLD_GW_PID 2>/dev/null || true
+    echo "$OLD_GW_PID" | xargs -r kill 2>/dev/null || true
     sleep 1
     echo -e "  ${GREEN}✓ 端口已释放${NC}"
   fi

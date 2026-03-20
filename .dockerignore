@@ -5,3 +5,5 @@ gui/node_modules
 gui/dist
 evidence/
 images/
+skills/*/node_modules
+gui/server/node_modules

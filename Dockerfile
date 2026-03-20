@@ -58,16 +58,16 @@ RUN chmod +x /entrypoint.sh /init-docker.sh && \
     printf '#!/bin/bash\nexec /init-docker.sh "$@"\n' > /usr/local/bin/init-court && \
     chmod +x /usr/local/bin/init-court
 
-# 复制 skill 和模板
-COPY skills/ ${WORKSPACE}/skills/
-# [D-29] 内置 skills 副本，volume 挂载后由 entrypoint 同步更新
-COPY skills/ /opt/skills-dist/
-
 # GUI: 复制构建好的前端 + 后端
 COPY --from=gui-builder /build/dist/ /opt/gui/dist/
 COPY gui/server/ /opt/gui/server/
 COPY gui/package.json /opt/gui/package.json
 RUN cd /opt/gui/server && npm ci --omit=dev --loglevel=error
+
+# 复制 skill 和模板
+COPY skills/ ${WORKSPACE}/skills/
+# [D-29] 内置 skills 副本，volume 挂载后由 entrypoint 同步更新
+COPY skills/ /opt/skills-dist/
 
 # 设置文件所有权
 RUN chown -R court:court /home/court ${WORKSPACE} /opt/gui /opt/skills-dist /entrypoint.sh /init-docker.sh

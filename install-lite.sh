@@ -176,7 +176,7 @@ create_agent_workspaces() {
     workspaces=$(jq -r '.agents.list[]? | "\(.id):\(.workspace // empty)"' "$config_file" 2>/dev/null)
     for entry in $workspaces; do
       local aws="${entry##*:}"
-      aws=$(eval echo "$aws")
+      aws="${aws/\$HOME/$HOME}"
       if [ -n "$aws" ] && [ "$aws" != "$WORKSPACE" ]; then
         mkdir -p "$aws/memory"
         [ ! -f "$aws/USER.md" ] && echo -e "# USER.md\n\n- **Name:** 皇上\n- **Language:** 中文" > "$aws/USER.md"
@@ -187,30 +187,6 @@ create_agent_workspaces() {
   fi
 }
 
-# ---- 安装默认 Skill: self-improving-agent ----
-echo ""
-echo -e "${YELLOW}安装默认 Skill...${NC}"
-if command -v clawdhub &>/dev/null; then
-  # 主工作区
-  clawdhub install self-improving-agent --workdir "$WORKSPACE" --force 2>/dev/null && \
-    echo -e "  ${GREEN}✓ self-improving-agent 已安装到主工作区${NC}" || \
-    echo -e "  ${YELLOW}⚠ 主工作区 skill 安装失败，可稍后手动安装: clawdhub install self-improving-agent${NC}"
-  mkdir -p "$WORKSPACE/.learnings"
-  # 各部门工作区
-  if [ -f "$CONFIG_FILE" ] && command -v jq &>/dev/null; then
-    SKILL_AGENT_WORKSPACES=$(jq -r '.agents.list[]? | .workspace // empty' "$CONFIG_FILE" 2>/dev/null)
-    echo "$SKILL_AGENT_WORKSPACES" | while IFS= read -r SKILL_WS; do
-      [ -z "$SKILL_WS" ] && continue
-      SKILL_WS="${SKILL_WS/\$HOME/$HOME}"
-      [ "$SKILL_WS" = "$WORKSPACE" ] && continue
-      clawdhub install self-improving-agent --workdir "$SKILL_WS" --force 2>/dev/null
-      mkdir -p "$SKILL_WS/.learnings"
-    done
-    echo -e "  ${GREEN}✓ self-improving-agent 已安装到所有工作区${NC}"
-  fi
-else
-  echo -e "  ${YELLOW}⚠ clawdhub 未安装，跳过 skill 安装。安装后运行: clawdhub install self-improving-agent${NC}"
-fi
 
 
 # ---- 生成配置文件 ----
@@ -226,6 +202,34 @@ if [ -f "$CONFIG_DIR/$CONFIG_FILE" ]; then
     SKIP_CONFIG=true
 else
     SKIP_CONFIG=false
+fi
+
+# ---- 安装默认 Skill: self-improving-agent ----
+echo ""
+echo -e "${YELLOW}安装默认 Skill...${NC}"
+if ! command -v clawdhub &>/dev/null; then
+  npm install -g clawdhub 2>/dev/null || true
+fi
+if command -v clawdhub &>/dev/null; then
+  # 主工作区
+  clawdhub install self-improving-agent --workdir "$WORKSPACE" --force 2>/dev/null && \
+    echo -e "  ${GREEN}✓ self-improving-agent 已安装到主工作区${NC}" || \
+    echo -e "  ${YELLOW}⚠ 主工作区 skill 安装失败，可稍后手动安装: clawdhub install self-improving-agent${NC}"
+  mkdir -p "$WORKSPACE/.learnings"
+  # 各部门工作区
+  if [ -f "$CONFIG_DIR/$CONFIG_FILE" ] && command -v jq &>/dev/null; then
+    SKILL_AGENT_WORKSPACES=$(jq -r '.agents.list[]? | .workspace // empty' "$CONFIG_DIR/$CONFIG_FILE" 2>/dev/null)
+    echo "$SKILL_AGENT_WORKSPACES" | while IFS= read -r SKILL_WS; do
+      [ -z "$SKILL_WS" ] && continue
+      SKILL_WS="${SKILL_WS/\$HOME/$HOME}"
+      [ "$SKILL_WS" = "$WORKSPACE" ] && continue
+      clawdhub install self-improving-agent --workdir "$SKILL_WS" --force 2>/dev/null
+      mkdir -p "$SKILL_WS/.learnings"
+    done
+    echo -e "  ${GREEN}✓ self-improving-agent 已安装到所有工作区${NC}"
+  fi
+else
+  echo -e "  ${YELLOW}⚠ clawdhub 未安装，跳过 skill 安装。安装后运行: clawdhub install self-improving-agent${NC}"
 fi
 
 if $SKIP_CONFIG; then
