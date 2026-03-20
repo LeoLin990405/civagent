@@ -19,7 +19,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DANGHUANGSHANG_ROOT="$SCRIPT_DIR"
 CONFIG_DIR="$HOME/.openclaw"
 CONFIG_FILE="$CONFIG_DIR/openclaw.json"
-CLAWDBOT_CONFIG="$HOME/.clawdbot/openclaw.json"
+CLAWDBOT_CONFIG="$HOME/.clawdbot/openclaw.json"  # legacy fallback
 
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'

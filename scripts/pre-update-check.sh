@@ -18,7 +18,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DANGHUANGSHANG_ROOT="$(dirname "$SCRIPT_DIR")"
 
 # 配置目录（自动检测）
-if [ -f "$HOME/.clawdbot/openclaw.json" ]; then
+if [ -f "$HOME/.openclaw/openclaw.json" ]; then
+  CONFIG_DIR="$HOME/.openclaw"
+elif [ -f "$HOME/.clawdbot/openclaw.json" ]; then
   CONFIG_DIR="$HOME/.clawdbot"
   CONFIG_FILE="$CONFIG_DIR/openclaw.json"
 elif [ -f "$HOME/.openclaw/openclaw.json" ]; then
