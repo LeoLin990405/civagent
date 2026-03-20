@@ -48,6 +48,21 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 </div>
 
+> ### ⚠️ **Discord 多 Bot 安全配置**（必读）
+> 
+> **默认配置已安全**：新版安装脚本已设置 `"allowBots": "mentions"`，Bot 只在被 @ 时响应其他 Bot，避免消息循环。
+> 
+> **如果你使用旧版配置**：请确保 Discord 配置中有：
+> ```json
+> "discord": {
+>   "allowBots": "mentions"  // ✅ 只响应被 @ 的 Bot
+> }
+> ```
+> 
+> **⚠️ 禁止使用 `"allowBots": true`** — 会导致 Bot 互相触发，引发消息风暴！
+> 
+> 📖 详细说明：[Discord 安全配置指南](./docs/discord-safety.md) | 相关 Issue：[#107](https://github.com/wanikua/danghuangshang/issues/107)
+
 <p align="center">
   <img src="./images/flow-architecture.png" alt="系统架构流程图" width="80%" />
 </p>
