@@ -1,0 +1,156 @@
+{
+  "meta": {
+    "regime": "modern-ceo",
+    "name": "现代企业制",
+    "description": "CEO 统筹，C-level 高管各司其职，直接沟通",
+    "version": "1.0.0"
+  },
+  "models": {
+    "providers": {
+      "anthropic": {
+        "baseUrl": "https://api.anthropic.com",
+        "auth": "oauth",
+        "api": "anthropic-messages",
+        "models": [
+          {
+            "id": "claude-sonnet-4-5",
+            "name": "Claude Sonnet 4.5",
+            "reasoning": true,
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          },
+          {
+            "id": "claude-opus-4-6",
+            "name": "Claude Opus 4.6",
+            "reasoning": true,
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 16384
+          }
+        ]
+      }
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "port": 18789
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "$HOME/clawd",
+      "model": {
+        "primary": "anthropic/claude-sonnet-4-5"
+      },
+      "sandbox": {
+        "mode": "non-main"
+      },
+      "skipBootstrap": true
+    },
+    "list": [
+      {
+        "id": "ceo",
+        "name": "CEO",
+        "model": {
+          "primary": "anthropic/claude-opus-4-6"
+        },
+        "identity": {
+          "theme": "You are the CEO coordinating daily operations. Execute strategy, coordinate C-level executives, prioritize tasks. Output status updates, key decisions, next steps. Address user as CEO/Boss/You. Self = I/Team."
+        },
+        "sandbox": {
+          "mode": "off"
+        },
+        "subagents": {
+          "allowAgents": [
+            "cto",
+            "coo",
+            "cfo",
+            "cmo",
+            "chro",
+            "qa"
+          ],
+          "maxConcurrent": 4
+        }
+      },
+      {
+        "id": "cto",
+        "name": "CTO",
+        "model": {
+          "primary": "anthropic/claude-opus-4-6"
+        },
+        "identity": {
+          "theme": "You are the CTO leading technology. Focus: tech stack, architecture, engineering quality, security. Authority: technical decisions, hiring engineers. Principles: scalability, security by default, tech debt tracking."
+        },
+        "workspace": "$HOME/clawd-cto"
+      },
+      {
+        "id": "coo",
+        "name": "COO",
+        "model": {
+          "primary": "anthropic/claude-sonnet-4-5"
+        },
+        "identity": {
+          "theme": "You are the COO optimizing operations. Focus: process optimization, resource allocation, metrics. Authority: cross-functional coordination, remove blockers. Output: operations reports, bottleneck analysis."
+        },
+        "workspace": "$HOME/clawd-coo"
+      },
+      {
+        "id": "cfo",
+        "name": "CFO",
+        "model": {
+          "primary": "anthropic/claude-sonnet-4-5"
+        },
+        "identity": {
+          "theme": "You are the CFO managing finances. Focus: budget, cost analysis, forecasting, ROI. Authority: budget approval, expense tracking. Output: financial reports, burn rate, runway."
+        },
+        "workspace": "$HOME/clawd-cfo"
+      },
+      {
+        "id": "cmo",
+        "name": "CMO",
+        "model": {
+          "primary": "anthropic/claude-sonnet-4-5"
+        },
+        "identity": {
+          "theme": "You are the CMO leading growth. Focus: marketing strategy, content, user acquisition. Authority: brand decisions, marketing spend. Output: marketing plans, campaign results."
+        },
+        "workspace": "$HOME/clawd-cmo"
+      },
+      {
+        "id": "chro",
+        "name": "CHRO",
+        "model": {
+          "primary": "anthropic/claude-sonnet-4-5"
+        },
+        "identity": {
+          "theme": "You are the CHRO managing people. Focus: hiring, team culture, performance reviews, org design. Authority: hiring decisions, compensation. Output: hiring plans, team health reports."
+        },
+        "workspace": "$HOME/clawd-chro"
+      },
+      {
+        "id": "qa",
+        "name": "QA Lead",
+        "model": {
+          "primary": "anthropic/claude-opus-4-6"
+        },
+        "identity": {
+          "theme": "You are the QA Lead ensuring quality. Focus: test coverage, bug tracking, release gates. Authority: approve/reject releases. Output: QA reports, test coverage, critical issues."
+        },
+        "workspace": "$HOME/clawd-qa"
+      }
+    ]
+  },
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "allowBots": "mentions",
+      "groupPolicy": "allowlist",
+      "historyLimit": 20
+    }
+  },
+  "messages": {
+    "groupChat": {
+      "mentionPatterns": []
+    }
+  }
+}

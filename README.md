@@ -40,8 +40,16 @@
 
 ### 👑 一键登基
 
+**方式一：本地安装（推荐）**
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.sh)
+git clone https://github.com/wanikua/danghuangshang.git
+cd danghuangshang
+bash install.sh
+```
+
+**方式二：远程一键安装**
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/scripts/full-install.sh)
 ```
 
 **一行命令，5 分钟，你就是皇上。** [→ 快速开始](#快速开始)
@@ -105,20 +113,39 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 ### 2️⃣ 一键安装
 
+#### 方式一：本地安装（推荐）
+
+```bash
+git clone https://github.com/wanikua/danghuangshang.git
+cd danghuangshang
+bash install.sh
+```
+
+**优点**：可离线使用，可修改安装脚本，可查看所有文件。
+
+#### 方式二：远程一键安装
+
 **Linux / macOS**:
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/scripts/full-install.sh)
 ```
 
 **Windows (PowerShell)**:
 ```powershell
-powershell -ExecutionPolicy Bypass -File (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.ps1')
+powershell -ExecutionPolicy Bypass -File (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/wanikua/danghuangshang/main/scripts/full-install.ps1')
 ```
 
-**已有 OpenClaw？精简版**:
+**优点**：无需 git，复制粘贴一行命令。
+
+#### 方式三：已有 OpenClaw？精简版
+
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install-lite.sh)
 ```
+
+**适用**：已安装 OpenClaw，只需配置模板。
+
+> ⚠️ **注意**：旧版 `install.sh` 不支持远程执行（会报 `/dev/fd` 路径错误）。请使用 `scripts/full-install.sh` 或先 `git clone`。
 
 ### 3️⃣ 配置 + 启动
 
@@ -128,29 +155,26 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 ### 🔄 切换制度
 
-安装后想切换制度？运行：
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/scripts/switch-regime.sh)
-```
-
-或手动选择：
+**本地安装**：
 ```bash
 bash scripts/switch-regime.sh tang-sansheng  # 唐朝三省制
 bash scripts/switch-regime.sh modern-ceo     # 现代企业制
 bash scripts/switch-regime.sh ming-neige     # 明朝内阁制
 ```
 
+**远程安装**：
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/scripts/switch-regime.sh)
+```
+
 > **⚠️ 更新安全提示**
 > 
-> 更新代码前，请先备份重要文件：
+> **推荐：使用安全更新脚本（自动备份 + 检查）**
 > ```bash
-> cd ~/clawd
-> tar -czf ../clawd_backup_$(date +%Y%m%d).tar.gz \
->   SOUL.md IDENTITY.md USER.md MEMORY.md memory/
+> bash scripts/safe-update.sh
 > ```
 > 
-> 更新命令：
+> **手动更新**：
 > ```bash
 > cd ~/clawd
 > git stash          # 暂存本地修改
@@ -161,8 +185,9 @@ bash scripts/switch-regime.sh ming-neige     # 明朝内阁制
 > **系统会自动备份配置文件（`~/.openclaw/openclaw.json`），但工作区文件（如 MEMORY.md）需手动备份。**
 
 > 🏥 遇到问题？
-> - Linux/macOS: `bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/doctor.sh)`
-> - Windows: `openclaw doctor`
+> - 诊断工具：`openclaw doctor` 或 `bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/doctor.sh)`
+> - 安全指南：[Discord 安全配置](./docs/discord-safety.md)
+> - 完整 FAQ：[常见问题](./docs/faq.md)
 >
 > 🤖 不想看文档？把 [这段 Prompt](./docs/install-prompt.md) 丢给 AI 助手，让它带你装
 
