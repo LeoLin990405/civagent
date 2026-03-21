@@ -20,6 +20,22 @@ ALERT_THRESHOLD_FAILURE_RATE=30    # 失败率超过 30% 告警
 ALERT_THRESHOLD_COST_DAILY=50      # 日费用超过 $50 告警
 ALERT_CHANNEL="feishu"             # 告警通道：feishu/discord/email
 
+# 依赖检查
+check_dependencies() {
+  local missing=()
+  for cmd in jq bc curl; do
+    if ! command -v $cmd &>/dev/null; then
+      missing+=($cmd)
+    fi
+  done
+  if [ ${#missing[@]} -gt 0 ]; then
+    echo "⚠️  缺少依赖：${missing[*]}"
+    echo "   安装：sudo apt install jq bc curl"
+    return 1
+  fi
+  return 0
+}
+
 # 颜色输出
 RED='\033[0;31m'
 GREEN='\033[0;32m'
