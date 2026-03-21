@@ -1,0 +1,39 @@
+{
+  "name": "clawd",
+  "version": "3.6.0",
+  "description": "AI 朝廷 - 多 Agent 协作框架",
+  "main": "index.js",
+  "bin": {
+    "task-store": "./scripts/task-store.js",
+    "context-compressor": "./scripts/context-compressor.js"
+  },
+  "scripts": {
+    "test": "node tests/test-task-store.js && node tests/test-context-compressor.js",
+    "lint": "bash -n scripts/*.sh && node -c scripts/*.js 2>/dev/null || true",
+    "health": "bash scripts/health-check.sh",
+    "cleanup": "bash scripts/cleanup-repo.sh"
+  },
+  "keywords": [
+    "ai",
+    "multi-agent",
+    "openclaw",
+    "automation"
+  ],
+  "author": "菠萝菠菠",
+  "license": "MIT",
+  "dependencies": {
+    "@notionhq/client": "^5.9.0"
+  },
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/wanikua/danghuangshang.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wanikua/danghuangshang/issues"
+  },
+  "homepage": "https://github.com/wanikua/danghuangshang#readme"
+}
