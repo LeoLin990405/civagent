@@ -1,6 +1,7 @@
 services:
   court:
     image: boluobobo/ai-court:latest
+    # platform: linux/amd64  # ⚠️ 仅在需要强制 amd64 时取消注释（不推荐）
     build: .   # 本地构建备选（无预构建镜像时自动 build）
     container_name: ai-court
     restart: unless-stopped

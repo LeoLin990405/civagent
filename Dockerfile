@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:1
+# Platform: linux/amd64, linux/arm64
 # ---- 前端构建阶段 ----
 FROM node:22-slim AS gui-builder
 WORKDIR /build
