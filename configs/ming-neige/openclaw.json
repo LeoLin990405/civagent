@@ -5,7 +5,7 @@
       "your-provider": {
         "baseUrl": "https://your-llm-provider-api-url",
         "apiKey": "YOUR_LLM_API_KEY",
-        "api": "openai",
+        "api": "openai-completions",
         "models": [
           {
             "id": "fast-model",
@@ -76,7 +76,6 @@
             "neiwufu",
             "yushanfang"
           ],
-          "maxConcurrent": 4
         }
       },
       {
@@ -214,7 +213,6 @@
             "hanlin_shujishi",
             "qijuzhu"
           ],
-          "maxConcurrent": 3
         },
         "runTimeoutSeconds": 600,
         "workspace": "$HOME/clawd-hanlin_zhang"
@@ -237,7 +235,6 @@
             "hanlin_shujishi",
             "qijuzhu"
           ],
-          "maxConcurrent": 1
         },
         "workspace": "$HOME/clawd-hanlin_xiuzhuan"
       },
@@ -259,7 +256,6 @@
             "hanlin_shujishi",
             "qijuzhu"
           ],
-          "maxConcurrent": 1
         },
         "workspace": "$HOME/clawd-hanlin_bianxiu"
       },
@@ -457,25 +453,21 @@
         "guozijian": {
           "name": "国子监",
           "token": "YOUR_GUOZIJIAN_BOT_TOKEN",
-          "applicationId": "YOUR_GUOZIJIAN_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "taiyiyuan": {
           "name": "太医院",
           "token": "YOUR_TAIYIYUAN_BOT_TOKEN",
-          "applicationId": "YOUR_TAIYIYUAN_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "neiwufu": {
           "name": "内务府",
           "token": "YOUR_NEIWUFU_BOT_TOKEN",
-          "applicationId": "YOUR_NEIWUFU_APPLICATION_ID",
           "groupPolicy": "open"
         },
         "yushanfang": {
           "name": "御膳房",
           "token": "YOUR_YUSHANFANG_BOT_TOKEN",
-          "applicationId": "YOUR_YUSHANFANG_APPLICATION_ID",
           "groupPolicy": "open"
         }
       },
@@ -643,5 +635,4 @@
       ]
     }
   },
-  "_regime": "ming-neige"
 }
