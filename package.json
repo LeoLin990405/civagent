@@ -3,6 +3,11 @@
   "version": "3.6.0",
   "description": "AI 朝廷 - 多 Agent 协作框架",
   "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "test:watch": "jest --watch"
+  },
   "bin": {
     "task-store": "./scripts/task-store.js",
     "context-compressor": "./scripts/context-compressor.js"
@@ -22,9 +27,13 @@
   "author": "菠萝菠菠",
   "license": "MIT",
   "dependencies": {
-    "@notionhq/client": "^5.9.0"
+    "@notionhq/client": "^5.9.0",
+    "winston": "^3.19.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "jest": "^30.3.0"
+  },
   "engines": {
     "node": ">=18.0.0"
   },
