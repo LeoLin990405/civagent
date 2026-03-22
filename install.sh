@@ -37,7 +37,7 @@ fi
 DANGHUANGSHANG_ROOT="$SCRIPT_DIR"
 CONFIG_DIR="$HOME/.openclaw"
 CONFIG_FILE="$CONFIG_DIR/openclaw.json"
-CLAWDBOT_CONFIG="$HOME/.clawdbot/openclaw.json"
+CLAWDBOT_CONFIG="$HOME/.clawdbot/openclaw.json"  # legacy fallback
 
 CYAN='\033[0;36m'
 GREEN='\033[0;32m'
@@ -82,15 +82,15 @@ fi
 echo -e "  ${GREEN}✓${NC} jq 已安装"
 
 # 检测配置目录
-ACTUAL_CONFIG_DIR="$CONFIG_DIR"
+# Config dir detection (CONFIG_FILE is updated if .clawdbot is found)
 if [ -f "$CLAWDBOT_CONFIG" ] && [ ! -f "$CONFIG_FILE" ]; then
-  ACTUAL_CONFIG_DIR="$HOME/.clawdbot"
+
   CONFIG_FILE="$CLAWDBOT_CONFIG"
   echo -e "  ${YELLOW}i${NC} 使用 .clawdbot 配置目录"
 elif [ -f "$CONFIG_FILE" ]; then
   echo -e "  ${YELLOW}i${NC} 使用 .openclaw 配置目录"
 elif [ -f "$CLAWDBOT_CONFIG" ]; then
-  ACTUAL_CONFIG_DIR="$HOME/.clawdbot"
+
   CONFIG_FILE="$CLAWDBOT_CONFIG"
   echo -e "  ${YELLOW}i${NC} 使用 .clawdbot 配置目录"
 else
@@ -198,6 +198,14 @@ if [ -d "$AGENTS_DIR" ]; then
     if [ -f "$persona_file" ]; then
       # 读取人设内容（跳过第一行标题）
       persona=$(tail -n +3 "$persona_file")
+      
+      # 跳过骨架文件（<200字符 = 只有 Agent ID/定位等元信息，无实质人设）
+      persona_len=${#persona}
+      if [ "$persona_len" -lt 200 ]; then
+        echo -e "    ${YELLOW}⚠${NC} $agent_id (人设文件太短，保留模板内置人设)"
+        continue
+      fi
+      
       persona_escaped=$(echo "$persona" | jq -Rs '.')
       
       # 注入到配置
@@ -252,6 +260,9 @@ fi
 # 标记制度
 jq --arg regime "$TARGET_REGIME" '._regime = $regime' \
   "$CONFIG_FILE" > "${CONFIG_FILE}.tmp" && mv "${CONFIG_FILE}.tmp" "$CONFIG_FILE"
+
+# 保护配置文件权限（含 Token 等敏感信息）
+chmod 600 "$CONFIG_FILE"
 
 echo ""
 
@@ -328,4 +339,6 @@ echo "  查看状态:   openclaw status"
 echo "  切换制度:   bash scripts/switch-regime.sh"
 echo "  恢复人设:   bash scripts/init-personas.sh"
 echo "  提取人设:   bash scripts/extract-personas.sh"
+echo ""
+echo -e "  ${YELLOW}⚠️  Discord 建议：${NC}服务器设置 → 角色 → @everyone → 关闭「提及 @everyone」（防止 Bot 回复 ping 全员）"
 echo ""

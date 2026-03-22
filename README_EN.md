@@ -420,6 +420,8 @@ For the basics (server provisioning → installation → configuration → first
 → Same OpenClaw framework and architecture, but with modern corporate roles (CTO, CFO, etc.) instead of imperial court titles.
 
 **Q: @everyone doesn't trigger responses?**
+
+**Q: Bot replies ping @everyone?** → Server Settings → Roles → @everyone → disable "Mention @everyone, @here, and All Roles" (Server Owner is unaffected)
 → Enable Message Content Intent + Server Members Intent for each Bot. See [Diagnostics](./docs/doctor.md).
 
 **Q: Agent reports permission errors after enabling sandbox?**

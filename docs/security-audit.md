@@ -11,9 +11,9 @@
 
 | 位置 | 内容 | 风险等级 | 当前保护 |
 |------|------|----------|----------|
-| `~/.clawdbot/openclaw.json` | 运行时配置（API Key、Token、Agent 人设） | 🔴 高 | 有备份 |
-| `~/.clawdbot/clawdbot.json` | Clawdbot 核心配置 | 🔴 高 | 有备份 |
-| `~/.clawdbot/credentials/` | 凭据文件 | 🔴 高 | 目录权限 700 |
+| `~/.openclaw/openclaw.json` | 运行时配置（API Key、Token、Agent 人设） | 🔴 高 | 有备份 |
+| `~/.openclaw/clawdbot.json` | Clawdbot 核心配置 | 🔴 高 | 有备份 |
+| `~/.openclaw/credentials/` | 凭据文件 | 🔴 高 | 目录权限 700 |
 | `danghuangshang/configs/*/openclaw.json` | 制度配置模板 | 🟡 中 | Git 版本控制 |
 | `danghuangshang/configs/*/agents/*.md` | 人设文件 | 🟡 中 | Git 版本控制 |
 
@@ -21,10 +21,10 @@
 
 | 位置 | 内容 | 风险等级 | 当前保护 |
 |------|------|----------|----------|
-| `~/.clawdbot/memory/` | 会话记忆 | 🟡 中 | 无备份 |
-| `~/.clawdbot/agents/*/` | Agent 工作空间 | 🟡 中 | 无备份 |
-| `~/.clawdbot/delivery-queue/` | 消息队列 | 🟢 低 | 可重建 |
-| `~/.clawdbot/sandbox/` | 沙盒环境 | 🟢 低 | 可重建 |
+| `~/.openclaw/memory/` | 会话记忆 | 🟡 中 | 无备份 |
+| `~/.openclaw/agents/*/` | Agent 工作空间 | 🟡 中 | 无备份 |
+| `~/.openclaw/delivery-queue/` | 消息队列 | 🟢 低 | 可重建 |
+| `~/.openclaw/sandbox/` | 沙盒环境 | 🟢 低 | 可重建 |
 
 ### 3. 项目数据
 
@@ -40,7 +40,7 @@
 
 ### 风险 1: 更新时配置被覆盖（已修复）
 
-**问题**: `git pull` 或重装时，`~/.clawdbot/openclaw.json` 可能被模板覆盖
+**问题**: `git pull` 或重装时，`~/.openclaw/openclaw.json` 可能被模板覆盖
 
 **影响**: 
 - ❌ API Key 丢失
@@ -60,7 +60,7 @@
 
 ### 风险 2: Memory 数据无备份
 
-**问题**: `~/.clawdbot/memory/` 中的会话记忆无自动备份
+**问题**: `~/.openclaw/memory/` 中的会话记忆无自动备份
 
 **影响**: 
 - ❌ 长期对话记忆丢失
@@ -74,7 +74,7 @@
 
 ### 风险 3: Agent 工作空间无备份
 
-**问题**: `~/.clawdbot/agents/*/` 中的工作文件无备份
+**问题**: `~/.openclaw/agents/*/` 中的工作文件无备份
 
 **影响**:
 - ❌ 未提交的代码丢失
@@ -105,11 +105,11 @@
 
 ```
 之前:
-~/.clawdbot/openclaw.json (含人设 + 凭据)
+~/.openclaw/openclaw.json (含人设 + 凭据)
   ↓ 更新时可能被覆盖
 
 现在:
-~/.clawdbot/openclaw.json (运行时，自动备份)
+~/.openclaw/openclaw.json (运行时，自动备份)
 danghuangshang/configs/*/agents/*.md (人设，Git 保护)
 danghuangshang/install.sh (安装时自动恢复凭据)
 ```
@@ -166,13 +166,13 @@ openclaw gateway restart
 
 ```bash
 # ❌ 禁止直接覆盖配置
-cp configs/ming-neige/openclaw.json ~/.clawdbot/
+cp configs/ming-neige/openclaw.json ~/.openclaw/
 
 # ❌ 禁止 git pull 后不检查直接重启
 git pull && openclaw gateway restart
 
 # ❌ 禁止手动编辑运行时配置（应编辑模板）
-nano ~/.clawdbot/openclaw.json
+nano ~/.openclaw/openclaw.json
 ```
 
 ---
@@ -186,10 +186,10 @@ nano ~/.clawdbot/openclaw.json
 # scripts/backup-all.sh
 
 # 备份：
-# - ~/.clawdbot/openclaw.json
-# - ~/.clawdbot/clawdbot.json
-# - ~/.clawdbot/memory/
-# - ~/.clawdbot/credentials/
+# - ~/.openclaw/openclaw.json
+# - ~/.openclaw/clawdbot.json
+# - ~/.openclaw/memory/
+# - ~/.openclaw/credentials/
 # 到 danghuangshang/backups/
 ```
 
@@ -232,11 +232,11 @@ nano ~/.clawdbot/openclaw.json
 
 ### 更新后
 
-- [ ] 检查配置完整性：`jq '.agents.list | length' ~/.clawdbot/openclaw.json`
+- [ ] 检查配置完整性：`jq '.agents.list | length' ~/.openclaw/openclaw.json`
 - [ ] 验证人设注入：`bash scripts/init-personas.sh --check`
 - [ ] 测试 Gateway：`openclaw status`
 - [ ] 测试 Discord 响应：群里@机器人
-- [ ] 检查日志：`tail -f ~/.clawdbot/logs/*.log`
+- [ ] 检查日志：`tail -f ~/.openclaw/logs/*.log`
 
 ---
 
@@ -254,7 +254,7 @@ openclaw gateway restart
 
 ```bash
 # 恢复最新备份
-cp ~/.clawdbot/openclaw.json.bak.* ~/.clawdbot/openclaw.json
+cp ~/.openclaw/openclaw.json.bak.* ~/.openclaw/openclaw.json
 openclaw gateway restart
 ```
 
