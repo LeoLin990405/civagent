@@ -291,7 +291,7 @@ fi
 
 # ---- 安装项目依赖 ----
 echo ""
-echo -e "${YELLOW}[2/5] 安装项目依赖...${NC}"
+echo -e "${YELLOW}[3/5] 安装项目依赖...${NC}"
 echo -e "  ${CYAN}正在安装主项目依赖...${NC}"
 cd "$WORKSPACE"
 npm install --loglevel=error
