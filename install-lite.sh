@@ -289,6 +289,14 @@ else
 fi
 
 
+# ---- 安装项目依赖 ----
+echo ""
+echo -e "${YELLOW}[2/4] 安装项目依赖...${NC}"
+echo -e "  ${CYAN}正在安装主项目依赖...${NC}"
+cd "$WORKSPACE"
+npm install --loglevel=error
+echo -e "  ${GREEN}✓${NC} 项目依赖已安装"
+
 # ---- 安装默认 Skill: self-improving-agent ----
 echo ""
 echo -e "${YELLOW}安装默认 Skill...${NC}"
