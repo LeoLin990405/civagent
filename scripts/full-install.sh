@@ -244,10 +244,23 @@ jq --arg regime "$TARGET_REGIME" '._regime = $regime' \
 echo ""
 
 # ============================================
-# 步骤 5: 验证配置
+# 步骤 5: 安装项目依赖
 # ============================================
 
-echo -e "${BLUE}[5/6] 验证配置...${NC}"
+echo -e "${BLUE}[5/7] 安装依赖...${NC}"
+
+echo -e "  ${CYAN}正在安装项目依赖...${NC}"
+cd "$INSTALL_DIR"
+npm install --loglevel=error
+echo -e "  ${GREEN}✓${NC} 项目依赖已安装"
+
+echo ""
+
+# ============================================
+# 步骤 6: 验证配置
+# ============================================
+
+echo -e "${BLUE}[6/7] 验证配置...${NC}"
 
 if jq empty "$CONFIG_FILE" 2>/dev/null; then
   echo -e "  ${GREEN}✓${NC} JSON 格式正确"
