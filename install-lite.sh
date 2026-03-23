@@ -190,7 +190,7 @@ create_agent_workspaces() {
 
 
 # ---- 生成配置文件 ----
-echo -e "${YELLOW}[3/5] 生成配置文件...${NC}"
+echo -e "${YELLOW}[2/5] 生成配置文件...${NC}"
 
 # 注意：配置从 GitHub 模板下载并自动适配部署模式。
 # 模板来源: configs/ming-neige/openclaw.json
@@ -299,7 +299,7 @@ echo -e "  ${GREEN}✓${NC} 项目依赖已安装"
 
 # ---- 安装默认 Skill: self-improving-agent ----
 echo ""
-echo -e "${YELLOW}安装默认 Skill...${NC}"
+echo -e "${CYAN}安装默认 Skill...${NC}"
 if ! command -v clawdhub &>/dev/null; then
   npm install -g clawdhub 2>/dev/null || true
 fi
