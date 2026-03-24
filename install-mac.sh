@@ -124,7 +124,7 @@ echo -e "  ${CYAN}正在安装主项目依赖...${NC}"
 npm install --loglevel=error
 echo -e "  ${GREEN}✓${NC} 项目依赖已安装"
 
-# ---- 安装默认 Skill: self-improving-agent ----
+# ---- 安装默认 Skill: self-improving ----
 echo ""
 echo -e "${YELLOW}安装默认 Skill...${NC}"
 if ! command -v clawdhub &>/dev/null; then
@@ -132,9 +132,9 @@ if ! command -v clawdhub &>/dev/null; then
 fi
 if command -v clawdhub &>/dev/null; then
   # 主工作区
-  clawdhub install self-improving-agent --workdir "$WORKSPACE" --force 2>/dev/null && \
-    echo -e "  ${GREEN}✓ self-improving-agent 已安装到主工作区${NC}" || \
-    echo -e "  ${YELLOW}⚠ 主工作区 skill 安装失败，可稍后手动安装：clawdhub install self-improving-agent${NC}"
+  clawdhub install self-improving --workdir "$WORKSPACE" --force 2>/dev/null && \
+    echo -e "  ${GREEN}✓ self-improving 已安装到主工作区${NC}" || \
+    echo -e "  ${YELLOW}⚠ 主工作区 skill 安装失败，可稍后手动安装：clawdhub install self-improving${NC}"
   mkdir -p "$WORKSPACE/.learnings"
   # 各部门工作区
   if [ -f "$CONFIG_DIR/$CONFIG_FILE" ] && command -v jq &>/dev/null; then
@@ -143,13 +143,13 @@ if command -v clawdhub &>/dev/null; then
       [ -z "$SKILL_WS" ] && continue
       SKILL_WS="${SKILL_WS/\$HOME/$HOME}"
       [ "$SKILL_WS" = "$WORKSPACE" ] && continue
-      clawdhub install self-improving-agent --workdir "$SKILL_WS" --force 2>/dev/null
+      clawdhub install self-improving --workdir "$SKILL_WS" --force 2>/dev/null
       mkdir -p "$SKILL_WS/.learnings"
     done
-    echo -e "  ${GREEN}✓ self-improving-agent 已安装到所有工作区${NC}"
+    echo -e "  ${GREEN}✓ self-improving 已安装到所有工作区${NC}"
   fi
 else
-  echo -e "  ${YELLOW}⚠ clawdhub 未安装，跳过 skill 安装。安装后运行：clawdhub install self-improving-agent${NC}"
+  echo -e "  ${YELLOW}⚠ clawdhub 未安装，跳过 skill 安装。安装后运行：clawdhub install self-improving${NC}"
 fi
 
 # 创建各 agent 独立工作区的函数（配置生成后调用）
@@ -213,7 +213,7 @@ SOUL_EOF
 echo -e "  ${GREEN}✓ SOUL.md 已创建${NC}"
 fi
 
-# ---- 安装默认 Skill: self-improving-agent ----
+# ---- 安装默认 Skill: self-improving ----
 echo ""
 echo -e "${YELLOW}安装默认 Skill...${NC}"
 if ! command -v clawdhub &>/dev/null; then
@@ -221,9 +221,9 @@ if ! command -v clawdhub &>/dev/null; then
 fi
 if command -v clawdhub &>/dev/null; then
   # 主工作区
-  clawdhub install self-improving-agent --workdir "$WORKSPACE" --force 2>/dev/null && \
-    echo -e "  ${GREEN}✓ self-improving-agent 已安装到主工作区${NC}" || \
-    echo -e "  ${YELLOW}⚠ 主工作区 skill 安装失败，可稍后手动安装: clawdhub install self-improving-agent${NC}"
+  clawdhub install self-improving --workdir "$WORKSPACE" --force 2>/dev/null && \
+    echo -e "  ${GREEN}✓ self-improving 已安装到主工作区${NC}" || \
+    echo -e "  ${YELLOW}⚠ 主工作区 skill 安装失败，可稍后手动安装: clawdhub install self-improving${NC}"
   mkdir -p "$WORKSPACE/.learnings"
   # 各部门工作区
   if [ -f "$CONFIG_DIR/$CONFIG_FILE" ] && command -v jq &>/dev/null; then
@@ -232,13 +232,13 @@ if command -v clawdhub &>/dev/null; then
       [ -z "$SKILL_WS" ] && continue
       SKILL_WS="${SKILL_WS/\$HOME/$HOME}"
       [ "$SKILL_WS" = "$WORKSPACE" ] && continue
-      clawdhub install self-improving-agent --workdir "$SKILL_WS" --force 2>/dev/null
+      clawdhub install self-improving --workdir "$SKILL_WS" --force 2>/dev/null
       mkdir -p "$SKILL_WS/.learnings"
     done
-    echo -e "  ${GREEN}✓ self-improving-agent 已安装到所有工作区${NC}"
+    echo -e "  ${GREEN}✓ self-improving 已安装到所有工作区${NC}"
   fi
 else
-  echo -e "  ${YELLOW}⚠ clawdhub 未安装，跳过 skill 安装。安装后运行: clawdhub install self-improving-agent${NC}"
+  echo -e "  ${YELLOW}⚠ clawdhub 未安装，跳过 skill 安装。安装后运行: clawdhub install self-improving${NC}"
 fi
 
 # IDENTITY.md
