@@ -34,6 +34,14 @@ cleanup() {
     kill "$(cat "$PID_FILE")" 2>/dev/null
     rm -f "$PID_FILE"
   fi
+  # Kill any process on port 18795 (fuser -> lsof -> ss+awk fallback)
+  if command -v fuser &>/dev/null; then
+    fuser -k 18795/tcp 2>/dev/null
+  elif command -v lsof &>/dev/null; then
+    lsof -ti :18795 2>/dev/null | xargs kill 2>/dev/null
+  elif command -v ss &>/dev/null; then
+    ss -tlnp 2>/dev/null | grep ':18795 ' | grep -oP 'pid=\K[0-9]+' | xargs kill 2>/dev/null
+  fi
   exit 0
 }
 
@@ -50,17 +58,6 @@ while true; do
     elif command -v lsof &>/dev/null; then
       lsof -ti :18795 2>/dev/null | xargs kill 2>/dev/null
     elif command -v ss &>/dev/null; then
-      ss -tlnp 2>/dev/null | grep ':18795 ' | grep -oP 'pid=\K[0-9]+' | xargs kill 2>/dev/null
-    fi
-    sleep 1
-    start_server
-    sleep 3
-  fi
-  sleep "$CHECK_INTERVAL"
-done
-&>/dev/null; then
-      fuser -k 18795/tcp 2>/dev/null
-    else
       ss -tlnp 2>/dev/null | grep ':18795 ' | grep -oP 'pid=\K[0-9]+' | xargs kill 2>/dev/null
     fi
     sleep 1
