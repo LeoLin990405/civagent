@@ -20,7 +20,8 @@ test_soul_creation() {
   local script="$1"
   echo -e "${YELLOW}测试：$script - SOUL.md 创建逻辑${NC}"
   
-  if grep -q "cat >.*SOUL.md << " "$script"; then
+  # 检测 SOUL.md 创建逻辑（支持多种格式）
+  if grep -q 'SOUL.md.*<<\|cat >.*SOUL.md' "$script" && grep -q 'if \[ ! -f.*SOUL.md' "$script"; then
     echo -e "  ${GREEN}✓ SOUL.md 创建逻辑正确${NC}"
     ((TEST_PASSED++))
   else
