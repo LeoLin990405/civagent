@@ -8,6 +8,9 @@
 #   bash install-lite.sh --no-gui     # 跳过 Dashboard Web UI
 #   bash install-lite.sh --with-gui   # 包含 Dashboard Web UI
 # ============================================
+
+# 严格模式：失败时立即退出
+set -euo pipefail
 set -e
 
 RED='\033[0;31m'
@@ -83,16 +86,43 @@ echo ""
 
 # ---- 初始化工作区 ----
 echo -e "${YELLOW}[1/5] 初始化朝廷工作区...${NC}"
-WORKSPACE="$HOME/clawd"
-CONFIG_DIR="$HOME/.openclaw"
+
+# 确保 HOME 变量有效（修复 Windows Git Bash 和非交互式 shell 环境）
+if [ -z "$HOME" ]; then
+  HOME=$(getent passwd "$(id -un)" | cut -d: -f6)
+  [ -z "$HOME" ] && HOME="/root"
+  export HOME
+fi
+
+WORKSPACE="${WORKSPACE:-$HOME/clawd}"
+CONFIG_DIR="${CONFIG_DIR:-$HOME/.openclaw}"
 CONFIG_FILE="openclaw.json"
-mkdir -p "$WORKSPACE"
-mkdir -p "$CONFIG_DIR"
-cd "$WORKSPACE"
+
+# 检查工作区是否存在
+if [ -d "$WORKSPACE" ]; then
+  echo -e "  ${YELLOW}⚠ 工作区已存在：$WORKSPACE${NC}"
+else
+  mkdir -p "$WORKSPACE" || {
+    echo -e "  ${RED}❌ 无法创建工作区：$WORKSPACE${NC}"
+    echo "     请检查权限或手动创建：mkdir -p $WORKSPACE"
+    exit 1
+  }
+  echo -e "  ${GREEN}✓ 工作区已创建：$WORKSPACE${NC}"
+fi
+
+mkdir -p "$CONFIG_DIR" || {
+  echo -e "  ${RED}❌ 无法创建配置目录：$CONFIG_DIR${NC}"
+  exit 1
+}
+
+cd "$WORKSPACE" || {
+  echo -e "  ${RED}❌ 无法进入工作区${NC}"
+  exit 1
+}
 
 # SOUL.md
 if [ ! -f SOUL.md ]; then
-cat > SOUL.md.example << 'SOUL_EOF'
+cat > SOUL.md << 'SOUL_EOF'
 # SOUL.md - 朝廷行为准则
 
 ## 铁律
@@ -127,7 +157,8 @@ cat > SOUL.md.example << 'SOUL_EOF'
 | 执行层（重） | 强力模型 | 编码、深度分析 |
 | 执行层（轻） | 经济模型（可选） | 轻量任务，省钱 |
 SOUL_EOF
-echo -e "  ${GREEN}✓ SOUL.md.example 已创建（如需自定义人设请重命名为 SOUL.md）${NC}"
+cp SOUL.md SOUL.md.example
+echo -e "  ${GREEN}✓ SOUL.md 已创建${NC}"
 else
 echo -e "  ${GREEN}✓ SOUL.md 已存在，跳过${NC}"
 fi
