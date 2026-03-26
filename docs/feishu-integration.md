@@ -83,7 +83,7 @@
       "enabled": true,
       "dmPolicy": "open",
       "groupPolicy": "open",
-      "allowBots": true,
+      "allowBots": "mentions",  // ✅ 只响应被 @ 的 Bot，防止消息循环
       "accounts": {
         "zhongshu": {
           "appId": "cli_xxxxxxxxxxxxxxxx",

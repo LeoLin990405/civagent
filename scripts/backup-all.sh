@@ -23,7 +23,9 @@ BACKUP_DIR="$DANGHUANGSHANG_ROOT/backups"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
 # 配置目录（自动检测）
-if [ -f "$HOME/.clawdbot/openclaw.json" ]; then
+if [ -f "$HOME/.openclaw/openclaw.json" ]; then
+  CONFIG_DIR="$HOME/.openclaw"
+elif [ -f "$HOME/.clawdbot/openclaw.json" ]; then
   CONFIG_DIR="$HOME/.clawdbot"
 elif [ -f "$HOME/.openclaw/openclaw.json" ]; then
   CONFIG_DIR="$HOME/.openclaw"
@@ -260,8 +262,8 @@ echo ""
 if [ "$DRY_RUN" = false ] && [ "$backed_up" -gt 0 ]; then
   echo -e "${YELLOW}提示：${NC}"
   echo "  - 查看备份：ls -la $BACKUP_DIR"
-  echo "  - 恢复配置：cp $BACKUP_DIR/configs/openclaw.json.* ~/.clawdbot/openclaw.json"
-  echo "  - 恢复记忆：tar -xzf $BACKUP_DIR/memory.*.tar.gz -C ~/.clawdbot/"
+  echo "  - 恢复配置：cp $BACKUP_DIR/configs/openclaw.json.* ~/.openclaw/openclaw.json"
+  echo "  - 恢复记忆：tar -xzf $BACKUP_DIR/memory.*.tar.gz -C ~/.openclaw/"
   echo ""
 fi
 

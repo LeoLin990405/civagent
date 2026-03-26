@@ -35,11 +35,11 @@ bash scripts/backup-all.sh
 ```
 
 **备份内容**:
-- ✅ `~/.clawdbot/openclaw.json` - 配置
-- ✅ `~/.clawdbot/clawdbot.json` - 核心配置
-- ✅ `~/.clawdbot/credentials/` - 凭据
-- ✅ `~/.clawdbot/memory/` - 会话记忆
-- ✅ `~/.clawdbot/devices.json` - 设备信息
+- ✅ `~/.openclaw/openclaw.json` - 配置
+- ✅ `~/.openclaw/clawdbot.json` - 核心配置
+- ✅ `~/.openclaw/credentials/` - 凭据
+- ✅ `~/.openclaw/memory/` - 会话记忆
+- ✅ `~/.openclaw/devices.json` - 设备信息
 
 **可选**: `--full` 包含 Agent 工作空间
 
@@ -102,10 +102,10 @@ git pull
 git status
 
 # 保留本地配置（不覆盖）
-git checkout --ours ~/.clawdbot/openclaw.json
+git checkout --ours ~/.openclaw/openclaw.json
 
 # 或者接受远程版本
-git checkout --theirs ~/.clawdbot/openclaw.json
+git checkout --theirs ~/.openclaw/openclaw.json
 
 # 解决后提交
 git add .
@@ -122,7 +122,7 @@ bash scripts/init-personas.sh
 
 **作用**:
 - 从独立文件 (`configs/*/agents/*.md`) 读取人设
-- 注入到运行时配置 (`~/.clawdbot/openclaw.json`)
+- 注入到运行时配置 (`~/.openclaw/openclaw.json`)
 - 保留现有 API Key 和 Token
 - 验证完整性
 
@@ -135,10 +135,10 @@ bash scripts/init-personas.sh
 openclaw status
 
 # 验证人设
-jq '.agents.list[].identity.theme' ~/.clawdbot/openclaw.json | head -20
+jq '.agents.list[].identity.theme' ~/.openclaw/openclaw.json | head -20
 
 # 检查 Discord 配置
-jq '.channels.discord' ~/.clawdbot/openclaw.json
+jq '.channels.discord' ~/.openclaw/openclaw.json
 ```
 
 ---
@@ -152,7 +152,7 @@ openclaw gateway restart
 **验证**:
 ```bash
 # 查看日志
-tail -f ~/.clawdbot/logs/*.log
+tail -f ~/.openclaw/logs/*.log
 
 # 测试响应
 # 在 Discord 群里 @机器人
@@ -179,7 +179,7 @@ openclaw gateway restart
 ls -lt ~/danghuangshang/backups/configs/ | head
 
 # 恢复配置
-cp ~/danghuangshang/backups/configs/openclaw.json.YYYYMMDD_HHMMSS ~/.clawdbot/openclaw.json
+cp ~/danghuangshang/backups/configs/openclaw.json.YYYYMMDD_HHMMSS ~/.openclaw/openclaw.json
 
 # 重启
 openclaw gateway restart
@@ -216,10 +216,10 @@ bash install.sh
 
 ```
 之前:
-~/.clawdbot/openclaw.json (含人设，易丢失)
+~/.openclaw/openclaw.json (含人设，易丢失)
 
 现在:
-~/.clawdbot/openclaw.json (运行时，自动备份)
+~/.openclaw/openclaw.json (运行时，自动备份)
 danghuangshang/configs/*/agents/*.md (人设，Git 保护)
 ```
 
@@ -240,13 +240,13 @@ danghuangshang/configs/ming-neige/
 
 ```bash
 # ❌ 禁止直接覆盖配置
-cp configs/ming-neige/openclaw.json ~/.clawdbot/
+cp configs/ming-neige/openclaw.json ~/.openclaw/
 
 # ❌ 禁止 git pull 后不检查直接重启
 git pull && openclaw gateway restart
 
 # ❌ 禁止手动编辑运行时配置（应编辑模板）
-nano ~/.clawdbot/openclaw.json
+nano ~/.openclaw/openclaw.json
 
 # ❌ 禁止删除备份目录
 rm -rf danghuangshang/backups/
@@ -266,10 +266,10 @@ rm -rf danghuangshang/backups/
 ### 更新后
 
 - [ ] 运行 `bash scripts/init-personas.sh`
-- [ ] 验证人设：`jq '.agents.list | length' ~/.clawdbot/openclaw.json`
+- [ ] 验证人设：`jq '.agents.list | length' ~/.openclaw/openclaw.json`
 - [ ] 测试 Gateway：`openclaw status`
 - [ ] 测试 Discord：群里@机器人
-- [ ] 检查日志：`tail -f ~/.clawdbot/logs/*.log`
+- [ ] 检查日志：`tail -f ~/.openclaw/logs/*.log`
 
 ---
 
@@ -305,8 +305,8 @@ fi
 
 如果更新过程中遇到问题：
 
-1. **查看日志**: `tail -f ~/.clawdbot/logs/*.log`
-2. **检查配置**: `jq '.' ~/.clawdbot/openclaw.json`
+1. **查看日志**: `tail -f ~/.openclaw/logs/*.log`
+2. **检查配置**: `jq '.' ~/.openclaw/openclaw.json`
 3. **恢复备份**: `bash scripts/backup-all.sh` (查看可用备份)
 4. **重新安装**: `bash install.sh`
 

@@ -343,6 +343,72 @@ for g in guilds:
             info "curl 未安装 — 跳过 Discord API 在线验证"
         fi
 
+        # ---- 检查 Bot 角色是否有 Mention Everyone 权限 ----
+        echo -e "${CYAN}  🔍 检查 Bot @everyone 权限...${NC}"
+        echo ""
+
+        # 用第一个有效 Token 获取服务器角色
+        FIRST_TOKEN=""
+        FIRST_GUILD=""
+        DISCORD_ACCOUNTS_2=$(json_keys "$CONFIG_FILE" "channels.discord.accounts")
+        while IFS= read -r acct; do
+            [ -z "$acct" ] && continue
+            TK=$(json_get "$CONFIG_FILE" "channels.discord.accounts.$acct.token")
+            [ -z "$TK" ] && continue
+            [[ "$TK" == YOUR_* ]] && continue
+            FIRST_TOKEN="$TK"
+            break
+        done <<< "$DISCORD_ACCOUNTS_2"
+
+        if [ -n "$FIRST_TOKEN" ]; then
+            # 获取 guild 列表
+            G_RESP=$(curl -sS -H @<(echo "Authorization: Bot $FIRST_TOKEN")                 "https://discord.com/api/v10/users/@me/guilds" 2>/dev/null)
+            GUILD_IDS=$(echo "$G_RESP" | python3 -c "
+import json, sys
+try:
+    guilds = json.load(sys.stdin)
+    for g in guilds:
+        print(g.get('id',''))
+except: pass
+" 2>/dev/null)
+
+            while IFS= read -r gid; do
+                [ -z "$gid" ] && continue
+                ROLES_RESP=$(curl -sS -H @<(echo "Authorization: Bot $FIRST_TOKEN")                     "https://discord.com/api/v10/guilds/$gid/roles" 2>/dev/null)
+                MENTION_WARN=$(echo "$ROLES_RESP" | python3 -c "
+import json, sys
+MENTION_EVERYONE = 1 << 17
+try:
+    roles = json.load(sys.stdin)
+    problems = []
+    for r in roles:
+        perm = int(r.get('permissions', 0))
+        if perm & MENTION_EVERYONE:
+            managed = r.get('managed', False)
+            tag = ' (Bot 托管角色)' if managed else ''
+            problems.append(f'{r["name"]}{tag}')
+    if problems:
+        print('|'.join(problems))
+except: pass
+" 2>/dev/null)
+
+                if [ -n "$MENTION_WARN" ]; then
+                    GUILD_NAME=$(echo "$G_RESP" | python3 -c "
+import json, sys
+guilds = json.load(sys.stdin)
+for g in guilds:
+    if g.get('id') == '$gid':
+        print(g.get('name','?'))
+        break
+" 2>/dev/null)
+                    warn "「${GUILD_NAME:-$gid}」以下角色有 Mention Everyone 权限: $(echo "$MENTION_WARN" | tr '|' ', ')"
+                    info "服务器设置 → 角色 → 关闭「提及 @everyone」权限（Owner 不受影响）"
+                fi
+            done <<< "$GUILD_IDS"
+            sleep 1
+        fi
+
+        echo ""
         echo -e "${CYAN}  📋 Discord 手动排查清单：${NC}"
         echo -e "     1. Discord Developer Portal → 每个 Bot 开启 ${YELLOW}Message Content Intent${NC}"
         echo -e "     2. Discord Developer Portal → 每个 Bot 开启 ${YELLOW}Server Members Intent${NC}"

@@ -1,4 +1,4 @@
-[中文版](./README.md) | [🏢 Corporate Edition: Become CEO](https://github.com/wanikua/become-ceo) | [📚 Full Docs](./docs/README.md)
+[中文版](./README.md) | [日本語版](./README_JA.md) | [🏢 Corporate Edition: Become CEO](https://github.com/wanikua/become-ceo) | [📚 Full Docs](./docs/README.md)
 
 <!-- SEO Keywords: Three Departments and Six Ministries, Ming Dynasty, Six Ministries System, Zhongshu Province, Menxia Province, Shangshu Province, AI Court, AI Agent, Multi-Agent Collaboration, AI Management, Ancient China Governance, Modern Management, Organization Architecture, OpenClaw, multi-agent, ancient-china -->
 
@@ -248,7 +248,7 @@ Each agent is a standalone Discord Bot bound to its own AI identity:
 
 ```bash
 # 1️⃣ One-line install (Linux example)
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install-lite.sh)
 
 # 2️⃣ Add API Key and Bot Token
 nano ~/.openclaw/openclaw.json
@@ -260,6 +260,17 @@ systemctl --user start openclaw-gateway
 @mention your Bot, get a reply = you're on the throne! 🎉
 
 > 📖 **Full step-by-step tutorial** → [Basics Tutorial](./docs/tutorial-basics.md) (Chinese)
+
+### 🔧 Troubleshooting Installation Issues?
+
+If you encounter any problems during installation:
+
+- **npm install fails?** → Script now checks for `package.json` and skips if missing
+- **Permission errors?** → Use `sudo npm install -g openclaw@latest`
+- **Network issues?** → Use Git clone method or check [Troubleshooting Guide](./docs/install-troubleshooting.md)
+- **Missing personas?** → Ensure you cloned the full repository with `configs/*/agents/` directory
+
+👉 **[Complete Installation Troubleshooting Guide](./docs/install-troubleshooting.md)**
 
 ---
 
@@ -420,6 +431,8 @@ For the basics (server provisioning → installation → configuration → first
 → Same OpenClaw framework and architecture, but with modern corporate roles (CTO, CFO, etc.) instead of imperial court titles.
 
 **Q: @everyone doesn't trigger responses?**
+
+**Q: Bot replies ping @everyone?** → Server Settings → Roles → @everyone → disable "Mention @everyone, @here, and All Roles" (Server Owner is unaffected)
 → Enable Message Content Intent + Server Members Intent for each Bot. See [Diagnostics](./docs/doctor.md).
 
 **Q: Agent reports permission errors after enabling sandbox?**

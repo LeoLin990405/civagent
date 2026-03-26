@@ -1,4 +1,4 @@
-[English Version](./README_EN.md) | [🏢 企业版 Become CEO (English)](https://github.com/wanikua/become-ceo) | [📚 完整文档](./docs/README.md)
+[English Version](./README_EN.md) | [日本語版](./README_JA.md) | [🏢 企业版 Become CEO (English)](https://github.com/wanikua/become-ceo) | [📚 完整文档](./docs/README.md)
 
 > **⚠️ 维权声明 / Originality Notice**
 >
@@ -40,13 +40,38 @@
 
 ### 👑 一键登基
 
+**方式一：本地安装（推荐）**
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.sh)
+git clone https://github.com/wanikua/danghuangshang.git
+cd danghuangshang
+bash scripts/full-install.sh
+```
+
+**方式二：远程一键安装**
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/scripts/full-install.sh)
 ```
 
 **一行命令，5 分钟，你就是皇上。** [→ 快速开始](#快速开始)
 
+> 🔒 **安全更新（2026-03-22）**：新增 Webhook 签名验证，防止伪造请求。[查看配置指南](./docs/webhook-security.md)
+
 </div>
+
+> ### ⚠️ **Discord 多 Bot 安全配置**（必读）
+> 
+> **默认配置已安全**：新版安装脚本已设置 `"allowBots": "mentions"`，Bot 只在被 @ 时响应其他 Bot，避免消息循环。
+> 
+> **如果你使用旧版配置**：请确保 Discord 配置中有：
+> ```json
+> "discord": {
+>   "allowBots": "mentions"  // ✅ 只响应被 @ 的 Bot
+> }
+> ```
+> 
+> **⚠️ 禁止使用 `"allowBots": true`** — 会导致 Bot 互相触发，引发消息风暴！
+> 
+> 📖 详细说明：[Discord 安全配置指南](./docs/discord-safety.md) | 相关 Issue：[#107](https://github.com/wanikua/danghuangshang/issues/107)
 
 <p align="center">
   <img src="./images/flow-architecture.png" alt="系统架构流程图" width="80%" />
@@ -90,9 +115,23 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 ### 2️⃣ 一键安装
 
+#### 方式一：本地安装（推荐）
+
+```bash
+git clone https://github.com/wanikua/danghuangshang.git
+cd danghuangshang
+bash scripts/full-install.sh
+```
+
+**优点**：可离线使用，可修改安装脚本，可查看所有文件，**包含完整人设注入**。
+
+> ⚠️ **安装遇到问题？** → [查看故障排除指南](docs/install-troubleshooting.md)
+
+#### 方式二：远程一键安装
+
 **Linux / macOS**:
 ```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.sh)
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/scripts/full-install.sh)
 ```
 
 **Windows (PowerShell)**:
@@ -100,10 +139,17 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 powershell -ExecutionPolicy Bypass -File (New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.ps1')
 ```
 
-**已有 OpenClaw？精简版**:
+**优点**：无需 git，复制粘贴一行命令，**包含完整人设注入**。
+
+#### 方式三：已有 OpenClaw？精简版
+
 ```bash
 bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install-lite.sh)
 ```
+
+**适用**：已安装 OpenClaw，只需配置模板。**包含人设注入**。
+
+> ⚠️ **注意**：旧版 `install.sh` 不支持远程执行（会报 `/dev/fd` 路径错误）。请使用 `scripts/full-install.sh` 或先 `git clone`。
 
 ### 3️⃣ 配置 + 启动
 
@@ -113,29 +159,26 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 ### 🔄 切换制度
 
-安装后想切换制度？运行：
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/scripts/switch-regime.sh)
-```
-
-或手动选择：
+**本地安装**：
 ```bash
 bash scripts/switch-regime.sh tang-sansheng  # 唐朝三省制
 bash scripts/switch-regime.sh modern-ceo     # 现代企业制
 bash scripts/switch-regime.sh ming-neige     # 明朝内阁制
 ```
 
+**远程安装**：
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/scripts/switch-regime.sh)
+```
+
 > **⚠️ 更新安全提示**
 > 
-> 更新代码前，请先备份重要文件：
+> **推荐：使用安全更新脚本（自动备份 + 检查）**
 > ```bash
-> cd ~/clawd
-> tar -czf ../clawd_backup_$(date +%Y%m%d).tar.gz \
->   SOUL.md IDENTITY.md USER.md MEMORY.md memory/
+> bash scripts/safe-update.sh
 > ```
 > 
-> 更新命令：
+> **手动更新**：
 > ```bash
 > cd ~/clawd
 > git stash          # 暂存本地修改
@@ -146,8 +189,9 @@ bash scripts/switch-regime.sh ming-neige     # 明朝内阁制
 > **系统会自动备份配置文件（`~/.openclaw/openclaw.json`），但工作区文件（如 MEMORY.md）需手动备份。**
 
 > 🏥 遇到问题？
-> - Linux/macOS: `bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/doctor.sh)`
-> - Windows: `openclaw doctor`
+> - 诊断工具：`openclaw doctor` 或 `bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/doctor.sh)`
+> - 安全指南：[Discord 安全配置](./docs/discord-safety.md)
+> - 完整 FAQ：[常见问题](./docs/faq.md)
 >
 > 🤖 不想看文档？把 [这段 Prompt](./docs/install-prompt.md) 丢给 AI 助手，让它带你装
 
@@ -156,9 +200,16 @@ bash scripts/switch-regime.sh ming-neige     # 明朝内阁制
 <a id="朝廷架构"></a>
 
 ## 🏛️ 朝廷架构
-三省六部制是中国古代经典制度。
-**明朝初年** 废丞相，司礼监 + 内阁二元治理。
-本项目的Agent团队协作方式采用更贴近明朝六部的制度。
+
+本项目提供 **三种制度** 供选择，各有侧重：
+
+| 制度 | 特点 | 流程 |
+|------|------|------|
+| **明朝内阁制**（默认） | 司礼监 + 内阁二元调度 | 司礼监接旨 → 内阁优化 → 六部执行 |
+| **唐朝三省制** | 三权分立、互相制衡 | 中书起草 → 门下审核 → 尚书执行 |
+| **现代企业制** | 扁平管理、英文沟通 | CEO 决策 → Board 审议 → CxO 执行 |
+
+> 💡 下方先展示明朝内阁制（默认），唐朝三省制和现代企业制请展开下方折叠查看。
 
 **方式一：经司礼监调度（默认）**
 
@@ -213,6 +264,113 @@ bash scripts/switch-regime.sh ming-neige     # 明朝内阁制
 | 内阁封驳权 | 内阁可否决不合理方案 |
 
 </details>
+---
+
+<details>
+<summary><b>唐朝三省制（tang-sansheng）</b></summary>
+
+**中书起草 → 门下审核 → 尚书执行**，三权分立、互相制衡。适合需要严谨审批流程的企业级场景。
+
+**方式一：三省流转（默认）**
+
+```
+皇帝（你）下旨
+  ▼
+中书省 ── 起草诏令（理解意图、生成执行方案）
+  ▼
+门下省 ── 审核驳回（审查方案可行性、合规性）
+  │
+  ├─ ❌ 封驳 → 退回中书省修改
+  └─ ✅ 通过 ▼
+         尚书省 ── 执行派发
+           ├─→ @兵部 编码开发
+           ├─→ @户部 财务分析
+           ├─→ @工部 运维部署
+           ├─→ @礼部 品牌营销
+           ├─→ @吏部 项目管理
+           └─→ @刑部 法务合规
+                  ▼
+               御史台 ── 监察审计（全程监督、代码审查）
+```
+
+**方式二：皇帝直接下旨给任意部门**
+
+```
+皇帝（你）
+  ├─→ @中书省 拟一份新产品方案
+  ├─→ @兵部 修复这个 Bug
+  └─→ @御史台 审查这个 PR
+```
+
+> 💡 三省制的核心是制衡：中书省负责"想"，门下省负责"审"，尚书省负责"做"。任何重大决策都要经过三省流转，避免一家独大。
+
+| 唐朝三省 | Agent ID | 职责 |
+|----------|----------|------|
+| **中书省** | `zhongshu` | 起草方案、Prompt 增强、生成执行计划 |
+| **门下省** | `menxia` | 审核方案、封驳不合理决策 |
+| **尚书省** | `shangshu` | 接收通过的方案、派发六部执行 |
+| **御史台** | `yushitai` | 全程监察、代码审查、质量把控 |
+| **兵部** | `bingbu` | 软件工程、系统架构 |
+| **户部** | `hubu` | 财务分析、成本管控 |
+| **工部** | `gongbu` | DevOps、服务器运维 |
+| **礼部** | `libu` | 品牌营销、内容创作 |
+| **吏部** | `libu2` | 项目管理、团队协调 |
+| **刑部** | `xingbu` | 法务合规、知识产权 |
+| **史官** | `shiguan` | 自动记录每日朝政摘要 |
+
+</details>
+
+<details>
+<summary><b>现代企业制（modern-ceo）</b></summary>
+
+**CEO 决策 → Board 审议 → CxO 执行**，扁平化管理、英文沟通。适合国际化团队或偏好现代企业架构的用户。
+
+**方式一：经 CEO 调度（默认）**
+
+```
+Owner (You)
+  ▼
+CEO ── Receive task, delegate to C-suite
+  │
+  ├─→ Board of Directors ── Strategic review & approval
+  │ ←─┘ Approve / Reject / Request changes
+  │
+  ├─→ @CTO  Technical execution (code, architecture)
+  ├─→ @CFO  Financial analysis (budget, cost)
+  ├─→ @CMO  Marketing (brand, content, social)
+  ├─→ @COO  Operations (DevOps, infrastructure)
+  ├─→ @CLO  Legal & compliance
+  └─→ @CoS  Project coordination
+         ▼
+      QA Director ── Quality assurance & code review
+```
+
+**方式二：直接指挥（Direct command）**
+
+```
+Owner (You)
+  ├─→ @CTO Build a login API
+  ├─→ @CFO Review this month's spending
+  └─→ @QA  Review this PR
+```
+
+> 💡 Modern CEO mode uses English for all communication. The CEO acts as dispatcher (like 司礼监), the Board provides strategic oversight (like 内阁), and QA handles quality control (like 都察院).
+
+| Role | Agent ID | Responsibility |
+|------|----------|---------------|
+| **CEO** | `ceo` | Task intake, delegation, progress tracking |
+| **Board** | `board` | Strategic review, budget approval, veto power |
+| **QA Director** | `qa` | Code review, quality assurance |
+| **CTO** | `cto` | Engineering, architecture, technical decisions |
+| **CFO** | `cfo` | Financial analysis, cost optimization |
+| **CMO** | `cmo` | Marketing, brand, content creation |
+| **COO** | `coo` | Operations, DevOps, infrastructure |
+| **CLO** | `clo` | Legal compliance, IP protection |
+| **Chief of Staff** | `cos` | Project management, team coordination |
+
+</details>
+
+
 
 ---
 
@@ -453,6 +611,8 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 **@everyone 不触发？** → 每个 Bot 都要开 Message Content Intent + Server Members Intent（[Discord Developer Portal](https://discord.com/developers/applications) → Bot 页面 → Privileged Gateway Intents）
 
+**Bot 回复触发 @everyone 通知？** → 服务器设置 → 角色 → @everyone → 关闭「提及 @everyone」权限（Owner 不受影响）
+
 </details>
 
 <details>
@@ -527,8 +687,7 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 | 小红书「菠萝菠菠🍍」 | 公众号「菠言菠语」 | 微信群 |
 |:---:|:---:|:---:|
-| <a href="https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d"><img src="./images/avatar-xiaohongshu.png" width="150" style="border-radius:50%"/></a> | <img src="./images/qr-wechat-official.jpg" width="150"/> | ![8e02d54f8ec2145c9592ffd1fadb2068](https://github.com/user-attachments/assets/eb4daaba-d531-46cd-a3f4-789223752a34)
- |
+| <a href="https://www.xiaohongshu.com/user/profile/5a169df34eacab2bc9a7a22d"><img src="./images/avatar-xiaohongshu.png" width="150" style="border-radius:50%"/></a> | <img src="./images/qr-wechat-official.jpg" width="150"/> | <img src="./images/qr-wechat-group.png" width="150"/> |
 
 <details>
 <summary>相关链接 · 安全须知 · 免责声明</summary>
@@ -545,7 +704,9 @@ bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/
 
 ---
 
-**🔄 已安装？一键更新：** `bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/install.sh)` · Docker：`docker pull boluobobo/ai-court:latest && docker compose up -d`
+**🔄 已安装？一键更新：** `bash <(curl -fsSL https://raw.githubusercontent.com/wanikua/danghuangshang/main/scripts/full-install.sh)` · Docker：`docker pull boluobobo/ai-court:latest && docker compose up -d`
+
+> **Docker 多架构支持**：✅ linux/amd64（Intel/AMD） · ✅ linux/arm64（Apple Silicon/ARM 服务器）
 
 v3.5.3 | MIT License | [User Agreement](./docs/user-agreement.md) | [Privacy Policy](./docs/privacy-policy.md)
 

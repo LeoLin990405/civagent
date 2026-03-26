@@ -26,6 +26,9 @@ ChatGPT 是一个通才，对话结束就失忆。这套系统是多个专家—
 ### Q: @everyone 不触发 Agent 回复？
 Discord Developer Portal 里每个 Bot 要开启 **Message Content Intent** 和 **Server Members Intent**，服务器里 Bot 角色要有 View Channels 权限。
 
+### Q: Bot 回复中的 @everyone 会 ping 全服务器吗？怎么禁止？
+会，如果 Bot 角色有 "Mention Everyone" 权限。**推荐做法**：在 Discord 服务器设置 → 角色 → @everyone 角色中，关闭「提及 @everyone、@here 和所有角色」权限。服务器 Owner 不受此限制，仍可正常 @everyone。详见 [Discord 配置 - 禁止 Bot 触发 @everyone](./setup-discord.md#第五步禁止-bot-触发-everyone推荐)。
+
 ### Q: Agent 报「只读文件系统」「apt 失败」？
 sandbox mode 设成了 `all` 导致 Agent 跑在 Docker 容器里，文件系统只读。
 

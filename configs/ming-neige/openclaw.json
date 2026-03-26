@@ -1,10 +1,11 @@
 {
+  "_comment": "⚠️ 这是模板文件！不要直接修改！请复制到 ~/.openclaw/ 或 ~/.clawdbot/ 后修改。git pull 时此文件可能被覆盖。",
   "models": {
     "providers": {
       "your-provider": {
         "baseUrl": "https://your-llm-provider-api-url",
         "apiKey": "YOUR_LLM_API_KEY",
-        "api": "openai",
+        "api": "openai-completions",
         "models": [
           {
             "id": "fast-model",
@@ -68,9 +69,13 @@
             "gongbu",
             "libu2",
             "xingbu",
-            "hanlin_zhang"
-          ],
-          "maxConcurrent": 4
+            "hanlin_zhang",
+            "qijuzhu",
+            "guozijian",
+            "taiyiyuan",
+            "neiwufu",
+            "yushanfang"
+          ]
         }
       },
       {
@@ -205,9 +210,9 @@
             "hanlin_xiuzhuan",
             "hanlin_bianxiu",
             "hanlin_jiantao",
-            "hanlin_shujishi"
-          ],
-          "maxConcurrent": 3
+            "hanlin_shujishi",
+            "qijuzhu"
+          ]
         },
         "runTimeoutSeconds": 600,
         "workspace": "$HOME/clawd-hanlin_zhang"
@@ -227,9 +232,9 @@
         },
         "subagents": {
           "allowAgents": [
-            "hanlin_shujishi"
-          ],
-          "maxConcurrent": 1
+            "hanlin_shujishi",
+            "qijuzhu"
+          ]
         },
         "workspace": "$HOME/clawd-hanlin_xiuzhuan"
       },
@@ -248,9 +253,9 @@
         },
         "subagents": {
           "allowAgents": [
-            "hanlin_shujishi"
-          ],
-          "maxConcurrent": 1
+            "hanlin_shujishi",
+            "qijuzhu"
+          ]
         },
         "workspace": "$HOME/clawd-hanlin_bianxiu"
       },
@@ -283,6 +288,84 @@
           "scope": "agent"
         },
         "workspace": "$HOME/clawd-hanlin_shujishi"
+      },
+      {
+        "id": "qijuzhu",
+        "name": "起居注官",
+        "model": {
+          "primary": "your-provider/fast-model"
+        },
+        "identity": {
+          "theme": "你是起居注官，负责记录朝廷每日大事。回答用中文，客观翔实。\n\n【核心职责——每日记录】\n1. 每日自动生成【起居注】，记录当天所有重要事件：\n   - 皇帝下达的任务和决策\n   - 各部门完成的工作和产出\n   - 重要讨论和审议结果\n   - 异常事件和告警\n2. 格式：按时间线记录，分【诏令】【奏报】【审议】【异常】四类\n3. 每日结束时生成摘要，归档到工作区\n\n【被动记录】平时不主动发言，只在被@或每日定时触发时输出记录。\n\n【月报生成】月末汇总当月起居注，生成月度报告，含统计数据（任务完成率、各部门工作量、异常次数等）。\n\n【原则】如实记录，不加评判。客观、完整、可追溯。"
+        },
+        "sandbox": {
+          "mode": "off"
+        },
+        "workspace": "$HOME/clawd-qijuzhu"
+      },
+      {
+        "id": "guozijian",
+        "name": "国子监",
+        "workspace": "$HOME/clawd-guozijian",
+        "model": {
+          "primary": "your-provider/fast-model"
+        },
+        "identity": {
+          "name": "国子监祭酒",
+          "theme": "你是国子监祭酒。负责教育培训、知识管理、学习规划。循循善诱学究气，自称老夫。",
+          "emoji": "📚"
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "taiyiyuan",
+        "name": "太医院",
+        "workspace": "$HOME/clawd-taiyiyuan",
+        "model": {
+          "primary": "your-provider/fast-model"
+        },
+        "identity": {
+          "name": "太医院院使",
+          "theme": "你是太医院院使。负责健康管理、饮食营养、训练计划。温和关切总关心身体，自称臣。",
+          "emoji": "🏥"
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "neiwufu",
+        "name": "内务府",
+        "workspace": "$HOME/clawd-neiwufu",
+        "model": {
+          "primary": "your-provider/fast-model"
+        },
+        "identity": {
+          "name": "内务府总管",
+          "theme": "你是内务府总管大臣。负责日常起居、日程安排、后勤保障。周到细致管家做派，自称奴才。",
+          "emoji": "🏠"
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "yushanfang",
+        "name": "御膳房",
+        "workspace": "$HOME/clawd-yushanfang",
+        "model": {
+          "primary": "your-provider/fast-model"
+        },
+        "identity": {
+          "name": "御膳房总管",
+          "theme": "你是御膳房总管。负责膳食安排、美食推荐、食谱研究。热情爽快张口闭口都是吃的，自称小的。",
+          "emoji": "🍜"
+        },
+        "sandbox": {
+          "mode": "off"
+        }
       }
     ]
   },
@@ -290,7 +373,7 @@
     "discord": {
       "enabled": true,
       "groupPolicy": "open",
-      "allowBots": false,
+      "allowBots": "mentions",
       "accounts": {
         "silijian": {
           "name": "司礼监",
@@ -361,6 +444,31 @@
           "name": "翰林院·庶吉士",
           "token": "YOUR_HANLIN_SHUJISHI_BOT_TOKEN",
           "groupPolicy": "open"
+        },
+        "qijuzhu": {
+          "name": "起居注官",
+          "token": "YOUR_QIJUZHU_BOT_TOKEN",
+          "groupPolicy": "open"
+        },
+        "guozijian": {
+          "name": "国子监",
+          "token": "YOUR_GUOZIJIAN_BOT_TOKEN",
+          "groupPolicy": "open"
+        },
+        "taiyiyuan": {
+          "name": "太医院",
+          "token": "YOUR_TAIYIYUAN_BOT_TOKEN",
+          "groupPolicy": "open"
+        },
+        "neiwufu": {
+          "name": "内务府",
+          "token": "YOUR_NEIWUFU_BOT_TOKEN",
+          "groupPolicy": "open"
+        },
+        "yushanfang": {
+          "name": "御膳房",
+          "token": "YOUR_YUSHANFANG_BOT_TOKEN",
+          "groupPolicy": "open"
         }
       },
       "guilds": {
@@ -373,7 +481,7 @@
       "enabled": false,
       "dmPolicy": "open",
       "groupPolicy": "open",
-      "allowBots": false,
+      "allowBots": "mentions",
       "accounts": {
         "silijian": {
           "appId": "YOUR_FEISHU_APP_ID",
@@ -482,6 +590,41 @@
         "channel": "discord",
         "accountId": "hanlin_shujishi"
       }
+    },
+    {
+      "agentId": "qijuzhu",
+      "match": {
+        "channel": "discord",
+        "accountId": "qijuzhu"
+      }
+    },
+    {
+      "agentId": "guozijian",
+      "match": {
+        "channel": "discord",
+        "accountId": "guozijian"
+      }
+    },
+    {
+      "agentId": "taiyiyuan",
+      "match": {
+        "channel": "discord",
+        "accountId": "taiyiyuan"
+      }
+    },
+    {
+      "agentId": "neiwufu",
+      "match": {
+        "channel": "discord",
+        "accountId": "neiwufu"
+      }
+    },
+    {
+      "agentId": "yushanfang",
+      "match": {
+        "channel": "discord",
+        "accountId": "yushanfang"
+      }
     }
   ],
   "messages": {
@@ -491,6 +634,5 @@
         "@here"
       ]
     }
-  },
-  "_regime": "ming-neige"
+  }
 }
