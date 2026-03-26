@@ -39,7 +39,6 @@ RUN apk add --no-cache \
         jq \
         python3 \
         py3-pip \
-        py3-venv \
         && rm -rf /var/cache/apk/* \
         && rm -rf /tmp/*
 
