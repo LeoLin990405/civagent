@@ -375,6 +375,7 @@
   "channels": {
     "discord": {
       "enabled": true,
+      "dmPolicy": "open",
       "groupPolicy": "open",
       "allowBots": "mentions",
       "accounts": {

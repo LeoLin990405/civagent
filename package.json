@@ -33,7 +33,7 @@
     "jest": "^30.3.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=22.16.0"
   },
   "repository": {
     "type": "git",

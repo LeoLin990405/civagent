@@ -1,6 +1,6 @@
 {
   "_comment": "现代企业制配置模板",
-  "_version": "v3.5.3",
+  "_version": "2026.3.24",
   "_regime": "modern-ceo",
   "_description": "CEO 统一协调，CTO/CFO/COO 三线分立，国际化团队架构",
   
@@ -235,6 +235,7 @@
   "channels": {
     "discord": {
       "enabled": true,
+      "dmPolicy": "open",
       "groupPolicy": "open",
       "allowBots": true,
       "accounts": {
