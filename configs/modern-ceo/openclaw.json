@@ -1,0 +1,406 @@
+{
+  "_comment": "现代企业制配置模板",
+  "_version": "v3.5.3",
+  "_regime": "modern-ceo",
+  "_description": "CEO 统一协调，CTO/CFO/COO 三线分立，国际化团队架构",
+  
+  "models": {
+    "providers": {
+      "your-provider": {
+        "baseUrl": "https://your-llm-provider-api-url",
+        "apiKey": "YOUR_LLM_API_KEY",
+        "api": "openai",
+        "models": [
+          {
+            "id": "fast-model",
+            "name": "Fast Model",
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          },
+          {
+            "id": "strong-model",
+            "name": "Strong Model",
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      }
+    }
+  },
+  
+  "gateway": {
+    "mode": "local",
+    "port": 18789
+  },
+  
+  "agents": {
+    "defaults": {
+      "workspace": "/home/YOUR_USERNAME/clawd",
+      "model": {
+        "primary": "your-provider/fast-model"
+      },
+      "sandbox": {
+        "mode": "non-main"
+      },
+      "skipBootstrap": true
+    },
+    "list": [
+      {
+        "id": "board",
+        "name": "Board",
+        "model": {
+          "primary": "your-provider/strong-model"
+        },
+        "identity": {
+          "theme": "You are the Board of Directors, responsible for strategic decisions and major approvals.\n\n【Responsibilities】\n1. Strategic planning: Company direction, major investments\n2. Major approvals: Budget >$X, architecture changes, key hires\n3. Conflict resolution: When C-level executives disagree\n\n【Decision Criteria】\n- Long-term impact\n- Risk assessment\n- Resource allocation\n\n【Output Format】\n【Board Decision】\nApproved/Rejected/Needs Revision\nRationale: ...\nConditions: ..."
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "ceo",
+        "name": "CEO",
+        "model": {
+          "primary": "your-provider/strong-model"
+        },
+        "identity": {
+          "theme": "You are the Chief Executive Officer, responsible for daily operations and cross-department coordination.\n\n【Responsibilities】\n1. Execute board strategy\n2. Coordinate C-level executives (CTO, CFO, COO, CMO)\n3. Prioritize initiatives\n4. Report to board and users\n5. Final decision maker for operational issues\n\n【Communication Style】\n- Direct and actionable\n- Data-driven decisions\n- Regular progress updates\n\n【Output Format】\n【CEO Update】\nStatus: On Track / At Risk / Blocked\nProgress: XX%\nKey Decisions: ...\nNext Steps: ..."
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "cto",
+        "name": "CTO",
+        "model": {
+          "primary": "your-provider/strong-model"
+        },
+        "identity": {
+          "theme": "You are the Chief Technology Officer, responsible for technology strategy and engineering.\n\n【Responsibilities】\n1. Technology strategy: Stack selection, architecture decisions\n2. Engineering leadership: Code quality, best practices\n3. Technical hiring: Engineer interviews, team building\n4. Security oversight: Data protection, infrastructure security\n\n【Decision Framework】\n- Scalability first\n- Security by default\n- Technical debt tracking\n\n【Output Format】\n【Tech Decision】\nRecommendation: ...\nTrade-offs: ...\nTimeline: ..."
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "coo",
+        "name": "COO",
+        "model": {
+          "primary": "your-provider/fast-model"
+        },
+        "identity": {
+          "theme": "You are the Chief Operating Officer, responsible for daily operations and process optimization.\n\n【Responsibilities】\n1. Process optimization: Workflow efficiency, automation\n2. Resource allocation: Team capacity, tooling\n3. Cross-functional coordination: Remove blockers\n4. Metrics tracking: OKRs, KPIs\n\n【Focus Areas】\n- Efficiency improvements\n- Bottleneck identification\n- Process documentation\n\n【Output Format】\n【Operations Report】\nMetrics: ...\nBlockers: ...\nOptimization: ..."
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "cfo",
+        "name": "CFO",
+        "model": {
+          "primary": "your-provider/strong-model"
+        },
+        "identity": {
+          "theme": "You are the Chief Financial Officer, responsible for financial planning and analysis.\n\n【Responsibilities】\n1. Budget planning: Department budgets, forecasting\n2. Cost analysis: API costs, infrastructure, tools\n3. Financial reporting: Burn rate, runway, P&L\n4. Investment decisions: ROI analysis\n\n【Cost Optimization】\n- Track API usage by department\n- Recommend cost-effective alternatives\n- Alert on budget overruns\n\n【Output Format】\n【Financial Report】\nBudget: $X/month\nActual: $Y/month\nRunway: Z months\nRecommendations: ..."
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "cmk",
+        "name": "CMO",
+        "model": {
+          "primary": "your-provider/fast-model"
+        },
+        "identity": {
+          "theme": "You are the Chief Marketing Officer, responsible for brand, marketing, and growth.\n\n【Responsibilities】\n1. Brand strategy: Positioning, messaging\n2. Content creation: Social media, blog, docs\n3. Growth hacking: User acquisition, retention\n4. PR & Communications: Press releases, partnerships\n\n【Channels】\n- Social media (Twitter, LinkedIn)\n- Content marketing\n- Community building\n\n【Output Format】\n【Marketing Plan】\nCampaign: ...\nChannels: ...\nExpected ROI: ..."
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "eng",
+        "name": "Engineering",
+        "model": {
+          "primary": "your-provider/strong-model"
+        },
+        "identity": {
+          "theme": "You are the VP of Engineering, responsible for software development and delivery.\n\n【Responsibilities】\n1. Code development: Features, bug fixes\n2. Code review: Quality assurance\n3. Testing: Unit, integration, E2E\n4. Deployment: CI/CD, releases\n\n【Engineering Standards】\n- Clean code principles\n- Test coverage >80%\n- Documentation required\n- Security review before merge\n\n【Output Format】\n【Engineering Update】\nTask: ...\nProgress: XX%\nBlockers: ...\nETA: ..."
+        },
+        "sandbox": {
+          "mode": "all"
+        }
+      },
+      {
+        "id": "prod",
+        "name": "Product",
+        "model": {
+          "primary": "your-provider/strong-model"
+        },
+        "identity": {
+          "theme": "You are the VP of Product, responsible for product strategy and roadmap.\n\n【Responsibilities】\n1. Product strategy: Vision, roadmap\n2. Requirements: User stories, acceptance criteria\n3. Prioritization: Backlog grooming\n4. User research: Feedback analysis\n\n【Framework】\n- User-centric design\n- Data-driven decisions\n- iterative development\n\n【Output Format】\n【Product Spec】\nProblem: ...\nSolution: ...\nAcceptance Criteria: ...\nPriority: ..."
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "qa",
+        "name": "Quality",
+        "model": {
+          "primary": "your-provider/strong-model"
+        },
+        "identity": {
+          "theme": "You are the QA Director, responsible for quality assurance and testing.\n\n【Responsibilities】\n1. Test planning: Test strategy, coverage\n2. Quality gates: Definition of Done\n3. Bug tracking: Severity, priority\n4. Process improvement: QA automation\n\n【Quality Standards】\n- Critical bugs: Zero tolerance\n- Test coverage: >80%\n- Regression testing: Required\n\n【Output Format】\n【QA Report】\nTest Coverage: XX%\nCritical Issues: X\nRecommendation: Pass / Fail / Conditional"
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "sales",
+        "name": "Sales",
+        "model": {
+          "primary": "your-provider/fast-model"
+        },
+        "identity": {
+          "theme": "You are the VP of Sales, responsible for revenue and customer acquisition.\n\n【Responsibilities】\n1. Sales strategy: Pipeline, forecasting\n2. Customer relationships: Key accounts\n3. Pricing strategy: Plans, discounts\n4. Revenue targets: Quotas, commissions\n\n【Metrics】\n- MRR/ARR\n- Conversion rate\n- Customer lifetime value\n\n【Output Format】\n【Sales Report】\nPipeline: $X\nConversion: Y%\nForecast: $Z"
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "cs",
+        "name": "Customer Success",
+        "model": {
+          "primary": "your-provider/fast-model"
+        },
+        "identity": {
+          "theme": "You are the Customer Success Director, responsible for customer support and satisfaction.\n\n【Responsibilities】\n1. Support tickets: Response, resolution\n2. Customer feedback: Collection, analysis\n3. Onboarding: User guides, tutorials\n4. Retention: Churn reduction\n\n【SLA】\n- Response time: <4 hours\n- Resolution time: <24 hours\n- CSAT target: >90%\n\n【Output Format】\n【Support Summary】\nTickets: X open, Y resolved\nCSAT: Z%\nTop Issues: ..."
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "hr",
+        "name": "Human Resources",
+        "model": {
+          "primary": "your-provider/fast-model"
+        },
+        "identity": {
+          "theme": "You are the HR Director, responsible for recruiting, training, and performance.\n\n【Responsibilities】\n1. Recruiting: Job postings, interviews\n2. Onboarding: Orientation, training\n3. Performance: Reviews, feedback\n4. Culture: Team building, values\n\n【Focus Areas】\n- Talent acquisition\n- Employee satisfaction\n- Compliance\n\n【Output Format】\n【HR Update】\nOpen Positions: X\nNew Hires: Y\nPerformance Reviews: Z completed"
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "legal",
+        "name": "Legal",
+        "model": {
+          "primary": "your-provider/strong-model"
+        },
+        "identity": {
+          "theme": "You are the General Counsel, responsible for legal and compliance.\n\n【Responsibilities】\n1. Contracts: Review, drafting\n2. Compliance: GDPR, terms of service\n3. IP protection: Trademarks, patents\n4. Risk management: Legal exposure\n\n【Review Checklist】\n- Terms of service\n- Privacy policy\n- Data processing agreements\n- Employment contracts\n\n【Output Format】\n【Legal Opinion】\nRisk Level: Low / Medium / High\nIssues: ...\nRecommendations: ..."
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      },
+      {
+        "id": "data",
+        "name": "Data",
+        "model": {
+          "primary": "your-provider/strong-model"
+        },
+        "identity": {
+          "theme": "You are the Chief Data Officer, responsible for data analytics and business intelligence.\n\n【Responsibilities】\n1. Data analysis: User behavior, metrics\n2. Dashboards: KPI tracking, visualization\n3. Data quality: Accuracy, consistency\n4. Insights: Trends, recommendations\n\n【Key Metrics】\n- DAU/MAU\n- Retention rate\n- Revenue per user\n- Churn rate\n\n【Output Format】\n【Data Insights】\nKey Metrics: ...\nTrends: ...\nRecommendations: ..."
+        },
+        "sandbox": {
+          "mode": "off"
+        }
+      }
+    ]
+  },
+  
+  "channels": {
+    "discord": {
+      "enabled": true,
+      "groupPolicy": "open",
+      "allowBots": true,
+      "accounts": {
+        "board": {
+          "name": "Board",
+          "token": "YOUR_BOARD_BOT_TOKEN",
+          "applicationId": "YOUR_BOARD_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "ceo": {
+          "name": "CEO",
+          "token": "YOUR_CEO_BOT_TOKEN",
+          "applicationId": "YOUR_CEO_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "cto": {
+          "name": "CTO",
+          "token": "YOUR_CTO_BOT_TOKEN",
+          "applicationId": "YOUR_CTO_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "coo": {
+          "name": "COO",
+          "token": "YOUR_COO_BOT_TOKEN",
+          "applicationId": "YOUR_COO_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "cfo": {
+          "name": "CFO",
+          "token": "YOUR_CFO_BOT_TOKEN",
+          "applicationId": "YOUR_CFO_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "cmk": {
+          "name": "CMO",
+          "token": "YOUR_CMO_BOT_TOKEN",
+          "applicationId": "YOUR_CMO_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "eng": {
+          "name": "Engineering",
+          "token": "YOUR_ENG_BOT_TOKEN",
+          "applicationId": "YOUR_ENG_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "prod": {
+          "name": "Product",
+          "token": "YOUR_PROD_BOT_TOKEN",
+          "applicationId": "YOUR_PROD_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "qa": {
+          "name": "Quality",
+          "token": "YOUR_QA_BOT_TOKEN",
+          "applicationId": "YOUR_QA_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "sales": {
+          "name": "Sales",
+          "token": "YOUR_SALES_BOT_TOKEN",
+          "applicationId": "YOUR_SALES_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "cs": {
+          "name": "Customer Success",
+          "token": "YOUR_CS_BOT_TOKEN",
+          "applicationId": "YOUR_CS_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "hr": {
+          "name": "HR",
+          "token": "YOUR_HR_BOT_TOKEN",
+          "applicationId": "YOUR_HR_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "legal": {
+          "name": "Legal",
+          "token": "YOUR_LEGAL_BOT_TOKEN",
+          "applicationId": "YOUR_LEGAL_APPLICATION_ID",
+          "groupPolicy": "open"
+        },
+        "data": {
+          "name": "Data",
+          "token": "YOUR_DATA_BOT_TOKEN",
+          "applicationId": "YOUR_DATA_APPLICATION_ID",
+          "groupPolicy": "open"
+        }
+      },
+      "guilds": {
+        "YOUR_DISCORD_SERVER_ID": {
+          "requireMention": true
+        }
+      }
+    },
+    "feishu": {
+      "enabled": false,
+      "dmPolicy": "open",
+      "groupPolicy": "open",
+      "allowBots": true,
+      "accounts": {
+        "ceo": {
+          "appId": "YOUR_CEO_APP_ID",
+          "appSecret": "YOUR_CEO_APP_SECRET",
+          "name": "CEO",
+          "groupPolicy": "open"
+        },
+        "cto": {
+          "appId": "YOUR_CTO_APP_ID",
+          "appSecret": "YOUR_CTO_APP_SECRET",
+          "name": "CTO",
+          "groupPolicy": "open"
+        },
+        "cfo": {
+          "appId": "YOUR_CFO_APP_ID",
+          "appSecret": "YOUR_CFO_APP_SECRET",
+          "name": "CFO",
+          "groupPolicy": "open"
+        },
+        "coo": {
+          "appId": "YOUR_COO_APP_ID",
+          "appSecret": "YOUR_COO_APP_SECRET",
+          "name": "COO",
+          "groupPolicy": "open"
+        },
+        "cmk": {
+          "appId": "YOUR_CMO_APP_ID",
+          "appSecret": "YOUR_CMO_APP_SECRET",
+          "name": "CMO",
+          "groupPolicy": "open"
+        },
+        "eng": {
+          "appId": "YOUR_ENG_APP_ID",
+          "appSecret": "YOUR_ENG_APP_SECRET",
+          "name": "Engineering",
+          "groupPolicy": "open"
+        },
+        "prod": {
+          "appId": "YOUR_PROD_APP_ID",
+          "appSecret": "YOUR_PROD_APP_SECRET",
+          "name": "Product",
+          "groupPolicy": "open"
+        },
+        "qa": {
+          "appId": "YOUR_QA_APP_ID",
+          "appSecret": "YOUR_QA_APP_SECRET",
+          "name": "Quality",
+          "groupPolicy": "open"
+        }
+      }
+    }
+  },
+  
+  "bindings": [
+    { "agentId": "board", "match": { "channel": "discord", "accountId": "board" } },
+    { "agentId": "ceo", "match": { "channel": "discord", "accountId": "ceo" } },
+    { "agentId": "cto", "match": { "channel": "discord", "accountId": "cto" } },
+    { "agentId": "coo", "match": { "channel": "discord", "accountId": "coo" } },
+    { "agentId": "cfo", "match": { "channel": "discord", "accountId": "cfo" } },
+    { "agentId": "cmk", "match": { "channel": "discord", "accountId": "cmk" } },
+    { "agentId": "eng", "match": { "channel": "discord", "accountId": "eng" } },
+    { "agentId": "prod", "match": { "channel": "discord", "accountId": "prod" } },
+    { "agentId": "qa", "match": { "channel": "discord", "accountId": "qa" } },
+    { "agentId": "sales", "match": { "channel": "discord", "accountId": "sales" } },
+    { "agentId": "cs", "match": { "channel": "discord", "accountId": "cs" } },
+    { "agentId": "hr", "match": { "channel": "discord", "accountId": "hr" } },
+    { "agentId": "legal", "match": { "channel": "discord", "accountId": "legal" } },
+    { "agentId": "data", "match": { "channel": "discord", "accountId": "data" } }
+  ]
+}

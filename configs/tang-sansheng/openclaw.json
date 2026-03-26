@@ -290,7 +290,7 @@
     "discord": {
       "enabled": true,
       "groupPolicy": "open",
-      "allowBots": "mentions",
+      "allowBots": false,
       "accounts": {
         "silijian": {
           "name": "司礼监",
@@ -491,5 +491,6 @@
         "@here"
       ]
     }
-  }
+  },
+  "_regime": "ming-neige"
 }
