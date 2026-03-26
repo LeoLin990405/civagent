@@ -94,7 +94,7 @@ mkdir -p "$WORKSPACE/memory"
 # ---- [D-29] 同步内置 skills（volume 不会自动获取新镜像的文件）----
 if [ -d /opt/skills-dist ]; then
     mkdir -p "$WORKSPACE/skills"
-    cp -ru /opt/skills-dist/* "$WORKSPACE/skills/" 2>/dev/null || true
+    cp -r /opt/skills-dist/* "$WORKSPACE/skills/" 2>/dev/null || true
 fi
 
 # ---- OpenViking 初始化（如果配置了）----

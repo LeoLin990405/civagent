@@ -40,7 +40,7 @@ cleanup() {
   elif command -v lsof &>/dev/null; then
     lsof -ti :18795 2>/dev/null | xargs kill 2>/dev/null
   elif command -v ss &>/dev/null; then
-    ss -tlnp 2>/dev/null | grep ':18795 ' | grep -oP 'pid=\K[0-9]+' | xargs kill 2>/dev/null
+    ss -tlnp 2>/dev/null | grep ':18795 ' | grep -o 'pid=[0-9]*' | cut -d= -f2 | xargs kill 2>/dev/null
   fi
   exit 0
 }
@@ -58,7 +58,7 @@ while true; do
     elif command -v lsof &>/dev/null; then
       lsof -ti :18795 2>/dev/null | xargs kill 2>/dev/null
     elif command -v ss &>/dev/null; then
-      ss -tlnp 2>/dev/null | grep ':18795 ' | grep -oP 'pid=\K[0-9]+' | xargs kill 2>/dev/null
+      ss -tlnp 2>/dev/null | grep ':18795 ' | grep -o 'pid=[0-9]*' | cut -d= -f2 | xargs kill 2>/dev/null
     fi
     sleep 1
     start_server

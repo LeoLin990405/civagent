@@ -393,14 +393,14 @@ except: pass
 " 2>/dev/null)
 
                 if [ -n "$MENTION_WARN" ]; then
-                    GUILD_NAME=$(echo "$G_RESP" | python3 -c "
-import json, sys
+                    GUILD_NAME=$(MATCH_GID="$gid" python3 -c "
+import json, sys, os
 guilds = json.load(sys.stdin)
 for g in guilds:
-    if g.get('id') == '$gid':
+    if g.get('id') == os.environ['MATCH_GID']:
         print(g.get('name','?'))
         break
-" 2>/dev/null)
+" <<< "$G_RESP" 2>/dev/null)
                     warn "「${GUILD_NAME:-$gid}」以下角色有 Mention Everyone 权限: $(echo "$MENTION_WARN" | tr '|' ', ')"
                     info "服务器设置 → 角色 → 关闭「提及 @everyone」权限（Owner 不受影响）"
                 fi

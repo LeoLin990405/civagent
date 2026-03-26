@@ -119,7 +119,7 @@ cd "$WORKSPACE"
 
 # ---- 安装项目依赖（可选）----
 echo ""
-echo -e "${YELLOW}[5/6] 检查项目依赖...${NC}"
+echo -e "${YELLOW}检查项目依赖...${NC}"
 if [ -f "$WORKSPACE/package.json" ]; then
   echo -e "  ${CYAN}正在安装主项目依赖...${NC}"
   cd "$WORKSPACE"
