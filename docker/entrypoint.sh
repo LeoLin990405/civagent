@@ -182,7 +182,8 @@ echo ""
 
 # 自动补全 gateway.mode（缺少会导致启动失败）
 if command -v openclaw &>/dev/null && [ -f "$CONFIG_DIR/openclaw.json" ]; then
-    if ! grep -q '"gateway"' "$CONFIG_DIR/openclaw.json" 2>/dev/null ||        ! python3 -c "import json; d=json.load(open('$CONFIG_DIR/openclaw.json')); assert d.get('gateway',{}).get('mode')" 2>/dev/null; then
+    if ! grep -q '"gateway"' "$CONFIG_DIR/openclaw.json" 2>/dev/null || \
+       ! CONFIG_PATH="$CONFIG_DIR/openclaw.json" python3 -c "import json,os; d=json.load(open(os.environ['CONFIG_PATH'])); assert d.get('gateway',{}).get('mode')" 2>/dev/null; then
         echo "⚠ gateway.mode 未设置，自动设为 local..."
         openclaw config set gateway.mode local 2>/dev/null || true
     fi

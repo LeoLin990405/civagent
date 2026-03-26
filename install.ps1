@@ -7,6 +7,8 @@ param(
     [switch]$Help
 )
 
+$ErrorActionPreference = "Stop"
+
 if ($Help) {
     Write-Host @"
 AI 朝廷 Windows 安装脚本
@@ -90,7 +92,7 @@ if (Test-NodeJs) {
     try {
         Invoke-WebRequest -Uri $installerUrl -OutFile $installerPath -UseBasicParsing
         Write-Info "正在运行安装器..."
-        Start-Process msiexec.exe -Wait -ArgumentList "/i $installerPath /quiet /norestart"
+        Start-Process msiexec.exe -Wait -ArgumentList "/i `"$installerPath`" /quiet /norestart"
         Remove-Item $installerPath -Force
         
         # 刷新环境变量
@@ -132,14 +134,40 @@ if (-not (Test-Path $workspacePath)) {
 # ============================================
 Write-Info "正在下载 AI 朝廷配置..."
 
+$configDir = Join-Path $env:USERPROFILE ".openclaw"
+if (-not (Test-Path $configDir)) {
+    New-Item -ItemType Directory -Path $configDir | Out-Null
+}
+
 $configUrl = "https://raw.githubusercontent.com/wanikua/danghuangshang/main/openclaw.example.json"
-$configPath = Join-Path $workspacePath "openclaw.json"
+$configPath = Join-Path $configDir "openclaw.json"
 
 try {
     Invoke-WebRequest -Uri $configUrl -OutFile $configPath -UseBasicParsing
     Write-Success "配置文件已下载：$configPath"
 } catch {
-    Write-Warn "配置文件下载失败，将手动创建模板"
+    Write-Warn "配置文件下载失败，生成最小配置模板"
+    $minimalConfig = @'
+{
+  "models": {
+    "providers": {
+      "your-provider": {
+        "baseUrl": "https://your-llm-provider-api-url",
+        "apiKey": "YOUR_LLM_API_KEY",
+        "api": "openai",
+        "models": [{ "id": "fast-model", "name": "快速模型", "contextWindow": 200000, "maxTokens": 8192 }]
+      }
+    }
+  },
+  "gateway": { "mode": "local", "port": 18789 },
+  "agents": {
+    "defaults": { "workspace": "$workspacePath", "skipBootstrap": true, "model": { "primary": "your-provider/fast-model" } },
+    "list": [{ "id": "silijian", "name": "司礼监", "identity": { "theme": "你是AI朝廷的总管，负责日常对话和任务调度。回答用中文，简洁高效。" } }]
+  }
+}
+'@
+    $minimalConfig | Out-File -FilePath $configPath -Encoding UTF8
+    Write-Success "最小配置模板已生成：$configPath"
 }
 
 # ============================================

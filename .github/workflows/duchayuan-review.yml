@@ -11,6 +11,9 @@ on:
       - 'images/**'
       - 'LICENSE'
 
+permissions:
+  contents: read
+
 jobs:
   duchayuan-review:
     runs-on: ubuntu-latest

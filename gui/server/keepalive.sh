@@ -2,7 +2,7 @@
 # Boluo GUI Server Keepalive
 # Ensures node server/index.js stays running on port 18795
 
-SERVER_DIR="$(cd "$(dirname "$0")/gui/server" && pwd)"
+SERVER_DIR="$(cd "$(dirname "$0")" && pwd)"
 LOG_FILE="/tmp/boluo-gui.log"
 PID_FILE="/tmp/boluo-gui.pid"
 CHECK_INTERVAL=15

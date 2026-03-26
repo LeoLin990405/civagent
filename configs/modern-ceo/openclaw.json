@@ -113,7 +113,7 @@
         }
       },
       {
-        "id": "cmk",
+        "id": "cmo",
         "name": "CMO",
         "model": {
           "primary": "your-provider/fast-model"
@@ -268,7 +268,7 @@
           "applicationId": "YOUR_CFO_APPLICATION_ID",
           "groupPolicy": "open"
         },
-        "cmk": {
+        "cmo": {
           "name": "CMO",
           "token": "YOUR_CMO_BOT_TOKEN",
           "applicationId": "YOUR_CMO_APPLICATION_ID",
@@ -359,7 +359,7 @@
           "name": "COO",
           "groupPolicy": "open"
         },
-        "cmk": {
+        "cmo": {
           "appId": "YOUR_CMO_APP_ID",
           "appSecret": "YOUR_CMO_APP_SECRET",
           "name": "CMO",
@@ -393,7 +393,7 @@
     { "agentId": "cto", "match": { "channel": "discord", "accountId": "cto" } },
     { "agentId": "coo", "match": { "channel": "discord", "accountId": "coo" } },
     { "agentId": "cfo", "match": { "channel": "discord", "accountId": "cfo" } },
-    { "agentId": "cmk", "match": { "channel": "discord", "accountId": "cmk" } },
+    { "agentId": "cmo", "match": { "channel": "discord", "accountId": "cmo" } },
     { "agentId": "eng", "match": { "channel": "discord", "accountId": "eng" } },
     { "agentId": "prod", "match": { "channel": "discord", "accountId": "prod" } },
     { "agentId": "qa", "match": { "channel": "discord", "accountId": "qa" } },

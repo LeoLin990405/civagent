@@ -298,13 +298,8 @@ generate_config_from_template() {
     process.stdout.write(out + '\n');
   " "$mode" > "$output"
 
-  if [ $? -eq 0 ]; then
-    chmod 600 "$output"
-    echo -e "  ${GREEN}✓ ${mode} 模式配置已生成${NC}"
-  else
-    echo -e "  ${RED}✗ 配置生成失败${NC}"
-    return 1
-  fi
+  chmod 600 "$output"
+  echo -e "  ${GREEN}✓ ${mode} 模式配置已生成${NC}"
 }
 
 if [ -f "$CONFIG_DIR/$CONFIG_FILE" ]; then

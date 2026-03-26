@@ -6,17 +6,15 @@
   "scripts": {
     "test": "jest",
     "test:coverage": "jest --coverage",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "test:manual": "node tests/test-task-store.js && node tests/test-context-compressor.js",
+    "lint": "bash -n scripts/*.sh && node -c scripts/*.js 2>/dev/null || true",
+    "health": "bash scripts/health-check.sh",
+    "cleanup": "bash scripts/cleanup-repo.sh"
   },
   "bin": {
     "task-store": "./scripts/task-store.js",
     "context-compressor": "./scripts/context-compressor.js"
-  },
-  "scripts": {
-    "test": "node tests/test-task-store.js && node tests/test-context-compressor.js",
-    "lint": "bash -n scripts/*.sh && node -c scripts/*.js 2>/dev/null || true",
-    "health": "bash scripts/health-check.sh",
-    "cleanup": "bash scripts/cleanup-repo.sh"
   },
   "keywords": [
     "ai",

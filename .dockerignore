@@ -55,6 +55,7 @@ memory/
 logs/
 *.pid
 *.lock
+!**/package-lock.json
 
 # 嵌套仓库（可选，减小镜像体积）
 meow/
