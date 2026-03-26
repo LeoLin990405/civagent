@@ -147,7 +147,8 @@ try {
     Write-Success "配置文件已下载：$configPath"
 } catch {
     Write-Warn "配置文件下载失败，生成最小配置模板"
-    $minimalConfig = @'
+    $wsPathJson = $workspacePath -replace '\\', '/'
+    $minimalConfig = @"
 {
   "models": {
     "providers": {
@@ -161,11 +162,11 @@ try {
   },
   "gateway": { "mode": "local", "port": 18789 },
   "agents": {
-    "defaults": { "workspace": "$workspacePath", "skipBootstrap": true, "model": { "primary": "your-provider/fast-model" } },
+    "defaults": { "workspace": "$wsPathJson", "skipBootstrap": true, "model": { "primary": "your-provider/fast-model" } },
     "list": [{ "id": "silijian", "name": "司礼监", "identity": { "theme": "你是AI朝廷的总管，负责日常对话和任务调度。回答用中文，简洁高效。" } }]
   }
 }
-'@
+"@
     $minimalConfig | Out-File -FilePath $configPath -Encoding UTF8
     Write-Success "最小配置模板已生成：$configPath"
 }

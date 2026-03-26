@@ -11,7 +11,7 @@ WORKDIR /build
 
 # 复制依赖文件（利用 Docker 层缓存）
 COPY gui/package.json gui/package-lock.json ./
-RUN npm ci --only=production --loglevel=error
+RUN npm ci --loglevel=error
 
 # 复制源码并构建
 COPY gui/ ./
