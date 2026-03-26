@@ -11,7 +11,6 @@
 
 # 严格模式：失败时立即退出
 set -euo pipefail
-set -e
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
@@ -319,32 +318,32 @@ fi
 echo ""
 echo -e "${YELLOW}[2.5/5] 注入人设...${NC}"
 TEMPLATE_AGENTS_DIR="$WORKSPACE/configs/ming-neige/agents"
-if [ -d "$TEMPLATE_AGENTS_DIR" ] && [ -f "$CONFIG_DIR/$CONFIG_FILE" ]; then
+if [ -d "$TEMPLATE_AGENTS_DIR" ] && [ -f "$CONFIG_DIR/$CONFIG_FILE" ] && command -v jq &>/dev/null; then
   echo -e "  ${CYAN}正在从独立文件注入人设...${NC}"
-  
+
   agent_count=$(jq '.agents.list | length' "$CONFIG_DIR/$CONFIG_FILE" 2>/dev/null || echo "0")
   injected=0
-  
+
   for ((i=0; i<agent_count; i++)); do
     agent_id=$(jq -r ".agents.list[$i].id" "$CONFIG_DIR/$CONFIG_FILE" 2>/dev/null)
     persona_file="$TEMPLATE_AGENTS_DIR/${agent_id}.md"
-    
+
     if [ -f "$persona_file" ]; then
       persona=$(tail -n +3 "$persona_file")
       persona_escaped=$(echo "$persona" | jq -Rs '.')
-      
+
       jq --argjson idx "$i" --argjson persona "$persona_escaped" \
-        ".agents.list[$idx].identity.theme = \$persona" \
+        ".agents.list[\$idx].identity.theme = \$persona" \
         "$CONFIG_DIR/$CONFIG_FILE" > "${CONFIG_DIR}/${CONFIG_FILE}.tmp" && mv "${CONFIG_DIR}/${CONFIG_FILE}.tmp" "$CONFIG_DIR/$CONFIG_FILE"
-      
+
       echo -e "    ${GREEN}✓${NC} $agent_id"
       injected=$((injected + 1))
     fi
   done
-  
+
   echo -e "  ${GREEN}✓${NC} 已注入 $injected 个人设"
 else
-  echo -e "  ${YELLOW}⚠${NC} 人设目录不存在，使用模板中的内置人设"
+  echo -e "  ${YELLOW}⚠${NC} 人设目录不存在或缺少 jq，使用模板中的内置人设"
 fi
 
 # ---- 安装项目依赖（可选）----

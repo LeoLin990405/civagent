@@ -218,7 +218,7 @@ Node.js 和 OpenClaw 已安装到你的系统。
 ### 2. 编辑配置文件
 
 用记事本或 VS Code 打开：
-\`$workspacePath\openclaw.json\`
+\`$configPath\`
 
 找到并修改以下内容：
 
