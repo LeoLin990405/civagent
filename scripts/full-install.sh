@@ -172,6 +172,12 @@ echo ""
 
 echo -e "${BLUE}[4/6] 生成配置...${NC}"
 
+# 确保目标目录存在（修复：/root/.openclaw 可能不存在）
+mkdir -p "$(dirname "$CONFIG_FILE")" || {
+  echo -e "  ${RED}✗ 创建配置目录失败${NC}"
+  exit 1
+}
+
 # 原子操作：先复制到临时文件
 TEMP_CONFIG="${CONFIG_FILE}.tmp.$$"
 cp "$TEMPLATE_CONFIG" "$TEMP_CONFIG" || {
