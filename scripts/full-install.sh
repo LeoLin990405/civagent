@@ -240,6 +240,22 @@ fi
 jq --arg regime "$TARGET_REGIME" '._regime = $regime' \
   "$CONFIG_FILE" > "${CONFIG_FILE}.tmp" && mv "${CONFIG_FILE}.tmp" "$CONFIG_FILE"
 
+# 验证临时配置
+if ! jq empty "$CONFIG_FILE" 2>/dev/null; then
+  echo -e "  ${RED}✗ 配置验证失败${NC}"
+  if [ -n "$BACKUP_FILE" ] && [ -f "$BACKUP_FILE" ]; then
+    echo -e "  ${YELLOW}✓${NC} 恢复原配置..."
+    cp "$BACKUP_FILE" "$CONFIG_FILE_ORIG"
+  fi
+  rm -f "$CONFIG_FILE"
+  exit 1
+fi
+
+# 原子提交：临时文件 → 正式配置
+mv "$CONFIG_FILE" "$CONFIG_FILE_ORIG"
+CONFIG_FILE="$CONFIG_FILE_ORIG"
+echo -e "  ${GREEN}✓${NC} 配置已提交"
+
 echo ""
 
 # ============================================

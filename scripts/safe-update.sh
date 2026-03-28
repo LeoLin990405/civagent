@@ -149,6 +149,12 @@ rollback() {
     fi
     
     info "正在回滚到：$latest_backup"
+    warn "回滚将覆盖当前配置！"
+    read -p "是否继续？[y/N] " confirm
+    if [[ ! "$confirm" =~ ^[Yy]$ ]]; then
+        info "已取消回滚"
+        return 0
+    fi
     
     # 恢复 openclaw.json（先备份当前配置）
     if [ -f "$OPENCLAW_CONFIG" ]; then

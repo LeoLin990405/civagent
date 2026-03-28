@@ -43,6 +43,13 @@ echo -e "${BLUE}[3/3] 安装配置...${NC}"
 CONFIG_DIR="$HOME/.openclaw"
 mkdir -p "$CONFIG_DIR"
 
+# 备份现有配置（如果有）
+if [ -f "$CONFIG_DIR/openclaw.json" ]; then
+  BACKUP_FILE="$CONFIG_DIR/openclaw.json.$(date +%Y%m%d_%H%M%S).bak"
+  cp "$CONFIG_DIR/openclaw.json" "$BACKUP_FILE"
+  echo -e "  ${YELLOW}✓${NC} 已备份现有配置：$BACKUP_FILE"
+fi
+
 # 下载 SOUL.md
 echo -e "  ${CYAN}下载 Agent 人设...${NC}"
 mkdir -p "$CONFIG_DIR/agents"
@@ -58,6 +65,10 @@ if curl -fsSL "$TEMPLATE_URL" -o "$CONFIG_DIR/openclaw.json" 2>/dev/null; then
   echo -e "${GREEN}✓${NC} 配置已安装：$CONFIG_DIR/openclaw.json"
 else
   echo -e "${RED}✗ 下载失败${NC}"
+  if [ -f "$BACKUP_FILE" ]; then
+    cp "$BACKUP_FILE" "$CONFIG_DIR/openclaw.json"
+    echo -e "${YELLOW}✓${NC} 已恢复原配置"
+  fi
   exit 1
 fi
 
