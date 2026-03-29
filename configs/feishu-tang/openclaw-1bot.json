@@ -1,0 +1,21 @@
+{
+  "_comment": "唐朝飞书配置 - 1 Bot 基础版",
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "defaultAccount": "zhongshu",
+      "dmPolicy": "pairing",
+      "groupPolicy": "open",
+      "accounts": {
+        "zhongshu": {
+          "appId": "YOUR_ZHONGSHU_APP_ID",
+          "appSecret": "YOUR_ZHONGSHU_APP_SECRET",
+          "botName": "中书省"
+        }
+      }
+    }
+  },
+  "bindings": [
+    {"agentId": "zhongshu", "match": {"channel": "feishu", "account": "zhongshu"}}
+  ]
+}

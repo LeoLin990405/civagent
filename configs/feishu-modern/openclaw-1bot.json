@@ -1,0 +1,21 @@
+{
+  "_comment": "现代飞书配置 - 1 Bot 基础版",
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "defaultAccount": "ceo",
+      "dmPolicy": "pairing",
+      "groupPolicy": "open",
+      "accounts": {
+        "ceo": {
+          "appId": "YOUR_CEO_APP_ID",
+          "appSecret": "YOUR_CEO_APP_SECRET",
+          "botName": "CEO"
+        }
+      }
+    }
+  },
+  "bindings": [
+    {"agentId": "ceo", "match": {"channel": "feishu", "account": "ceo"}}
+  ]
+}
