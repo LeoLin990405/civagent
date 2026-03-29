@@ -1,0 +1,13 @@
+# GitGuardian 配置文件
+# 忽略误报
+
+version: 2
+
+# 忽略示例配置文件（包含占位符）
+paths-ignore:
+  - 'openclaw.example.json'
+  - 'configs/**/*.json'
+
+# 忽略特定检测
+detectors-ignore:
+  - Generic High Entropy Secret
