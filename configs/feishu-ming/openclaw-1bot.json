@@ -1,0 +1,21 @@
+{
+  "_comment": "明朝飞书配置 - 1 Bot 基础版（最小配置）",
+  "channels": {
+    "feishu": {
+      "enabled": true,
+      "defaultAccount": "silijian",
+      "dmPolicy": "pairing",
+      "groupPolicy": "open",
+      "accounts": {
+        "silijian": {
+          "appId": "YOUR_SILIJIAN_APP_ID",
+          "appSecret": "YOUR_SILIJIAN_APP_SECRET",
+          "botName": "司礼监"
+        }
+      }
+    }
+  },
+  "bindings": [
+    {"agentId": "silijian", "match": {"channel": "feishu", "account": "silijian"}}
+  ]
+}
