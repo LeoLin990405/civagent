@@ -124,10 +124,46 @@ echo -e "  ${GREEN}✓${NC} 制度选定：$TARGET_REGIME"
 echo ""
 
 # ============================================
+
+# ============================================
+# 步骤 2.5: 配置 LLM API (新增)
+# ============================================
+
+echo ""
+echo -e "${BLUE}[2.5/7] 配置 AI 模型...${NC}"
+echo ""
+echo "  常用 API 提供商："
+echo "  - DeepSeek: https://platform.deepseek.com"
+echo "  - OpenAI: https://platform.openai.com"
+echo "  - Anthropic: https://console.anthropic.com"
+echo "  - OpenRouter: https://openrouter.ai"
+echo "  - DashScope (通义千问): https://dashscope.aliyun.com"
+echo ""
+
+read -p "  API Base URL (如 https://api.deepseek.com/v1): " LLM_API_URL
+read -s -p "  API Key: " LLM_API_KEY
+echo ""
+read -p "  模型 ID (如 deepseek-chat, gpt-4o, claude-sonnet-4-20250514): " LLM_MODEL_ID
+echo ""
+
+if [ -z "$LLM_API_URL" ] || [ -z "$LLM_API_KEY" ] || [ -z "$LLM_MODEL_ID" ]; then
+  echo -e "${RED}✗ API 配置不能为空${NC}"
+  exit 1
+fi
+
+# 自动检测 API 格式
+LLM_API_FORMAT="openai"
+if echo "$LLM_API_URL" | grep -qi "anthropic"; then
+  LLM_API_FORMAT="anthropic-messages"
+fi
+
+echo -e "  ${GREEN}✓${NC} API 配置完成"
+echo ""
+
 # 步骤 3: 备份现有配置
 # ============================================
 
-echo -e "${BLUE}[3/6] 配置处理...${NC}"
+echo -e "${BLUE}[4/7] 配置处理...${NC}"
 
 CONFIG_DIR="$HOME/.openclaw"
 CLAWDBOT_CONFIG="$HOME/.clawdbot/openclaw.json"
@@ -170,7 +206,7 @@ echo ""
 # 步骤 4: 生成配置
 # ============================================
 
-echo -e "${BLUE}[4/6] 生成配置...${NC}"
+echo -e "${BLUE}[5/7] 生成配置...${NC}"
 
 # 确保目标目录存在（修复：/root/.openclaw 可能不存在）
 mkdir -p "$(dirname "$CONFIG_FILE")" || {
