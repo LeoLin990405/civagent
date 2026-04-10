@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 620">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0d1117"/>
+      <stop offset="100%" style="stop-color:#161b22"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="620" fill="url(#bg2)" rx="10"/>
+
+  <!-- Title -->
+  <text x="450" y="35" text-anchor="middle" fill="#d4a574" font-family="monospace" font-size="16" font-weight="bold">CivAgent v4 Architecture</text>
+
+  <!-- User -->
+  <rect x="370" y="50" width="160" height="40" rx="8" fill="#1f6feb" opacity="0.8"/>
+  <text x="450" y="75" text-anchor="middle" fill="white" font-family="monospace" font-size="13">You (陛下)</text>
+
+  <!-- Arrow down -->
+  <line x1="450" y1="90" x2="450" y2="115" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+  <defs><marker id="arrow" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#888"/></marker></defs>
+
+  <!-- civagent CLI -->
+  <rect x="330" y="115" width="240" height="40" rx="8" fill="#238636" opacity="0.8"/>
+  <text x="450" y="140" text-anchor="middle" fill="white" font-family="monospace" font-size="13">civagent run --mode tang</text>
+
+  <!-- Arrow down -->
+  <line x1="450" y1="155" x2="450" y2="180" stroke="#555" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- Claude Code main -->
+  <rect x="280" y="180" width="340" height="45" rx="8" fill="#6e40c9" opacity="0.8"/>
+  <text x="450" y="200" text-anchor="middle" fill="white" font-family="monospace" font-size="14" font-weight="bold">Claude Code (Opus)</text>
+  <text x="450" y="216" text-anchor="middle" fill="#ccc" font-family="monospace" font-size="10">--agents regime.json --system-prompt SOUL.md</text>
+
+  <!-- Fan out to agents -->
+  <!-- Left group: Strong models -->
+  <line x1="350" y1="225" x2="130" y2="280" stroke="#6e40c9" stroke-width="1.5"/>
+  <line x1="400" y1="225" x2="310" y2="280" stroke="#6e40c9" stroke-width="1.5"/>
+  <line x1="450" y1="225" x2="450" y2="280" stroke="#6e40c9" stroke-width="1.5"/>
+  <line x1="500" y1="225" x2="590" y2="280" stroke="#6e40c9" stroke-width="1.5"/>
+  <line x1="550" y1="225" x2="770" y2="280" stroke="#6e40c9" stroke-width="1.5"/>
+
+  <!-- Agent boxes row 1 -->
+  <rect x="50" y="280" width="160" height="50" rx="6" fill="#21262d" stroke="#d4a574" stroke-width="1.5"/>
+  <text x="130" y="300" text-anchor="middle" fill="#d4a574" font-family="monospace" font-size="12" font-weight="bold">司礼监 Coordinator</text>
+  <text x="130" y="318" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="10">Sonnet — routing</text>
+
+  <rect x="230" y="280" width="160" height="50" rx="6" fill="#21262d" stroke="#f0883e" stroke-width="1.5"/>
+  <text x="310" y="300" text-anchor="middle" fill="#f0883e" font-family="monospace" font-size="12" font-weight="bold">兵部 Engineering</text>
+  <text x="310" y="318" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="10">Opus / Codex</text>
+
+  <rect x="410" y="280" width="160" height="50" rx="6" fill="#21262d" stroke="#f85149" stroke-width="1.5"/>
+  <text x="490" y="300" text-anchor="middle" fill="#f85149" font-family="monospace" font-size="12" font-weight="bold">都察院 Review</text>
+  <text x="490" y="318" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="10">Codex adversarial</text>
+
+  <rect x="590" y="280" width="160" height="50" rx="6" fill="#21262d" stroke="#a5d6ff" stroke-width="1.5"/>
+  <text x="670" y="300" text-anchor="middle" fill="#a5d6ff" font-family="monospace" font-size="12" font-weight="bold">翰林院 Research</text>
+  <text x="670" y="318" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="10">Gemini 1M ctx</text>
+
+  <rect x="50" y="350" width="160" height="50" rx="6" fill="#21262d" stroke="#7ee787" stroke-width="1.5"/>
+  <text x="130" y="370" text-anchor="middle" fill="#7ee787" font-family="monospace" font-size="12" font-weight="bold">户部 Data/SQL</text>
+  <text x="130" y="388" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="10">cn:qwen</text>
+
+  <rect x="230" y="350" width="160" height="50" rx="6" fill="#21262d" stroke="#8b949e" stroke-width="1.5"/>
+  <text x="310" y="370" text-anchor="middle" fill="#ccc" font-family="monospace" font-size="12" font-weight="bold">工部 DevOps</text>
+  <text x="310" y="388" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="10">Sonnet + Bash</text>
+
+  <rect x="410" y="350" width="160" height="50" rx="6" fill="#21262d" stroke="#8b949e" stroke-width="1.5"/>
+  <text x="490" y="370" text-anchor="middle" fill="#ccc" font-family="monospace" font-size="12" font-weight="bold">礼部 Content</text>
+  <text x="490" y="388" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="10">Sonnet / cn:doubao</text>
+
+  <rect x="590" y="350" width="160" height="50" rx="6" fill="#21262d" stroke="#8b949e" stroke-width="1.5"/>
+  <text x="670" y="370" text-anchor="middle" fill="#ccc" font-family="monospace" font-size="12" font-weight="bold">刑部 / 吏部</text>
+  <text x="670" y="388" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="10">Sonnet</text>
+
+  <!-- Model layer -->
+  <line x1="50" y1="430" x2="850" y2="430" stroke="#30363d" stroke-width="1"/>
+  <text x="450" y="455" text-anchor="middle" fill="#8b949e" font-family="monospace" font-size="12">Model Layer</text>
+
+  <!-- Model boxes -->
+  <rect x="50" y="470" width="120" height="36" rx="6" fill="#6e40c9" opacity="0.6"/>
+  <text x="110" y="493" text-anchor="middle" fill="white" font-family="monospace" font-size="11">Claude Opus</text>
+
+  <rect x="185" y="470" width="120" height="36" rx="6" fill="#6e40c9" opacity="0.4"/>
+  <text x="245" y="493" text-anchor="middle" fill="white" font-family="monospace" font-size="11">Claude Sonnet</text>
+
+  <rect x="320" y="470" width="120" height="36" rx="6" fill="#238636" opacity="0.6"/>
+  <text x="380" y="493" text-anchor="middle" fill="white" font-family="monospace" font-size="11">Codex GPT-5.4</text>
+
+  <rect x="455" y="470" width="120" height="36" rx="6" fill="#1f6feb" opacity="0.6"/>
+  <text x="515" y="493" text-anchor="middle" fill="white" font-family="monospace" font-size="11">Gemini 2.5</text>
+
+  <rect x="50" y="520" width="120" height="36" rx="6" fill="#f0883e" opacity="0.4"/>
+  <text x="110" y="543" text-anchor="middle" fill="white" font-family="monospace" font-size="11">cn:doubao</text>
+
+  <rect x="185" y="520" width="100" height="36" rx="6" fill="#f0883e" opacity="0.4"/>
+  <text x="235" y="543" text-anchor="middle" fill="white" font-family="monospace" font-size="11">cn:qwen</text>
+
+  <rect x="300" y="520" width="100" height="36" rx="6" fill="#f0883e" opacity="0.4"/>
+  <text x="350" y="543" text-anchor="middle" fill="white" font-family="monospace" font-size="11">cn:kimi</text>
+
+  <rect x="415" y="520" width="90" height="36" rx="6" fill="#f0883e" opacity="0.4"/>
+  <text x="460" y="543" text-anchor="middle" fill="white" font-family="monospace" font-size="11">cn:glm</text>
+
+  <rect x="520" y="520" width="110" height="36" rx="6" fill="#f0883e" opacity="0.4"/>
+  <text x="575" y="543" text-anchor="middle" fill="white" font-family="monospace" font-size="11">cn:stepfun</text>
+
+  <rect x="645" y="520" width="120" height="36" rx="6" fill="#f0883e" opacity="0.4"/>
+  <text x="705" y="543" text-anchor="middle" fill="white" font-family="monospace" font-size="11">cn:minimax</text>
+
+  <!-- Legend -->
+  <text x="750" y="490" fill="#8b949e" font-family="monospace" font-size="10">4 primary</text>
+  <text x="810" y="543" fill="#8b949e" font-family="monospace" font-size="10">6 CN</text>
+
+  <!-- Footer -->
+  <text x="450" y="600" text-anchor="middle" fill="#484f58" font-family="monospace" font-size="11">10 models · 57 regimes · 6 orchestration modes · pure configuration</text>
+</svg>
