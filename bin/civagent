@@ -1,0 +1,256 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# CivAgent v4 — Claude Code Runtime
+# Usage: civagent <command> [args]
+
+CIVAGENT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
+REGIMES_DIR="$CIVAGENT_ROOT/regimes"
+ENGINE_DIR="$CIVAGENT_ROOT/engine"
+STATE_DIR="${HOME}/.civagent"
+ACTIVE_FILE="$STATE_DIR/.active-regime"
+
+mkdir -p "$STATE_DIR"
+
+# Colors
+RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[0;33m'
+CYAN='\033[0;36m'; BOLD='\033[1m'; NC='\033[0m'
+
+usage() {
+  cat <<EOF
+${BOLD}CivAgent v4${NC} — 5000 Years of Governance Wisdom × AI Multi-Agent Orchestration
+
+${BOLD}Usage:${NC}
+  civagent list                    List all 57 regimes
+  civagent info <regime>           Show regime details
+  civagent switch <regime>         Set active regime
+  civagent run [prompt]            Launch CC with active regime's agents
+  civagent agents                  Show generated CC agents for active regime
+  civagent modes                   List 6 orchestration modes
+  civagent setup                   Check tool availability (CC, Codex, Gemini, cn-cc)
+
+${BOLD}Examples:${NC}
+  civagent switch china/tang
+  civagent run "重构这个模块的代码"
+  civagent run --mode democratic "设计新的 API 接口"
+
+${BOLD}Regimes:${NC}
+  20 Chinese dynasties: xia, shang, zhou, qin, han, tang, song, ming, qing, ...
+  37 Global empires: athens, roman-empire, british, ottoman, us-federal, ...
+EOF
+}
+
+# ── list ─────────────────────────────────────────────────────────────────────
+
+cmd_list() {
+  local active=""
+  [[ -f "$ACTIVE_FILE" ]] && active=$(cat "$ACTIVE_FILE")
+
+  echo -e "${BOLD}CivAgent Regimes — 57 Governance Systems${NC}\n"
+
+  echo -e "${CYAN}── Chinese Dynasties (20) ──${NC}"
+  for dir in "$REGIMES_DIR"/china/*/; do
+    [[ -f "$dir/metadata.json" ]] || continue
+    local id=$(basename "$dir")
+    local regime="china/$id"
+    local name_zh=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d['name']['zh'])" 2>/dev/null || echo "$id")
+    local era=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d['era']['zh'])" 2>/dev/null || echo "")
+    local pattern=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d.get('orchestrationPattern','?'))" 2>/dev/null || echo "?")
+    local agents=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d.get('agentCount','?'))" 2>/dev/null || echo "?")
+    local marker="  "
+    [[ "$regime" == "$active" ]] && marker="${GREEN}▸ ${NC}"
+    printf "  ${marker}%-22s %-8s %-14s %-24s %s agents\n" "$regime" "$name_zh" "$era" "$pattern" "$agents"
+  done
+
+  echo ""
+  echo -e "${CYAN}── Global Empires (37) ──${NC}"
+  for dir in "$REGIMES_DIR"/global/*/; do
+    [[ -f "$dir/metadata.json" ]] || continue
+    local id=$(basename "$dir")
+    local regime="global/$id"
+    local name_en=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d['name']['en'])" 2>/dev/null || echo "$id")
+    local era=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d['era']['en'])" 2>/dev/null || echo "")
+    local pattern=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d.get('orchestrationPattern','?'))" 2>/dev/null || echo "?")
+    local agents=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d.get('agentCount','?'))" 2>/dev/null || echo "?")
+    local marker="  "
+    [[ "$regime" == "$active" ]] && marker="${GREEN}▸ ${NC}"
+    printf "  ${marker}%-28s %-24s %-24s %s agents\n" "$regime" "$name_en" "$pattern" "$agents"
+  done
+}
+
+# ── info ─────────────────────────────────────────────────────────────────────
+
+cmd_info() {
+  local regime="$1"
+  local dir="$REGIMES_DIR/$regime"
+  [[ -f "$dir/metadata.json" ]] || { echo "Regime not found: $regime"; exit 1; }
+
+  python3 -c "
+import json
+d = json.load(open('$dir/metadata.json'))
+print(f\"{'='*60}\")
+print(f\"{d['name']['zh']} ({d['name']['en']})\")
+print(f\"{d['era']['zh']} | {d['era']['en']}\")
+print(f\"System: {d['system']['zh']}\")
+print(f\"Pattern: {d.get('orchestrationPattern', '?')}\")
+print(f\"Agents: {d.get('agentCount', '?')}\")
+print(f\"Tags: {', '.join(d.get('tags', []))}\")
+print(f\"{'='*60}\")
+print(d['description']['zh'])
+print()
+print(d['description']['en'])
+"
+}
+
+# ── switch ───────────────────────────────────────────────────────────────────
+
+cmd_switch() {
+  local regime="$1"
+  local dir="$REGIMES_DIR/$regime"
+  [[ -f "$dir/metadata.json" ]] || { echo "Regime not found: $regime"; exit 1; }
+
+  echo "$regime" > "$ACTIVE_FILE"
+
+  # Generate CLAUDE.md for the regime
+  node "$ENGINE_DIR/regime-to-cc.mjs" "$dir" --claude-md > "$STATE_DIR/CLAUDE.md"
+
+  # Generate agents JSON
+  node "$ENGINE_DIR/regime-to-cc.mjs" "$dir" --agents > "$STATE_DIR/agents.json"
+
+  local name_zh=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d['name']['zh'])" 2>/dev/null)
+  local pattern=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d.get('orchestrationPattern','?'))" 2>/dev/null)
+
+  echo -e "${GREEN}✓${NC} Switched to ${BOLD}$name_zh${NC} ($regime)"
+  echo -e "  Pattern: ${CYAN}$pattern${NC}"
+  echo -e "  CLAUDE.md: $STATE_DIR/CLAUDE.md"
+  echo -e "  Agents:    $STATE_DIR/agents.json"
+  echo ""
+  echo -e "Run ${BOLD}civagent run${NC} to start a CC session with this regime."
+}
+
+# ── run ──────────────────────────────────────────────────────────────────────
+
+cmd_run() {
+  [[ -f "$ACTIVE_FILE" ]] || { echo "No active regime. Run: civagent switch <regime>"; exit 1; }
+  local regime=$(cat "$ACTIVE_FILE")
+  local agents_json=$(cat "$STATE_DIR/agents.json")
+
+  echo -e "${CYAN}[civagent]${NC} Launching CC with ${BOLD}$regime${NC} regime..."
+
+  # Build claude command
+  local cmd=(claude)
+
+  # Add agents
+  cmd+=(--agents "$agents_json")
+
+  # Add system prompt from CLAUDE.md
+  cmd+=(--system-prompt-file "$STATE_DIR/CLAUDE.md")
+
+  # Parse mode override
+  local mode=""
+  local prompt_args=()
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --mode) mode="$2"; shift 2 ;;
+      -p|--print) cmd+=("--print"); shift ;;
+      *) prompt_args+=("$1"); shift ;;
+    esac
+  done
+
+  # If mode specified, append mode instructions
+  if [[ -n "$mode" && -f "$ENGINE_DIR/modes/$mode.md" ]]; then
+    cmd+=(--append-system-prompt "$(cat "$ENGINE_DIR/modes/$mode.md")")
+  fi
+
+  # If prompt provided, run in print mode
+  if [[ ${#prompt_args[@]} -gt 0 ]]; then
+    cmd+=(-p "${prompt_args[*]}")
+  fi
+
+  exec "${cmd[@]}"
+}
+
+# ── agents ───────────────────────────────────────────────────────────────────
+
+cmd_agents() {
+  [[ -f "$ACTIVE_FILE" ]] || { echo "No active regime."; exit 1; }
+  local regime=$(cat "$ACTIVE_FILE")
+  echo -e "${BOLD}CC Agents for $regime:${NC}\n"
+  cat "$STATE_DIR/agents.json" | python3 -m json.tool 2>/dev/null || cat "$STATE_DIR/agents.json"
+}
+
+# ── modes ────────────────────────────────────────────────────────────────────
+
+cmd_modes() {
+  echo -e "${BOLD}CivAgent Orchestration Modes${NC}\n"
+  echo -e "  ${CYAN}centralized${NC}      Qin/Yuan — Single coordinator, no review"
+  echo -e "  ${CYAN}checks-balances${NC}  Tang/Venice — Draft→Review→Execute pipeline"
+  echo -e "  ${CYAN}dual-track${NC}       Ming/Sparta — Two independent verification chains"
+  echo -e "  ${CYAN}federation${NC}       Zhou/HRE — Autonomous domains, eventual sync"
+  echo -e "  ${CYAN}democratic${NC}       Athens/Mongol — Parallel generation, majority vote"
+  echo -e "  ${CYAN}theocratic${NC}       Shang/Egypt — Supreme agent, zero overhead"
+  echo ""
+  echo -e "Override with: ${BOLD}civagent run --mode <mode> \"prompt\"${NC}"
+}
+
+# ── setup ────────────────────────────────────────────────────────────────────
+
+cmd_setup() {
+  echo -e "${BOLD}CivAgent v4 Tool Check${NC}\n"
+
+  # Claude Code
+  if command -v claude &>/dev/null; then
+    local cc_ver=$(command claude --version 2>/dev/null | head -1)
+    echo -e "  ${GREEN}✓${NC} Claude Code    $cc_ver"
+  else
+    echo -e "  ${RED}✗${NC} Claude Code    not found"
+  fi
+
+  # Codex
+  if command -v codex &>/dev/null; then
+    local codex_ver=$(codex --version 2>/dev/null | head -1)
+    echo -e "  ${GREEN}✓${NC} Codex CLI      $codex_ver"
+  else
+    echo -e "  ${RED}✗${NC} Codex CLI      not found"
+  fi
+
+  # Gemini
+  if command -v gemini &>/dev/null; then
+    echo -e "  ${GREEN}✓${NC} Gemini CLI     available"
+  else
+    echo -e "  ${RED}✗${NC} Gemini CLI     not found"
+  fi
+
+  # CN models
+  echo ""
+  echo -e "  ${BOLD}CN Model Backends:${NC}"
+  for cc in cc-doubao cc-qwen cc-kimi cc-glm cc-stepfun cc-minimax; do
+    if command -v "$cc" &>/dev/null; then
+      echo -e "    ${GREEN}✓${NC} $cc"
+    else
+      echo -e "    ${RED}✗${NC} $cc"
+    fi
+  done
+
+  # Node.js
+  echo ""
+  if command -v node &>/dev/null; then
+    echo -e "  ${GREEN}✓${NC} Node.js        $(node --version)"
+  else
+    echo -e "  ${RED}✗${NC} Node.js        not found (required for engine)"
+  fi
+}
+
+# ── main ─────────────────────────────────────────────────────────────────────
+
+case "${1:-}" in
+  list)    cmd_list ;;
+  info)    cmd_info "${2:?Usage: civagent info <regime>}" ;;
+  switch)  cmd_switch "${2:?Usage: civagent switch <regime>}" ;;
+  run)     shift; cmd_run "$@" ;;
+  agents)  cmd_agents ;;
+  modes)   cmd_modes ;;
+  setup)   cmd_setup ;;
+  help|--help|-h|"") usage ;;
+  *)       echo "Unknown command: $1"; usage; exit 1 ;;
+esac

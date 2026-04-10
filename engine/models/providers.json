@@ -1,0 +1,29 @@
+{
+  "strong": [
+    { "id": "cc-opus",    "type": "cc",     "desc": "Claude Opus — best reasoning",        "cmd": "claude" },
+    { "id": "codex",      "type": "codex",  "desc": "GPT-5.4 via Codex — code review",     "cmd": "codex" },
+    { "id": "gemini",     "type": "gemini", "desc": "Gemini 2.5 Pro — 1M context",          "cmd": "gemini" }
+  ],
+  "fast": [
+    { "id": "cc-sonnet",  "type": "cc",     "desc": "Claude Sonnet — fast & capable",       "cmd": "claude" },
+    { "id": "cn-doubao",  "type": "cn-cc",  "desc": "Doubao — general Chinese coding",      "cmd": "cc-doubao" },
+    { "id": "cn-qwen",    "type": "cn-cc",  "desc": "Qwen — SQL / Alibaba ecosystem",       "cmd": "cc-qwen" },
+    { "id": "cn-kimi",    "type": "cn-cc",  "desc": "Kimi — 128K long context",              "cmd": "cc-kimi" },
+    { "id": "cn-glm",     "type": "cn-cc",  "desc": "GLM — reasoning / Chinese NLU",         "cmd": "cc-glm" },
+    { "id": "cn-stepfun", "type": "cn-cc",  "desc": "StepFun — math / logic",                "cmd": "cc-stepfun" },
+    { "id": "cn-minimax", "type": "cn-cc",  "desc": "MiniMax — high-speed inference",        "cmd": "cc-minimax" }
+  ],
+  "role_model_map": {
+    "coordinator":  { "model": "sonnet",  "note": "Fast routing, low cost" },
+    "engineering":  { "model": "opus",    "note": "Best code quality", "alt": "codex" },
+    "review":       { "model": "opus",    "note": "Deep analysis",    "alt": "codex:adversarial-review" },
+    "research":     { "model": "opus",    "note": "Deep reasoning",   "alt": "gemini" },
+    "data":         { "model": "sonnet",  "note": "Data analysis",    "alt": "cn-qwen" },
+    "devops":       { "model": "sonnet",  "note": "Shell execution" },
+    "content":      { "model": "sonnet",  "note": "Writing tasks",    "alt": "cn-doubao" },
+    "legal":        { "model": "sonnet",  "note": "Compliance checks" },
+    "management":   { "model": "sonnet",  "note": "Project tracking" },
+    "long_context": { "model": "sonnet",  "note": "Long docs",        "alt": "cn-kimi" },
+    "math":         { "model": "sonnet",  "note": "Math/logic",       "alt": "cn-stepfun" }
+  }
+}

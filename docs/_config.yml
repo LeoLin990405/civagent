@@ -1,9 +1,0 @@
-title: CivAgent | AI 文明
-description: 57 historical governance systems as AI multi-agent orchestration patterns
-theme: jekyll-theme-midnight
-baseurl: ""
-url: "https://leolin990405.github.io/civagent"
-
-exclude:
-  - Gemfile
-  - Gemfile.lock
