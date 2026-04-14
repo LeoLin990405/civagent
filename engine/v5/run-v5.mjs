@@ -5,7 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { ensureCivHome, transcriptPath } from "./civ-memory.mjs";
+import { ensureCivHome, transcriptPath, validateRegime } from "./civ-memory.mjs";
 import { sediment } from "./skill-sediment.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -18,11 +18,12 @@ function newMatchId() {
 }
 
 async function main() {
-  const [regime, ...promptParts] = process.argv.slice(2);
-  if (!regime) {
+  const [regimeRaw, ...promptParts] = process.argv.slice(2);
+  if (!regimeRaw) {
     console.error("usage: run-v5.mjs <region/regime-id> [prompt...]");
     process.exit(1);
   }
+  const regime = validateRegime(regimeRaw);
 
   const regimeDir = path.join(PROJECT_ROOT, "regimes", regime);
   if (!fs.existsSync(regimeDir)) {
@@ -48,8 +49,17 @@ async function main() {
     p.on("close", c => c === 0 ? resolve(out) : reject(new Error(`regime-to-cc exited ${c}`)));
   });
 
-  // Launch Claude Code with isolated HOME and transcript capture
-  const env = { ...process.env, HOME: home, CIVAGENT_MATCH_ID: matchId };
+  // Isolate XDG paths too — some CC builds read config from XDG_CONFIG_HOME
+  // independently of HOME, which would leak the outer user's state.
+  const env = {
+    ...process.env,
+    HOME: home,
+    XDG_CONFIG_HOME: path.join(home, ".config"),
+    XDG_DATA_HOME: path.join(home, ".local", "share"),
+    XDG_CACHE_HOME: path.join(home, ".cache"),
+    CIVAGENT_MATCH_ID: matchId,
+  };
+  fs.mkdirSync(env.XDG_CONFIG_HOME, { recursive: true });
   const ccArgs = ["--agents", agentsJson];
   const prompt = promptParts.join(" ").trim();
   if (prompt) ccArgs.push("-p", prompt);

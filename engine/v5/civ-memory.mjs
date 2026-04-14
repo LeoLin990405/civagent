@@ -39,13 +39,27 @@ export function ensureCivHome(regime, regimeDir) {
     for (const file of fs.readdirSync(regimeSkills)) {
       const src = path.join(regimeSkills, file);
       const dst = path.join(skillsDir, file);
-      if (!fs.existsSync(dst)) {
-        try { fs.symlinkSync(src, dst); } catch { /* ignore */ }
+      try {
+        const st = fs.lstatSync(dst);
+        if (!st.isSymbolicLink()) {
+          console.warn(`[civ-memory] ${dst} exists as non-symlink; skipping`);
+        }
+      } catch {
+        try { fs.symlinkSync(src, dst); }
+        catch (e) { console.warn(`[civ-memory] symlink failed: ${e.message}`); }
       }
     }
   }
 
   return home;
+}
+
+// Strict regime-id validation to block path traversal like "../../etc"
+export function validateRegime(regime) {
+  if (!/^[a-z0-9][a-z0-9_-]*\/[a-z0-9][a-z0-9_-]*$/i.test(regime)) {
+    throw new Error(`invalid regime id: ${regime}`);
+  }
+  return regime;
 }
 
 export function transcriptPath(matchId) {

@@ -262,7 +262,7 @@ cmd_skills() {
   for f in "$dir"/*.md; do
     [[ -f "$f" ]] || continue
     echo -e "  ${GREEN}•${NC} $(basename "$f")"
-    python3 -c "import re,sys; t=open('$f').read(); m=re.search(r'description:\s*(.+)',t); print('    '+m.group(1)) if m else None" 2>/dev/null
+    python3 -c "import re,sys;t=open(sys.argv[1]).read();m=re.search(r'description:\s*(.+)',t);print('    '+m.group(1)) if m else None" "$f" 2>/dev/null
   done
 }
 
