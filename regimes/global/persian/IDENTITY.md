@@ -1,57 +1,79 @@
-# Persian Achaemenid Empire / 波斯阿契美尼德帝国 — 组织架构 / Organizational Structure
+# 波斯阿契美尼德帝国 / Persian Achaemenid Empire — 组织架构
 
 ## 制度简介 / System Overview
 
-The Achaemenid Empire (550-330 BC), founded by Cyrus the Great, was the largest empire the ancient world had seen. Its genius lay in the satrap system: provincial governors with extensive local autonomy, bound to the center through taxation, military obligation, and the secret inspectorate (the Royal Eye). The King of Kings ruled from Persepolis, Susa, and Ecbatana, governing through a sophisticated bureaucracy that respected local customs while maintaining imperial unity through the Royal Road postal system, standardized coinage, and Aramaic as the administrative lingua franca.
+The Achaemenid Empire (550-330 BC), founded by Cyrus the Great, stretched from Egypt to the Indus — history's first true world empire. Its governance genius was the satrap system: semi-autonomous provincial governors bound to the center by taxation, military levies, and the covert Royal Eye inspectorate. The King of Kings maintained unity through standardized coinage, the Royal Road postal network, and Aramaic as the administrative lingua franca, while allowing subject peoples to retain local religions and customs.
 
-阿契美尼德帝国（公元前550-330年）由居鲁士大帝建立，是古代世界最大的帝国。其治理天才在于总督制：各省总督拥有广泛的地方自治权，通过税收、兵役义务和秘密监察机构（皇帝之眼）与中央联系。万王之王从波斯波利斯、苏萨和埃克巴坦那统治，通过尊重地方习俗的精密官僚体系维持帝国统一，依靠皇家驿道邮政系统、统一币制和阿拉米语作为行政通用语。
+阿契美尼德帝国（公元前550-330年）由居鲁士大帝建立，疆域从埃及延伸至印度河——历史上第一个真正的世界帝国。其治理天才是总督制：半自治的省级总督通过税收、兵役和秘密监察机构（皇帝之眼）与中央维系。万王之王通过统一币制、皇家驿道邮政系统和阿拉米语行政通用语维持帝国统一，同时允许被征服民族保留本地宗教与习俗。
 
 ## 组织架构图 / Org Chart
 
 ```
-                ┌──────────────────┐
-                │   Shahanshah     │
-                │  万王之王 (shah)   │
-                └────────┬─────────┘
-                         │
-            ┌────────────┼────────────────┐
-            ▼            ▼                ▼
-    ┌──────────────┐ ┌────────┐   ┌────────────┐
-    │ Hazarapatis  │ │Spahbed │   │ Royal Eye  │
-    │ 宰相         │ │ 军事统帅 │   │ 皇帝之眼    │
-    └──────┬───────┘ └────────┘   └─────┬──────┘
-           │                            │ (secret)
-      ┌────┴─────┐                 ┌────┴─────┐
-      ▼          ▼                 ▼          ▼
-┌──────────┐┌──────────┐   ┌──────────┐┌──────────┐
-│ Satrap W ││ Satrap E │   │ inspect  ││ inspect  │
-│ 西部总督  ││ 东部总督  │   │  West    ││  East    │
-└──────────┘└──────────┘   └──────────┘└──────────┘
-                    │
-            ┌───────────────┐
-            │ Royal Scribe  │
-            │ 文书官          │
-            └───────────────┘
+                    ┌─────────────────┐
+                    │   Shahanshah    │
+                    │   万王之王       │
+                    └────────┬────────┘
+                             │
+          ┌──────────────────┼──────────────────┐
+          ▼                  ▼                  ▼
+   ┌──────────────┐  ┌────────────┐  ┌─────────────────┐
+   │ Hazarapatis  │  │  Spahbed   │  │   Royal Eye     │
+   │  宰相 / 总管  │  │  军事统帅   │  │   皇帝之眼       │
+   └──────┬───────┘  └─────┬──────┘  └────────┬────────┘
+          │                │                   │ (covert)
+    ┌─────┴─────┐    ┌─────┴─────┐       ┌────┴────┐
+    ▼           ▼    ▼           ▼       ▼         ▼
+┌────────┐┌────────┐   ┌────────┐┌────────┐  ┌────────┐
+│Satrap W││Satrap E│   │Satrap S││Satrap N│  │Eyes    │
+│西部总督 ││东部总督 │   │南部总督 ││北部总督 │  │各路暗探 │
+└────────┘└────────┘   └────────┘└────────┘  └────────┘
+          │
+   ┌──────┴──────┐
+   ▼             ▼
+┌────────┐ ┌──────────┐
+│Treasurer│ │Royal Scribe│
+│财政官    │ │ 文书官      │
+└────────┘ └──────────┘
 ```
 
 ## 角色映射表 / Role Mapping
 
-| 古代角色 / Historical Role | Agent ID | AI 职责 / AI Responsibility | 推荐模型 / Model |
+| 历史角色 / Historical Role | Agent ID | AI 职责 / AI Responsibility | 推荐模型 / Model |
 |---|---|---|---|
-| Shahanshah / 万王之王 | shah | Supreme decision-maker, policy direction / 最高决策，政策方向 | Claude Opus 4.6 / GPT-5.4 |
-| Hazarapatis / 宰相 | hazarapatis | Court coordination, access control / 宫廷协调，访问控制 | Claude Opus 4.6 / GPT-5.4 |
-| Western Satrap / 西部总督 | satrap_w | Western provincial governance / 西部省务治理 | GPT-5.4 / Qwen3-Coder |
-| Eastern Satrap / 东部总督 | satrap_e | Eastern provincial governance / 东部省务治理 | GPT-5.4 / Qwen3-Coder |
-| Spahbed / 军事统帅 | spahbed | Military strategy and coordination / 军事战略与协调 | GPT-5.4 / DeepSeek R2 |
-| Royal Eye / 皇帝之眼 | eye | Secret inspection, loyalty verification / 秘密巡察，忠诚核查 | Claude Opus 4.6 / GPT-5.4 |
-| Royal Scribe / 文书官 | scribe | Records, communications, archival / 记录，通信，档案 | GPT-5.4 / Qwen3-Coder |
+| Shahanshah / 万王之王 | shah | coordinator — supreme policy, final arbitration | opus |
+| Hazarapatis / 宰相 | hazarapatis | management — court coordination, resource allocation | opus |
+| Spahbed / 军事统帅 | spahbed | devops — campaign logistics, troop mobilization | sonnet |
+| Satrap / 总督 | satrap | management — provincial governance with local autonomy | sonnet |
+| Royal Eye / 皇帝之眼 | royal-eye | review — covert inspection, loyalty verification | opus |
+| Royal Treasurer / 财政官 | treasurer | data — tribute accounting, coinage standards | sonnet |
+| Royal Scribe / 文书官 | scribe | content — decrees, records, multilingual archive | haiku |
 
-## 协作流程 / Workflow
+## 决策流程 / Decision Flow
 
-1. **Imperial Decree** — The Shahanshah issues a directive, often through the Hazarapatis.
-2. **Court Distribution** — The Hazarapatis relays orders to the relevant satraps and the Spahbed.
-3. **Provincial Execution** — Satraps implement with local autonomy, adapting to regional conditions.
-4. **Military Coordination** — The Spahbed coordinates with satraps for troop levies and campaigns.
-5. **Secret Inspection** — The Royal Eye independently verifies compliance and reports directly to the Shahanshah.
-6. **Record Keeping** — The Royal Scribe documents all decisions, decrees, and reports in the imperial archive.
-7. **Feedback Loop** — Satraps report results; the Royal Eye provides an independent assessment; the Shahanshah adjusts policy.
+1. **shah** receives a report from a satrap or the royal-eye regarding provincial affairs
+2. **hazarapatis** coordinates the response — routing to **spahbed** for military matters, **treasurer** for fiscal matters, or directly to the relevant **satrap**
+3. **satrap** implements the decree locally, exercising autonomous adaptation to regional customs and conditions
+4. **spahbed** coordinates troop levies across multiple satraps if military action is required
+5. **royal-eye** conducts covert inspection of provincial compliance and reports directly to **shah**, bypassing normal channels
+6. **scribe** records all decrees, inspection findings, and tribute flows in the imperial archive
+7. **shah** reviews independent reports from both **satrap** (self-report) and **royal-eye** (independent verification), then adjusts policy
+
+## 制度特点 / Characteristics
+
+- **Satrap Autonomy**: Governors controlled local taxation, justice, and religion — only foreign policy and military remained centralized
+- **Dual Reporting**: Satraps reported their own performance; the Royal Eye reported independently — the Shah cross-checked both
+- **Tribute Diversity**: Each province paid in its own produce and currency, not uniform cash — reflecting genuine cultural respect
+- **Covert Inspectorate**: The Royal Eye operated outside the chain of command, answerable only to the Shah — preventing information monopoly by any official
+- **Lingua Franca Pragmatism**: Aramaic was imposed for administration only; local languages persisted in daily life and worship
+
+## Pattern 映射
+
+> **Orchestration pattern**: `federation`
+
+## 历史参考 / Historical Sources
+
+- Herodotus, *Histories*, Book III (on the satrap system and Darius's reforms)
+- Xenophon, *Cyropaedia* (idealized account of Cyrus's governance model)
+- Pierre Briant, *From Cyrus to Alexander: A History of the Persian Empire* (2002)
+- Amélie Kuhrt, *The Persian Empire: A Corpus of Sources from the Achaemenid Period* (2007)
+- 《波斯帝国史》（阿卜杜勒·侯赛因·扎林库伯著）

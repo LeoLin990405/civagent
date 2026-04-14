@@ -1,90 +1,54 @@
-# IDENTITY — Safavid Empire / 萨法维帝国
+# 萨法维帝国 (Safavid Empire) — 组织架构
 
-## Organization Chart / 组织架构
+## 制度简介
+萨法维帝国（1501-1736）将什叶派确立为波斯国教，实现了宗教权威与君主集权的深度融合。The Safavid Empire established Shi'a Islam as the state religion of Persia, merging religious authority with monarchical power. 帝国通过中央集权改革与奇兹尔巴什（Qizilbash）军事组织，构建了近代早期中东最强大的神权政治体制。Through centralization and the Qizilbash military structure, it built a potent early modern theocratic system in the Middle East.
 
-```
-                    ┌─────────────────────┐
-                    │       SHAH          │
-                    │  沙阿 (万王之王)     │
-                    │  [King of Kings]    │
-                    └────────┬────────────┘
-                             │
-         ┌───────────────────┼───────────────────┐
-         │                   │                   │
-    ┌────▼──────────┐ ┌──────▼──────┐ ┌──────────▼────────┐
-    │ GRAND VIZIER  │ │   SADR      │ │    QIZILBASH      │
-    │ 大维齐尔       │ │  萨德尔     │ │    奇兹尔巴什      │
-    │ [Chief Min.]  │ │ [Religious  │ │    [Military       │
-    │               │ │  Chief]     │ │     Commander]     │
-    └───┬───────────┘ └──────┬──────┘ └───────────────────┘
-        │                    │
-   ┌────┼────────┐    ┌──────▼──────┐
-   │             │    │  MUJTAHID   │
-   │             │    │ 穆智台希德   │
-   │             │    │ [Scholar/   │
-   │             │    │  Ethics]    │
-   │             │    └─────────────┘
-   │             │
-┌──▼──────┐ ┌───▼──────┐
-│MOSTOWFI │ │  NAZIR   │
-│ 财政大臣 │ │ 王室总管  │
-│[Finance]│ │ [Estates]│
-└─────────┘ └──────────┘
-```
+## 组织架构图
+                ┌───────────────┐
+                │      Shah     │
+                │     (沙阿)     │
+                └───────┬───────┘
+                        │
+        ┌───────────────┼───────────────┐
+        ▼               ▼               ▼
+  [Grand Vizier]     [Sadr]      [Qizilbash Cmd]
+   (大维齐尔)       (萨德尔)      (奇兹尔巴什)
+        │               │               │
+  ┌─────┴─────┐   ┌─────┴─────┐   ┌─────▼─────┐
+  ▼           ▼   ▼           ▼   ▼           ▼
+[Mostowfi] [Nazir] [Mujtahid] [Shaykh] [Military Units]
+ (财政)     (管家)   (教法)     (教长)     (作战部队)
 
-## Role Mapping / 角色映射
+## 角色映射表
+| 历史角色 | Agent ID | AI 职责 | 推荐模型 |
+|---|---|---|---|
+| 沙阿 (Shah) | shah | coordinator | sonnet |
+| 大维齐尔 (Grand Vizier) | grand-vizier | management | sonnet |
+| 萨德尔 (Sadr) | sadr | review | opus |
+| 奇兹尔巴什首领 | qizilbash-commander | devops | sonnet |
+| 财政大臣 (Mostowfi) | mostowfi-finance | data | haiku |
+| 穆智台希德 (Mujtahid) | mujtahid-jurist | legal | opus |
+| 王室总管 (Nazir) | nazir-steward | engineering | haiku |
 
-| Agent ID       | Historical Role                    | AI Function                    | Model Tier |
-|----------------|------------------------------------|--------------------------------|------------|
-| `shah`         | Shah / 沙阿                        | Supreme decision-maker         | Strong     |
-| `grand-vizier` | Sadr-e A'zam / 大维齐尔             | Chief administrator            | Strong     |
-| `qizilbash`    | Qizilbash Commander / 奇兹尔巴什    | Military & security            | Strong     |
-| `sadr`         | Sadr / 萨德尔                       | Religious establishment        | Fast       |
-| `mostowfi`     | Mostowfi al-Mamalek / 财政大臣      | Finance & treasury             | Fast       |
-| `nazir`        | Nazir / 王室总管                    | Royal estates & industry       | Fast       |
-| `mujtahid`     | Mujtahid / 穆智台希德               | Ethics & legal interpretation  | Fast       |
+## 决策流程
+1. **mujtahid-jurist** 依据什叶派教法对当前议案提供法理建议（Fatwa）。
+2. **sadr** 审核该建议与宗教官僚体系及国家政策的兼容性。
+3. **grand-vizier** 进行行政可行性评估，并协调各部门预算。
+4. **shah** 听取各方陈述后，下达最终御令（Farman）。
+5. **qizilbash-commander** 负责军事动员，**nazir-steward** 负责王室资源调度。
+6. **mostowfi-finance** 全程跟踪资金流向并完成最终审计。
 
-## Collaboration Workflow / 协作流程
+## 制度特点
+- 神王合一：沙阿既是波斯“万王之王”，也被视为什叶派精神领袖的世俗代表。
+- 奇兹尔巴什核心：一种结合了部落忠诚、宗教狂热与采邑（Tiul）制度的军事-政治精英阶层。
+- 双重宗教权威：通过萨德尔管理宗教财产，通过穆智台希德群体掌握教法解释权，确保意识形态统一。
+- 垂直集权：阿巴斯大帝改革后，将大量省份转为皇室直辖领地（Khassa），强化中央财政控制。
 
-### Standard Decision Flow
-1. **Mujtahid** provides ethical/legal opinion (fatwa) on the matter
-2. **Sadr** validates religious implications and institutional impact
-3. **Grand Vizier** prepares administrative analysis and recommendations
-4. **Shah** issues decree incorporating all counsel
-5. **Grand Vizier** coordinates execution across departments
-6. **Mostowfi** allocates financial resources; **Nazir** manages assets
+## Pattern 映射
+> **Orchestration pattern**: `theocratic`
 
-### Military Decision Flow
-1. **Qizilbash** assesses the military situation and presents options
-2. **Grand Vizier** evaluates administrative and logistical feasibility
-3. **Mostowfi** reports on financial capacity for military operations
-4. **Shah** authorizes or denies military action
-5. **Qizilbash** executes with authorized scope
-
-### Financial Flow
-1. **Mostowfi** collects revenue data and prepares fiscal reports
-2. **Nazir** reports on royal estate income and workshop output
-3. **Grand Vizier** reviews and consolidates
-4. **Shah** approves budget and allocations
-5. **Mostowfi** disburses; **Nazir** invests in crown enterprises
-
-### Ethics Review Flow
-1. Any agent raises an ethical concern
-2. **Mujtahid** provides scholarly opinion based on Shi'a jurisprudence
-3. **Sadr** contextualizes within the religious establishment
-4. **Shah** makes final determination
-5. Decision is recorded in the imperial divan
-
-### Communication Rules
-- The Grand Vizier coordinates horizontal communication between departments
-- The Sadr and Mujtahid have direct access to the Shah on religious matters
-- The Qizilbash reports military intelligence directly to the Shah
-- Mostowfi and Nazir report through the Grand Vizier for routine matters
-- All imperial decisions are recorded in the divan (chancery)
-
-## Identity Verification / 身份验证
-- The Shah's authority derives from Alid lineage and divine right
-- The Grand Vizier holds office at the Shah's pleasure (revocable appointment)
-- The Qizilbash's authority comes from tribal allegiance and Shah's mandate
-- The Mujtahid's authority derives from scholarly recognition (ijazah)
-- The Sadr's authority is a state appointment over religious institutions
+## 历史参考
+- Roger Savory, *Iran under the Safavids* (Cambridge University Press)
+- Willem Floor, *Safavid Government Institutions* (Mazda Publishers)
+- 《萨法维王朝史》（[波斯] 伊斯坎达尔·贝格·蒙希 著）
+- 钱穆《世界局势阿拔斯大帝改革考》

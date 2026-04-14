@@ -1,64 +1,58 @@
-# Athenian Democracy / 雅典民主制 — Organizational Structure / 组织架构
+# 雅典民主制 (Athenian Democracy) — 组织架构
 
-## System Overview / 制度简介
+## 制度简介 (System Overview)
+雅典民主制（公元前508年-公元前322年）是人类历史上第一个民主政体，由克里斯提尼改革奠定。公民通过公民大会直接投票决策，开创了“主权在民”的先河。
+Athenian Democracy (508-322 BC) was the world's first democratic system, established by the reforms of Cleisthenes. It pioneered "popular sovereignty" through direct voting in the Assembly.
 
-Athenian Democracy (508-322 BC) was the world's first known democracy, born from the reforms of Cleisthenes.
-Unlike modern representative democracy, Athens practiced direct democracy: all eligible citizens could vote
-directly on legislation and policy in the Assembly (Ekklesia). The Council of 500 (Boule), selected by lot,
-prepared the agenda. Military generals (Strategoi) were elected for expertise. The People's Courts (Dikasterion)
-provided judicial review with juries of hundreds or thousands of citizens.
+## 组织架构图 (Organization Chart)
+                ┌──────────────────────────┐
+                │     公民大会 Ekklesia      │
+                │    (最高权力/主权投票)      │
+                └─────────────┬────────────┘
+                              │ 决议/法律
+                ┌─────────────┼─────────────┐
+                ▼             ▼             ▼
+        ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
+        │五百人议事会 │ │  十将军     │ │  陪审法庭   │
+        │    Boule    │ │  Strategos  │ │ Dikasterion │
+        │ (预案/行政) │ │ (军事/工程) │ │ (司法/审核) │
+        └──────┬──────┘ └─────────────┘ └─────────────┘
+               │
+        ┌──────┴──────┐
+        ▼             ▼
+      执政官        演说家
+      Archon        Rhetor
+      (执行)        (内容)
 
-**Core Characteristics:** Decisions by majority vote. Equal right to speak (Isegoria). Most offices filled by
-lottery to prevent corruption. Accountability through public audits (Euthynai). A culture of philosophical
-debate and civic engagement.
-
-## Org Chart / 组织架构图
-
-```
-              ┌───────────────────────────────────┐
-              │       Ekklesia (Assembly)          │
-              │  All Citizens Vote · Supreme Body  │
-              │            (main)                  │
-              └───────────────┬───────────────────┘
-                              │ Votes & Decrees
-         ┌────────────────────┼────────────────────┐
-         ▼                    ▼                    ▼
-  ┌─────────────┐    ┌──────────────┐    ┌──────────────┐
-  │   Boule     │    │  Strategos   │    │ Dikasterion  │
-  │ Council 500 │    │   General    │    │   Courts     │
-  │  Agenda     │    │  Military    │    │  Judicial    │
-  └──────┬──────┘    └──────────────┘    └──────────────┘
-         │
-    ┌────┴────┐
-    ▼         ▼
-┌────────┐ ┌────────┐
-│ Archon │ │ Rhetor │
-│ Admin  │ │ Orator │
-└────────┘ └────────┘
-```
-
-## Role Mapping / 角色映射表
-
-| Historical Role | Agent ID | AI Responsibility | Recommended Model |
+## 角色映射表 (Role Mapping Table)
+| 历史角色 | Agent ID | AI 职责 | 推荐模型 |
 |---|---|---|---|
-| Ekklesia / 公民大会 | `ekklesia` | Assembly: coordinates votes, final decisions, democratic process | Strong Model |
-| Boule / 五百人议事会 | `boule` | Council: agenda preparation, proposal drafting, daily administration | Strong Model |
-| Strategos / 将军 | `strategos` | General: military/technical strategy, architecture, security | Strong Model |
-| Archon / 执政官 | `archon` | Magistrate: administrative execution, procedural compliance | Fast Model |
-| Dikasterion / 陪审法庭 | `dikasterion` | Courts: judicial review, dispute resolution, accountability audits | Strong Model |
-| Rhetor / 演说家 | `rhetor` | Orator: communications, persuasion, public presentation | Fast Model |
+| 公民大会 | ekklesia | coordinator | sonnet |
+| 五百人议事会 | boule | management | sonnet |
+| 十将军 | strategos | engineering | opus |
+| 陪审法庭 | dikasterion | review | opus |
+| 执政官 | archon | devops | haiku |
+| 演说家 | rhetor | content | haiku |
 
-## Workflow / 协作流程
+## 决策流程 (Decision Flow)
+1. **boule** 准备议程并起草初级预案（Probouleuma）。
+2. **rhetor** 在大会上阐述提案背景、逻辑与优势，引导群体辩论。
+3. **ekklesia** 全体成员对预案进行辩论，并通过直接投票决定最终决议。
+4. **strategos** 负责涉及军事或复杂系统工程的专业决策与执行。
+5. **archon** 负责行政日常维护、资源调度及程序合规性。
+6. **dikasterion** 负责对决策过程、法律效力及官员行为进行事后审计与审判。
 
-```
-User proposes → Boule drafts probouleuma → Ekklesia opens debate
-→ All agents deliberate → Ekklesia calls vote → Majority decides
-→ Archon executes → Dikasterion may review
-```
+## 制度特点 (Characteristics)
+- 直接民主：公民直接参与决策而非通过代表，确保 Agent 群体意图的直接表达。
+- 抽签与选举并行：日常行政职能通过随机性（抽签）防止垄断，专业职能（将军）通过选举保障能力。
+- 预审机制（Probouleumatic）：通过议事会预审机制平衡大会的自发性，确保决策有据可依。
+- 轮值制度：主席团定期轮换，确立了权力在不同节点间流动的动态平衡。
 
-1. **Proposal** — The user (or any agent) raises an issue
-2. **Boule Prepares** — The Boule drafts a formal proposal (probouleuma) for the Assembly
-3. **Open Debate** — All agents deliberate in the Ekklesia, presenting arguments for and against
-4. **Vote** — Each agent casts a vote via sessions_send; majority wins
-5. **Execution** — The Archon and relevant agents implement the decision
-6. **Judicial Review** — The Dikasterion may audit the process for fairness and legality
+## Pattern 映射
+> **Orchestration pattern**: `democratic`
+
+## 历史参考 (Historical Sources)
+- 亚里士多德《雅典政制》（The Athenian Constitution）
+- 修昔底德《伯罗奔尼撒战争史》（History of the Peloponnesian War）
+- 钱穆《政学私议》
+- Mogens Herman Hansen, *The Athenian Democracy in the Age of Demosthenes*

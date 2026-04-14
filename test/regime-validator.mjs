@@ -63,6 +63,23 @@ for (const region of fs.readdirSync(REGIMES)) {
       check(fs.existsSync(path.join(regimeDir, f)),
         `${tag}: missing ${f}`, "warning");
     }
+
+    // v5.1 canonical structure check — warnings only until L4 rewrite lands.
+    const identityPath = path.join(regimeDir, "IDENTITY.md");
+    if (fs.existsSync(identityPath)) {
+      const md = fs.readFileSync(identityPath, "utf8");
+      const sections = [
+        { rx: /^##\s+制度简介|^##\s+System Overview/m, label: "System Overview" },
+        { rx: /^##\s+组织架构图|^##\s+Organization Chart/m, label: "Organization Chart" },
+        { rx: /^##\s+角色映射表|^##\s+Role Mapping Table/m, label: "Role Mapping Table" },
+        { rx: /^##\s+决策流程|^##\s+协作流程|^##\s+Decision Flow|^##\s+Collaboration Workflow|^##\s+Workflow/m, label: "Decision Flow" },
+      ];
+      for (const s of sections) {
+        if (!s.rx.test(md)) warnings.push(`${tag}: IDENTITY.md missing "${s.label}" section`);
+      }
+      const tableRows = (md.match(/^\|\s*[^-|][^|]*\|[^|]*\|[^|]*\|[^|]*\|/gm) || []).length;
+      if (tableRows < 5) warnings.push(`${tag}: IDENTITY.md role-mapping table has ${tableRows} rows (canonical ≥5)`);
+    }
   }
 }
 

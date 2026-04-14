@@ -1,68 +1,71 @@
-# US Federal System / 美国联邦制 — Organizational Structure / 组织架构
+# 美国联邦制 — 组织架构
 
-## System Overview / 制度简介
+## 制度简介
 
-The United States Federal System (1789-present) is the world's oldest continuously operating constitutional
-republic. Designed by the Founders at the Philadelphia Convention of 1787, it divides governmental power among
-three co-equal branches: the Executive (President), the Legislature (Congress: House and Senate), and the
-Judiciary (Supreme Court). This separation of powers, combined with an intricate system of checks and balances,
-was designed to prevent the concentration of power that the Founders considered "the very definition of tyranny."
+美国联邦制（1789年至今）是世界上最古老的持续运作的宪政共和国，也是现代三权分立制度的典范。总统领导行政分支，国会（众议院与参议院）掌握立法权，最高法院行使司法审查权。内阁各部执行具体政策，参谋长联席会议负责军事技术事务，监察长提供独立监督。宪法通过精巧的制衡机制防止任何一个分支独大，形成"以野心对抗野心"的治理格局。
 
-**Core Characteristics:** Separation of powers across three branches, constitutional supremacy, judicial review,
-bicameral legislature, civilian control of military, independent oversight (Inspector General), federalism
-(national and state governments), and protected individual rights (Bill of Rights).
-
-## Org Chart / 组织架构图
+## 组织架构图
 
 ```
-                    ┌─────────────────────┐
-                    │     User (You)      │
-                    │   We the People     │
-                    └──────────┬──────────┘
-                               │ Constitutional Authority
-         ┌─────────────────────┼─────────────────────┐
-         ▼                     ▼                     ▼
-  ┌─────────────┐    ┌──────────────────┐    ┌─────────────┐
-  │  President  │    │    Congress      │    │  Supreme    │
-  │  Executive  │    │  ┌────┬────┐    │    │   Court     │
-  │   (main)    │    │  │House│Sen.│    │    │  Judicial   │
-  └──────┬──────┘    │  └────┴────┘    │    │  Review     │
-         │           └──────────────────┘    └─────────────┘
-    ┌────┼────┐
-    ▼    ▼    ▼
-┌──────┐┌──────┐┌──────┐
-│Cabin-││Joint ││  IG  │
-│ et   ││Chiefs││Audit │
-│Depts.││Mil.  ││Over- │
-│      ││Tech  ││sight │
-└──────┘└──────┘└──────┘
+                ┌───────────┐
+                │  人民     │
+                │ We the People │
+                └─────┬─────┘
+                      │ 宪法授权
+        ┌─────────────┼─────────────┐
+        ▼             ▼             ▼
+  ┌──────────┐  ┌──────────┐  ┌──────────┐
+  │  总统    │  │  国会    │  │ 最高法院 │
+  │ President│  │ Congress │  │  SCOTUS  │
+  └────┬─────┘  ├──────────┤  └──────────┘
+       │        │ House +  │
+  ┌────┼────┐   │ Senate   │
+  ▼    ▼    ▼   └──────────┘
+┌────┐┌────┐┌────┐
+│内阁││参联││监察│
+│Cabi││Joint││ IG │
+│net ││Chf ││Over│
+└────┘└────┘└────┘
 ```
 
-## Role Mapping / 角色映射表
+## 角色映射表
 
-| Historical Role | Agent ID | AI Responsibility | Recommended Model |
+| 历史角色 | Agent ID | AI 职责 | 推荐模型 |
 |---|---|---|---|
-| President / 总统 | `president` | Chief Executive: strategic direction, executive orders, Commander-in-Chief | Strong Model |
-| House of Representatives / 众议院 | `house` | Lower Chamber: legislation, appropriations, representing immediate interests | Strong Model |
-| Senate / 参议院 | `senate` | Upper Chamber: deliberation, confirmation, treaty ratification | Strong Model |
-| Supreme Court / 最高法院 | `scotus` | Judicial Branch: constitutional review, legal interpretation, dispute resolution | Strong Model |
-| Cabinet / 内阁 | `cabinet` | Executive Departments: policy implementation, operations, subject expertise | Fast Model |
-| Joint Chiefs of Staff / 参谋长联席会议 | `joint_chiefs` | Military/Technical: security, architecture, infrastructure strategy | Strong Model |
-| Inspector General / 监察长 | `ig` | Independent Oversight: audits, investigations, waste/fraud prevention | Fast Model |
+| 总统 | president | coordinator | sonnet |
+| 众议院 | house | engineering | sonnet |
+| 参议院 | senate | review | sonnet |
+| 最高法院 | scotus | legal | opus |
+| 内阁 | cabinet | management | sonnet |
+| 参谋长联席会议 | joint-chiefs | devops | haiku |
+| 监察长 | inspector-general | review | sonnet |
 
-## Workflow / 协作流程
+## 决策流程
 
-```
-User requests → President proposes → Congress reviews (House + Senate)
-             → SCOTUS checks constitutionality
-             → Cabinet executes if authorized
-             → IG audits independently
-```
+1. **president** 接收用户请求，提出政策方案
+2. **house** 起草立法提案，进行辩论和投票
+3. **senate** 审核、修改提案，确认人事提名
+4. **scotus** 审查立法是否违宪（可主动介入）
+5. **cabinet** 执行已授权的政策，协调各部行动
+6. **joint-chiefs** 处理军事与技术安全事务
+7. **inspector-general** 独立审计执行过程，发现问题上报
 
-1. **User Request** — The user (We the People) raises a need
-2. **Executive Proposal** — The President formulates a plan and may issue executive directives to the Cabinet
-3. **Legislative Review** — The House and Senate review, amend, and vote on proposals
-4. **Judicial Review** — The Supreme Court may review actions for constitutional compliance
-5. **Execution** — The Cabinet and Joint Chiefs implement authorized actions
-6. **Independent Oversight** — The Inspector General audits processes for waste, fraud, and abuse
-7. **Reporting** — All branches report to the user with full transparency
+## 制度特点
+
+- 三权分立：立法、行政、司法严格分离，互不兼任
+- 双院制立法：众议院代表人口比例，参议院代表州权平等
+- 司法审查：最高法院可推翻违宪立法和行政命令
+- 制衡机制：总统可否决法案，国会可弹劾总统，法院可审查两者行为
+- 独立监察：监察长独立于行政长官，直接审计报告
+
+## Pattern 映射
+
+> **Orchestration pattern**: `checks-and-balances`
+
+## 历史参考
+
+- 美利坚合众国宪法（1787年，1789年生效）
+- 《联邦党人文集》（汉密尔顿、麦迪逊、杰伊，1787-1788）
+- 《反联邦党人文集》（布鲁图斯、联邦农民等）
+- 孟德斯鸠《论法的精神》（1748，三权分立理论源头）
+- 伍德罗·威尔逊《国会政体》（1885）
