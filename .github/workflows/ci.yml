@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Syntax check (node + bash)
+        run: npm run lint:syntax
+      - name: Unit tests
+        run: npm test
+      - name: Validate all 57 regimes
+        run: npm run validate:regimes
