@@ -1,6 +1,6 @@
 {
   "name": "civagent",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "CivAgent — 57 historical governance systems × AI multi-agent orchestration on Claude Code, with cross-match skill sedimentation",
   "bin": {
     "civagent": "bin/civagent"
