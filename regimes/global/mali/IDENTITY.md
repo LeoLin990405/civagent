@@ -1,83 +1,63 @@
-# IDENTITY — Mali Empire / 马里帝国
+# 马里帝国 — 组织架构
 
-## Organization Chart / 组织架构
+## 制度简介
+马里帝国（1235-1600）是西非最强大的帝国之一，以曼萨穆萨（Mansa Musa）的传奇财富闻名。帝国建立在跨撒哈拉贸易网络之上，廷巴克图成为伊斯兰学术中心。格里奥（griot）口述传统保存历史记忆与制度传承，曼萨作为最高统治者通过曼萨-吉吉（deputy）和法林（provincial governors）实现中央集权统治。
 
+## 组织架构图
 ```
-                    ┌─────────────────────┐
-                    │      MANSA          │
-                    │   曼萨 (皇帝)        │
-                    │   [Supreme Ruler]   │
-                    └────────┬────────────┘
-                             │
-            ┌────────────────┼────────────────┐
-            │                │                │
-   ┌────────▼───────┐ ┌─────▼──────┐ ┌───────▼───────┐
-   │    GRIOT       │ │   HOJA     │ │  MANSA-JIGI   │
-   │  格里奥        │ │   霍贾     │ │  曼萨-吉吉     │
-   │  [Advisor/     │ │  [Scholar/ │ │  [Deputy/      │
-   │   Memory]      │ │   Ethics]  │ │   Successor]   │
-   └────────────────┘ └────────────┘ └───────┬───────┘
-                                             │
-                                   ┌─────────┼─────────┐
-                                   │                   │
-                          ┌────────▼───────┐  ┌────────▼───────┐
-                          │    FARIN       │  │    DYULA       │
-                          │  法林 (省长)    │  │  迪乌拉 (商人)  │
-                          │  [Governor]    │  │  [Merchant]    │
-                          └────────────────┘  └────────────────┘
+                    ┌──────────┐
+                    │  曼萨    │
+                    │  Mansa  │
+                    └───┬──────┘
+                        │
+        ┌───────────────┼───────────────┐
+        │               │               │
+   ┌────▼────┐    ┌─────▼─────┐   ┌─────▼─────┐
+   │ 格里奥  │    │   霍贾    │   │ 曼萨-吉吉  │
+   │ Griot  │    │   Hoja   │   │ Mansa-jigi │
+   └────────┘    └─────┬─────┘   └─────┬─────┘
+                       │               │
+                       │         ┌─────┴─────┐
+                       │         │           │
+                  ┌────▼────┐ ┌──▼──┐ ┌────▼────┐
+                  │  法林   │ │迪乌拉│ │  商人   │
+                  │  Farin  │ │Dyula│ │ Merchants│
+                  │(省长)   │ │(贸易)│ │         │
+                  └─────────┘ └─────┘ └─────────┘
 ```
 
-## Role Mapping / 角色映射
+## 角色映射表
+| 历史角色 | Agent ID | AI 职责 | 推荐模型 |
+|---|---|---|---|
+| 曼萨 | mansa | coordinator | sonnet |
+| 曼萨-吉吉 | mansa-jigi | management | sonnet |
+| 格里奥 | griot | research | sonnet |
+| 霍贾 | hoja | legal | sonnet |
+| 法林 | farin | engineering | haiku |
+| 迪乌拉 | dyula | data | haiku |
 
-| Agent ID     | Historical Role               | AI Function                     | Model Tier |
-|--------------|-------------------------------|---------------------------------|------------|
-| `mansa`      | Mansa / 曼萨                   | Supreme decision-maker          | Strong     |
-| `griot`      | Griot / 格里奥                  | Institutional memory & advisor  | Strong     |
-| `farin`      | Farin / 法林                   | Provincial execution & admin    | Fast       |
-| `dyula`      | Dyula / 迪乌拉                 | Trade operations & intelligence | Fast       |
-| `mansa-jigi` | Mansa-jigi / 曼萨-吉吉          | Deputy coordinator & regent     | Strong     |
-| `hoja`       | Hoja / 霍贾                    | Ethics review & education       | Fast       |
+## 决策流程
+1. **griot** 提供历史先例与背景记忆
+2. **hoja** 提供伊斯兰律法与伦理审查意见
+3. **mansa-jigi** 汇总各方情报并草拟建议
+4. **mansa** 做出最终裁决
+5. **farin** 在各省执行裁决
+6. **dyula** 调整贸易运营并汇报执行效果
 
-## Collaboration Workflow / 协作流程
+## 制度特点
+- 曼萨绝对权威：皇权神授，曼萨拥有最高司法、军事与贸易决策权
+- 曼萨-吉吉副王制度：指定继承人或摄政，确保权力平稳过渡
+- 法林省长制：中央任命省长管理省份，执行帝国政令
+- 跨撒哈拉贸易垄断：迪乌拉商人网络为帝国财政核心，盐、黄金、奴隶贸易支撑经济
+- 格里奥口述宪法：曼丁凯（Manden Charter）等口述传统具有约束力
+- 伊斯兰学术中心：霍贾学者团提供合法性论证与司法参考
 
-### Standard Decision Flow
-1. **Griot** provides historical precedent and relevant context
-2. **Hoja** offers ethical guidance and scholarly opinion
-3. **Mansa** issues decree incorporating counsel
-4. **Mansa-jigi** coordinates execution across provinces
-5. **Farin** implements locally; **Dyula** adjusts trade operations
-6. **Griot** records the decision and its outcomes
+## Pattern 映射
+> **Orchestration pattern**: `centralized`
 
-### Trade Flow
-1. **Dyula** reports market intelligence and caravan status
-2. **Farin** collects trade taxes and reports revenue
-3. **Mansa-jigi** aggregates provincial reports
-4. **Mansa** allocates resources and sets trade policy
-5. **Griot** records trade patterns for future reference
-
-### Ethics Review Flow
-1. Issue is raised by any agent
-2. **Hoja** provides scholarly analysis against Islamic law and Manden Charter
-3. **Griot** supplies relevant historical precedent
-4. **Mansa** makes final judgment
-5. **Griot** records the ruling as new precedent
-
-### Succession Protocol
-1. **Griot** recites the succession customs and lineage
-2. **Hoja** validates the succession against ethical principles
-3. **Mansa-jigi** assumes authority as regent or successor
-4. **Farins** reaffirm loyalty to the new Mansa
-5. **Griot** records the transition
-
-### Communication Rules
-- The Griot has standing invitation to all deliberations
-- The Hoja must be consulted on any matter involving justice or ethics
-- Farins report to the Mansa-jigi for routine matters, directly to the Mansa for emergencies
-- Dyula intelligence is shared with both Farin and Mansa-jigi
-- All major decisions are recorded in the oral ledger maintained by the Griot
-
-## Identity Verification / 身份验证
-- The Mansa's authority derives from lineage and assembly confirmation
-- Farins hold office at the Mansa's pleasure
-- The Griot's authority is hereditary within the griot caste
-- The Hoja's authority comes from scholarly consensus and recognition
+## 历史参考
+- 《曼丁凯 Charter》（1222-1235，曼萨 Sundiata 时期口述汇编）
+- Ibn Battuta, *Rihla*（1354，记录马里见闻）
+- al-Umari, *Masalik al-Absar*（1340年代，埃及学者记录马里制度）
+- 《马里帝国史》（口述传统，格里奥代代相传）
+- Ibn Khaldun, *Muqaddimah*（1377，比较非洲与阿拉伯政治制度）

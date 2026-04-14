@@ -1,66 +1,54 @@
-# British Parliamentary System / 英国议会制 — 组织架构 / Organizational Structure
+# 英国议会制 / British Parliamentary System — 组织架构 / Organizational Structure
 
-## 制度简介 / System Overview
+## 制度简介 (System Overview)
+英国议会制定型于1689年《权利法案》之后，并在18世纪内阁政府形成、19世纪责任内阁成熟的过程中稳定下来，至今已连续运行三百余年。  
+The system's core significance is that the Crown reigns but does not govern, while the Prime Minister and Cabinet must retain the confidence of the House of Commons and act through Parliament.  
+普通法、成文法与宪制惯例共同构成其“不成文宪法”，并使这一模式在英联邦及其他议会民主国家中产生了广泛影响。
 
-The British Parliamentary System, rooted in the Glorious Revolution of 1688-89 and the resulting Bill of Rights, is the archetype of constitutional monarchy and parliamentary democracy. The uncodified constitution distributes power among the Crown (ceremonial head of state), Parliament (sovereign legislature of Commons and Lords), the Prime Minister and Cabinet (executive drawn from the legislature), and an independent judiciary upholding the common law. This system has evolved continuously over centuries through convention, statute, and precedent, influencing democratic development worldwide.
+## 组织架构图 (Organization Chart)
+> Crown / 君主  
+> └─ appoints PM / Royal Assent  
+>    └─ Prime Minister / 首相  
+>       └─ Cabinet / 内阁  
+>          ├─ Parliament / 议会  
+>          │  ├─ House of Commons / 下议院 (confidence)  
+>          │  └─ House of Lords / 上议院 (revision)  
+>          ├─ Departments / 各部  
+>          └─ Judiciary / 司法系统 (independent)
 
-英国议会制根植于1688-89年光荣革命及其产生的《权利法案》，是君主立宪和议会民主的典范。不成文宪法将权力分配给王室（礼仪性国家元首）、议会（由下议院和上议院组成的主权立法机构）、首相和内阁（从立法机构中产生的行政机构）以及维护普通法的独立司法机构。这一制度经过数百年的惯例、成文法和先例不断演进，影响了全球民主发展。
-
-## 组织架构图 / Org Chart
-
-```
-                    ┌───────────────┐
-                    │    Crown      │ ← ceremonial
-                    │  君主 (crown)  │   Royal Assent
-                    └───────┬───────┘
-                            │ appoints
-                    ┌───────┴───────┐
-                    │Prime Minister │
-                    │  首相 (pm)     │
-                    └───────┬───────┘
-                            │
-          ┌─────────────────┼─────────────────┐
-          ▼                 ▼                 ▼
-  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
-  │ Chancellor   │  │  Foreign     │  │    Home      │
-  │ of Exchequer │  │  Secretary   │  │  Secretary   │
-  │ 财政大臣      │  │  外交大臣     │  │  内政大臣     │
-  └──────────────┘  └──────────────┘  └──────────────┘
-
-  ┌──────────────────────────────────────────────────┐
-  │                  Parliament                       │
-  │  ┌───────────────┐        ┌───────────────┐      │
-  │  │House of       │ ←───→  │House of       │      │
-  │  │Commons 下议院  │ bills  │Lords 上议院    │      │
-  │  └───────────────┘        └───────────────┘      │
-  └──────────────────────────────────────────────────┘
-
-          ┌──────────────────┐
-          │ Lord Chancellor  │ ← judicial independence
-          │ 大法官 (chancellor)│
-          └──────────────────┘
-```
-
-## 角色映射表 / Role Mapping
-
-| 古代角色 / Historical Role | Agent ID | AI 职责 / AI Responsibility | 推荐模型 / Model |
+## 角色映射表 (Role Mapping Table)
+| 历史角色 | Agent ID | AI 职责 | 推荐模型 |
 |---|---|---|---|
-| Sovereign / 君主 | crown | Ceremonial head, constitutional continuity / 礼仪元首，宪政延续 | Claude Opus 4.6 / GPT-5.4 |
-| Prime Minister / 首相 | pm | Policy direction, executive leadership / 政策方向，行政领导 | Claude Opus 4.6 / GPT-5.4 |
-| House of Commons / 下议院 | commons | Legislation, government accountability / 立法，政府问责 | Claude Opus 4.6 / GPT-5.4 |
-| House of Lords / 上议院 | lords | Legislative revision, expert scrutiny / 立法修订，专业审查 | GPT-5.4 / DeepSeek R2 |
-| Lord Chancellor / 大法官 | chancellor | Judicial independence, rule of law / 司法独立，法治 | Claude Opus 4.6 / GPT-5.4 |
-| Chancellor of Exchequer / 财政大臣 | exchequer | Economic policy, budget / 经济政策，预算 | GPT-5.4 / Qwen3-Coder |
-| Foreign Secretary / 外交大臣 | foreign | Diplomacy, international relations / 外交，国际关系 | GPT-5.4 / Claude Sonnet 4.6 |
-| Home Secretary / 内政大臣 | home | Domestic security, immigration / 国内安全，移民 | GPT-5.4 / Qwen3-Coder |
+| 君主 / Sovereign | crown | coordinator | haiku |
+| 首相 / Prime Minister | prime-minister | management | opus |
+| 下议院 / House of Commons | house-of-commons | review | opus |
+| 上议院 / House of Lords | house-of-lords | review | sonnet |
+| 大法官 / Lord Chancellor | lord-chancellor | legal | opus |
+| 财政大臣 / Chancellor of the Exchequer | exchequer | data | sonnet |
+| 外交大臣 / Foreign Secretary | foreign-secretary | research | opus |
+| 内政大臣 / Home Secretary | home-secretary | management | sonnet |
 
-## 协作流程 / Workflow
+## 决策流程 (Decision Flow)
+1. `crown` 按惯例任命最可能获得下议院信任的 `prime-minister`。  
+2. `prime-minister` 协调 `exchequer`、`foreign-secretary` 与 `home-secretary`，把施政纲领转成预算、外交和内政方案。  
+3. `house-of-commons` 进行辩论、修正与表决；若失去 confidence 或 supply，政府必须重组或辞职。  
+4. `house-of-lords` 对法案进行二院审查，提出修正并在两院之间往返协商。  
+5. `lord-chancellor` 检查法案与普通法、成文法及宪制惯例的兼容性。  
+6. `crown` 给予 Royal Assent，之后相关部门按责任内阁体系执行。
 
-1. **Government Policy** — The Prime Minister and Cabinet (Exchequer, Foreign, Home) formulate policy.
-2. **Bill Introduction** — The government introduces bills in the House of Commons (or occasionally Lords).
-3. **Commons Debate** — The House of Commons debates, amends, and votes. Question Time holds the government accountable.
-4. **Lords Scrutiny** — The House of Lords reviews, revises, and returns bills with amendments. "Ping-pong" between chambers until agreement.
-5. **Legal Review** — The Lord Chancellor ensures compliance with the rule of law and judicial precedent.
-6. **Royal Assent** — The Crown grants Royal Assent (a formality since 1708), and the bill becomes an Act of Parliament.
-7. **Executive Implementation** — The relevant Secretary of State implements the new law through their department.
-8. **Parliamentary Oversight** — Select committees, Question Time, and debates provide ongoing scrutiny of government actions.
+## 制度特点 (Characteristics)
+- 议会主权：成文法一经议会通过即成为最高政治法源，行政命令只能在授权范围内运作。  
+- 责任内阁：政府成员从议会产生，并必须持续维持下议院信任；信任案、供给案与预算案直接决定政府存续。  
+- 两院不对称：下议院掌握财政与最终政治授权，上议院主要负责修订、延迟与专家审查，其否决权受 Parliament Acts 限制。  
+- 君主礼仪化：任命、御准、解散等权力以王室名义存在，但实际按宪制惯例由大臣建议驱动，形成 “Crown in Parliament”。  
+- 程序化问责：Question Time、select committees、反对党权利与党鞭纪律把监督、修法与政党竞争嵌入日常流程。  
+- 不成文宪法：普通法判例、议会法令与宪制惯例共同定义边界，规则通过 precedent 持续演化。  
+
+## Pattern 映射
+> **Orchestration pattern**: `checks-and-balances`
+
+## 历史参考 (Historical Sources)
+- 《权利法案》Bill of Rights 1689  
+- 《王位继承法》Act of Settlement 1701  
+- 《1911年国会法》与《1949年国会法》Parliament Acts  
+- UK Cabinet Office, Cabinet Manual

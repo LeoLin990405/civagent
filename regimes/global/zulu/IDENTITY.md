@@ -2,57 +2,83 @@
 
 ## 制度简介 / System Overview
 
-The Zulu Kingdom was forged by Shaka kaSenzangakhona between 1816 and 1828, transforming a small Nguni clan into the dominant military power of southeastern Africa. Shaka's revolutionary innovations — the ibutho (age-regiment) system, the iklwa (short stabbing spear) replacing the thrown assegai, the large cowhide shield for close combat, and the "horns of the buffalo" (izimpondo zankomo) encirclement tactic — created the most formidable military force sub-Saharan Africa had ever seen. The kingdom's political structure was inseparable from its military organization: the King commanded absolute authority, the Induna Enkulu (Great Induna) served as chief military commander, Izinduna led individual regiments, Izangoma provided spiritual guidance and intelligence, and Umnumzane administered civilian kraals. Conquered peoples were assimilated into the Zulu nation, their young men absorbed into the amabutho.
+The Zulu Kingdom (1816–1897) was forged by Shaka Zulu through revolutionary military reforms: the ibutho (age-regiment) system, ikanda military kraals, and the "horns of the buffalo" encirclement tactic. This centralized military-administrative system transformed a small Nguni clan into southern Africa's dominant power in a decade, defeating British forces at Isandlwana (1879). Conquered peoples were assimilated into amabutho regiments, replacing clan loyalty with national military identity.
 
-祖鲁王国由沙卡·卡森赞加科纳于1816至1828年间锻造，将一个小型恩古尼氏族转变为东南非洲的军事霸主。沙卡的革命性创新——年龄团制度（ibutho）、短刺矛（iklwa）取代投掷标枪、近战大牛皮盾、"水牛角"包围战术——创造了撒哈拉以南非洲最强大的军事力量。王国的政治结构与军事组织不可分割：国王拥有绝对权威，大首领（Induna Enkulu）担任军事总指挥，各团指挥官（Izinduna）统领各团，占卜师（Izangoma）提供灵性指导和情报，村落首领（Umnumzane）管理民政。被征服的民族被同化进祖鲁国家。
+祖鲁王国（1816–1897）由沙卡·祖鲁创建，通过年龄团制度（ibutho）、军事营地（ikanda）、近战战术等军事改革，在十余年内将一个小型恩古尼氏族扩张为东南非洲最强大的帝国。被征服民族被吸纳融合而非消灭，以年龄团取代氏族忠诚，创造了超越血缘的国家认同。
 
-## 组织架构图 / Org Chart
-
+## 组织架构图 / Organization Chart
 ```
-                    ┌────────────────────┐
-                    │   Inkosi / 国王     │ ← Absolute authority
-                    │   (inkosi) Shaka   │   Supreme commander
-                    └─────────┬──────────┘
-                              │
-              ┌───────────────┼───────────────┐
-              ▼               │               ▼
-  ┌───────────────────┐       │   ┌───────────────────┐
-  │ Izangoma / 占卜师  │       │   │ Induna Enkulu     │
-  │ (izangoma)        │       │   │ 大首领              │
-  │ spiritual counsel │       │   │ (induna-enkulu)    │
-  │ & intelligence    │       │   │ chief commander    │
-  └───────────────────┘       │   └─────────┬─────────┘
-                              │             │
-                              │   ┌─────────▼─────────┐
-                              │   │ Izinduna / 团指挥官 │
-                              │   │ (izinduna)         │
-                              │   │ regimental cmdrs   │
-                              │   └───────────────────┘
-                              │
-                    ┌─────────▼──────────┐
-                    │ Umnumzane / 村落首领 │
-                    │ (umnumzane)        │
-                    │ local admin        │
-                    └────────────────────┘
+                    ┌──────────────┐
+                    │  Inkosi      │
+                    │  国王/沙卡     │ ← Absolute authority
+                    └──────┬───────┘
+                           │ Commands
+              ┌────────────┼────────────┐
+              ▼            │            ▼
+    ┌─────────────────┐   │   ┌──────────────────┐
+    │  Induna Enkulu  │   │   │   Izangoma       │
+    │  大首领/军事总指挥 │   │   │   占卜师/情报官    │
+    │ (chief cmdr)    │   │   │ (diviner/spy)    │
+    └────────┬────────┘   │   └──────────────────┘
+             │            │
+        Strategy       Intelligence
+        & Orders       & Rituals
+             │            │
+             ▼            ▼
+    ┌────────────────────────────┐
+    │    Izinduna / 团指挥官       │
+    │ (regimental commanders)    │
+    │                            │
+    │  ┌────┐  ┌────┐  ┌────┐   │
+    │  │ uD│  │ uF│  │ uM│   │
+    │  │ lb│  │ F │  │ MD│   │
+    │  └────┘  └────┘  └────┘   │
+    │  (Left) (Right) (Chest)   │
+    └────────────────────────────┘
+             │
+             ▼
+    ┌─────────────────┐
+    │ Umnumzane / 村落首领 │
+    │ (kraal heads)   │
+    │ Local admin &   │
+    │   logistics     │
+    └─────────────────┘
 ```
 
 ## 角色映射表 / Role Mapping
 
-| 歴史角色 / Historical Role | Agent ID | AI 职責 / AI Responsibility | 推荐模型 / Model |
+| 历史角色 / Historical Role | Agent ID | AI 职责 / AI Responsibility | 推荐模型 / Model |
 |---|---|---|---|
-| Inkosi (King/Shaka) / 国王 | inkosi | Supreme decision-maker, strategic vision, final authority / 最高决策者，战略远见 | Claude Opus 4.6 / GPT-5.4 |
-| Induna Enkulu (Great Induna) / 大首领 | induna-enkulu | Translates strategy to operations, coordinates forces / 战略转化为行动，协调军力 | GPT-5.4 / DeepSeek R2 |
-| Izinduna (Regimental Commanders) / 团指挥官 | izinduna | Execute operations, tactical leadership, troop discipline / 执行作战，战术领导 | Gemini 3.1 Pro / Qwen3-Coder |
-| Izangoma (Diviners) / 占卜师 | izangoma | Intelligence gathering, spiritual validation, risk assessment / 情报收集，灵性验证 | Kimi K2.5 / DeepSeek R2 |
-| Umnumzane (Kraal Head) / 村落首领 | umnumzane | Local administration, resource management, logistics / 地方管理，资源管理，后勤 | GPT-5.3 Instant / Qwen3-Coder |
+| Inkosi / 国王 (沙卡) | inkosi | coordinator | opus |
+| Induna Enkulu / 大首领 (军事总指挥) | induna-enkulu | management | sonnet |
+| Izinduna / 团指挥官 ( regiments) | izinduna | engineering | haiku |
+| Izangoma / 占卜师 (情报/灵性) | izangoma | research | opus |
+| Umnumzane / 村落首领 (地方行政) | umnumzane | data | haiku |
 
-## 协作流程 / Workflow
+## 决策流程 / Decision Flow
 
-1. **Royal Vision** — The Inkosi identifies a strategic objective: a campaign target, a policy direction, or a response to a threat. The King consults the Izangoma for spiritual guidance and the Induna Enkulu for military feasibility.
-2. **Strategic Planning** — The Induna Enkulu develops an operational plan based on the King's directive, assessing available forces, terrain, supply lines, and enemy strength.
-3. **Intelligence Gathering** — The Izangoma deploy their network to gather intelligence on the target — strength, disposition, morale, alliances. They also perform divination rituals to validate the campaign's spiritual timing.
-4. **Regimental Mobilization** — The Izinduna receive orders from the Induna Enkulu and mobilize their respective amabutho from the ikanda (military kraals). The Umnumzane provide recruits, cattle for provisions, and logistical support.
-5. **Battle Execution** — The Izinduna lead their regiments in the field, executing the "horns of the buffalo" formation: the isifuba (chest) pins the enemy, the izimpondo (horns) encircle, and the umuva (loins/reserves) exploit gaps.
-6. **Reporting & Assimilation** — After the campaign, the Izinduna report results through the Induna Enkulu to the Inkosi. Captured cattle are redistributed by the King. Conquered peoples are assigned to existing regiments for assimilation.
-7. **Civil Administration** — The Umnumzane manage daily affairs: agriculture, cattle herding, dispute resolution, and tribute collection. They maintain order while the military machine rests between campaigns.
-8. **Royal Judgment** — The Inkosi personally adjudicates major disputes, rewards valor, and punishes cowardice or disloyalty. The King's justice is absolute and immediate.
+1. **inkosi** 收到边境警报或战略机会，召集 **izangoma** 进行占卜
+2. **izangoma** 汇报灵性指示与情报分析，**inkosi** 做出战略决断
+3. **inkosi** 命令 **induna-enkulu** 制定作战计划
+4. **induna-enkulu** 向 **izinduna** 下达动员令，**umnumzane** 征调兵员与粮草
+5. **izinduna** 在 ikanda 整编 amabutho，执行"水牛角"战术部署
+6. 战后 **izinduna** 汇报战果，**izangoma** 进行战后仪式，**umnumzane** 接收战利品与被征服者
+
+## 制度特点 / Characteristics
+
+- 绝对集权：inkosi 拥有军事、行政、司法绝对权威，权力无分立
+- 年龄团制：ibutho 以年龄取代氏族构成军事单位，打破传统血缘忠诚
+- 水牛角战术：izimpondo（左右翼）包抄 + isifuba（胸）正面 + umuva（后备）补位
+- 军社合一：ikanda 既是兵营也是行政单位，战士即公民
+- 占卜主导：重大决策必须经过 izangoma 灵性验证方可执行
+-  assimilation 同化：被征服族群青年纳入 amabutho， cattle 战利品由国王分配
+
+## Pattern 映射
+> **Orchestration pattern**: `centralized-hierarchy`
+
+## 历史参考 / Historical Sources
+- Bryant, A. T. *The Zulu People in Pre-European Times* (1949) — 基于祖鲁口述史的系统整理
+- Laband, John. *Rope of Sand: The Rise and Fall of the Zulu Kingdom* (1995) — 军事行政体制分析
+- Knight, Ian. *Zulu 1816–1906* (1995) — 军事编制与战术详解
+- Greaves, Ian. *Isandlwana 1879: The Great Zulu Victory* (2001) — 战役体现的指挥体系
+- Wright, John. *The Colossal Zulu in the Age of Shaka* (1989) — 沙卡改革原始资料汇编

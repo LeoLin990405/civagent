@@ -22,3 +22,8 @@ Thumbs.db
 frontend/
 gui/dist/
 SECURITY-AUDIT.md
+
+# CivAgent v5 rewrite artifacts
+regimes/**/*.rejected
+regimes/**/*.v4.bak
+regimes/**/*.new

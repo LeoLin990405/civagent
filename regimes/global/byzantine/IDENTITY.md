@@ -9,49 +9,75 @@ The Byzantine Empire (Eastern Roman Empire), centered on Constantinople, continu
 ## 组织架构图 / Org Chart
 
 ```
-                    ┌──────────────────────────┐
-                    │    巴西琉斯 (Basileus)     │
-                    │  上帝在人间的代理人          │
-                    │  God's Vicegerent on Earth │
-                    └─────────────┬────────────┘
-                                  │ 圣旨 / Imperial Edict
-                                  ▼
-                 ┌────────────────────────────────┐
-                 │       OpenClaw Gateway          │
-                 └──┬───┬───┬───┬───┬───┬────────┘
-                    │   │   │   │   │   │
-       ┌────────────┘   │   │   │   │   └────────────┐
-       ▼            ▼   ▼   ▼   ▼   ▼                ▼
- ┌──────────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────┐ ┌──────────┐
- │外交大臣  │ │财务大臣│ │军事统帅│ │城市长官│ │大牧首 │ │ 文书长   │
- │Logothete │ │Logoth.│ │Domest.│ │Eparch │ │Patri.│ │ Proto.   │
- │ Dromos   │ │Genikon│ │Schools│ │      │ │arch  │ │asecretis │
- │ 外交情报 │ │ 税收财政│ │ 军事防御│ │ 城市治理│ │ 宗教精神│ │ 文书记录  │
- └──────────┘ └──────┘ └──────┘ └──────┘ └──────┘ └──────────┘
+                    ┌──────────────────────────────┐
+                    │     巴西琉斯 (Basileus)        │
+                    │  上帝在人间的代理人 / Theokrator │
+                    └───────────────┬──────────────┘
+                                    │ 圣旨 / Imperial Edict
+                                    │
+              ┌─────────────────────┼─────────────────────┐
+              ▼                     ▼                     ▼
+       ┌─────────────┐      ┌─────────────┐      ┌─────────────┐
+       │  大牧首      │      │  外交大臣    │      │  文书长      │
+       │  Patriarch   │      │  Logothete   │      │  Protoasec.  │
+       │  宗教/伦理   │      │  Dromos      │      │  文书/档案   │
+       └──────┬──────┘      └──────┬──────┘      └─────────────┘
+              │                    │
+              │            ┌───────┴───────┐
+              │            ▼               ▼
+              │     ┌─────────────┐ ┌─────────────┐
+              │     │  财务大臣    │ │  军事统帅    │
+              │     │  Logothete  │ │  Domestic   │
+              │     │  Genikon    │ │  of Schools │
+              │     │  税收/财政   │ │  军事/防御   │
+              │     └─────────────┘ └─────────────┘
+              │
+              ▼
+       ┌─────────────┐
+       │  城市长官    │
+       │  Eparch of   │
+       │Constantinople│
+       │  城市/市场   │
+       └─────────────┘
 ```
 
 ## 角色映射表 / Role Mapping
 
 | 古代角色 / Historical Role | Agent ID | AI 职责 / AI Responsibility | 推荐模型 / Model |
 |---|---|---|---|
-| 巴西琉斯·皇帝 / Basileus — Emperor | `basileus` | 总决策：接收请求、发布圣旨、协调全局 | 强力模型 |
-| 外交大臣 / Logothete of the Dromos | `logothete_d` | 外交沟通：对外联络、情报分析、策略谈判 | 强力模型 |
-| 财务大臣 / Logothete of the Genikon | `logothete_g` | 财务运营：税收管理、预算分析、经济政策 | 强力模型 |
-| 军事统帅 / Domestic of the Schools | `domestikos` | 安全防御：系统安全、威胁评估、防御策略 | 强力模型 |
-| 城市长官 / Eparch of Constantinople | `eparch` | 运维管理：日常运营、市场监管、公共服务 | 快速模型 |
-| 大牧首 / Ecumenical Patriarch | `patriarch` | 伦理审查：质量标准、道德审核、价值对齐 | 强力模型 |
-| 文书长 / Protoasecretis | `proto` | 文档管理：记录保存、文书起草、档案维护 | 快速模型 |
+| 巴西琉斯·皇帝 / Basileus — Emperor | `basileus` | coordinator — 总决策：接收请求、发布圣旨、协调全局 | opus |
+| 大牧首 / Ecumenical Patriarch | `patriarch` | review — 伦理审查：质量标准、道德审核、价值对齐 | opus |
+| 外交大臣 / Logothete of the Dromos | `logothete-dromos` | research — 外交沟通：对外联络、情报分析、策略谈判 | sonnet |
+| 财务大臣 / Logothete of the Genikon | `logothete-genikon` | data — 财务运营：税收管理、预算分析、经济政策 | sonnet |
+| 军事统帅 / Domestic of the Schools | `domestikos` | devops — 安全防御：系统安全、威胁评估、防御策略 | sonnet |
+| 城市长官 / Eparch of Constantinople | `eparch` | management — 运维管理：日常运营、市场监管、公共服务 | haiku |
+| 文书长 / Protoasecretis | `protoasecretis` | content — 文档管理：记录保存、文书起草、档案维护 | haiku |
 
-## 协作流程 / Workflow
+## 决策流程 / Decision Flow
 
-1. **陛下降旨** → 用户通过 Discord / Web UI 发送指令
-2. **巴西琉斯分派** → 主 Agent 分析任务并分配给相应官员
-3. **各司执行** → 对应 Agent 接收任务并按拜占庭礼仪执行
-4. **跨部协作** → 通过 `sessions_send` 互相沟通，外交事务需大牧首伦理审查
-5. **奏折上报** → 完成后以正式文书格式向巴西琉斯汇报
+1. **basileus** 接到请愿或边境急报，作出初步判断
+2. **basileus** 将事务分派至对口大臣，涉外事务同时知会 **patriarch** 进行伦理审查
+3. **logothete-dromos** 情报分析并起草外交策略，**logothete-genikon** 评估财政影响，**domestikos** 评估军事风险——三者并行
+4. **patriarch** 审核方案是否符合正教教义与帝国价值观（可驳回）
+5. **basileus** 汇总各方意见，签发最终诏令
+6. **eparch** 与 **protoasecretis** 分别执行城市层面落地与文书归档
 
-## 模型分层策略 / Model Tier Strategy
+## 制度特点 / Characteristics
 
-- **强力模型**（巴西琉斯、外交大臣、财务大臣、军事统帅、大牧首）：处理决策、外交、安全等重任务
-- **快速模型**（城市长官、文书长）：处理日常运维、文书等轻任务
-- 混搭可节省约 3 倍成本
+- **神权合一**：皇帝兼具世俗与宗教最高权威，大牧首名义上独立但实际受制于皇权
+- **军区制（Theme）**：地方军政合一，将领兼管辖区防务与行政，提高边疆响应速度
+- **外交优先于战争**：以贿赂、联姻、离间等手段分化敌人，外交开支常高于军费
+- **宦官参政**：宦官可担任高级官职甚至军事统帅，形成独特的忠诚通道
+- **奢华威慑**：通过仪式、建筑与外交展演制造心理优势，弥补人口与资源劣势
+
+## Pattern 映射
+
+> **Orchestration pattern**: `theocratic`
+
+## 历史参考 / Historical Sources
+
+- 《秘史》(*De Administrando Imperio*)，君士坦丁七世，约950年
+- 《拜占庭法律大全》(*Corpus Juris Civilis*)，查士丁尼一世，534年
+- 《战记》(*Strategikon*)，莫里斯皇帝，约600年
+- John Julius Norwich, *Byzantium: The Early Centuries* (1988)
+- Cyril Mango, *The Oxford History of Byzantium* (2002)
