@@ -118,8 +118,10 @@ export function convertRegime(regimeDir) {
     } catch { /* ignore parse errors in templates */ }
   }
 
-  // Build CC agents from whichever source has data
-  const sourceAgents = oclawAgents.length > 0 ? oclawAgents : tableAgents;
+  // v5.1: IDENTITY.md canonical role mapping is the source of truth.
+  // openclaw.json.template remains only as a legacy fallback for regimes that
+  // haven't been rewritten yet (should be zero after the L-stage PR).
+  const sourceAgents = tableAgents.length > 0 ? tableAgents : oclawAgents;
   const ccAgents = {};
 
   for (const agent of sourceAgents) {
