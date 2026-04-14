@@ -11,19 +11,21 @@
     { "id": "cn-kimi",    "type": "cn-cc",  "desc": "Kimi — 128K long context",              "cmd": "cc-kimi" },
     { "id": "cn-glm",     "type": "cn-cc",  "desc": "GLM — reasoning / Chinese NLU",         "cmd": "cc-glm" },
     { "id": "cn-stepfun", "type": "cn-cc",  "desc": "StepFun — math / logic",                "cmd": "cc-stepfun" },
-    { "id": "cn-minimax", "type": "cn-cc",  "desc": "MiniMax — high-speed inference",        "cmd": "cc-minimax" }
+    { "id": "cn-minimax", "type": "cn-cc",  "desc": "MiniMax — high-speed inference",        "cmd": "cc-minimax" },
+    { "id": "cn-mimo",    "type": "cn-cc",  "desc": "MiMo (Xiaomi) — 1M ctx, flagship reasoning", "cmd": "cc-mimo" }
   ],
   "role_model_map": {
-    "coordinator":  { "model": "sonnet",  "note": "Fast routing, low cost" },
-    "engineering":  { "model": "opus",    "note": "Best code quality", "alt": "codex" },
-    "review":       { "model": "opus",    "note": "Deep analysis",    "alt": "codex:adversarial-review" },
-    "research":     { "model": "opus",    "note": "Deep reasoning",   "alt": "gemini" },
-    "data":         { "model": "sonnet",  "note": "Data analysis",    "alt": "cn-qwen" },
-    "devops":       { "model": "sonnet",  "note": "Shell execution" },
-    "content":      { "model": "sonnet",  "note": "Writing tasks",    "alt": "cn-doubao" },
-    "legal":        { "model": "sonnet",  "note": "Compliance checks" },
-    "management":   { "model": "sonnet",  "note": "Project tracking" },
-    "long_context": { "model": "sonnet",  "note": "Long docs",        "alt": "cn-kimi" },
-    "math":         { "model": "sonnet",  "note": "Math/logic",       "alt": "cn-stepfun" }
+    "coordinator":        { "model": "sonnet",  "note": "Fast routing, low cost" },
+    "engineering":        { "model": "opus",    "note": "Best code quality", "alt": "codex" },
+    "review":             { "model": "opus",    "note": "Deep analysis",    "alt": "codex:adversarial-review" },
+    "research":           { "model": "opus",    "note": "Deep reasoning",   "alt": "gemini" },
+    "data":               { "model": "sonnet",  "note": "Data analysis",    "alt": "cn-qwen" },
+    "devops":             { "model": "sonnet",  "note": "Shell execution" },
+    "content":            { "model": "sonnet",  "note": "Writing tasks",    "alt": "cn-doubao" },
+    "legal":              { "model": "sonnet",  "note": "Compliance checks" },
+    "management":         { "model": "sonnet",  "note": "Project tracking" },
+    "long_context":       { "model": "sonnet",  "note": "50K–200K tokens",  "alt": "cn-kimi" },
+    "ultra_long_context": { "model": "sonnet",  "note": ">200K tokens, cross-repo analysis", "alt": "cn-mimo" },
+    "math":               { "model": "sonnet",  "note": "Math/logic",       "alt": "cn-stepfun" }
   }
 }
