@@ -73,6 +73,11 @@ civagent tournament --civs a,b,c,d  # 启动 Agent Team 对局
 v5 是 **opt-in**（`--v5` flag）。不加 flag 时 v4 行为完全保留。
 regimes/ 目录结构不变，仅新增 `regimes/<civ>/skills/` 子目录（可选）。
 
+## 已知设计局限（来自 Kimi 审查）
+1. **制度复杂性压缩**：把一个朝代/政体映射成单个 agent 的 system prompt 天然有损。唐朝三省六部的制度张力在历史上是多人、多部门、多时段的，`SOUL.md` 只能近似。MVP 接受这个简化，未来可用 multi-agent pattern（每个部门一个子 agent）缓解。
+2. **时间维度缺失**：`regimes/` 把古代王朝与现代民族国家并列（如 `china/tang` 与 `usa/federal`），没有年代校验。跨时代类比是特性，不是 bug，但需在论文/README 明示。
+3. **首次 seed 固化**：v5.1 已修（按 mtime 重 seed），但仅覆盖 SOUL/IDENTITY 的 md 文本更新，不覆盖 regime 的哲学层重构——那种级别应该重命名为 `tang-v2`。
+
 ## 路线图
 - [x] 设计文档（本文件）
 - [ ] `engine/v5/civ-memory.mjs`

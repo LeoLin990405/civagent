@@ -21,11 +21,18 @@ export function ensureCivHome(regime, regimeDir) {
   const skillsDir = path.join(claudeDir, "skills");
   fs.mkdirSync(skillsDir, { recursive: true });
 
-  // Seed CLAUDE.md at ~/.claude/CLAUDE.md (where CC loads user memory from)
+  // Seed CLAUDE.md at ~/.claude/CLAUDE.md (where CC loads user memory from).
+  // Re-seed if source SOUL.md / IDENTITY.md is newer than the cached CLAUDE.md
+  // so edits to regime identity propagate into future matches.
   const claudeMd = path.join(claudeDir, "CLAUDE.md");
-  if (!fs.existsSync(claudeMd)) {
-    const soul = path.join(regimeDir, "SOUL.md");
-    const identity = path.join(regimeDir, "IDENTITY.md");
+  const soul = path.join(regimeDir, "SOUL.md");
+  const identity = path.join(regimeDir, "IDENTITY.md");
+  const cacheMtime = fs.existsSync(claudeMd) ? fs.statSync(claudeMd).mtimeMs : 0;
+  const sourceMtime = Math.max(
+    fs.existsSync(soul) ? fs.statSync(soul).mtimeMs : 0,
+    fs.existsSync(identity) ? fs.statSync(identity).mtimeMs : 0,
+  );
+  if (cacheMtime < sourceMtime) {
     const parts = [`# ${regime} — Civilization Memory\n`];
     for (const f of [identity, soul]) {
       if (fs.existsSync(f)) parts.push(fs.readFileSync(f, "utf8"));
