@@ -133,8 +133,15 @@ cmd_switch() {
 cmd_run() {
   [[ -f "$ACTIVE_FILE" ]] || { echo "No active regime. Run: civagent switch <regime>"; exit 1; }
   local regime=$(cat "$ACTIVE_FILE")
-  local agents_json=$(cat "$STATE_DIR/agents.json")
 
+  # v5 opt-in: isolated civ HOME + skill sedimentation
+  if [[ "${1:-}" == "--v5" ]]; then
+    shift
+    echo -e "${CYAN}[civagent v5]${NC} Learning-loop mode for ${BOLD}$regime${NC}"
+    exec node "$ENGINE_DIR/v5/run-v5.mjs" "$regime" "$@"
+  fi
+
+  local agents_json=$(cat "$STATE_DIR/agents.json")
   echo -e "${CYAN}[civagent]${NC} Launching CC with ${BOLD}$regime${NC} regime..."
 
   # Build claude command
@@ -241,16 +248,46 @@ cmd_setup() {
   fi
 }
 
+# ── v5 inspection ────────────────────────────────────────────────────────────
+
+cmd_skills() {
+  local regime="${1:-}"
+  [[ -n "$regime" ]] || { echo "Usage: civagent skills <region/regime-id>"; exit 1; }
+  local dir="$REGIMES_DIR/$regime/skills"
+  if [[ ! -d "$dir" ]]; then
+    echo "No learned skills yet for $regime."
+    return
+  fi
+  echo -e "${BOLD}Learned skills — $regime${NC}"
+  for f in "$dir"/*.md; do
+    [[ -f "$f" ]] || continue
+    echo -e "  ${GREEN}•${NC} $(basename "$f")"
+    python3 -c "import re,sys;t=open(sys.argv[1]).read();m=re.search(r'description:\s*(.+)',t);print('    '+m.group(1)) if m else None" "$f" 2>/dev/null
+  done
+}
+
+cmd_match_log() {
+  local dir="$STATE_DIR/transcripts"
+  [[ -d "$dir" ]] || { echo "No matches yet."; return; }
+  echo -e "${BOLD}Match history${NC}"
+  ls -1t "$dir" | head -20 | while read f; do
+    local size=$(wc -c < "$dir/$f")
+    echo "  $f  (${size}B)"
+  done
+}
+
 # ── main ─────────────────────────────────────────────────────────────────────
 
 case "${1:-}" in
-  list)    cmd_list ;;
-  info)    cmd_info "${2:?Usage: civagent info <regime>}" ;;
-  switch)  cmd_switch "${2:?Usage: civagent switch <regime>}" ;;
-  run)     shift; cmd_run "$@" ;;
-  agents)  cmd_agents ;;
-  modes)   cmd_modes ;;
-  setup)   cmd_setup ;;
+  list)      cmd_list ;;
+  info)      cmd_info "${2:?Usage: civagent info <regime>}" ;;
+  switch)    cmd_switch "${2:?Usage: civagent switch <regime>}" ;;
+  run)       shift; cmd_run "$@" ;;
+  agents)    cmd_agents ;;
+  modes)     cmd_modes ;;
+  setup)     cmd_setup ;;
+  skills)    cmd_skills "${2:-}" ;;
+  match-log) cmd_match_log ;;
   help|--help|-h|"") usage ;;
-  *)       echo "Unknown command: $1"; usage; exit 1 ;;
+  *)         echo "Unknown command: $1"; usage; exit 1 ;;
 esac
