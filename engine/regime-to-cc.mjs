@@ -10,6 +10,18 @@
 import fs from "node:fs";
 import path from "node:path";
 
+// Historical metadata used non-canonical pattern names. Normalize to the 6
+// mode files under engine/modes/ so template references resolve correctly.
+const PATTERN_ALIASES = {
+  "centralized-hierarchy": "centralized",
+  "democratic-council": "democratic",
+  "federated-autonomy": "federation",
+  "dual-power": "dual-track",
+};
+function normalizePattern(p) {
+  return PATTERN_ALIASES[p] || p || "centralized";
+}
+
 const ROLE_MODEL_MAP = {
   coordinator:  { model: "sonnet",  role: "coordinator" },
   engineering:  { model: "opus",    role: "engineering" },
@@ -166,7 +178,7 @@ function buildClaudeMd(metadata, soul, identity) {
   const regimeEn = metadata.name?.en || metadata.id;
   const era = metadata.era?.zh || "";
   const system = metadata.system?.zh || "";
-  const pattern = metadata.orchestrationPattern || "centralized";
+  const pattern = normalizePattern(metadata.orchestrationPattern);
 
   return `# CivAgent v4 — ${regime} (${regimeEn})
 

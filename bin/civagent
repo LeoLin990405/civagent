@@ -18,21 +18,27 @@ CYAN='\033[0;36m'; BOLD='\033[1m'; NC='\033[0m'
 
 usage() {
   cat <<EOF
-${BOLD}CivAgent v4${NC} — 5000 Years of Governance Wisdom × AI Multi-Agent Orchestration
+${BOLD}CivAgent v5${NC} — 5000 Years of Governance × AI Multi-Agent × Learning Loop
 
 ${BOLD}Usage:${NC}
-  civagent list                    List all 57 regimes
-  civagent info <regime>           Show regime details
-  civagent switch <regime>         Set active regime
-  civagent run [prompt]            Launch CC with active regime's agents
-  civagent agents                  Show generated CC agents for active regime
-  civagent modes                   List 6 orchestration modes
-  civagent setup                   Check tool availability (CC, Codex, Gemini, cn-cc)
+  civagent list                         List all 57 regimes
+  civagent info <regime>                Show regime details
+  civagent switch <regime>              Set active regime
+  civagent run [prompt]                 Launch CC with active regime's agents (v4 mode)
+  civagent run --v5 "task"              Launch v5 with isolated HOME + skill sedimentation
+  civagent skills <regime>              List learned skills for a regime
+  civagent match-log                    Recent match transcripts
+  civagent tournament --civs a,b,c,d "task"
+                                        Parallel match across civilizations + judge ranking
+  civagent agents                       Show generated CC agents for active regime
+  civagent modes                        List 6 orchestration modes
+  civagent setup                        Check tool availability (CC, Codex, Gemini, cn-cc)
 
 ${BOLD}Examples:${NC}
   civagent switch china/tang
-  civagent run "重构这个模块的代码"
-  civagent run --mode democratic "设计新的 API 接口"
+  civagent run --v5 "重构这个模块的代码"
+  civagent tournament --civs china/tang,china/qin,global/athens,global/roman-republic \\
+                     "how do we handle a famine on the eastern frontier?"
 
 ${BOLD}Regimes:${NC}
   20 Chinese dynasties: xia, shang, zhou, qin, han, tang, song, ming, qing, ...
@@ -276,6 +282,22 @@ cmd_match_log() {
   done
 }
 
+cmd_tournament() {
+  local civs=""
+  local rest=()
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --civs) civs="$2"; shift 2 ;;
+      *) rest+=("$1"); shift ;;
+    esac
+  done
+  if [[ -z "$civs" || ${#rest[@]} -eq 0 ]]; then
+    echo "Usage: civagent tournament --civs a/x,b/y,c/z \"task prompt\""
+    exit 1
+  fi
+  exec node "$ENGINE_DIR/v5/tournament.mjs" --civs "$civs" "${rest[@]}"
+}
+
 # ── main ─────────────────────────────────────────────────────────────────────
 
 case "${1:-}" in
@@ -288,6 +310,7 @@ case "${1:-}" in
   setup)     cmd_setup ;;
   skills)    cmd_skills "${2:-}" ;;
   match-log) cmd_match_log ;;
+  tournament) shift; cmd_tournament "$@" ;;
   help|--help|-h|"") usage ;;
   *)         echo "Unknown command: $1"; usage; exit 1 ;;
 esac
