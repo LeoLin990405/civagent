@@ -87,8 +87,11 @@ export async function sediment({ matchId, regime, regimeDir, transcriptPath, exi
   if (extracted.includes("NO_PATTERN")) return { skipped: "no pattern" };
 
   const auditVerdict = runExternal("gemini", ["-p", `${AUDIT_PROMPT}\n\n${extracted}`]);
-  if (!auditVerdict.startsWith("APPROVE")) {
-    return { rejected: auditVerdict };
+  // Models often add reasoning before the verdict, so check the final decision
+  // on the last non-empty line rather than a strict startsWith.
+  const finalLine = auditVerdict.split("\n").map(l => l.trim()).filter(Boolean).pop() || "";
+  if (!/^APPROVE\b/i.test(finalLine)) {
+    return { rejected: finalLine.slice(0, 200) };
   }
 
   // Injection guard: reject skills that try to redirect the next session.
