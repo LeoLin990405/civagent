@@ -4,18 +4,38 @@
   <img src="./images/civagent-v4-banner.svg" alt="CivAgent v4 Banner" width="100%" />
 </p>
 
-# 🎮 CivAgent v4 — 选择你的文明，指挥你的 AI 团队
+# 🎮 CivAgent v5 — 选择你的文明，指挥你的 AI 团队，让文明自我学习
 
-### 人类 5000 年治国智慧 × AI 多 Agent 协作 | 57 种政体 · 6 种编排模式 · 10 个模型 · Claude Code 驱动
+### 人类 5000 年治国智慧 × AI 多 Agent 协作 × 跨局技能沉淀 | 57 种政体 · 6 种编排模式 · 10 个模型 · Claude Code 驱动
 
 <p align="center">
-  <img src="https://img.shields.io/badge/文明-57种-gold?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/中华朝代-20个-red?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/世界帝国-37个-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/版本-v5.0.0-gold?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/文明-57种-red?style=for-the-badge" />
   <img src="https://img.shields.io/badge/编排模式-6种-purple?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Runtime-Claude_Code-blueviolet?style=for-the-badge" />
   <img src="https://img.shields.io/badge/模型-10个-orange?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/学习闭环-Hermes_inspired-blueviolet?style=for-the-badge" />
 </p>
+
+<div align="center">
+
+### ⚡ v5 新能力：学习闭环
+
+每局对局结束后，Codex 从对话记录中提取治理经验，Gemini 审查通过后写入 `regimes/<civ>/skills/`。下一局同文明自动加载历史智慧——**文明会随着对局越打越聪明**。
+
+```bash
+civagent switch china/tang
+civagent run --v5 "如何应对边境饥荒？"      # v5 模式：隔离记忆 + 自动沉淀
+civagent skills china/tang                 # 查看唐朝累积的治理经验
+civagent tournament \                      # 4 文明对战同一题目
+  --civs china/tang,china/qin,global/athens,global/roman-republic \
+  "how do we handle a famine on the eastern frontier?"
+```
+
+灵感来源：[NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent)
+
+</div>
+
+---
 
 <div align="center">
 

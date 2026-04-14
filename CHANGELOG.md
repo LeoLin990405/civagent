@@ -1,5 +1,27 @@
 # 📜 Changelog
 
+## v5.0.0 (2026-04-14) — Learning Loop 🧠
+
+Inspired by [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent). CivAgent gains a **cross-match learning loop**: civilizations now accumulate governance skills as they play.
+
+### New
+- **Civilization memory isolation** — each regime runs in its own `~/.civagent/envs/<region>-<id>/` with isolated `HOME` + `XDG_*` paths. No cross-contamination between civs.
+- **Automatic skill sedimentation** — after each match, `codex` extracts reusable governance patterns from the transcript, `gemini` audits them for shape/quality, and approved skills are written to `regimes/<civ>/skills/learned-<date>-<topic>-<matchId>.md` for use in future matches.
+- **Prompt-injection guard** on learned skills — rejects patterns containing role-redirection tokens, jailbreak strings, or missing frontmatter. Each skill file carries a provenance banner.
+- **New CLI**: `civagent run --v5`, `civagent skills <regime>`, `civagent match-log`, `civagent tournament`.
+- **Tournament mode** — spawn 4 civilizations against the same task in parallel, auto-judge governance quality.
+- **package.json + unit tests + CI** — `npm test`, GitHub Actions pipeline on PR.
+
+### Design notes
+- v5 is fully opt-in via `--v5` flag; v4 behavior preserved.
+- Three independent AI review passes (Codex → Gemini → Kimi) shaped the final design. See [docs/V5-DESIGN.md](./docs/V5-DESIGN.md).
+
+### Limitations documented
+- Compressing a governance system to one agent's `SOUL.md` is lossy; multi-department sub-agent splits are a v5.2 candidate.
+- `regimes/` has no time-dimension; anachronistic comparisons are a feature, not a bug.
+
+---
+
 ## v3.5.2 (2026-03-13)
 
 ### Bug 修复
