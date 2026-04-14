@@ -33,7 +33,14 @@ Reject if: (a) duplicate of existing skills, (b) hallucinated events not in tran
 (c) too generic to be useful. Otherwise approve verbatim.
 Reply ONLY with "APPROVE" or "REJECT: <reason>".`;
 
+function hasBinary(cmd) {
+  return spawnSync("which", [cmd], { stdio: "ignore" }).status === 0;
+}
+
 function runExternal(cmd, args, input) {
+  if (!hasBinary(cmd)) {
+    throw new Error(`required binary not found in PATH: ${cmd}`);
+  }
   const r = spawnSync(cmd, args, {
     input, encoding: "utf8", timeout: 300_000,
     env: process.env,
@@ -44,9 +51,26 @@ function runExternal(cmd, args, input) {
   return r.stdout.trim();
 }
 
+// Strip ANSI escapes and unwrap JSONL transcript to plain conversation text.
+const ANSI_RX = /\x1b\[[0-9;]*[a-zA-Z]/g;
+function cleanTranscript(raw) {
+  const lines = raw.split("\n").filter(Boolean);
+  const chunks = [];
+  for (const line of lines) {
+    try {
+      const obj = JSON.parse(line);
+      if (obj.chunk) chunks.push(obj.chunk);
+    } catch {
+      chunks.push(line);
+    }
+  }
+  return chunks.join("").replace(ANSI_RX, "");
+}
+
 export async function sediment({ matchId, regime, regimeDir, transcriptPath, existingSkillsDir }) {
   if (!fs.existsSync(transcriptPath)) return { skipped: "no transcript" };
-  const transcript = fs.readFileSync(transcriptPath, "utf8");
+  const raw = fs.readFileSync(transcriptPath, "utf8");
+  const transcript = cleanTranscript(raw);
   if (transcript.length < 200) return { skipped: "transcript too short" };
 
   const existing = fs.existsSync(existingSkillsDir)
