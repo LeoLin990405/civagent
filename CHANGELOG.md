@@ -1,5 +1,22 @@
 # 📜 Changelog
 
+## v5.0.1 (2026-04-14) — Engine Data Source Fix 🩹
+
+### Critical fix
+- **engine/regime-to-cc.mjs**: The v4 engine preferred `openclaw.json.template` (legacy) over `IDENTITY.md`. This made the L-stage canonical rewrite of all 57 regimes (v5.0.0) have zero effect on actual agent generation — every regime produced v4 default agents.
+
+### Effect
+After this one-line flip (PR #7), every civilization's Agent Team authentically reflects its historical governance:
+- **tang**: emperor → zhongshu-sheren (中书舍人, Tang drafter) → 6 ministries (replaced anachronistic 司礼监)
+- **byzantine**: basileus, patriarch, logothete-dromos/genikon, domestikos, eparch, protoasecretis
+- **roman-republic**: consul-a/b (双头制), senate, tribune, praetor, censor, quaestor, aedile
+- **soviet**: gensec, politburo, gosplan, kgb, pravda, army, supreme
+- ... and 53 more
+
+All 57 verified to generate ≥5 agents from the canonical role mapping table.
+
+---
+
 ## v5.0.0 (2026-04-14) — Learning Loop 🧠
 
 Inspired by [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-agent). CivAgent gains a **cross-match learning loop**: civilizations now accumulate governance skills as they play.

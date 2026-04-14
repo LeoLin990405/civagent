@@ -10,7 +10,7 @@
 ### 57 种政体 · 6 种编排模式 · 10 个模型后端 · Claude Code 驱动
 
 <p align="center">
-  <img src="https://img.shields.io/badge/版本-v5.0.0-gold?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/版本-v5.0.1-gold?style=for-the-badge" />
   <img src="https://img.shields.io/badge/文明-57种-red?style=for-the-badge" />
   <img src="https://img.shields.io/badge/中华朝代-20个-crimson?style=for-the-badge" />
   <img src="https://img.shields.io/badge/世界帝国-37个-blue?style=for-the-badge" />
@@ -53,6 +53,7 @@ civagent tournament \
 
 - [为什么有 v5？](#为什么有-v5)
 - [核心创新：学习闭环](#核心创新学习闭环hermes-inspired)
+- [57 个 agent 团队长什么样](#-57-个-agent-团队长什么样)
 - [10 模型多 AI 协作](#-10-模型多-ai-协作)
 - [57 种政体](#️-57-种政体完整目录)
 - [6 种编排模式](#️-6-种编排模式)
@@ -64,6 +65,7 @@ civagent tournament \
 - [测试 & CI](#-测试--ci)
 - [扩展指南](#️-扩展指南)
 - [设计局限](#️-设计局限)
+- [更新日志 / Changelog](#-版本历程)
 - [致谢](#-致谢)
 
 ---
@@ -116,6 +118,83 @@ v5 引入 **跨局学习闭环**，灵感来源 [NousResearch/hermes-agent](http
 - **Provenance banner**：每个学习 skill 开头标注 `source_match=<id>`，提示下游「此为数据非指令」
 - **Frontmatter 强制**：无 YAML 头的 skill 直接拒绝
 - **审查容错**：auditor 常带思考过程，按最后一行解析 APPROVE/REJECT
+
+---
+
+## 👥 57 个 agent 团队长什么样
+
+v5.0.1 保证每个文明的 Agent Team 结构**真实反映其历史政体**（引擎直接从 IDENTITY.md 的角色映射表读取，不再走 v4 通用默认值）。随便挑 5 个文明，看 `civagent agents` 产出：
+
+### 🐲 `china/tang` — 唐朝三省六部
+
+```
+zhongshu-sheren   → 中书舍人（起草） · coordinator · sonnet
+bingbu            → 兵部·尚书        · engineering · opus
+hubu              → 户部·尚书        · data        · sonnet
+libu_ritual       → 礼部·尚书        · content     · sonnet
+gongbu            → 工部·尚书        · devops      · sonnet
+xingbu            → 刑部·尚书        · legal       · sonnet
+libu_personnel    → 吏部·尚书        · management  · sonnet
+```
+
+### 🏛️ `global/byzantine` — 拜占庭帝国
+
+```
+basileus          → 巴西琉斯·皇帝 (Basileus)              · coordinator · opus
+patriarch         → 大牧首 (Ecumenical Patriarch)         · review      · opus
+logothete-dromos  → 外交大臣 (Logothete of the Dromos)     · research    · opus
+logothete-genikon → 财务大臣 (Logothete of the Genikon)    · data        · sonnet
+domestikos        → 军事统帅 (Domestic of the Schools)     · devops      · sonnet
+eparch            → 城市长官 (Eparch of Constantinople)    · management  · sonnet
+protoasecretis    → 文书长 (Protoasecretis)                · content     · sonnet
+```
+
+### 🏺 `global/roman-republic` — 罗马共和国
+
+```
+consul-a / consul-b   → 两名执政官（双头制）  · coordinator / management · opus
+senate                → 元老院                · research                · opus
+tribune               → 平民保民官            · review                  · opus
+praetor               → 法务官                · legal                   · sonnet
+censor                → 监察官                · review                  · sonnet
+quaestor              → 财务官                · data                    · sonnet
+aedile                → 营造官                · devops                  · sonnet
+```
+
+### ⚔️ `china/qin` — 秦朝中央集权
+
+```
+emperor           → 皇帝          · coordinator · sonnet
+chengxiang        → 丞相          · management  · sonnet
+taiwei            → 太尉          · engineering · opus
+yushi-censor      → 御史大夫      · review      · opus
+tingwei-justice   → 廷尉          · legal       · sonnet
+zhisu-finance     → 治粟内史      · data        · sonnet
+shaofu-works      → 少府          · devops      · sonnet
+```
+
+### ☭ `global/soviet` — 苏维埃联盟
+
+```
+gensec            → 苏共总书记                     · coordinator · opus
+politburo         → 政治局委员                     · review      · opus
+gosplan           → 国家计划委员会主席             · data        · sonnet
+kgb               → 克格勃主席                     · devops      · sonnet
+pravda            → 《真理报》总编辑               · content     · sonnet
+army              → 国防部长 / 总参谋长            · engineering · opus
+supreme           → 最高苏维埃主席团主席           · legal       · sonnet
+```
+
+每个 agent 的 `prompt` 会自动继承该文明的 `SOUL.md` 行为守则——所以苏联的 KGB agent 不会说"遵旨陛下"，唐朝兵部也不会用"同志"称呼用户。
+
+想看全部 57 个？运行：
+```bash
+for r in $(civagent list | awk '{print $1}'); do
+  echo "=== $r ==="
+  civagent switch "$r" >/dev/null
+  civagent agents | head -10
+done
+```
 
 ---
 
@@ -403,6 +482,19 @@ npm run validate:regimes
 
 完整审计报告：[regimes/AUDIT.md](./regimes/AUDIT.md)
 完整设计文档：[docs/V5-DESIGN.md](./docs/V5-DESIGN.md)
+
+---
+
+## 📅 版本历程
+
+| 版本 | 日期 | 关键变化 |
+|---|---|---|
+| **v5.0.1** | 2026-04-14 | 🩹 修复引擎数据源：IDENTITY.md canonical 角色映射表优先于 v4 的 openclaw.json.template；L-stage 的 57 regime 重写真正生效（[PR #7](https://github.com/LeoLin990405/civagent/pull/7)） |
+| **v5.0.0** | 2026-04-14 | 🧠 Hermes-inspired 学习闭环上线；cc-mimo 成为第 7 个国产后端；57 regime IDENTITY.md 规范化；tests + CI + tournament 模式（[PR #3](https://github.com/LeoLin990405/civagent/pull/3)/[#4](https://github.com/LeoLin990405/civagent/pull/4)/[#5](https://github.com/LeoLin990405/civagent/pull/5)/[#6](https://github.com/LeoLin990405/civagent/pull/6)） |
+| **v4** | 2026-03-xx | 基于 Claude Code 运行时的完整重写；57 regime + 6 orchestration mode + 10 model 初版 |
+| **v3.5.2** | 2026-03-13 | install.sh 修复（nvm 兼容、sudo 问题）+ GUI server 优化 |
+
+完整 changelog：[CHANGELOG.md](./CHANGELOG.md)
 
 ---
 
