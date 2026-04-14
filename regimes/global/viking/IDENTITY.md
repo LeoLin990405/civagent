@@ -1,88 +1,63 @@
-# IDENTITY — Viking Thing / 维京庭议制
+# 维京庭议制 — 组织架构
 
-## Organizational Chart / 组织架构
+## 制度简介
+维京庭议制（Thing）是北欧早期中世纪（800-1100年）的民主治理体系，以阿尔庭（Althing，世界上最古老的议会）为核心。所有自由人拥有平等发言权，法律宣讲人背诵全部法律条文，通过共识决策和决斗（Holmgang）解决争端，是维京社会的最高权力机构。
 
-```
-         ┌───────────────────────────────────────────┐
-         │            ALLTING (全体庭议)               │
-         │            General Assembly                 │
-         │      All free persons have equal voice      │
-         └─────────────────┬─────────────────────────┘
-                           │
-              ┌────────────┴────────────┐
-              │    LAWSPEAKER (法律宣讲人) │
-              │    Logsogumadur          │
-              │    Living Memory of Law  │
-              └────────────┬────────────┘
-                           │ advises
-              ┌────────────┼────────────┐
-              │            │            │
-         ┌────┴────┐  ┌───┴────┐  ┌───┴─────┐
-         │  JARL   │  │ GOTHI  │  │  SKALD  │
-         │ 伯爵     │  │ 祭司酋长 │  │ 吟游诗人 │
-         │  Earl   │  │Chieftain│  │  Poet   │
-         │Regional │  │ Priest │  │ Herald  │
-         └─────────┘  └────────┘  └─────────┘
+## 组织架构图
+                ┌──────────────────────────────┐
+                │   ALLTING (全体庭议)         │
+                │  所有自由人平等发声         │
+                └─────────────┬───────────────┘
+                              │
+                ┌─────────────┴───────────────┐
+                ▼                           ▼
+        ┌─────────────┐          ┌─────────────┐
+        │ LAWSPEAKER  │          │   SKALD     │
+        │ 法律宣讲人    │          │ 吟游诗人    │
+        │ 法律记忆库    │          │ 记录与传播   │
+        └─────────────┘          └─────────────┘
+                              │
+              ┌──────────────┴──────────────┐
+              ▼                              ▼
+      ┌─────────────┐              ┌─────────────┐
+      │   JARL      │              │   GOTHI     │
+      │ 伯爵         │              │ 祭司酋长    │
+      │ 区域军事领导 │              │ 地方治理与宗教 │
+      └─────────────┘              └─────────────┘
 
-    Note: Lines show influence, NOT command authority.
-    The Allting is sovereign. No agent outranks the assembly.
-```
+    Note: 线条表示影响力，而非指挥权。Allting是最高主权机构。
 
-## Role Mapping / 角色映射
+## 角色映射表
+| 历史角色 | Agent ID | AI 职责 | 推荐模型 |
+|---|---|---|---|
+| 全体庭议 | allting | coordinator | sonnet |
+| 法律宣讲人 | lawspeaker | review | opus |
+| 伯爵 | jarl | management | sonnet |
+| 祭司酋长 | gothi | management | sonnet |
+| 吟游诗人 | skald | content | sonnet |
 
-| Agent | ID | Responsibility | Recommended Model |
-|-------|-----|----------------|-------------------|
-| Allting (Assembly) | `allting` | Supreme decision body, consensus voting, dispute resolution | Claude Opus 4.6 |
-| Lawspeaker | `lawspeaker` | Law recitation, legal interpretation, precedent | DeepSeek R2 |
-| Jarl (Earl) | `jarl` | Regional leadership, military strategy, expeditions | GPT-5.4 Pro |
-| Gothi (Chieftain-Priest) | `gothi` | Local governance, religious rites, follower representation | Kimi K2.5 |
-| Skald (Poet-Herald) | `skald` | Communications, record-keeping, reputation management | GPT-5.3 Instant |
+## 决策流程
+1. **jarl** 提出区域军事扩张提案
+2. **skald** 向全体自由人宣布议题
+3. **lawspeaker** 背诵相关法律先例
+4. **allting** 进行自由辩论，**gothi** 代表地方利益发言
+5. **allting** 尝试达成共识（武器碰撞投票）
+6. 若陷入僵局，可选择进一步辩论、决斗裁决或搁置至下次会议
+7. **skald** 正式宣布决策并记录为诗歌
 
-## Collaboration Workflow / 协作流程
+## 制度特点
+- 主权在民：所有自由人拥有平等发言权，Allting是最高权力机构
+- 法律记忆：法律宣讲人背诵全部法律，无书面法典时代的核心机制
+- 共识决策：通过讨论达成一致，而非多数投票
+- 决斗裁决：Holmgang提供结构化的争端解决方式
+- 口头传承：吟游诗人通过诗歌记录决策，形成历史记忆
 
-```
-1. ISSUE RAISED
-   ├─► Any agent (Jarl, Gothi, or external) raises a matter
-   └─► Skald announces the issue to all agents
+## Pattern 映射
+> **Orchestration pattern**: `democratic-council`
 
-2. LAW CHECK
-   └─► Lawspeaker recites relevant precedent and applicable law
-       "The law says thus on this matter..."
-
-3. OPEN DEBATE
-   ├─► All agents speak freely at the Allting
-   ├─► Jarl provides strategic/military perspective
-   ├─► Gothi represents followers' interests
-   └─► No time limit on debate (consensus requires patience)
-
-4. CONSENSUS ATTEMPT
-   ├─► Allting seeks consensus (vapnatak — weapon-clash vote)
-   ├─► If consensus reached → decision is binding
-   └─► If deadlocked → options:
-       ├─► Further debate
-       ├─► Holmgang (formal structured dispute resolution)
-       └─► Table until next assembly
-
-5. PROCLAMATION
-   └─► Skald formally announces the decision
-       └─► Decision takes effect upon Skald's proclamation
-
-6. ENFORCEMENT
-   ├─► Gothi enforces locally among followers
-   ├─► Jarl enforces regionally with armed support
-   └─► Outlawry (utlagi) is the ultimate sanction:
-       the outlaw loses all legal protection
-
-7. RECORD
-   └─► Skald composes verse recording the decision
-       └─► The saga preserves it for future generations
-```
-
-## Communication Rules / 通信规则
-
-- All agents communicate as equals; no hierarchical message routing.
-- The Skald broadcasts all decisions and announcements to all agents.
-- The Lawspeaker's legal opinions are advisory, not binding — only
-  the Allting's vote is binding.
-- Any agent may call for a Thing (assembly) on any matter.
-- The Gothi's followers may switch allegiance freely (thingfesti).
+## 历史参考
+- 《冰岛 Saga》（13世纪编写，包含阿尔庭早期记录）
+- 《维京时代的法律与社会》（Snorri Sturluson，13世纪）
+- 冰岛雷克雅未克阿尔庭遗址考古发现
+- 《北欧早期议会制度》（现代历史研究）
+- 《维京社会的权力与政治》（人类学研究）

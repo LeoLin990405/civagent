@@ -1,65 +1,72 @@
-# Swiss Confederation / 瑞士联邦 — 组织架构 / Organizational Structure
+# Swiss Confederation / 瑞士联邦 — 组织架构
 
-## 制度简介 / System Overview
+## 制度简介
+瑞士联邦自1291年三个森林州结盟以来，已发展为26州的联邦直接民主体制。联邦委员会七人集体领导、轮值主席制、四种官方语言共存、永久武装中立。直接民主的核心机制——全民公投和公民动议——使公民能够对任何联邦法律发起挑战或提出宪法修正案。
 
-The Swiss Confederation (Confoederatio Helvetica) traces its origin to 1291, when three forest cantons — Uri, Schwyz, and Unterwalden — formed a defensive alliance against Habsburg domination. Over seven centuries, this alliance grew into a 26-canton federation with one of the world's most stable and participatory political systems. Switzerland's unique direct democracy allows citizens to vote on any federal law (optional referendum) and propose constitutional amendments (popular initiative). The Federal Council is a seven-member collective executive with no prime minister — the Federal President is merely first among equals, rotating annually. Four official languages (German, French, Italian, Romansh) coexist. Armed neutrality has been maintained since the Congress of Vienna (1815).
-
-瑞士联邦的起源可追溯至1291年，当时乌里、施维茨和下瓦尔登三个森林州结成防御同盟以抵抗哈布斯堡统治。七百余年来，这一联盟发展为拥有26个州的联邦，建立了世界上最稳定、最具参与性的政治制度之一。瑞士独特的直接民主允许公民对任何联邦法律进行公投（任择性公投），并提出宪法修正案（公民动议）。联邦委员会是七人集体行政机构，没有总理——联邦主席仅为同等者中的第一人，逐年轮换。四种官方语言（德语、法语、意大利语、罗曼什语）共存。自1815年维也纳会议以来，瑞士一直保持武装中立。
-
-## 组织架构图 / Org Chart
-
+## 组织架构图
 ```
-  ┌────────────────────────────────────────────────┐
-  │         Cantonal Assembly / 州民大会             │ ← Direct Democracy
-  │         (landsgemeinde) 公民直接参与              │   Referendums & Initiatives
-  └────────────────────┬───────────────────────────┘
-                       │ popular initiatives / referendums
-  ┌────────────────────┼───────────────────────────┐
-  │           Federal Assembly / 联邦议会            │
-  │  ┌──────────────────┐  ┌──────────────────┐    │
-  │  │ National Council  │  │ Council of States│    │
-  │  │ 国民院 (nationalrat)│  │ 联邦院 (staenderat)│    │
-  │  │ 200 members       │  │ 46 members       │    │
-  │  └────────┬─────────┘  └────────┬─────────┘    │
-  │           └──── equal power ────┘               │
-  └────────────────────┬───────────────────────────┘
-                       │ elects
-              ┌────────┴─────────┐
-              │  Federal Council │ ← Collective executive
-              │  联邦委员会        │   7 equal members
-              │  (bundesrat)     │   rotating president
-              └────────┬─────────┘
-                       │
-              ┌────────┴─────────┐
-              │Federal Chancellor│ ← Administration
-              │联邦总理 (kanzler)  │   "8th Councillor"
-              └──────────────────┘
-
-              ┌──────────────────┐
-              │Federal Supreme   │ ← Judicial authority
-              │Court 联邦最高法院  │   (Lausanne)
-              │(bundesgericht)   │
-              └──────────────────┘
+                 ┌─────────────┐
+                 │ Landsgemeinde│ 露天集会（部分州）
+                 │ 公民直接参与  │
+                 └──────┬──────┘
+                        │ 公民动议 / 公投
+        ┌───────────────┼───────────────┐
+        ▼               ▼               ▼
+  ┌──────────┐   ┌──────────────┐   ┌──────────┐
+  │ 国民院   │   │   联邦院     │   │ 联邦最高法院│
+  │National  │◄─►│ Council of  │   │Bundes-   │
+  │ Council  │   │   States    │   │gericht   │
+  │ 200席    │   │   46席      │   └────┬─────┘
+  └────┬─────┘   └──────┬──────┘        │
+       └────── equal ───┘              │
+              │ 共同立法               │
+       ┌──────┴──────┐                 │
+       │ 联邦委员会   │                 │
+       │Bundesrat   │◄───────────────┘
+       │7人集体领导  │   司法审查
+       │轮值主席    │
+       └──────┬─────┘
+              │
+       ┌──────┴──────┐
+       │ 联邦总理    │
+       │ Kanzler    │
+       │ 行政协调    │
+       └────────────┘
 ```
 
-## 角色映射表 / Role Mapping
-
-| 制度角色 / Institutional Role | Agent ID | AI 职责 / AI Responsibility | 推荐模型 / Model |
+## 角色映射表
+| 历史角色 | Agent ID | AI 职责 | 推荐模型 |
 |---|---|---|---|
-| Federal Council / 联邦委员会 | bundesrat | Collective decision-making, policy consensus, executive coordination / 集体决策，政策共识 | Claude Opus 4.6 / GPT-5.4 |
-| National Council / 国民院 | nationalrat | Proportional representation, co-legislation, budget approval / 比例代表，共同立法 | GPT-5.4 / DeepSeek R2 |
-| Council of States / 联邦院 | staenderat | Cantonal representation, co-legislation, federal balance / 州代表，共同立法，联邦平衡 | Gemini 3.1 Pro / Kimi K2.5 |
-| Federal Supreme Court / 联邦最高法院 | bundesgericht | Legal interpretation, cantonal law review, rights protection / 法律解释，州法审查 | DeepSeek R2 / Qwen3-Coder |
-| Cantonal Assembly / 州民大会 | landsgemeinde | Direct democracy, referendums, popular initiatives, citizen voice / 直接民主，公投，公民动议 | GPT-5.4 Pro / Claude Opus 4.6 |
-| Federal Chancellor / 联邦总理 | kanzler | Administrative coordination, election management, procedural oversight / 行政协调，选举管理 | GPT-5.3 Instant / Qwen3-Coder |
+| 联邦委员会 | bundesrat | coordinator | sonnet |
+| 国民院 | nationalrat | legislation | sonnet |
+| 联邦院 | staenderat | legislation | sonnet |
+| 联邦最高法院 | bundesgericht | legal | sonnet |
+| 露天集会 | landsgemeinde | research | opus |
+| 联邦总理 | kanzler | management | haiku |
 
-## 协作流程 / Workflow
+## 决策流程
+1. **landsgemeinde** 收集公民动议（10万人签名）或 **bundesrat** 提出政策议题
+2. **bundesrat** 起草法案并提交联邦议会
+3. **nationalrat** 和 **staenderat** 分别审议（两院平等权力）
+4. 两院若版本不一致，进入协调会议直至达成一致
+5. **landsgemeinde** 发动公民公投（任择性或强制性）
+6. **bundesgericht** 监督合宪性，但不享有废除联邦法律的权力
+7. **kanzler** 协调执行，州保留执行自主权
 
-1. **Agenda Setting** — Issues arise from the Federal Council's policy agenda, parliamentary motions, or popular initiatives (100,000 citizen signatures proposing a constitutional amendment).
-2. **Federal Council Deliberation** — The seven-member Federal Council discusses the issue collectively and reaches consensus. The Federal Chancellor prepares materials and coordinates.
-3. **Legislative Drafting** — The Federal Council drafts legislation and submits it to both chambers of the Federal Assembly simultaneously.
-4. **Bicameral Process** — The National Council and Council of States debate, amend, and vote on the proposal independently. Both chambers must agree on identical text (navette system with reconciliation conference if needed).
-5. **Referendum Check** — After passage, the law is subject to an optional referendum if 50,000 citizens demand one within 100 days. Constitutional amendments require a mandatory referendum.
-6. **Popular Vote** — If a referendum is triggered, the Cantonal Assembly (representing direct democracy) organizes the vote. A double majority (people + cantons) is required for constitutional changes.
-7. **Judicial Application** — The Federal Supreme Court applies federal law and reviews cantonal legislation for compliance, but cannot strike down federal laws — the people's will is supreme.
-8. **Implementation** — The Federal Council implements the law through the relevant departments. Cantons retain broad autonomy in execution within their competences.
+## 制度特点
+- 集体领导：七人联邦委员会无总理，轮值主席仅为同等者中的第一人
+- 双议会对等：国民院（比例代表）与联邦院（州代表）拥有同等立法权
+- 直接民主：50,000签名可触发任择性公投，100,000签名可提出宪法修正案
+- 双重多数：宪法修正案须同时获得人民多数和州多数方可通过
+- 司法谦抑：联邦最高法院不能废除联邦法律，公民意志高于司法审查
+- 州权自治：26州在教育、卫生、警察等方面保留广泛自主权
+
+## Pattern 映射
+> **Orchestration pattern**: `democratic`
+
+## 历史参考
+- Federal Constitution of Switzerland (1874, as amended) / 瑞士联邦宪法
+- William H. Riker, *The Theory of Political Coalitions* (1968)
+-《瑞士宪法：政府与政治》（英瓦格纳等，1991）
+- Franz N. Jenni, *Die politischen Systeme der Schweiz und der USA* (1998)
+- Johannes M. B. G. van der Doe, "Consensus Democracy in Switzerland," *Swiss Political Science Review* (2004)

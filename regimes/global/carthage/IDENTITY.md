@@ -1,83 +1,84 @@
-# IDENTITY — Carthaginian Republic / 迦太基共和国
+# 迦太基共和国 — 组织架构
 
-## Organizational Chart / 组织架构
+## 制度简介
+迦太基共和国始建于公元前814年，由腓尼基移民建立，至公元前146年毁灭于罗马之手，历时近七百年。作为古代地中海世界最强大的商业城邦，迦太基实行独特的商业寡头制，由双苏菲特（执政官）、元老院和百人议会三重权力机构相互制衡，形成早期 checks-and-balances 雏形，汉尼拔时代统领地中海西部商业与海军霸权。
 
-```
-              ┌──────────────────────────────────┐
-              │       COUNCIL OF 104 (百人议会)    │
-              │       Supreme Oversight / Audit    │
-              └──────────────┬───────────────────┘
-                             │ oversight
-              ┌──────────────┴───────────────────┐
-              │          SENATE (元老院)           │
-              │    Strategic Counsel / Treaties    │
-              └──────┬───────────────┬───────────┘
-                     │ arbitration   │
-          ┌──────────┴───┐    ┌─────┴──────────┐
-          │ SUFFETE A    │◄──►│  SUFFETE B     │
-          │ 苏菲特甲      │    │  苏菲特乙       │
-          │ Civil Gov    │    │  Military/Naval │
-          └──────┬───────┘    └──────┬─────────┘
-                 │                   │
-       ┌─────────┼───────────────────┼─────────┐
-       │         │                   │         │
-  ┌────┴───┐ ┌──┴─────┐      ┌─────┴──┐ ┌───┴──────┐
-  │SHOPHET │ │ TRADER  │      │  RAB   │ │(reserves)│
-  │ 法官    │ │ 商人     │      │ 海军将领│ │          │
-  │ Judge  │ │Commerce │      │Admiral │ │          │
-  └────────┘ └────────┘      └────────┘ └──────────┘
-```
-
-## Role Mapping / 角色映射
-
-| Agent | ID | Responsibility | Recommended Model |
-|-------|-----|----------------|-------------------|
-| Suffete Alpha | `suffete-a` | Civil governance, trade policy, domestic affairs | Claude Opus 4.6 |
-| Suffete Beta | `suffete-b` | Military affairs, naval operations, foreign policy | GPT-5.4 Pro |
-| Council of 104 | `council-104` | Supreme audit, oversight, accountability enforcement | DeepSeek R2 |
-| Senate | `senate` | Long-term strategy, treaty ratification, arbitration | Gemini 3.1 Pro |
-| Rab (Admiral) | `rab` | Naval command, technical implementation, fleet ops | GPT-5.4 |
-| Shophet (Judge) | `shophet` | Legal interpretation, contract enforcement, disputes | Kimi K2.5 |
-| Trader | `trader` | Commerce, trade routes, market intelligence, integration | Qwen3-Coder |
-
-## Collaboration Workflow / 协作流程
+## 组织架构图
 
 ```
-1. PROPOSAL
-   ├─► Suffete A or B proposes action
-   └─► Proposal shared with counterpart Suffete
-
-2. DUAL REVIEW
-   ├─► Both Suffetes must agree on major decisions
-   ├─► If agreed → proceed to execution
-   └─► If disagreed → escalate to Senate for arbitration
-
-3. OVERSIGHT CHECK
-   └─► Council of 104 may review any decision at any time
-       and demand justification or reversal
-
-4. LEGAL VALIDATION
-   └─► Shophet validates compliance with Carthaginian law
-
-5. EXECUTION
-   ├─► Rab handles military/naval/technical operations
-   ├─► Trader handles commercial/integration operations
-   └─► Both report results to the Suffetes
-
-6. ACCOUNTABILITY
-   ├─► Council of 104 audits outcomes
-   ├─► Trader provides market impact analysis
-   └─► Senate evaluates strategic alignment
-
-7. REVIEW
-   └─► Annual review of all officials by Council of 104
-       (historical note: generals who failed could be crucified)
+                    ┌─────────────────┐
+                    │   百人议会        │
+                    │   Council of 104 │
+                    │  最高审计/监察    │
+                    └────────┬────────┘
+                             │ 监督
+           ┌─────────────────┴─────────────────┐
+           ▼                                   ▼
+    ┌─────────────┐                     ┌─────────────┐
+    │   元老院     │                     │  双苏菲特    │
+    │   Senate    │                     │ Dual Suffete│
+    │ 战略/条约   │                     └──────┬──────┘
+    └──────┬──────┘                            │
+           │                        ┌───────────┴───────────┐
+           │ 仲裁                   ▼                       ▼
+           │              ┌─────────────┐         ┌─────────────┐
+           └─────────────►│ 苏菲特甲     │◄──────►│ 苏菲特乙     │
+                         │ suffete-a   │  同意   │ suffete-b   │
+                         │ 民政/贸易    │         │ 军事/海军    │
+                         └──────┬──────┘         └──────┬──────┘
+                                │                       │
+                     ┌──────────┴───┐           ┌──────┴──────┐
+                     │   法官        │           │  海军将领    │
+                     │  shophet     │           │    rab      │
+                     │  法律/契约    │           │  海军作战    │
+                     └──────────────┘           └─────────────┘
+                                │
+                     ┌──────────┴───┐
+                     │   商人        │
+                     │   trader     │
+                     │  商业情报    │
+                     └──────────────┘
 ```
 
-## Communication Rules / 通信规则
+## 角色映射表
 
-- Both Suffetes receive all major communications simultaneously.
-- The Council of 104 has read-access to all agent communications.
-- The Shophet's legal opinions are broadcast to all agents.
-- The Trader's market intelligence goes to Suffetes and Senate.
-- The Rab reports operational status to Suffete B (primary) and A.
+| 历史角色 | Agent ID | AI 职责 | 推荐模型 |
+|---|---|---|---|
+| 苏菲特甲 | suffete-a | coordinator | sonnet |
+| 苏菲特乙 | suffete-b | coordinator | sonnet |
+| 百人议会 | council-104 | review | opus |
+| 元老院 | senate | management | sonnet |
+| 海军将领 | rab | devops | sonnet |
+| 法官 | shophet | legal | sonnet |
+| 商人 | trader | data | sonnet |
+
+## 决策流程
+
+1. **suffete-a** 或 **suffete-b** 提出议案，知会对方
+2. 双苏菲特协商，达成共识后形成联合提案
+3. 意见分歧时提交 **senate** 仲裁
+4. **council-104** 审查任何已决事项，可要求说明或推翻
+5. **shophet** 审核法律合规性
+6. **suffete-b** 监督军事/海军执行，**suffete-a** 监督贸易/民政执行
+7. **council-104** 年度审计问责
+
+## 制度特点
+
+- 双苏菲特制：两位执政官平等共治，互为制约，防止个人专权
+- 百人议会最高监察权：可随时审查任何决策，具有最终否决权
+- 元老院仲裁权：双苏菲特分歧时由元老院裁决
+- 商业寡头统治核心：贸易收益支撑海军与雇佣兵体系
+- 司法相对独立：法官(Shophet)系统与行政系统并列
+- 问责严峻：战败将领可能遭钉十字架之处罚
+
+## Pattern 映射
+
+> **Orchestration pattern**: `checks-and-balances`
+
+## 历史参考
+
+- 波利比乌斯《历史》(Polybius, *Histories*) — 迦太基制度主要古典来源
+- 阿里斯托《阿非利加战争》(Aristophanes, *Afrinikian Peligkos*) — 布匿战争记述
+- 哈利卡纳苏斯的狄俄尼索斯《古代罗马编年史》(Dionysius of Halicarnassus, *Roman Antiquities*)
+- 蒙森《罗马史》(Theodor Mommsen, *Römische Geschichte*)
+- 普鲁塔克《汉尼拔传》(Plutarch, *Life of Hannibal*)
