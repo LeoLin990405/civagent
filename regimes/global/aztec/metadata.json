@@ -10,7 +10,7 @@
   },
   "agentCount": 6,
   "tags": ["triple-alliance", "mesoamerican", "warrior", "tribute"],
-  "orchestrationPattern": "democratic-council",
+  "orchestrationPattern": "democratic",
   "agents": [
     {
       "name": "Huey_Tlatoani",

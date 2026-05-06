@@ -10,5 +10,5 @@
   },
   "agentCount": 6,
   "tags": ["empire", "centralized-hierarchy", "trade", "oral-tradition", "islamic-scholarship", "west-africa"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

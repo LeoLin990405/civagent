@@ -10,5 +10,5 @@
   },
   "agentCount": 7,
   "tags": ["mongol", "centralized", "provincial", "multi-ethnic"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

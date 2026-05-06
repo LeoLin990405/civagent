@@ -10,5 +10,5 @@
   },
   "agentCount": 6,
   "tags": ["elective-monarchy", "liberum-veto", "golden-liberty", "szlachta", "sejm", "noble-republic"],
-  "orchestrationPattern": "democratic-council"
+  "orchestrationPattern": "democratic"
 }

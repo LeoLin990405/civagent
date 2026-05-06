@@ -10,7 +10,7 @@
   },
   "agentCount": 6,
   "tags": ["sapa-inca", "four-quarters", "labor-tax", "quipu"],
-  "orchestrationPattern": "centralized-hierarchy",
+  "orchestrationPattern": "centralized",
   "agents": [
     {
       "name": "Sapa_Inca",

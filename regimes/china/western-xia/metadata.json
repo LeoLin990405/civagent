@@ -10,5 +10,5 @@
   },
   "agentCount": 5,
   "tags": ["tangut", "multi-ethnic", "military-first", "buddhist"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

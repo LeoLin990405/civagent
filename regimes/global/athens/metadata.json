@@ -10,5 +10,5 @@
   },
   "agentCount": 6,
   "tags": ["democratic", "direct-democracy", "philosophical", "civic"],
-  "orchestrationPattern": "democratic-council"
+  "orchestrationPattern": "democratic"
 }

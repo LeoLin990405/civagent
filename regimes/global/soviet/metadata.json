@@ -10,7 +10,7 @@
   },
   "agentCount": 7,
   "tags": ["communist", "politburo", "planned-economy", "party-state"],
-  "orchestrationPattern": "centralized-hierarchy",
+  "orchestrationPattern": "centralized",
   "agents": [
     {
       "name": "General_Secretary",

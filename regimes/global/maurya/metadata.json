@@ -10,5 +10,5 @@
   },
   "agentCount": 7,
   "tags": ["centralized", "arthashastra", "spy-network", "dharma", "indian-subcontinent", "iron-age"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

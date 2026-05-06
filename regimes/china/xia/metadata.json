@@ -10,5 +10,5 @@
   },
   "agentCount": 5,
   "tags": ["clan", "earliest", "patriarchal"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

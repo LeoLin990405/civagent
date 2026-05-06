@@ -10,5 +10,5 @@
   },
   "agentCount": 6,
   "tags": ["military-bureaucracy", "general-staff", "junker", "realpolitik", "frederick-great", "bismarck"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

@@ -10,5 +10,5 @@
   },
   "agentCount": 7,
   "tags": ["autocratic", "vast-empire", "orthodox", "reform-reaction"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

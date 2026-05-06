@@ -10,5 +10,5 @@
   },
   "agentCount": 7,
   "tags": ["absolutist", "centralized", "versailles", "sun-king"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

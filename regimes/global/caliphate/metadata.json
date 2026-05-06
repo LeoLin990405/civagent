@@ -10,5 +10,5 @@
   },
   "agentCount": 7,
   "tags": ["centralized", "caliphate", "golden-age", "house-of-wisdom", "islamic-civilization", "medieval"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

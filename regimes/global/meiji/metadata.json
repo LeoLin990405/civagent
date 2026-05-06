@@ -10,5 +10,5 @@
   },
   "agentCount": 7,
   "tags": ["constitutional", "monarchy", "modernization", "centralized"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

@@ -10,5 +10,5 @@
   },
   "agentCount": 7,
   "tags": ["imperial", "bureaucratic", "hierarchical", "pax-romana"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

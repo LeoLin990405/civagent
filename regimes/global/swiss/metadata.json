@@ -10,5 +10,5 @@
   },
   "agentCount": 6,
   "tags": ["direct-democracy", "federal", "consensus", "neutrality"],
-  "orchestrationPattern": "democratic-council"
+  "orchestrationPattern": "democratic"
 }
