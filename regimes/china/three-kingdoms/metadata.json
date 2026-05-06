@@ -10,5 +10,5 @@
   },
   "agentCount": 9,
   "tags": ["competitive", "federated", "rival-states"],
-  "orchestrationPattern": "federated-autonomy"
+  "orchestrationPattern": "federation"
 }

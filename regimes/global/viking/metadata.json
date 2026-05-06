@@ -10,5 +10,5 @@
   },
   "agentCount": 5,
   "tags": ["democratic", "assembly", "consensus", "norse", "parliament", "early-medieval"],
-  "orchestrationPattern": "democratic-council"
+  "orchestrationPattern": "democratic"
 }

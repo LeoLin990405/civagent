@@ -10,5 +10,5 @@
   },
   "agentCount": 10,
   "tags": ["confucian", "centralized", "meritocratic"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

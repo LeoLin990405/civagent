@@ -10,5 +10,5 @@
   },
   "agentCount": 6,
   "tags": ["kurultai", "steppe", "meritocratic", "conquest"],
-  "orchestrationPattern": "democratic-council"
+  "orchestrationPattern": "democratic"
 }

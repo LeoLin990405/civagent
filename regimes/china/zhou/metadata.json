@@ -10,5 +10,5 @@
   },
   "agentCount": 8,
   "tags": ["feudal", "decentralized", "ritual"],
-  "orchestrationPattern": "federated-autonomy"
+  "orchestrationPattern": "federation"
 }

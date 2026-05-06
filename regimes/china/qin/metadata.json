@@ -10,5 +10,5 @@
   },
   "agentCount": 7,
   "tags": ["centralized", "legalist", "strict-hierarchy", "first-empire"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

@@ -10,5 +10,5 @@
   },
   "agentCount": 7,
   "tags": ["electoral", "decentralized", "feudal", "complex"],
-  "orchestrationPattern": "federated-autonomy"
+  "orchestrationPattern": "federation"
 }

@@ -10,7 +10,7 @@
   },
   "agentCount": 7,
   "tags": ["mansabdar", "indo-islamic", "ranked-officials", "syncretic"],
-  "orchestrationPattern": "centralized-hierarchy",
+  "orchestrationPattern": "centralized",
   "agents": [
     {
       "name": "Padshah",

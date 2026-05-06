@@ -10,5 +10,5 @@
   },
   "agentCount": 7,
   "tags": ["meritocracy", "code-napoleon", "prefect-system", "continental-system", "conseil-detat", "centralization"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }

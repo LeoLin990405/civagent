@@ -10,5 +10,5 @@
   },
   "agentCount": 5,
   "tags": ["military", "centralized", "regimental", "expansion"],
-  "orchestrationPattern": "centralized-hierarchy"
+  "orchestrationPattern": "centralized"
 }
