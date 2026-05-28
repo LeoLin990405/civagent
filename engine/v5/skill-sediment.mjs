@@ -11,6 +11,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { runJudge, hasBinary } from "./judge.mjs";
+import { findDuplicate } from "./skill-quality.mjs";
 
 const EXTRACT_PROMPT = `You are reviewing a CivAgent governance match transcript.
 Extract AT MOST 2 reusable governance patterns the civilization demonstrated.
@@ -137,6 +138,10 @@ export async function sediment({ matchId, regime, regimeDir, transcriptPath, exi
 
   const skillsDir = path.join(regimeDir, "skills");
   fs.mkdirSync(skillsDir, { recursive: true });
+
+  // Near-duplicate gate: don't write a skill that's too similar to an existing one.
+  const dupFile = findDuplicate(extracted, skillsDir);
+  if (dupFile) return { skipped: `near-duplicate of ${dupFile}` };
   const date = new Date().toISOString().slice(0, 10);
   const topic = (extracted.match(/name:\s*[\w/-]+-([\w-]+)/)?.[1] || "pattern")
     .slice(0, 40)

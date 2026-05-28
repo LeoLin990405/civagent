@@ -109,9 +109,11 @@ CivAgent v5 是跑在 Claude Code runtime 上的多智能体编排系统：57 �
 - **验收**：`civagent setup` 不再提示 gemini，准确反映可用后端。
 
 ### Round 2 — 评测严谨性 + 学习闭环质量（前端②上线后并行）
-- 多裁判 / 盲评：N 个非 gemini provider 各打分后聚合，消除单裁判偏差（解决 V5-DESIGN 里"裁判=单一 gemini"的可信度问题）。
-- skill 沉淀质量度量：去重相似 skill、跨局重复 pattern 检测、沉淀产出率指标。
-- 对局可复现：固定题库 + 记录 provider/版本/seed，支持 `civagent replay <matchId>`。
+- ✅ 多裁判 / 盲评：N 个非 gemini provider 各打分后聚合，消除单裁判偏差（`multi-judge.mjs`，`--multi-judge` / `--judges N`）。
+- ✅ skill 沉淀质量度量：去重相似 skill（SHA-256 精确 + Jaccard 近似，threshold 0.6）、跨局重复 pattern 检测、`--stats` 分析报告（`skill-quality.mjs`）。
+- ✅ 对局可复现：固定题库 10 场景（`governance-scenarios.json`，`--prompt-bank / --seed`），支持 `civagent replay <matchId>`（`replay.mjs`，`replayOf` 血统字段）。
+- ✅ 测试覆盖：multi-judge 11 用例、skill-quality 16 用例、replay 7 用例（共 34 新用例，累计 ~55）。
+- **前端 R2（进行中）**：形态②政体可视化浏览器（PR 待提，由 antigravity 负责）。
 
 ### Round 3 — 控制台后端能力（前端③上线）
 - 写 API：发起对局/锦标赛、在线编辑 regime（带 schema 校验 + 史实审稿入环）、管理 skill 库（启用/禁用/删除）。
