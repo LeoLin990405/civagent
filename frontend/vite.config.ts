@@ -82,6 +82,30 @@ function civagentApiPlugin() {
             return;
           }
 
+          // Endpoint: /api/regimes/:region/:id/identity
+          if (url.startsWith('/regimes/') && url.endsWith('/identity')) {
+            const parts = url.split('/').filter(Boolean);
+            if (parts.length >= 4) {
+              const region = parts[1];
+              const id = parts[2];
+              const projectRoot = path.resolve(__dirname, '..');
+              const identityPath = path.join(projectRoot, 'regimes', region, id, 'IDENTITY.md');
+              
+              if (fs.existsSync(identityPath)) {
+                try {
+                  const raw = fs.readFileSync(identityPath, 'utf8');
+                  res.end(JSON.stringify({ id, region, raw }));
+                } catch (err: any) {
+                  res.statusCode = 500;
+                  res.end(JSON.stringify({ error: err.message }));
+                }
+              } else {
+                res.end(JSON.stringify({ id, region, raw: null }));
+              }
+              return;
+            }
+          }
+
           // Endpoint: /api/tournaments
           if (url === '/tournaments' || url === '/tournaments/') {
             const tournamentsDir = path.join(rootDir, 'tournaments');
