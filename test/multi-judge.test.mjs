@@ -4,6 +4,7 @@ import {
   anonymizePrompt,
   parseScoreTable,
   aggregateJudgements,
+  runMultiJudge,
 } from "../engine/v5/multi-judge.mjs";
 
 // ── anonymizePrompt ───────────────────────────────────────────────────────────
@@ -35,6 +36,30 @@ test("anonymizePrompt handles up to 26 civs (A-Z labels)", () => {
   const { map } = anonymizePrompt("x", civs);
   assert.equal(map[0].anon, "Civ-A");
   assert.equal(map[4].anon, "Civ-E");
+});
+
+// P1 fix: prefix-collision guard — longer names must be replaced before shorter
+// names that are a prefix of them, so "china/jin-jurchen" is never corrupted
+// into "Civ-A-jurchen" when "china/jin" is replaced first.
+test("anonymizePrompt handles prefix-name collisions correctly (china/jin vs china/jin-jurchen)", () => {
+  const civNames = ["china/jin", "china/jin-jurchen"];
+  const prompt = "### china/jin\ntext about jin\n### china/jin-jurchen\ntext about jurchen";
+  const { prompt: out, map } = anonymizePrompt(prompt, civNames);
+
+  // Both regimes must be fully anonymized
+  assert.ok(!out.includes("china/jin"), "china/jin must not appear in output");
+  assert.ok(!out.includes("china/jin-jurchen"), "china/jin-jurchen must not appear in output");
+
+  // No corrupted partial label like "Civ-A-jurchen"
+  assert.ok(!out.includes("-jurchen"), "no partial corruption with dangling -jurchen suffix");
+
+  // Labels are assigned by original order (index), not by length
+  assert.deepEqual(map[0], { real: "china/jin", anon: "Civ-A" });
+  assert.deepEqual(map[1], { real: "china/jin-jurchen", anon: "Civ-B" });
+
+  // Both Civ-A and Civ-B appear, each with their correct section text
+  assert.ok(out.includes("Civ-A"), "Civ-A for china/jin");
+  assert.ok(out.includes("Civ-B"), "Civ-B for china/jin-jurchen");
 });
 
 // ── parseScoreTable ───────────────────────────────────────────────────────────

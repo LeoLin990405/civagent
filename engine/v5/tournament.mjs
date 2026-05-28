@@ -87,7 +87,9 @@ function buildJudgePrompt(task, civResults) {
       const text =
         readMatchText(r.matchId, 6000) ||
         (fs.existsSync(r.logFile) ? fs.readFileSync(r.logFile, "utf8").slice(-6000) : "(no output)");
-      return `### ${r.regime} (backend ${r.backend}, exit ${r.code})\n\n\`\`\`\n${text}\n\`\`\``;
+      // Omit backend from the heading: the judge receives anonymized civ labels
+      // and must not learn which provider a civ used (that would break blind eval).
+      return `### ${r.regime} (exit ${r.code})\n\n\`\`\`\n${text}\n\`\`\``;
     })
     .join("\n\n---\n\n");
   return `${JUDGE_PROMPT}\n\n## Task\n${task}\n\n## Civilization Transcripts\n\n${sections}`;

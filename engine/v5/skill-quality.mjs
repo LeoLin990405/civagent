@@ -9,9 +9,16 @@ import path from "node:path";
 import crypto from "node:crypto";
 
 // Strip YAML frontmatter and normalise to lowercase word tokens.
+//
+// Real on-disk skill files (written by skill-sediment.mjs) carry a provenance
+// HTML comment banner BEFORE the frontmatter:
+//   <!-- civagent v5 learned skill — source_match=… — audited_by=… -->
+// We strip that banner first so that the fingerprint / Jaccard comparison
+// between a candidate (no banner) and a saved file (has banner) is consistent.
 export function normalizeSkill(content) {
   return String(content)
-    .replace(/^---[\s\S]*?---\s*/m, "")   // frontmatter
+    .replace(/<!--[\s\S]*?-->\s*/g, "")   // provenance banner (HTML comment)
+    .replace(/^---[\s\S]*?---\s*/m, "")   // YAML frontmatter
     .toLowerCase()
     .replace(/[^\w\s]/g, " ")
     .replace(/\s+/g, " ")
