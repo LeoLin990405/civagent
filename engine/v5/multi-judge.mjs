@@ -9,14 +9,21 @@ import { runJudge, DEFAULT_JUDGE_CHAIN, resolveJudgeChain } from "./judge.mjs";
 
 // Replace each civ name in `prompt` with an anonymous label and return both the
 // anonymized prompt and the mapping needed to reverse it.
+//
+// Replacement is done in descending name-length order so that longer names
+// (e.g. "china/jin-jurchen") are substituted before any shorter name that is a
+// prefix of them (e.g. "china/jin"), preventing partial corruption like
+// "Civ-A-jurchen" appearing in the output.
 export function anonymizePrompt(prompt, civNames) {
   const map = civNames.map((name, i) => ({
     real: name,
     anon: `Civ-${String.fromCharCode(65 + i)}`, // Civ-A, Civ-B, …
   }));
+  // Sort a scratch copy by descending length; the `map` index stays unchanged
+  // so Civ-A always refers to civNames[0] in the caller's de-anonymize step.
+  const byLength = [...map].sort((a, b) => b.real.length - a.real.length);
   let out = String(prompt);
-  for (const { real, anon } of map) {
-    // Replace all occurrences; use a simple split-join to avoid regex escaping.
+  for (const { real, anon } of byLength) {
     out = out.split(real).join(anon);
   }
   return { prompt: out, map };
@@ -134,7 +141,10 @@ export function runMultiJudge(basePrompt, civResults, {
   timeout = 120_000,
   _runJudge = runJudge,
 } = {}) {
-  const chain = resolveJudgeChain(judgeChain).slice(0, judgesN);
+  // Resolve the full chain — do NOT slice yet.  We iterate until we have
+  // collected judgesN *successful* judge results, skipping unavailable
+  // providers rather than letting them consume one of the N slots.
+  const chain = resolveJudgeChain(judgeChain);
   if (!chain.length) {
     return { scores: new Map(), verdict: "No judges available", providers: [] };
   }
@@ -142,14 +152,20 @@ export function runMultiJudge(basePrompt, civResults, {
   const civNames = civResults.map((r) => r.regime);
   const { prompt: anonPrompt, map } = anonymizePrompt(basePrompt, civNames);
 
-  const judgeResults = chain.map((provider) => {
+  const judgeResults = [];
+  let successCount = 0;
+  for (const provider of chain) {
+    if (successCount >= judgesN) break;
     try {
       const r = _runJudge(anonPrompt, { providers: [provider], timeout });
-      return { provider: r.provider, scores: parseScoreTable(r.output), raw: r.output };
+      const scores = parseScoreTable(r.output);
+      judgeResults.push({ provider: r.provider, scores, raw: r.output });
+      if (scores && scores.size > 0) successCount++;
     } catch (e) {
-      return { provider, scores: null, raw: null, error: e.message };
+      // Provider unavailable — record the failure but keep trying the rest.
+      judgeResults.push({ provider, scores: null, raw: null, error: e.message });
     }
-  });
+  }
 
   return aggregateJudgements(judgeResults, map);
 }
