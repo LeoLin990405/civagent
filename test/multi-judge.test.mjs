@@ -179,3 +179,48 @@ test("aggregateJudgements uses only successful judges when mixed", () => {
   assert.equal(result.providers.length, 1);
   assert.equal(result.providers[0], "codex");
 });
+
+// ── runMultiJudge ─────────────────────────────────────────────────────────────
+
+test("runMultiJudge fills requested judge count from later providers after failures", () => {
+  const calls = [];
+  const output = `
+| Rank | Civilization | Score /10 |
+|---|---|---|
+| 1 | Civ-A | 8 |
+`;
+  const result = runMultiJudge("### china/tang\ntext", [{ regime: "china/tang" }], {
+    judgesN: 2,
+    _runJudge: (_prompt, { providers }) => {
+      const provider = providers[0];
+      calls.push(provider);
+      if (provider === "codex") throw new Error("codex unavailable");
+      return { provider, output };
+    },
+  });
+
+  assert.deepEqual(calls, ["codex", "opencode-reviewer", "cn-glm"]);
+  assert.deepEqual(result.providers, ["opencode-reviewer", "cn-glm"]);
+  assert.equal(result.scores.get("china/tang").judgeCount, 2);
+});
+
+test("runMultiJudge stops once the requested number of successful judges is reached", () => {
+  const calls = [];
+  const output = `
+| Rank | Civilization | Score /10 |
+|---|---|---|
+| 1 | Civ-A | 8 |
+`;
+  const result = runMultiJudge("### china/tang\ntext", [{ regime: "china/tang" }], {
+    judgesN: 2,
+    _runJudge: (_prompt, { providers }) => {
+      const provider = providers[0];
+      calls.push(provider);
+      if (provider === "cn-glm") throw new Error("should not call third provider");
+      return { provider, output };
+    },
+  });
+
+  assert.deepEqual(calls, ["codex", "opencode-reviewer"]);
+  assert.deepEqual(result.providers, ["codex", "opencode-reviewer"]);
+});
