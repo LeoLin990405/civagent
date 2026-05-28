@@ -1,5 +1,27 @@
 # 📜 Changelog
 
+## v5.2.0 (unreleased) — R2 Evaluation & Learning Quality 🏛️
+
+Multi-judge blind evaluation, skill deduplication, match replay, and prompt-bank (iteration plan: [ITERATION_PLAN.md](./ITERATION_PLAN.md), Round 2).
+
+### Added
+- **`engine/v5/multi-judge.mjs`** — blind multi-judge aggregation for tournaments. Civ names are anonymized (Civ-A, Civ-B …) before each judge sees the transcript to prevent name-recognition bias. N independent providers run in sequence; their scores are parsed from Markdown tables and averaged. De-anonymization restores real regime ids in the final `Map<regime, scores>`. (`anonymizePrompt`, `parseScoreTable`, `aggregateJudgements`, `runMultiJudge`)
+- **`engine/v5/skill-quality.mjs`** — deterministic skill deduplication (no LLM calls). SHA-256 fingerprints catch exact duplicates; word-level Jaccard similarity (threshold 0.6, words >3 chars) catches near-duplicates. `analyzeSkillsDir` produces a full quality report: total, duplicate groups, unique topics, first/last sedimentation dates.
+- **`engine/v5/replay.mjs`** — re-run a past match with identical regime/backend/task. Reads `meta.json` from the original match, mints a new `matchId` with a `replay-` prefix, writes a `replayOf` lineage field, and spawns `run-v5.mjs` with injectable `_spawn`/`_runV5` for testability.
+- **`engine/prompts/governance-scenarios.json`** — 10 curated governance challenge scenarios (military, political, economic, diplomatic, crisis) for use with `--prompt-bank`.
+- **`civagent tournament --multi-judge [--judges N]`** — run N judges in blind mode; default N=2.
+- **`civagent tournament --prompt-bank [--seed N]`** — pick a random (or seeded) scenario from the built-in prompt bank.
+- **`civagent replay <matchId>`** — re-run any past match.
+- **`civagent skills <regime> --stats`** — show dedup quality analysis for a regime's skill library.
+- **Tests** — 32 → 55: `multi-judge.test.mjs` (11 cases), `skill-quality.test.mjs` (16 cases), `replay.test.mjs` (7 cases).
+
+### Changed
+- **`engine/v5/skill-sediment.mjs`** — near-duplicate gate added before writing a skill file; uses `findDuplicate` from `skill-quality.mjs`.
+- **`engine/v5/tournament.mjs`** — judge logic refactored into `buildJudgePrompt`/`judgeSingle`/`judgeMulti`; `runTournament` accepts `multiJudge` and `judgesN`; `pickScenario` added for prompt-bank.
+- **`package.json` `lint:syntax`** — includes `multi-judge.mjs`, `skill-quality.mjs`, `replay.mjs`.
+
+---
+
 ## v5.1.0 (unreleased) — R1 Engine Robustness 🔧
 
 Backend robustness pass (iteration plan: [ITERATION_PLAN.md](./ITERATION_PLAN.md), Round 1). Focus: correctness, concurrency safety, and removing the hard external dependency on Gemini.

@@ -16,6 +16,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { validateRegime } from "./civ-memory.mjs";
 import { runJudge } from "./judge.mjs";
+import { runMultiJudge } from "./multi-judge.mjs";
 import { readMatchText, eventsPath } from "./events.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -79,27 +80,31 @@ function runCiv({ regime, backend }, task, tournamentId, outDir) {
   });
 }
 
-async function judge(task, civResults) {
+// Build the judge input sections from civ results.
+function buildJudgePrompt(task, civResults) {
   const sections = civResults
     .map((r) => {
-      // Prefer the structured event stream; fall back to the raw process log.
       const text =
         readMatchText(r.matchId, 6000) ||
         (fs.existsSync(r.logFile) ? fs.readFileSync(r.logFile, "utf8").slice(-6000) : "(no output)");
       return `### ${r.regime} (backend ${r.backend}, exit ${r.code})\n\n\`\`\`\n${text}\n\`\`\``;
     })
     .join("\n\n---\n\n");
+  return `${JUDGE_PROMPT}\n\n## Task\n${task}\n\n## Civilization Transcripts\n\n${sections}`;
+}
 
-  const prompt = `${JUDGE_PROMPT}\n\n## Task\n${task}\n\n## Civilization Transcripts\n\n${sections}`;
+// Single-judge path (fallback when multi-judge is disabled).
+async function judgeSingle(task, civResults) {
+  const prompt = buildJudgePrompt(task, civResults);
   try {
     const r = runJudge(prompt);
     return {
-      provider: r.provider,
+      providers: [r.provider],
       md: `# Tournament — ${new Date().toISOString()}\n\n**Task:** ${task}\n**Judge:** ${r.provider}\n\n${r.output}`,
     };
   } catch (e) {
     return {
-      provider: null,
+      providers: [],
       md:
         `# Tournament Result — judge unavailable\n\n${e.message}\n\n` +
         `Raw civ exit codes:\n${civResults.map((c) => `- ${c.regime} (${c.backend}): ${c.code}`).join("\n")}`,
@@ -107,7 +112,25 @@ async function judge(task, civResults) {
   }
 }
 
-export async function runTournament({ civs, task }) {
+// Multi-judge blind evaluation path.
+async function judgeMulti(task, civResults, judgesN) {
+  const prompt = buildJudgePrompt(task, civResults);
+  try {
+    const r = runMultiJudge(prompt, civResults, { judgesN });
+    const scoresText = r.scores.size
+      ? [...r.scores.entries()]
+          .map(([civ, s]) => `| ${civ} | ${s.legality.toFixed(1)} | ${s.feasibility.toFixed(1)} | ${s.resilience.toFixed(1)} | ${s.avg.toFixed(1)} |`)
+          .join("\n")
+      : "(no scores parsed)";
+    const header = `| Civilization | Legality | Feasibility | Resilience | Avg |\n|---|---|---|---|---|`;
+    const md = `# Tournament — ${new Date().toISOString()}\n\n**Task:** ${task}\n**Judges (blind):** ${r.providers.join(", ")}\n\n${header}\n${scoresText}\n\n---\n\n${r.verdict}`;
+    return { providers: r.providers, scores: r.scores, md };
+  } catch (e) {
+    return { providers: [], md: `# Tournament Result — multi-judge error\n\n${e.message}` };
+  }
+}
+
+export async function runTournament({ civs, task, multiJudge = false, judgesN = 2 }) {
   if (!civs.length || !task) throw new Error("need --civs and a task");
   const parsed = civs.map(parseCiv);
 
@@ -115,10 +138,13 @@ export async function runTournament({ civs, task }) {
   const outDir = path.join(TOURNAMENTS_DIR, id);
   fs.mkdirSync(outDir, { recursive: true });
 
-  console.error(`[tournament] ${id}  civs=${parsed.map((c) => c.regime).join(",")}  out=${outDir}`);
+  console.error(`[tournament] ${id}  civs=${parsed.map((c) => c.regime).join(",")}  multi=${multiJudge}  out=${outDir}`);
   const results = await Promise.all(parsed.map((c) => runCiv(c, task, id, outDir)));
 
-  const verdict = await judge(task, results);
+  const verdict = multiJudge
+    ? await judgeMulti(task, results, judgesN)
+    : await judgeSingle(task, results);
+
   const resultFile = path.join(outDir, "result.md");
   fs.writeFileSync(resultFile, verdict.md);
 
@@ -127,6 +153,7 @@ export async function runTournament({ civs, task }) {
     id,
     task,
     createdAt: Date.now(),
+    multiJudge,
     civs: results.map((r) => ({
       regime: r.regime,
       backend: r.backend,
@@ -134,7 +161,7 @@ export async function runTournament({ civs, task }) {
       exitCode: r.code,
       events: eventsPath(r.matchId),
     })),
-    judge: { provider: verdict.provider, resultPath: resultFile },
+    judge: { providers: verdict.providers, resultPath: resultFile },
   };
   fs.writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify(manifest, null, 2));
 
@@ -143,19 +170,50 @@ export async function runTournament({ civs, task }) {
   return { id, resultFile, results, manifest };
 }
 
+// Pick a random scenario from the built-in prompt bank.
+export function pickScenario({ seed } = {}) {
+  const scenarios = JSON.parse(
+    fs.readFileSync(path.join(__dirname, "..", "prompts", "governance-scenarios.json"), "utf8")
+  );
+  const idx = seed != null
+    ? Math.abs(Number(seed)) % scenarios.length
+    : Math.floor(Math.random() * scenarios.length);
+  return scenarios[idx];
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   const args = process.argv.slice(2);
   let civs = [];
+  let multiJudge = false;
+  let judgesN = 2;
+  let promptBank = false;
+  let seed;
   const rest = [];
+
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--civs" && args[i + 1]) {
       civs = args[++i].split(",").map((s) => s.trim()).filter(Boolean);
+    } else if (args[i] === "--multi-judge") {
+      multiJudge = true;
+    } else if (args[i] === "--judges" && args[i + 1]) {
+      judgesN = parseInt(args[++i], 10);
+    } else if (args[i] === "--prompt-bank") {
+      promptBank = true;
+    } else if (args[i] === "--seed" && args[i + 1]) {
+      seed = args[++i];
     } else {
       rest.push(args[i]);
     }
   }
-  const task = rest.join(" ").trim();
-  runTournament({ civs, task }).catch((e) => {
+
+  let task = rest.join(" ").trim();
+  if (promptBank && !task) {
+    const scenario = pickScenario({ seed });
+    task = scenario.prompt;
+    console.error(`[tournament] using prompt-bank scenario: ${scenario.id}`);
+  }
+
+  runTournament({ civs, task, multiJudge, judgesN }).catch((e) => {
     console.error(e);
     process.exit(1);
   });
