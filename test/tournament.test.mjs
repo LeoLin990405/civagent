@@ -1,6 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { parseCiv, civSpawnSpec } from "../engine/v5/tournament.mjs";
+import fs from "node:fs";
+import { parseCiv, civSpawnSpec, buildJudgePrompt } from "../engine/v5/tournament.mjs";
+import { matchDir } from "../engine/v5/events.mjs";
 
 test("parseCiv handles plain regime and regime#backend", () => {
   assert.deepEqual(parseCiv("china/tang"), { regime: "china/tang", backend: "native" });
@@ -32,4 +34,19 @@ test("each civ gets its own match id via env — no shared mutable state", () =>
   const b = civSpawnSpec({ regime: "china/qin", backend: "native", matchId: "T__china-qin" });
   assert.notEqual(a.env.CIVAGENT_MATCH_ID, b.env.CIVAGENT_MATCH_ID);
   assert.equal(a.env.CIVAGENT_MATCH_ID, "T__china-tang");
+});
+
+test("buildJudgePrompt hides backend from blind-eval section headers", () => {
+  const matchId = "test-tournament-prompt-backend-hidden";
+  try {
+    const prompt = buildJudgePrompt("task", [
+      { regime: "china/qin", backend: "cn:doubao", matchId, code: 0, logFile: "/no/such/log" },
+    ]);
+
+    assert.ok(prompt.includes("### china/qin (exit 0)"));
+    assert.ok(!prompt.includes("backend cn:doubao"));
+    assert.ok(!prompt.includes("cn:doubao"));
+  } finally {
+    fs.rmSync(matchDir(matchId), { recursive: true, force: true });
+  }
 });

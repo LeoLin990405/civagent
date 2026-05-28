@@ -81,7 +81,7 @@ function runCiv({ regime, backend }, task, tournamentId, outDir) {
 }
 
 // Build the judge input sections from civ results.
-function buildJudgePrompt(task, civResults) {
+export function buildJudgePrompt(task, civResults) {
   const sections = civResults
     .map((r) => {
       const text =
