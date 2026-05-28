@@ -29,6 +29,12 @@ export const OrgChart: React.FC<OrgChartProps> = ({
       setLoading(true);
       try {
         const parts = selectedRegime.id.split('/');
+        if (parts.length < 2) {
+          console.warn('Invalid selected regime ID format:', selectedRegime.id);
+          setRoles([]);
+          setLoading(false);
+          return;
+        }
         const region = parts[0];
         const id = parts[1];
         
@@ -84,6 +90,9 @@ export const OrgChart: React.FC<OrgChartProps> = ({
             model: (parts[3] || '').replace(/`/g, ''),
           });
         }
+      } else if (inTable) {
+        // Exited table - stop parsing
+        break;
       }
     }
     return parsedRoles;
@@ -97,15 +106,22 @@ export const OrgChart: React.FC<OrgChartProps> = ({
   const chinaRegimes = filteredRegimes.filter(r => r.metadata?.region === 'china');
   const globalRegimes = filteredRegimes.filter(r => r.metadata?.region === 'global');
 
-  // Segregate roles into Coordinator (Emperor/Consul/Gensec) and Executors
-  const coordinatorRole = roles.find(r => 
+  // Segregate roles into Coordinators (Emperor/Consul/Gensec/Co-decision peers) and Executors
+  // Supports multiple peer/co-decision top-level roles (e.g. Council/Parliament/Commission co-decision in global/eu)
+  const coordinatorRoles = roles.filter(r => 
     r.responsibility.toLowerCase().includes('coordinator') || 
     r.responsibility.toLowerCase().includes('起草') || 
     r.responsibility.toLowerCase().includes('总管') ||
-    r.responsibility.toLowerCase().includes('调度')
-  ) || roles[0];
+    r.responsibility.toLowerCase().includes('调度') ||
+    r.responsibility.toLowerCase().includes('co-decision') ||
+    r.responsibility.toLowerCase().includes('decider') ||
+    r.responsibility.toLowerCase().includes('decision-maker') ||
+    r.responsibility.toLowerCase().includes('decision maker')
+  );
 
-  const executorRoles = roles.filter(r => r.agentId !== coordinatorRole?.agentId);
+  const finalCoordinators = coordinatorRoles.length > 0 ? coordinatorRoles : [roles[0]];
+  const coordinatorIds = finalCoordinators.map(c => c.agentId);
+  const executorRoles = roles.filter(r => !coordinatorIds.includes(r.agentId));
 
   const getRoleBadgeStyle = (resp: string) => {
     const r = resp.toLowerCase();
@@ -226,15 +242,30 @@ export const OrgChart: React.FC<OrgChartProps> = ({
                   {/* CSS Hierarchical Flow diagram */}
                   <div className="flex flex-col items-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     
-                    {/* Coordinator (Emperor/Consul/General Sec) */}
-                    {coordinatorRole && (
-                      <div className="glass-panel glass-panel-gold p-4 text-center max-w-[280px]" style={{ padding: '14px', border: '1px solid var(--accent-gold)', borderRadius: '12px', textAlign: 'center', width: '280px' }}>
-                        <span className="text-[9px] text-amber-400 font-bold block mb-1 font-heading uppercase tracking-wider flex items-center justify-center gap-1">
-                          <Award size={11} fill="var(--accent-gold)" /> COORDINATOR / DECIDER
-                        </span>
-                        <h4 className="text-sm font-bold text-[var(--text-primary)] mb-0.5">{coordinatorRole.roleName}</h4>
-                        <code className="text-[9px] text-[var(--text-secondary)] font-mono block mb-1.5">{coordinatorRole.agentId}</code>
-                        <p className="text-[11px] text-[var(--text-muted)] leading-relaxed">{coordinatorRole.responsibility}</p>
+                    {/* Coordinators Grid (supports single or co-decision peers) */}
+                    {finalCoordinators.length > 0 && (
+                      <div className="flex flex-wrap justify-center gap-4 w-full mb-2" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px', width: '100%', marginBottom: '8px' }}>
+                        {finalCoordinators.map((coord) => (
+                          <div 
+                            key={coord.agentId}
+                            className="glass-panel glass-panel-gold p-4 text-center w-[250px] relative hover:border-amber-400" 
+                            style={{ 
+                              padding: '14px', 
+                              border: '1px solid var(--accent-gold)', 
+                              borderRadius: '12px', 
+                              textAlign: 'center', 
+                              width: '250px',
+                              background: 'rgba(251,191,36,0.03)'
+                            }}
+                          >
+                            <span className="text-[9px] text-amber-400 font-bold block mb-1 font-heading uppercase tracking-wider flex items-center justify-center gap-1">
+                              <Award size={11} fill="var(--accent-gold)" /> COORDINATOR / DECIDER
+                            </span>
+                            <h4 className="text-sm font-bold text-[var(--text-primary)] mb-0.5">{coord.roleName}</h4>
+                            <code className="text-[9px] text-[var(--text-secondary)] font-mono block mb-1.5">{coord.agentId}</code>
+                            <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">{coord.responsibility}</p>
+                          </div>
+                        ))}
                       </div>
                     )}
 
