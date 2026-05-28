@@ -116,10 +116,14 @@ export const OrgChart: React.FC<OrgChartProps> = ({
     r.responsibility.toLowerCase().includes('co-decision') ||
     r.responsibility.toLowerCase().includes('decider') ||
     r.responsibility.toLowerCase().includes('decision-maker') ||
-    r.responsibility.toLowerCase().includes('decision maker')
+    r.responsibility.toLowerCase().includes('decision maker') ||
+    r.responsibility.toLowerCase().includes('co-legislat') ||
+    r.responsibility.toLowerCase().includes('proposes legislation') ||
+    r.responsibility.toLowerCase().includes('propose legislation')
   );
 
-  const finalCoordinators = coordinatorRoles.length > 0 ? coordinatorRoles : [roles[0]];
+  const finalCoordinators =
+    coordinatorRoles.length > 0 ? coordinatorRoles : roles.length > 0 ? [roles[0]] : [];
   const coordinatorIds = finalCoordinators.map(c => c.agentId);
   const executorRoles = roles.filter(r => !coordinatorIds.includes(r.agentId));
 
