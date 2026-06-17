@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { resolveBackend, isKnownBackend } from "../engine/v5/backends.mjs";
+import { resolveBackend, isKnownBackend, buildBackendArgs } from "../engine/v5/backends.mjs";
 
 test("resolveBackend maps native + cc forks to commands", () => {
   assert.equal(resolveBackend("native"), "claude");
@@ -34,4 +34,27 @@ test("isKnownBackend reflects resolveBackend", () => {
   assert.ok(isKnownBackend("cn:kimi"));
   assert.ok(!isKnownBackend("gemini"));
   assert.ok(!isKnownBackend("nope"));
+});
+
+// ── buildBackendArgs ────────────────────────────────────────────────────────
+
+test("buildBackendArgs: with prompt returns full args array", () => {
+  const result = buildBackendArgs({ agentsJson: '{"agents":[]}', prompt: "do something" });
+  assert.deepEqual(result, ["--agents", '{"agents":[]}', "-p", "do something"]);
+});
+
+test("buildBackendArgs: empty-string prompt omits -p", () => {
+  const result = buildBackendArgs({ agentsJson: '{"agents":[]}', prompt: "" });
+  assert.deepEqual(result, ["--agents", '{"agents":[]}']);
+});
+
+test("buildBackendArgs: undefined prompt omits -p", () => {
+  const result = buildBackendArgs({ agentsJson: '{"agents":[]}', prompt: undefined });
+  assert.deepEqual(result, ["--agents", '{"agents":[]}']);
+});
+
+test("buildBackendArgs: agentsJson is passed through verbatim", () => {
+  const json = JSON.stringify({ agents: [{ id: "rome", skills: [] }], extra: true });
+  const result = buildBackendArgs({ agentsJson: json, prompt: "go" });
+  assert.equal(result[1], json);
 });

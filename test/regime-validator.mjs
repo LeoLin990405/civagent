@@ -5,6 +5,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { convertRegime } from "../engine/regime-to-cc.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const REGIMES = path.join(ROOT, "regimes");
@@ -52,6 +53,15 @@ for (const region of fs.readdirSync(REGIMES)) {
     check(meta.name?.zh && meta.name?.en, `${tag}: name.zh and name.en required`);
     check(meta.era?.zh, `${tag}: era.zh required`);
     check(typeof meta.agentCount === "number", `${tag}: agentCount must be number`);
+    // agentCount must mirror the compiled agent count — IDENTITY.md role table is
+    // the source of truth (see engine/regime-to-cc.mjs). Guards against silent drift.
+    try {
+      const compiled = Object.keys(convertRegime(regimeDir).agents).length;
+      check(meta.agentCount === compiled,
+        `${tag}: agentCount=${meta.agentCount} but compiles to ${compiled} agents (IDENTITY.md table is source of truth)`);
+    } catch (e) {
+      warnings.push(`${tag}: could not compile to verify agentCount — ${e.message}`);
+    }
     check(Array.isArray(meta.tags), `${tag}: tags must be array`);
     check(VALID_PATTERNS.has(meta.orchestrationPattern),
       `${tag}: orchestrationPattern "${meta.orchestrationPattern}" not recognized (canonical or alias)`);

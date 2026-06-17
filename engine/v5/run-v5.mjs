@@ -12,7 +12,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { ensureCivHome, validateRegime } from "./civ-memory.mjs";
 import { sediment } from "./skill-sediment.mjs";
-import { resolveBackend } from "./backends.mjs";
+import { resolveBackend, buildBackendArgs } from "./backends.mjs";
 import { EventLog, writeMeta, eventsPath } from "./events.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -112,8 +112,7 @@ async function main() {
     CIVAGENT_BACKEND: backend,
   };
   fs.mkdirSync(env.XDG_CONFIG_HOME, { recursive: true });
-  const ccArgs = ["--agents", agentsJson];
-  if (prompt) ccArgs.push("-p", prompt);
+  const ccArgs = buildBackendArgs({ agentsJson, prompt });
 
   const cc = spawn(command, ccArgs, { env, stdio: ["inherit", "pipe", "inherit"] });
   cc.stdout.on("data", (chunk) => {
