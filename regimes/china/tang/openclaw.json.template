@@ -1,5 +1,5 @@
 {
-  "_attribution": "Original configuration by @wanikua. Preserved from boluobobo-ai-court-tutorial.",
+  "_attribution": "CivAgent V5 - Historical Rectification: Three Departments and Six Ministries (San Sheng Liu Bu)",
   "models": {
     "providers": {
       "{{PROVIDER}}": {
@@ -14,12 +14,27 @@
     }
   },
   "agents": {
-    "main": "silijian",
+    "main": "zhongshu",
     "list": [
       {
-        "id": "silijian",
-        "name": "司礼监",
-        "description": "大内总管 — 批红·调度·统领。接收圣旨、分派任务、协调各部。",
+        "id": "zhongshu",
+        "name": "中书省",
+        "description": "最高决策起草机构（Drafting）。负责接收初始任务，拟定初步政策方略，并必须提交给门下省审核。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" },
+        "subagents": {
+          "allowAgents": ["menxia", "shangshu"]
+        }
+      },
+      {
+        "id": "menxia",
+        "name": "门下省",
+        "description": "最高审议机构（Review & Veto）。负责对中书省的提案进行封驳审核。如果有任何不合理、违规或漏洞，必须动用否决权（Veto）驳回。只有通过门下省审核的方案才能交由尚书省执行。",
+        "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
+      },
+      {
+        "id": "shangshu",
+        "name": "尚书省",
+        "description": "最高行政执行机构（Execution）。接收通过门下省审核的政令，统领并分派给六部（吏户礼兵刑工）去落实细节。",
         "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" },
         "subagents": {
           "allowAgents": ["bingbu", "hubu", "libu_ritual", "gongbu", "xingbu", "libu_personnel"]
@@ -28,43 +43,45 @@
       {
         "id": "bingbu",
         "name": "兵部",
-        "description": "软件工程 — 写代码、架构设计、代码审查、Bug修复。",
+        "description": "软件工程/武备 — 写代码、架构设计、军事防御、代码审查。",
         "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
       },
       {
         "id": "hubu",
         "name": "户部",
-        "description": "财务运营 — 成本分析、预算管控、数据分析。",
+        "description": "财务运营/赋税 — 成本核算、财政预算管控、人口与数据分析。",
         "model": { "primary": "{{PROVIDER}}/{{STRONG_MODEL}}" }
       },
       {
         "id": "libu_ritual",
         "name": "礼部",
-        "description": "品牌营销 — 文案创作、社媒运营、内容策划。",
+        "description": "品牌营销/礼制 — 文案创作、社媒运营、对外交流礼仪。",
         "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
       },
       {
         "id": "gongbu",
         "name": "工部",
-        "description": "运维部署 — DevOps、CI/CD、服务器管理、基础设施。",
+        "description": "运维部署/工程 — DevOps、基础设施建设、防御工事加固。",
         "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
       },
       {
         "id": "xingbu",
         "name": "刑部",
-        "description": "法务合规 — 合同审查、知识产权、合规检查。",
+        "description": "法务合规/司法 — 合同审查、安全风控、刑罚决断。",
         "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
       },
       {
         "id": "libu_personnel",
         "name": "吏部",
-        "description": "项目管理 — 创业孵化、任务追踪、团队协调。",
+        "description": "项目管理/人事 — 官员铨选、任务追踪、团队协同。",
         "model": { "primary": "{{PROVIDER}}/{{FAST_MODEL}}" }
       }
     ]
   },
   "bindings": [
-    { "channel": "discord", "accountId": "{{SILIJIAN_BOT}}", "agentId": "silijian" },
+    { "channel": "discord", "accountId": "{{ZHONGSHU_BOT}}", "agentId": "zhongshu" },
+    { "channel": "discord", "accountId": "{{MENXIA_BOT}}", "agentId": "menxia" },
+    { "channel": "discord", "accountId": "{{SHANGSHU_BOT}}", "agentId": "shangshu" },
     { "channel": "discord", "accountId": "{{BINGBU_BOT}}", "agentId": "bingbu" },
     { "channel": "discord", "accountId": "{{HUBU_BOT}}", "agentId": "hubu" },
     { "channel": "discord", "accountId": "{{LIBU_RITUAL_BOT}}", "agentId": "libu_ritual" },

@@ -136,43 +136,41 @@ export const OrgChart: React.FC<OrgChartProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-4 gap-6" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px' }}>
+    <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 h-full">
       
       {/* Sidebar - Regimes Selector */}
-      <div className="lg:col-span-1 glass-panel p-5 flex flex-col h-[540px] overflow-hidden" style={{ gridColumn: 'span 1', display: 'flex', flexDirection: 'column', height: '540px', padding: '20px', borderRadius: '12px' }}>
+      <div className="lg:col-span-1 glass-panel p-5 flex flex-col h-full max-h-[600px] overflow-hidden rounded-xl">
         
         {/* Search */}
-        <div className="mb-4 shrink-0" style={{ marginBottom: '16px' }}>
+        <div className="mb-5 shrink-0">
           <input
             type="text"
             placeholder="Search regimes..."
-            className="w-full text-xs"
+            className="w-full text-sm bg-[var(--bg-glass-light)] border border-[var(--border-subtle)] rounded-lg px-4 py-2.5 focus:border-[var(--accent-cyan)] focus:shadow-[var(--shadow-glow-cyan)] transition-all outline-none"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            style={{ width: '100%', fontSize: '12px' }}
           />
         </div>
 
         {/* List scroll */}
-        <div className="flex-1 overflow-y-auto space-y-4 pr-1 scroll-fade-y" style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="flex-1 overflow-y-auto space-y-6 pr-2 scroll-fade-y">
           
           {/* China Dynasties */}
           {chinaRegimes.length > 0 && (
-            <div className="space-y-1.5" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <span className="text-[10px] text-cyan-400 font-mono font-bold uppercase tracking-wider block" style={{ display: 'block', fontSize: '10px' }}>
+            <div className="space-y-2">
+              <span className="text-[10px] text-[var(--accent-cyan)] font-mono font-bold uppercase tracking-widest block mb-1">
                 CHINA DYNASTIES ({chinaRegimes.length})
               </span>
-              <div className="space-y-1" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div className="space-y-1.5">
                 {chinaRegimes.map((r) => (
                   <button
                     key={r.id}
                     onClick={() => onSelectRegime(r)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold tracking-wide border transition-all ${
+                    className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-bold tracking-wide border transition-all ${
                       selectedRegime?.id === r.id
-                        ? 'bg-[rgba(0,240,255,0.06)] border-[rgba(0,240,255,0.3)] text-[var(--accent-cyan)] shadow-[0_0_8px_rgba(0,240,255,0.05)]'
-                        : 'bg-transparent border-transparent text-[var(--text-secondary)] hover:bg-[rgba(255,255,255,0.02)]'
+                        ? 'bg-[var(--bg-glass-medium)] border-[var(--border-glow-cyan)] text-[var(--accent-cyan)] shadow-[var(--shadow-glow-cyan)]'
+                        : 'bg-transparent border-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-glass-light)]'
                     }`}
-                    style={{ fontSize: '11px', textAlign: 'left', padding: '8px 12px' }}
                   >
                     {r.id.split('/').pop()?.replace('-', ' ')}
                   </button>
@@ -183,21 +181,20 @@ export const OrgChart: React.FC<OrgChartProps> = ({
 
           {/* Global Empires */}
           {globalRegimes.length > 0 && (
-            <div className="space-y-1.5" style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-              <span className="text-[10px] text-purple-400 font-mono font-bold uppercase tracking-wider block" style={{ display: 'block', fontSize: '10px' }}>
+            <div className="space-y-2">
+              <span className="text-[10px] text-[var(--accent-purple)] font-mono font-bold uppercase tracking-widest block mb-1">
                 GLOBAL EMPIRES ({globalRegimes.length})
               </span>
-              <div className="space-y-1" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+              <div className="space-y-1.5">
                 {globalRegimes.map((r) => (
                   <button
                     key={r.id}
                     onClick={() => onSelectRegime(r)}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-xs font-semibold tracking-wide border transition-all ${
+                    className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-bold tracking-wide border transition-all ${
                       selectedRegime?.id === r.id
-                        ? 'bg-[rgba(0,240,255,0.06)] border-[rgba(0,240,255,0.3)] text-[var(--accent-cyan)] shadow-[0_0_8px_rgba(0,240,255,0.05)]'
-                        : 'bg-transparent border-transparent text-[var(--text-secondary)] hover:bg-[rgba(255,255,255,0.02)]'
+                        ? 'bg-[var(--bg-glass-medium)] border-[var(--border-glow-purple)] text-[var(--accent-purple)] shadow-[var(--shadow-glow-purple)]'
+                        : 'bg-transparent border-transparent text-[var(--text-secondary)] hover:bg-[var(--bg-glass-light)]'
                     }`}
-                    style={{ fontSize: '11px', textAlign: 'left', padding: '8px 12px' }}
                   >
                     {r.id.split('/').pop()?.replace('-', ' ')}
                   </button>
@@ -211,63 +208,55 @@ export const OrgChart: React.FC<OrgChartProps> = ({
       </div>
 
       {/* Main Org Chart Workspace */}
-      <div className="lg:col-span-3 glass-panel p-6 flex flex-col h-[540px] overflow-hidden" style={{ gridColumn: 'span 3', display: 'flex', flexDirection: 'column', height: '540px', padding: '24px', borderRadius: '12px' }}>
+      <div className="lg:col-span-3 glass-panel p-6 flex flex-col h-full max-h-[600px] overflow-hidden rounded-xl">
         {selectedRegime ? (
-          <div className="flex flex-col h-full overflow-hidden" style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+          <div className="flex flex-col h-full overflow-hidden">
             
             {/* Header */}
-            <div className="flex items-center justify-between pb-3 border-b border-[rgba(255,255,255,0.06)] shrink-0" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '12px' }}>
+            <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)] shrink-0">
               <div>
-                <h3 className="text-base font-bold text-[var(--text-primary)] uppercase tracking-wider" style={{ fontSize: '16px', fontWeight: 700 }}>
+                <h3 className="text-xl font-black text-[var(--text-primary)] uppercase tracking-widest">
                   {selectedRegime.id.split('/').pop()?.replace('-', ' ')} Organizational Architecture
                 </h3>
-                <span className="text-[10px] text-[var(--text-secondary)] font-mono block">
-                  EPOCH: {selectedRegime.metadata?.era?.en || 'Ancient'} · PATTERN: {selectedRegime.metadata?.orchestrationPattern}
+                <span className="text-sm text-[var(--text-secondary)] font-mono block mt-1 tracking-wider">
+                  EPOCH: {selectedRegime.metadata?.era?.en || 'Ancient'} · PATTERN: <span className="text-[var(--text-primary)]">{selectedRegime.metadata?.orchestrationPattern}</span>
                 </span>
               </div>
               <span className="live-badge">Form ② Viz</span>
             </div>
 
             {/* Tree Flow / Content Workspace */}
-            <div className="flex-1 overflow-y-auto p-4 mt-4 relative" style={{ flex: 1, overflowY: 'auto', marginTop: '16px' }}>
+            <div className="flex-1 overflow-y-auto p-2 mt-6 relative scroll-fade-y">
               {loading ? (
-                <div className="flex flex-col items-center justify-center h-full gap-3 text-[var(--text-muted)]" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '12px' }}>
-                  <Loader2 className="animate-spin text-[var(--accent-cyan)]" size={32} />
-                  <span>Compiling historical identity manifests...</span>
+                <div className="flex flex-col items-center justify-center h-full gap-4 text-[var(--text-muted)]">
+                  <Loader2 className="animate-spin text-[var(--accent-cyan)] drop-shadow-[0_0_5px_rgba(0,240,255,0.5)]" size={40} />
+                  <span className="font-bold tracking-widest uppercase text-sm">Compiling historical identity manifests...</span>
                 </div>
               ) : roles.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full gap-2 text-[var(--text-muted)]" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '8px' }}>
-                  <ShieldAlert size={36} className="text-[rgba(255,255,255,0.1)]" />
-                  <span>IDENTITY.md role mappings not loaded or empty.</span>
+                <div className="flex flex-col items-center justify-center h-full gap-4 text-[var(--text-muted)]">
+                  <ShieldAlert size={48} className="text-[rgba(255,255,255,0.1)]" />
+                  <span className="font-bold tracking-widest uppercase text-sm">IDENTITY.md role mappings not loaded or empty.</span>
                 </div>
               ) : (
-                <div className="space-y-8 animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
+                <div className="space-y-12 animate-fade-in">
                   
                   {/* CSS Hierarchical Flow diagram */}
-                  <div className="flex flex-col items-center" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <div className="flex flex-col items-center">
                     
                     {/* Coordinators Grid (supports single or co-decision peers) */}
                     {finalCoordinators.length > 0 && (
-                      <div className="flex flex-wrap justify-center gap-4 w-full mb-2" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px', width: '100%', marginBottom: '8px' }}>
+                      <div className="flex flex-wrap justify-center gap-6 w-full mb-4">
                         {finalCoordinators.map((coord) => (
                           <div 
                             key={coord.agentId}
-                            className="glass-panel glass-panel-gold p-4 text-center w-[250px] relative hover:border-amber-400" 
-                            style={{ 
-                              padding: '14px', 
-                              border: '1px solid var(--accent-gold)', 
-                              borderRadius: '12px', 
-                              textAlign: 'center', 
-                              width: '250px',
-                              background: 'rgba(251,191,36,0.03)'
-                            }}
+                            className="glass-panel glass-panel-gold p-5 text-center w-[280px] relative transition-transform hover:-translate-y-1 hover:shadow-[var(--shadow-glow-gold)] border-[var(--border-glow-gold)]" 
                           >
-                            <span className="text-[9px] text-amber-400 font-bold block mb-1 font-heading uppercase tracking-wider flex items-center justify-center gap-1">
-                              <Award size={11} fill="var(--accent-gold)" /> COORDINATOR / DECIDER
+                            <span className="text-[10px] text-[var(--accent-gold)] font-black block mb-2 font-heading uppercase tracking-widest flex items-center justify-center gap-2 drop-shadow-[0_0_3px_rgba(255,215,0,0.5)]">
+                              <Award size={14} fill="var(--accent-gold)" /> COORDINATOR / DECIDER
                             </span>
-                            <h4 className="text-sm font-bold text-[var(--text-primary)] mb-0.5">{coord.roleName}</h4>
-                            <code className="text-[9px] text-[var(--text-secondary)] font-mono block mb-1.5">{coord.agentId}</code>
-                            <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">{coord.responsibility}</p>
+                            <h4 className="text-base font-black text-[var(--text-primary)] mb-1 uppercase">{coord.roleName}</h4>
+                            <code className="text-xs text-[var(--accent-gold)] font-mono block mb-2">{coord.agentId}</code>
+                            <p className="text-xs text-[var(--text-muted)] leading-relaxed">{coord.responsibility}</p>
                           </div>
                         ))}
                       </div>
@@ -275,31 +264,23 @@ export const OrgChart: React.FC<OrgChartProps> = ({
 
                     {/* Vertical connecting line */}
                     {executorRoles.length > 0 && (
-                      <div style={{ width: '2px', height: '32px', background: 'linear-gradient(to bottom, var(--accent-gold), var(--accent-cyan))' }}></div>
+                      <div className="w-1 h-12 bg-gradient-to-b from-[var(--accent-gold)] to-[var(--accent-cyan)] shadow-[0_0_5px_rgba(0,240,255,0.5)] rounded-full mb-4"></div>
                     )}
 
                     {/* Executors Horizontal Grid */}
                     {executorRoles.length > 0 && (
-                      <div className="flex flex-wrap justify-center gap-4 w-full" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '16px', width: '100%' }}>
+                      <div className="flex flex-wrap justify-center gap-5 w-full">
                         {executorRoles.map((exec) => (
                           <div 
                             key={exec.agentId} 
-                            className="glass-panel p-3.5 text-center w-[210px] hover:border-[rgba(0,240,255,0.25)] relative"
-                            style={{ 
-                              padding: '14px', 
-                              borderRadius: '8px', 
-                              width: '210px', 
-                              textAlign: 'center',
-                              background: 'rgba(18,20,32,0.4)',
-                              border: '1px solid rgba(255,255,255,0.04)'
-                            }}
+                            className="glass-panel p-4 text-center w-[240px] transition-transform hover:-translate-y-1 hover:border-[var(--border-glow-cyan)] hover:shadow-[var(--shadow-glow-cyan)] relative bg-[var(--bg-surface-raised)] border-[var(--border-subtle)]"
                           >
-                            <span className={`role-badge ${getRoleBadgeStyle(exec.responsibility)}`} style={{ fontSize: '8px', padding: '1px 5px', display: 'inline-block', marginBottom: '6px' }}>
+                            <span className={`role-badge ${getRoleBadgeStyle(exec.responsibility)}`}>
                               {exec.responsibility.includes('Review') || exec.responsibility.includes('审核') ? 'REVIEWER' : 'EXECUTOR'}
                             </span>
-                            <h5 className="text-xs font-bold text-[var(--text-primary)] mb-0.5">{exec.roleName}</h5>
-                            <code className="text-[9px] text-[var(--text-secondary)] font-mono block mb-1">{exec.agentId}</code>
-                            <p className="text-[10px] text-[var(--text-muted)] leading-relaxed">{exec.responsibility}</p>
+                            <h5 className="text-sm font-black text-[var(--text-primary)] mb-1 mt-2 uppercase">{exec.roleName}</h5>
+                            <code className="text-[10px] text-[var(--accent-cyan)] font-mono block mb-2">{exec.agentId}</code>
+                            <p className="text-xs text-[var(--text-muted)] leading-relaxed">{exec.responsibility}</p>
                           </div>
                         ))}
                       </div>
@@ -308,30 +289,30 @@ export const OrgChart: React.FC<OrgChartProps> = ({
                   </div>
 
                   {/* Tabular Details Section */}
-                  <div className="glass-panel p-4 bg-[rgba(10,11,16,0.3)] border-[rgba(255,255,255,0.04)] text-xs rounded-lg" style={{ padding: '16px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.04)', background: 'rgba(10,11,16,0.3)', fontSize: '12px' }}>
-                    <div className="flex items-center gap-2 text-cyan-400 mb-3" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-cyan)', marginBottom: '12px' }}>
-                      <Users size={13} />
-                      <h4 className="font-heading font-bold uppercase tracking-wider text-[10px]">
+                  <div className="glass-panel p-6 bg-[var(--bg-glass-medium)] border-[var(--border-subtle)] rounded-xl shadow-[inset_var(--shadow-glass)]">
+                    <div className="flex items-center gap-3 text-[var(--accent-cyan)] mb-4 border-b border-[var(--border-subtle)] pb-3">
+                      <Users size={18} />
+                      <h4 className="font-heading font-black uppercase tracking-widest text-sm drop-shadow-[0_0_3px_rgba(0,240,255,0.3)]">
                         ROLE MAPPING DETAILS & MODEL HIERARCHY
                       </h4>
                     </div>
 
-                    <table className="w-full text-left font-mono text-[11px]" style={{ width: '100%', textAlign: 'left', fontFamily: 'var(--font-mono)', fontSize: '11px', borderCollapse: 'collapse' }}>
+                    <table className="w-full text-left font-mono text-xs">
                       <thead>
-                        <tr className="border-b border-[rgba(255,255,255,0.06)] text-[var(--text-muted)]" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-                          <th className="pb-2">Historical Role</th>
-                          <th className="pb-2">Agent ID</th>
-                          <th className="pb-2">AI Responsibility</th>
-                          <th className="pb-2 text-right">Recommended Model</th>
+                        <tr className="border-b border-[var(--border-subtle)] text-[var(--text-muted)]">
+                          <th className="pb-3 px-2">Historical Role</th>
+                          <th className="pb-3 px-2">Agent ID</th>
+                          <th className="pb-3 px-2">AI Responsibility</th>
+                          <th className="pb-3 px-2 text-right">Recommended Model</th>
                         </tr>
                       </thead>
                       <tbody className="text-[var(--text-secondary)]">
                         {roles.map((role) => (
-                          <tr key={role.agentId} className="border-b border-[rgba(255,255,255,0.03)] hover:text-white" style={{ borderBottom: '1px solid rgba(255,255,255,0.03)' }}>
-                            <td className="py-2.5 font-sans font-semibold text-[var(--text-primary)]">{role.roleName}</td>
-                            <td className="py-2.5 text-cyan-300">{role.agentId}</td>
-                            <td className="py-2.5 text-xs font-sans text-[var(--text-secondary)]">{role.responsibility}</td>
-                            <td className="py-2.5 text-right text-purple-300">{role.model || 'Default'}</td>
+                          <tr key={role.agentId} className="border-b border-[var(--border-subtle)] hover:bg-[var(--bg-glass-light)] transition-colors">
+                            <td className="py-3 px-2 font-sans font-bold text-[var(--text-primary)]">{role.roleName}</td>
+                            <td className="py-3 px-2 text-[var(--accent-cyan)]">{role.agentId}</td>
+                            <td className="py-3 px-2 text-xs font-sans text-[var(--text-secondary)] max-w-[300px] truncate" title={role.responsibility}>{role.responsibility}</td>
+                            <td className="py-3 px-2 text-right text-[var(--accent-purple)] font-bold">{role.model || 'Default'}</td>
                           </tr>
                         ))}
                       </tbody>
@@ -344,9 +325,9 @@ export const OrgChart: React.FC<OrgChartProps> = ({
 
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-[var(--text-muted)] gap-3" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '12px' }}>
-            <Users size={40} className="text-[rgba(255,255,255,0.1)]" />
-            <span>Select a historical regime from the sidebar to inspect its organizational department structure.</span>
+          <div className="flex flex-col items-center justify-center h-full text-[var(--text-muted)] gap-4 text-center p-8">
+            <Users size={64} className="text-[rgba(255,255,255,0.1)] drop-shadow-[0_0_10px_rgba(255,255,255,0.05)]" />
+            <span className="text-lg font-bold tracking-wide">Select a historical regime from the sidebar to inspect its organizational department structure.</span>
           </div>
         )}
       </div>

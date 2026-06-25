@@ -77,17 +77,17 @@ export const RelationshipNetwork: React.FC<RelationshipNetworkProps> = ({ regime
   };
 
   return (
-    <div className="flex flex-col h-[500px] overflow-hidden" style={{ display: 'flex', flexDirection: 'column', height: '500px', overflow: 'hidden' }}>
+    <div className="flex flex-col h-[600px] overflow-hidden">
       
       {/* Description header */}
-      <div className="flex items-center justify-between pb-3 border-b border-[rgba(255,255,255,0.06)] shrink-0 mb-4" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '12px', marginBottom: '16px' }}>
-        <div className="flex items-center gap-2 text-[var(--accent-cyan)] font-heading" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-cyan)' }}>
-          <Network size={15} />
-          <h4 className="text-xs font-bold uppercase tracking-wider">
+      <div className="flex items-center justify-between pb-4 border-b border-[var(--border-subtle)] shrink-0 mb-6">
+        <div className="flex items-center gap-3 text-[var(--accent-cyan)] font-heading">
+          <Network size={18} className="drop-shadow-[0_0_5px_rgba(0,240,255,0.5)]" />
+          <h4 className="text-sm font-black uppercase tracking-widest drop-shadow-[0_0_3px_rgba(0,240,255,0.3)]">
             CIVILIZATION INFLUENCE & SHARED RELATIONSHIP MAP
           </h4>
         </div>
-        <span className="text-[10px] text-[var(--text-muted)] italic font-mono flex items-center gap-1" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '10px' }}>
+        <span className="text-[10px] text-[var(--text-muted)] italic font-mono flex items-center gap-1.5 bg-[var(--bg-glass-light)] px-3 py-1 rounded-full border border-[var(--border-subtle)]">
           <HelpCircle size={12} /> Hover a node to visualize shared tags linkages
         </span>
       </div>
@@ -95,15 +95,13 @@ export const RelationshipNetwork: React.FC<RelationshipNetworkProps> = ({ regime
       {/* Network split view */}
       <div 
         ref={containerRef}
-        className="flex-1 grid grid-cols-5 gap-4 overflow-hidden relative select-none"
-        style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '16px', position: 'relative', overflow: 'hidden' }}
+        className="flex-1 grid grid-cols-5 gap-6 overflow-hidden relative select-none"
       >
         
         {/* Dynamic SVG connection paths container */}
         {hoveredRegime && connections.length > 0 && (
           <svg 
-            className="absolute inset-0 pointer-events-none z-10"
-            style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none', zIndex: 10 }}
+            className="absolute inset-0 pointer-events-none z-10 w-full h-full"
           >
             {connections.map((c) => {
               // Draw a smooth curved Bezier connection path instead of direct rigid lines
@@ -116,20 +114,19 @@ export const RelationshipNetwork: React.FC<RelationshipNetworkProps> = ({ regime
                   <path
                     d={pathD}
                     fill="none"
-                    stroke="rgba(0, 240, 255, 0.08)"
-                    strokeWidth={4}
+                    stroke="var(--accent-cyan)"
+                    strokeOpacity={0.15}
+                    strokeWidth={6}
+                    className="animate-pulse"
                   />
                   {/* Sharp core path */}
                   <path
                     d={pathD}
                     fill="none"
-                    stroke="rgba(0, 240, 255, 0.4)"
-                    strokeWidth={1.5}
-                    strokeDasharray="4 4"
-                    className="animate-dash"
-                    style={{
-                      animation: 'dash 30s linear infinite'
-                    }}
+                    stroke="var(--accent-cyan)"
+                    strokeWidth={2}
+                    strokeDasharray="6 6"
+                    className="animate-[dash_30s_linear_infinite]"
                   />
                 </g>
               );
@@ -139,13 +136,12 @@ export const RelationshipNetwork: React.FC<RelationshipNetworkProps> = ({ regime
 
         {/* Column 1 & 2: China Dynasties (flex columns) */}
         <div 
-          className="col-span-2 overflow-y-auto max-h-full space-y-2.5 p-2 bg-[rgba(255,255,255,0.01)] rounded border border-[rgba(255,255,255,0.02)] scroll-fade-y" 
-          style={{ gridColumn: 'span 2', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', padding: '8px' }}
+          className="col-span-2 overflow-y-auto max-h-full space-y-4 p-4 glass-panel bg-[var(--bg-glass-heavy)] border-[var(--border-glow-cyan)] shadow-[inset_var(--shadow-glass)] scroll-fade-y rounded-xl" 
         >
-          <span className="text-[9px] text-cyan-400 font-mono font-bold tracking-wider block" style={{ fontSize: '9px' }}>
+          <span className="text-[10px] text-[var(--accent-cyan)] font-mono font-black tracking-widest block uppercase drop-shadow-[0_0_3px_rgba(0,240,255,0.5)] border-b border-[var(--border-subtle)] pb-2 mb-2">
             CHINA REGIONS
           </span>
-          <div className="flex flex-wrap gap-2 align-content-start" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignContent: 'flex-start' }}>
+          <div className="flex flex-wrap gap-3 content-start">
             {chinaRegimes.map((r) => {
               const name = r.id.split('/').pop()?.replace('-', ' ') || '';
               const size = getNodeSizeStyle(r.metadata?.agentCount);
@@ -158,14 +154,13 @@ export const RelationshipNetwork: React.FC<RelationshipNetworkProps> = ({ regime
                   id={`node-${r.id.replace(/\//g, '-')}`}
                   onMouseEnter={() => setHoveredRegime(r)}
                   onMouseLeave={() => setHoveredRegime(null)}
-                  className={`rounded-full border font-mono font-semibold transition-all cursor-pointer ${size.padding} ${size.font} ${size.scale} ${
+                  className={`rounded-full border font-mono font-black transition-all cursor-pointer whitespace-nowrap duration-300 ${size.padding} ${size.font} ${size.scale} ${
                     isHovered
-                      ? 'bg-[var(--accent-cyan)] text-black border-[var(--accent-cyan)] shadow-[0_0_12px_rgba(0,240,255,0.45)] z-20'
+                      ? 'bg-[var(--accent-cyan)] text-black border-[var(--accent-cyan)] shadow-[var(--shadow-glow-cyan)] z-20 scale-110'
                       : isConnected
-                      ? 'bg-[rgba(0,240,255,0.06)] border-[rgba(0,240,255,0.4)] text-[var(--accent-cyan)] shadow-[0_0_8px_rgba(0,240,255,0.05)] z-20'
-                      : 'bg-[#121420] border-[rgba(255,255,255,0.04)] text-[var(--text-secondary)] hover:border-[rgba(255,255,255,0.15)]'
+                      ? 'bg-[var(--bg-glass-medium)] border-[var(--border-glow-cyan)] text-[var(--accent-cyan)] shadow-[var(--shadow-glow-cyan)] z-20 scale-105'
+                      : 'bg-[var(--bg-surface-raised)] border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent-cyan)] hover:text-[var(--text-primary)] hover:shadow-[var(--shadow-glow-cyan)]'
                   }`}
-                  style={{ whiteSpace: 'nowrap', borderRadius: '9999px', cursor: 'pointer', transition: 'all var(--transition-fast)' }}
                 >
                   {name}
                 </div>
@@ -176,13 +171,12 @@ export const RelationshipNetwork: React.FC<RelationshipNetworkProps> = ({ regime
 
         {/* Column 3 & 4: Global Empires */}
         <div 
-          className="col-span-2 overflow-y-auto max-h-full space-y-2.5 p-2 bg-[rgba(255,255,255,0.01)] rounded border border-[rgba(255,255,255,0.02)] scroll-fade-y" 
-          style={{ gridColumn: 'span 2', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', padding: '8px' }}
+          className="col-span-2 overflow-y-auto max-h-full space-y-4 p-4 glass-panel bg-[var(--bg-glass-heavy)] border-[var(--border-glow-purple)] shadow-[inset_var(--shadow-glass)] scroll-fade-y rounded-xl" 
         >
-          <span className="text-[9px] text-purple-400 font-mono font-bold tracking-wider block" style={{ fontSize: '9px' }}>
+          <span className="text-[10px] text-[var(--accent-purple)] font-mono font-black tracking-widest block uppercase drop-shadow-[0_0_3px_rgba(189,0,255,0.5)] border-b border-[var(--border-subtle)] pb-2 mb-2">
             GLOBAL REGIONS
           </span>
-          <div className="flex flex-wrap gap-2 align-content-start" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', alignContent: 'flex-start' }}>
+          <div className="flex flex-wrap gap-3 content-start">
             {globalRegimes.map((r) => {
               const name = r.id.split('/').pop()?.replace('-', ' ') || '';
               const size = getNodeSizeStyle(r.metadata?.agentCount);
@@ -195,14 +189,13 @@ export const RelationshipNetwork: React.FC<RelationshipNetworkProps> = ({ regime
                   id={`node-${r.id.replace(/\//g, '-')}`}
                   onMouseEnter={() => setHoveredRegime(r)}
                   onMouseLeave={() => setHoveredRegime(null)}
-                  className={`rounded-full border font-mono font-semibold transition-all cursor-pointer ${size.padding} ${size.font} ${size.scale} ${
+                  className={`rounded-full border font-mono font-black transition-all cursor-pointer whitespace-nowrap duration-300 ${size.padding} ${size.font} ${size.scale} ${
                     isHovered
-                      ? 'bg-[var(--accent-cyan)] text-black border-[var(--accent-cyan)] shadow-[0_0_12px_rgba(0,240,255,0.45)] z-20'
+                      ? 'bg-[var(--accent-cyan)] text-black border-[var(--accent-cyan)] shadow-[var(--shadow-glow-cyan)] z-20 scale-110'
                       : isConnected
-                      ? 'bg-[rgba(0,240,255,0.06)] border-[rgba(0,240,255,0.4)] text-[var(--accent-cyan)] shadow-[0_0_8px_rgba(0,240,255,0.05)] z-20'
-                      : 'bg-[#121420] border-[rgba(255,255,255,0.04)] text-[var(--text-secondary)] hover:border-[rgba(255,255,255,0.15)]'
+                      ? 'bg-[var(--bg-glass-medium)] border-[var(--border-glow-cyan)] text-[var(--accent-cyan)] shadow-[var(--shadow-glow-cyan)] z-20 scale-105'
+                      : 'bg-[var(--bg-surface-raised)] border-[var(--border-subtle)] text-[var(--text-secondary)] hover:border-[var(--accent-purple)] hover:text-[var(--text-primary)] hover:shadow-[var(--shadow-glow-purple)]'
                   }`}
-                  style={{ whiteSpace: 'nowrap', borderRadius: '9999px', cursor: 'pointer', transition: 'all var(--transition-fast)' }}
                 >
                   {name}
                 </div>
@@ -213,36 +206,35 @@ export const RelationshipNetwork: React.FC<RelationshipNetworkProps> = ({ regime
 
         {/* Column 5: Right sidebar detailed hovered node tooltips */}
         <div 
-          className="col-span-1 glass-panel p-4 bg-[rgba(10,11,16,0.5)] border-[rgba(255,255,255,0.05)] flex flex-col justify-center h-full"
-          style={{ gridColumn: 'span 1', display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '16px', borderRadius: '8px', zIndex: 20 }}
+          className="col-span-1 glass-panel p-5 bg-[var(--bg-glass-heavy)] border-[var(--border-subtle)] flex flex-col justify-center h-full z-20 rounded-xl shadow-[var(--shadow-glass)]"
         >
           {hoveredRegime ? (
-            <div className="space-y-4 animate-fade-in" style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              <div className="border-b border-[rgba(255,255,255,0.06)] pb-2" style={{ borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '8px' }}>
-                <span className="text-[8px] text-[var(--text-muted)] font-mono uppercase tracking-wider block">HOVER INSPECTOR</span>
-                <h4 className="text-xs font-bold text-[var(--text-primary)] uppercase font-mono mt-0.5">
+            <div className="space-y-5 animate-fade-in">
+              <div className="border-b border-[var(--border-subtle)] pb-3">
+                <span className="text-[10px] text-[var(--text-muted)] font-mono font-bold uppercase tracking-widest block mb-1">HOVER INSPECTOR</span>
+                <h4 className="text-sm font-black text-[var(--accent-cyan)] uppercase font-mono tracking-wider drop-shadow-[0_0_3px_rgba(0,240,255,0.3)]">
                   {hoveredRegime.id.split('/').pop()?.replace('-', ' ')}
                 </h4>
               </div>
 
-              <div className="space-y-2.5 text-[10px] text-[var(--text-secondary)] font-mono" style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '10px' }}>
+              <div className="space-y-4 text-xs text-[var(--text-secondary)] font-mono">
                 <div>
-                  <span className="text-[8px] text-[var(--text-muted)] block">ERA:</span>
-                  <span className="text-cyan-300 block leading-tight">{hoveredRegime.metadata?.era?.en || 'Ancient'}</span>
+                  <span className="text-[10px] text-[var(--text-muted)] font-bold block mb-1">ERA:</span>
+                  <span className="text-[var(--text-primary)] font-bold block bg-[var(--bg-glass-light)] px-2 py-1 rounded inline-block border border-[var(--border-subtle)]">{hoveredRegime.metadata?.era?.en || 'Ancient'}</span>
                 </div>
                 <div>
-                  <span className="text-[8px] text-[var(--text-muted)] block">PATTERN:</span>
-                  <span className="text-purple-300 block leading-tight">{hoveredRegime.metadata?.orchestrationPattern}</span>
+                  <span className="text-[10px] text-[var(--text-muted)] font-bold block mb-1">PATTERN:</span>
+                  <span className="text-[var(--accent-purple)] font-black tracking-wide block bg-[var(--bg-glass-light)] px-2 py-1 rounded inline-block border border-[var(--border-glow-purple)]">{hoveredRegime.metadata?.orchestrationPattern}</span>
                 </div>
                 <div>
-                  <span className="text-[8px] text-[var(--text-muted)] block">AGENT TEAMS:</span>
-                  <span className="text-amber-400 block font-bold">{hoveredRegime.metadata?.agentCount || 5} nodes</span>
+                  <span className="text-[10px] text-[var(--text-muted)] font-bold block mb-1">AGENT TEAMS:</span>
+                  <span className="text-[var(--accent-gold)] font-black block bg-[var(--bg-glass-light)] px-2 py-1 rounded inline-block border border-[var(--border-glow-gold)]">{hoveredRegime.metadata?.agentCount || 5} nodes</span>
                 </div>
                 <div>
-                  <span className="text-[8px] text-[var(--text-muted)] block">INFLUENCE TAGS:</span>
-                  <div className="flex flex-wrap gap-1 mt-1" style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px' }}>
+                  <span className="text-[10px] text-[var(--text-muted)] font-bold block mb-2">INFLUENCE TAGS:</span>
+                  <div className="flex flex-wrap gap-1.5">
                     {(hoveredRegime.metadata?.tags || []).map((tag, idx) => (
-                      <span key={idx} className="text-[8px] bg-[rgba(255,255,255,0.04)] px-1.5 py-0.5 rounded border border-[rgba(255,255,255,0.06)]" style={{ fontSize: '8px', padding: '1px 4px' }}>
+                      <span key={idx} className="text-[9px] font-bold bg-[var(--bg-glass-medium)] text-[var(--accent-cyan)] px-2 py-1 rounded-md border border-[var(--border-glow-cyan)] uppercase tracking-wider">
                         {tag}
                       </span>
                     ))}
@@ -251,9 +243,9 @@ export const RelationshipNetwork: React.FC<RelationshipNetworkProps> = ({ regime
               </div>
             </div>
           ) : (
-            <div className="text-center text-[var(--text-muted)] text-[10px] space-y-2" style={{ textAlign: 'center', fontSize: '10px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <Network size={20} className="mx-auto text-[rgba(255,255,255,0.05)]" style={{ margin: '0 auto' }} />
-              <span>Hover a regime node to analyze shared tags connections timeline.</span>
+            <div className="text-center text-[var(--text-muted)] text-xs space-y-4 p-4 flex flex-col items-center">
+              <Network size={32} className="text-[rgba(255,255,255,0.1)] drop-shadow-[0_0_5px_rgba(255,255,255,0.05)]" />
+              <span className="font-bold tracking-wider leading-relaxed">Hover a regime node to analyze shared tags connections timeline.</span>
             </div>
           )}
         </div>

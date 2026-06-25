@@ -17,6 +17,7 @@ import { fileURLToPath } from "node:url";
 import { validateRegime } from "./civ-memory.mjs";
 import { runJudge } from "./judge.mjs";
 import { readMatchText, eventsPath } from "./events.mjs";
+import { recordTournamentResult } from "./history-db.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "..", "..");
@@ -38,6 +39,7 @@ export function parseJudgeScores(output, civRegimes) {
     // cells[1] should contain the civilization name
     const nameCell = cells[1] || "";
     const scoreCell = cells[2] || "";
+    const reasonCell = cells[3] || "";
     const scoreMatch = scoreCell.match(/^(\d+(?:\.\d+)?)/);
     if (!scoreMatch) continue;
     // Match against known regime ids: exact or partial (regime's slug part)
@@ -46,7 +48,7 @@ export function parseJudgeScores(output, civRegimes) {
       return nameCell === r || nameCell.includes(r) || nameCell.includes(slug);
     });
     if (regime) {
-      scores.push({ regime, score: parseFloat(scoreMatch[1]) });
+      scores.push({ regime, score: parseFloat(scoreMatch[1]), reason: reasonCell });
     }
   }
   // Remove duplicates (first occurrence wins after sort)
@@ -64,7 +66,7 @@ governance system responded. Rank them on:
   - resilience (would this survive second-order effects?)
 
 Output ONLY a markdown table with columns: Rank | Civilization | Score /10 | One-line reason.
-Then one paragraph: "## Verdict" explaining the top choice.`;
+Then provide a detailed evaluation section "## 史官评论 (Historian's Commentary)" where you write a paragraph explaining the top choice, mimicking the style of an ancient historian (e.g., Sima Guang's "臣光曰" or similar historical commentary style), analyzing the long-term political consequences of their chosen governance pattern.`;
 
 function newTournamentId() {
   const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 23); // ms precision
@@ -185,6 +187,23 @@ export async function runTournament({ civs, task }) {
   };
   fs.writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify(manifest, null, 2));
 
+  // Record to history SQLite DB for episodic memory RAG
+  // Extract historical commentary from judge MD if possible
+  const commentaryMatch = verdict.md.match(/## 史官评论[^\n]*\n+([\s\S]+)$/i);
+  const commentary = commentaryMatch ? commentaryMatch[1].trim() : '';
+
+  const resultsToRecord = manifest.civs.map(c => {
+    const s = scores.find(x => x.regime === c.regime);
+    return {
+      matchId: c.matchId,
+      regime: c.regime.split('/').pop(),
+      score: s ? s.score : 0,
+      reason: s ? s.reason : 'No score',
+      commentary
+    };
+  });
+  recordTournamentResult(id, manifest, resultsToRecord);
+
   console.log(`\n==== Tournament ${id} ====`);
   console.log(verdict.md);
   return { id, resultFile, results, manifest };
@@ -193,17 +212,31 @@ export async function runTournament({ civs, task }) {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const args = process.argv.slice(2);
   let civs = [];
+  let taskFile = null;
   const rest = [];
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--civs" && args[i + 1]) {
       civs = args[++i].split(",").map((s) => s.trim()).filter(Boolean);
+    } else if (args[i] === "--task-file" && args[i + 1]) {
+      taskFile = args[++i];
     } else {
       rest.push(args[i]);
     }
   }
-  const task = rest.join(" ").trim();
-  runTournament({ civs, task }).catch((e) => {
-    console.error(e);
-    process.exit(1);
-  });
+  
+  let task = rest.join(" ").trim();
+  if (taskFile) {
+    import("node:fs").then(fs => {
+      task = fs.readFileSync(taskFile, "utf8");
+      runTournament({ civs, task }).catch((e) => {
+        console.error(e);
+        process.exit(1);
+      });
+    });
+  } else {
+    runTournament({ civs, task }).catch((e) => {
+      console.error(e);
+      process.exit(1);
+    });
+  }
 }

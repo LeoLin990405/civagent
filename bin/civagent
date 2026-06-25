@@ -30,6 +30,8 @@ ${BOLD}Usage:${NC}
   civagent match-log                    Recent match transcripts
   civagent tournament --civs a,b,c,d "task"
                                         Parallel match across civilizations + judge ranking
+  civagent tournament --civs a,b --task-file tasks/my-scenario.md
+                                        Run tournament using a markdown scenario file
   civagent agents                       Show generated CC agents for active regime
   civagent modes                        List 6 orchestration modes
   civagent setup                        Check tool availability (CC, Codex, opencode, cn-cc)

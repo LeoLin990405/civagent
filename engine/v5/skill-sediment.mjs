@@ -13,7 +13,8 @@ import { spawnSync } from "node:child_process";
 import { runJudge, hasBinary } from "./judge.mjs";
 
 const EXTRACT_PROMPT = `You are reviewing a CivAgent governance match transcript.
-Extract AT MOST 2 reusable governance patterns the civilization demonstrated.
+Analyze the interactions from a digital humanities and historical simulation perspective.
+Extract AT MOST 2 reusable governance patterns or historical lessons the civilization demonstrated.
 For each, output a skill markdown block with this exact frontmatter:
 
 ---
@@ -25,6 +26,8 @@ description: <one line>
 ---
 
 # <Title>
+## 历史情境 (Historical Context)
+What historical dilemma or institutional dynamic does this address?
 ## Trigger
 When should future matches apply this pattern?
 ## Pattern
