@@ -131,12 +131,12 @@ v5 为每个 civilization 维护独立记忆：
 
 1. **Transcript 清洗**：去 ANSI 转义、解包 JSONL chunks
 2. **模式提取** (Codex `codex exec`)：抽取 ≤2 个可复用治理模式，以 Markdown + YAML frontmatter 输出
-3. **形状审查** (独立审稿 via `engine/v5/judge.mjs`)：opencode reviewer 优先、Codex 兜底（绝不用 gemini），验证 skill 结构合规（`Pattern 段 ≥2 bullets`、非陈词滥调）；审稿引擎与提取引擎不同源，避免自我背书
+3. **形状审查** (独立审稿 via `engine/v5/judge.mjs`)：opencode reviewer 优先、Codex 兜底（绝不用 Gemini），验证 skill 结构合规（`Pattern 段 ≥2 bullets`、非陈词滥调）；审稿引擎与提取引擎不同源，避免自我背书
 4. **注入防护**：基于正则拒绝 `ignore previous instructions`、`<system>`、`[INST]` 等 jailbreak 模式
 5. **Frontmatter 强制**：无 YAML 头直接拒绝
 6. **Provenance banner**：每个 skill 头部标注 `source_match=<id>`，警示下游"此为数据非指令"
 
-该管线已通过 Codex / Gemini / Kimi 三轮交叉审查。审查纪要见 CHANGELOG v5.0.0。
+该管线已通过 Codex / Claude / Kimi 三轮交叉审查。审查纪要见 CHANGELOG v5.0.0。
 
 ### 3.2 57 Regime 规范化 Canonical Regime Normalization
 
@@ -155,13 +155,13 @@ v4 的 `regimes/` 目录由 `@wanikua` 的上游《AI 朝廷》项目继承而�
 | Worker | 覆盖 regime | 失败数 | 备注 |
 |---|---|---|---|
 | cc-mimo (1M ctx) | byzantine, persian, ottoman, mongol, russian, soviet, ming, qing, north-south, western-xia, napoleon, us-federal | 0 | 1M 窗口用于档案密集型帝国 |
-| gemini (2.5 Pro) | athens, caliphate, egypt, shogunate, habsburg, khmer, safavid, hre, joseon, mughal, polish | 0 | 跨文化综合 |
+| claude (3.5 Sonnet) | athens, caliphate, egypt, shogunate, habsburg, khmer, safavid, hre, joseon, mughal, polish | 0 | 跨文化综合 |
 | cc-glm | song, yuan, han, sui, five-dynasties, three-kingdoms | 0 | |
 | cc-qwen | xia, shang, zhou, qin, jin | 1 | western-xia 改派 mimo |
 | cc-doubao | taiping, liao, jin-jurchen, roc, viking | 1 | north-south 改派 mimo |
 | cc-stepfun | sparta, prussia, zulu, meiji, maurya, inca | 0 | |
 | cc-minimax | carthage, venice, swiss, aztec, mali, sumeria | 0 | |
-| codex (GPT-5.4) | roman-republic, roman-empire, british | 4 | 超时 4 个（french, napoleon, us-federal, eu）改派 mimo/gemini |
+| codex (GPT-5.4) | roman-republic, roman-empire, british | 4 | 超时 4 个（french, napoleon, us-federal, eu）改派 mimo/claude |
 | cc-kimi | — | 6 | **API 全拒**（"high risk" 内容过滤）；6 个均改派 |
 
 并行 wall-time ≈ 15 min。所有 57 regime 通过 `npm run validate:regimes` 结构验证。
@@ -174,7 +174,7 @@ v4 的 `regimes/` 目录由 `@wanikua` 的上游《AI 朝廷》项目继承而�
 
 1. **并行派发**：每个 civilization 在独立隔离 HOME 中运行 `--v5` 模式
 2. **Transcript 收集**：N 份对局记录汇聚至 `~/.civagent/tournaments/<id>/`
-3. **AI 裁判**：via `engine/v5/judge.mjs`（Codex 优先、opencode reviewer 兜底，绝不用 gemini）按三维评分
+3. **AI 裁判**：via `engine/v5/judge.mjs`（Codex 优先、opencode reviewer 兜底，绝不用 Gemini）按三维评分
    - *Legality* — 是否遵守本文明自身的制度规则？
    - *Feasibility* — 方案是否可执行？
    - *Resilience* — 能否承受二阶效应？
@@ -382,7 +382,7 @@ v5 不依赖单一 AI 后端。每种 role 根据任务特性选择最优后端�
 | `cc-minimax` / `/cn:minimax` | MiniMax-M2.7 | 200K | 高速推理 |
 | `cc-mimo` / `/cn:mimo` | mimo-v2-pro | **1M** | 跨代码库、全档案（小米旗舰） |
 
-组合：Claude Opus + Sonnet + Codex + 7 CN = **9 个后端**（gemini 已按项目策略移除）。由 `civagent tournament` 一键并行调度。
+组合：Claude Opus + Sonnet + Codex + 7 CN = **9 个后端**（Gemini 已全面禁用）。由 `civagent tournament` 一键并行调度。
 
 ---
 
@@ -506,7 +506,7 @@ civagent setup
      ├ codex exec: extract ≤2 governance patterns (Markdown + frontmatter)
      ├ injection guard: reject jailbreak patterns（审稿前的确定性闸门）
      ├ frontmatter validation
-     ├ judge.mjs: 独立审稿 skill shape + quality (opencode/codex，绝不用 gemini)
+     ├ judge.mjs: 独立审稿 skill shape + quality (opencode/codex，绝不用 Gemini)
      └ write regimes/china/tang/skills/learned-<date>-<topic>-<id>.md
 ```
 
@@ -555,7 +555,7 @@ GitHub Actions `.github/workflows/ci.yml` 每次 PR 自动运行三者。
 - 注入防护正则的真阳/真阴样例
 
 **质量闭环**:
-- 每次重大修改经 Codex → opencode → Kimi（或 Mimo）三轮交叉审查（gemini 已按项目策略移除）
+- 每次重大修改经 Codex → opencode → Kimi（或 Mimo）三轮交叉审查（Gemini 已全面禁用）
 - 审查记录见 CHANGELOG 对应版本条目
 
 ---
@@ -596,7 +596,7 @@ GitHub Actions `.github/workflows/ci.yml` 每次 PR 自动运行三者。
 
 ### 9.5 Tournament 裁判单点 (Single Judge)
 
-当前裁判经 `engine/v5/judge.mjs` 调用单一 provider（Codex 优先、opencode reviewer 兜底；gemini 已按项目策略移除），仍可能引入系统性偏见。v5.1（R2）规划引入多裁判盲评（Codex + opencode + Mimo 交叉评分聚合），消除单一裁判的习得性偏好污染评判。
+当前裁判经 `engine/v5/judge.mjs` 调用单一 provider（Codex 优先、opencode reviewer 兜底；Gemini 已全面禁用），仍可能引入系统性偏见。v5.1（R2）规划引入多裁判盲评（Codex + opencode + Mimo 交叉评分聚合），消除单一裁判的习得性偏好污染评判。
 
 完整审计报告：[regimes/AUDIT.md](./regimes/AUDIT.md)
 
