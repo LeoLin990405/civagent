@@ -360,11 +360,11 @@ v5 不依赖单一 AI 后端。每种 role 根据任务特性选择最优后端�
 | coordinator | Claude Sonnet | — | 快速路由、低成本 |
 | engineering | Claude Opus | Codex (GPT-5.4) | 代码核心、架构设计 |
 | review | Claude Opus | codex:adversarial-review | 深度审查、对抗性 |
-| research | Claude Opus | cc-deepseek (128K) | 深度推理、历史分析 |
+| research | Claude Opus | cc-deepseek (1M) | 深度推理、历史分析 |
 | data | Claude Sonnet | cc-qwen (阿里生态) | 数据 / SQL |
 | content | Claude Sonnet | cc-doubao (中文通用) | 中文内容生成 |
-| long_context | Claude Sonnet | cc-kimi (128K) | 长文档综述 |
-| **ultra_long_context** | Claude Sonnet | **cc-deepseek (128K)** | 跨代码库分析、全档案查询 |
+| long_context | Claude Sonnet | cc-kimi (256K) | 长文档综述 |
+| **ultra_long_context** | Claude Sonnet | **cc-deepseek (1M)** | 跨代码库分析、全档案查询 |
 | math | Claude Sonnet | cc-stepfun | 数学证明、逻辑推导 |
 | (其他) | Claude Sonnet | cc-minimax | 快速响应、轻量任务 |
 
@@ -374,13 +374,13 @@ v5 不依赖单一 AI 后端。每种 role 根据任务特性选择最优后端�
 
 | 命令 | 模型 | 上下文 | 强项 |
 |---|---|---|---|
-| `cc-deepseek` / `/cn:deepseek` | deepseek-v3 / r1 | **128K** | 深度推理、数学逻辑 (DeepSeek旗舰) |
-| `cc-qwen` / `/cn:qwen` | qwen-max | 128K | SQL、阿里云原生 |
-| `cc-kimi` / `/cn:kimi` | moonshot-v1-128k | **128K** | 长文综合 |
-| `cc-glm` / `/cn:glm` | glm-4-plus | 128K | 中文推理 |
-| `cc-doubao` / `/cn:doubao` | doubao-1.5-pro-256k | 256K | 通用中文编码 |
-| `cc-minimax` / `/cn:minimax` | abab6.5s-chat | 200K | 高速推理 |
-| `cc-stepfun` / `/cn:stepfun` | step-2-16k | 16K | 数学、逻辑 |
+| `cc-deepseek` / `/cn:deepseek` | DeepSeek-V4-Pro | **1M** | 深度推理、数学逻辑 (DeepSeek 1.6T 旗舰) |
+| `cc-qwen` / `/cn:qwen` | Qwen3.7-Max | **1M** | 全域思考模式、复杂架构设计 |
+| `cc-kimi` / `/cn:kimi` | Kimi K2.6 | 256K | 长文综合、原生多模态 |
+| `cc-glm` / `/cn:glm` | GLM-5.2 | **1M** | 极致编程 (Code Arena 顶流) |
+| `cc-doubao` / `/cn:doubao` | Doubao-Seed-2.1-Pro | 256K | 长跨度 Agent 任务与多模态 |
+| `cc-minimax` / `/cn:minimax` | MiniMax M3 | **1M** | MSA 架构极速推理、Computer Use |
+| `cc-stepfun` / `/cn:stepfun` | Step 3.7 Flash | 256K | MoE架构、高自由度推理等级 |
 
 组合：Claude Opus + Sonnet + Codex + 7 CN = **9 个后端**（Gemini 已全面禁用）。由 `civagent tournament` 一键并行调度。
 
