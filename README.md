@@ -154,19 +154,19 @@ v4 的 `regimes/` 目录由 `@wanikua` 的上游《AI 朝廷》项目继承而�
 
 | Worker | 覆盖 regime | 失败数 | 备注 |
 |---|---|---|---|
-| cc-mimo (1M ctx) | byzantine, persian, ottoman, mongol, russian, soviet, ming, qing, north-south, western-xia, napoleon, us-federal | 0 | 1M 窗口用于档案密集型帝国 |
+| cc-deepseek (128K ctx) | byzantine, persian, ottoman, mongol, russian, soviet, ming, qing, north-south, western-xia, napoleon, us-federal | 0 | 长文推理能力强，适用于档案密集型帝国 |
 | claude (3.5 Sonnet) | athens, caliphate, egypt, shogunate, habsburg, khmer, safavid, hre, joseon, mughal, polish | 0 | 跨文化综合 |
 | cc-glm | song, yuan, han, sui, five-dynasties, three-kingdoms | 0 | |
-| cc-qwen | xia, shang, zhou, qin, jin | 1 | western-xia 改派 mimo |
-| cc-doubao | taiping, liao, jin-jurchen, roc, viking | 1 | north-south 改派 mimo |
+| cc-qwen | xia, shang, zhou, qin, jin | 1 | western-xia 改派 deepseek |
+| cc-doubao | taiping, liao, jin-jurchen, roc, viking | 1 | north-south 改派 deepseek |
 | cc-stepfun | sparta, prussia, zulu, meiji, maurya, inca | 0 | |
 | cc-minimax | carthage, venice, swiss, aztec, mali, sumeria | 0 | |
-| codex (GPT-5.4) | roman-republic, roman-empire, british | 4 | 超时 4 个（french, napoleon, us-federal, eu）改派 mimo/claude |
+| codex (GPT-5.4) | roman-republic, roman-empire, british | 4 | 超时 4 个（french, napoleon, us-federal, eu）改派 deepseek/claude |
 | cc-kimi | — | 6 | **API 全拒**（"high risk" 内容过滤）；6 个均改派 |
 
 并行 wall-time ≈ 15 min。所有 57 regime 通过 `npm run validate:regimes` 结构验证。
 
-一个值得记录的实证发现：**中国国产 AI 对政治类 prompt 的内容过滤强度远超预期**——Kimi 对 6/6 历史政体内容直接返回 `high risk` 错误；相比之下 cc-mimo、cc-glm、cc-qwen 对同样内容正常处理。这一差异在内容安全策略研究中有独立价值。
+一个值得记录的实证发现：**中国国产 AI 对政治类 prompt 的内容过滤强度远超预期**——Kimi 对 6/6 历史政体内容直接返回 `high risk` 错误；相比之下 cc-deepseek、cc-glm、cc-qwen 对同样内容正常处理。这一差异在内容安全策略研究中有独立价值。
 
 ### 3.3 Tournament 模式 Parallel Civilization Contest
 
@@ -360,11 +360,11 @@ v5 不依赖单一 AI 后端。每种 role 根据任务特性选择最优后端�
 | coordinator | Claude Sonnet | — | 快速路由、低成本 |
 | engineering | Claude Opus | Codex (GPT-5.4) | 代码核心、架构设计 |
 | review | Claude Opus | codex:adversarial-review | 深度审查、对抗性 |
-| research | Claude Opus | cc-mimo (1M) | 深度推理、历史分析 |
+| research | Claude Opus | cc-deepseek (128K) | 深度推理、历史分析 |
 | data | Claude Sonnet | cc-qwen (阿里生态) | 数据 / SQL |
 | content | Claude Sonnet | cc-doubao (中文通用) | 中文内容生成 |
 | long_context | Claude Sonnet | cc-kimi (128K) | 长文档综述 |
-| **ultra_long_context** | Claude Sonnet | **cc-mimo (1M)** | 跨代码库分析、全档案查询 |
+| **ultra_long_context** | Claude Sonnet | **cc-deepseek (128K)** | 跨代码库分析、全档案查询 |
 | math | Claude Sonnet | cc-stepfun | 数学证明、逻辑推导 |
 | (其他) | Claude Sonnet | cc-minimax | 快速响应、轻量任务 |
 
@@ -374,13 +374,13 @@ v5 不依赖单一 AI 后端。每种 role 根据任务特性选择最优后端�
 
 | 命令 | 模型 | 上下文 | 强项 |
 |---|---|---|---|
-| `cc-doubao` / `/cn:doubao` | doubao-seed-code-pro | 128K | 通用中文编码 |
-| `cc-qwen` / `/cn:qwen` | qwen3.5-plus | 128K | SQL、阿里云原生 |
-| `cc-kimi` / `/cn:kimi` | kimi-k2.5 | **128K** | 长文综合 |
-| `cc-glm` / `/cn:glm` | glm-4.7 | 128K | 中文推理 |
-| `cc-stepfun` / `/cn:stepfun` | step-3.5-flash | 64K | 数学、逻辑 |
-| `cc-minimax` / `/cn:minimax` | MiniMax-M2.7 | 200K | 高速推理 |
-| `cc-mimo` / `/cn:mimo` | mimo-v2-pro | **1M** | 跨代码库、全档案（小米旗舰） |
+| `cc-deepseek` / `/cn:deepseek` | deepseek-v3 / r1 | **128K** | 深度推理、数学逻辑 (DeepSeek旗舰) |
+| `cc-qwen` / `/cn:qwen` | qwen-max | 128K | SQL、阿里云原生 |
+| `cc-kimi` / `/cn:kimi` | moonshot-v1-128k | **128K** | 长文综合 |
+| `cc-glm` / `/cn:glm` | glm-4-plus | 128K | 中文推理 |
+| `cc-doubao` / `/cn:doubao` | doubao-1.5-pro-256k | 256K | 通用中文编码 |
+| `cc-minimax` / `/cn:minimax` | abab6.5s-chat | 200K | 高速推理 |
+| `cc-stepfun` / `/cn:stepfun` | step-2-16k | 16K | 数学、逻辑 |
 
 组合：Claude Opus + Sonnet + Codex + 7 CN = **9 个后端**（Gemini 已全面禁用）。由 `civagent tournament` 一键并行调度。
 
@@ -555,7 +555,7 @@ GitHub Actions `.github/workflows/ci.yml` 每次 PR 自动运行三者。
 - 注入防护正则的真阳/真阴样例
 
 **质量闭环**:
-- 每次重大修改经 Codex → opencode → Kimi（或 Mimo）三轮交叉审查（Gemini 已全面禁用）
+- 每次重大修改经 Codex → opencode → Kimi（或 DeepSeek）三轮交叉审查（Gemini 已全面禁用）
 - 审查记录见 CHANGELOG 对应版本条目
 
 ---
@@ -592,11 +592,11 @@ GitHub Actions `.github/workflows/ci.yml` 每次 PR 自动运行三者。
 
 ### 9.4 国产模型内容过滤 (CN Model Content Filtering)
 
-实证发现：`cc-kimi` 对所有 6 个分配的历史政体 prompt 直接返回 `API Error: 400 "high risk"`（包括讨论明朝内阁、朝鲜王朝的中性历史描述）。其他 CN 后端（mimo / glm / qwen / doubao）对同样内容正常处理。这一差异反映不同厂商的内容安全策略，对规模化使用国产模型的项目有参考价值。
+实证发现：`cc-kimi` 对所有 6 个分配的历史政体 prompt 直接返回 `API Error: 400 "high risk"`（包括讨论明朝内阁、朝鲜王朝的中性历史描述）。其他 CN 后端（deepseek / glm / qwen / doubao）对同样内容正常处理。这一差异反映不同厂商的内容安全策略，对规模化使用国产模型的项目有参考价值。
 
 ### 9.5 Tournament 裁判单点 (Single Judge)
 
-当前裁判经 `engine/v5/judge.mjs` 调用单一 provider（Codex 优先、opencode reviewer 兜底；Gemini 已全面禁用），仍可能引入系统性偏见。v5.1（R2）规划引入多裁判盲评（Codex + opencode + Mimo 交叉评分聚合），消除单一裁判的习得性偏好污染评判。
+当前裁判经 `engine/v5/judge.mjs` 调用单一 provider（Codex 优先、opencode reviewer 兜底；Gemini 已全面禁用），仍可能引入系统性偏见。v5.1（R2）规划引入多裁判盲评（Codex + opencode + DeepSeek 交叉评分聚合），消除单一裁判的习得性偏好污染评判。
 
 完整审计报告：[regimes/AUDIT.md](./regimes/AUDIT.md)
 
@@ -629,7 +629,7 @@ GitHub Actions `.github/workflows/ci.yml` 每次 PR 自动运行三者。
 | 版本 | 日期 | 关键变化 | PR |
 |---|---|---|---|
 | **v5.0.1** | 2026-04-14 | Engine 数据源修复：IDENTITY.md 规范表成为主源；57 regime 重写真正生效；README 学术化重写 | [#7](https://github.com/LeoLin990405/civagent/pull/7), [#8](https://github.com/LeoLin990405/civagent/pull/8) |
-| **v5.0.0** | 2026-04-14 | Hermes 启发的学习闭环；cc-mimo 第 7 个国产后端；57 regime canonical 重写；tests + CI + tournament 模式 | [#3](https://github.com/LeoLin990405/civagent/pull/3), [#4](https://github.com/LeoLin990405/civagent/pull/4), [#5](https://github.com/LeoLin990405/civagent/pull/5), [#6](https://github.com/LeoLin990405/civagent/pull/6) |
+| **v5.0.0** | 2026-04-14 | Hermes 启发的学习闭环；cc-deepseek 第 7 个国产后端；57 regime canonical 重写；tests + CI + tournament 模式 | [#3](https://github.com/LeoLin990405/civagent/pull/3), [#4](https://github.com/LeoLin990405/civagent/pull/4), [#5](https://github.com/LeoLin990405/civagent/pull/5), [#6](https://github.com/LeoLin990405/civagent/pull/6) |
 | **v4.x** | 2026-03 | 基于 Claude Code 运行时的完整重写；57 regime + 6 mode + 10 model 初版 | — |
 | **v3.5.x** | 2026-03 | install 与 GUI server 稳定化（原《AI 朝廷》继承）| — |
 
@@ -674,7 +674,7 @@ npm run validate:regimes              # 本地验证
 - **Anthropic / Claude Code** — 主运行时
 - **OpenAI / Codex** — skill 提取、审稿与 tournament 裁判的 GPT-5.4 支持
 - **opencode (`reviewer`)** — 独立审稿 / 裁判兜底
-- **国产 AI 厂商** — 豆包、通义、智谱、月之暗面、阶跃、MiniMax、小米 MiMo
+- **国产 AI 厂商** — 豆包、通义、智谱、月之暗面、阶跃、MiniMax、深度求索 DeepSeek
 - **钱穆《中国历代政治得失》** — 中华制度史的哲学骨架
 - **Michael Oakeshott / Francis Fukuyama / Barrington Moore** — 政治制度比较研究的方法论基底
 
