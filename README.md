@@ -182,6 +182,18 @@ v4 的 `regimes/` 目录由 `@wanikua` 的上游《AI 朝廷》项目继承而�
 
 裁判 prompt 在 `engine/v5/tournament.mjs::JUDGE_PROMPT`，可自定义替换多裁判投票机制。
 
+### 3.4 V5.5 数字人文与全栈演进 (Digital Humanities & Full-stack Evolution)
+
+在 **v5.5 版本** 的连续优化中，CivAgent 完成了从“命令行玩具”到“全栈数字人文平台”的跨越：
+
+1. **引擎级 VETO 封驳阻断 (Hardcoded Veto Engine)**：
+   在 `engine/v5/run-v5.mjs` 中植入了底层嗅探器，当具有审核权的 Agent（如大唐门下省、罗马保民官）在对话流中抛出 `[VETO]` 或“驳回”信号时，引擎直接阻断执行并引发 `SIGKILL` 级中断，用物理级隔离再现了历史上的“推诿、扯皮、党争阻阁”。
+2. **大唐政体史实重构 (Historical Rectification)**：
+   将 `china/tang` 的核心网络由虚构的“司礼监”重构为严谨的**三省六部制**（中书出令、门下封驳、尚书执行），将历史制衡完全融贯于 AI 提示词与架构拓扑中。
+3. **原生大屏与数据探针 (Native Analytics Dashboard)**：
+   - 彻底废弃了脆弱的 Vite 后端 Hook，建立标准 `Express` 微服务并引入 `better-sqlite3`（完全零依赖构建）。
+   - 前端无需 D3.js，完全依赖原生 SVG 渲染出 **多智能体权力拓扑网络 (Topology Visualizer)**、**锦标赛趋势折线图 (Trend Line)** 与 **政体能力雷达图 (Radar Chart)**。实现 AI 演化数据的三维闭环监控。
+
 ---
 
 ## 4. 系统架构 System Architecture

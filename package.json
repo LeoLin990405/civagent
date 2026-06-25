@@ -8,7 +8,10 @@
   "scripts": {
     "test": "node --test test/*.test.mjs",
     "lint:syntax": "node -c engine/v5/civ-memory.mjs && node -c engine/v5/skill-sediment.mjs && node -c engine/v5/run-v5.mjs && node -c engine/v5/backends.mjs && node -c engine/v5/judge.mjs && node -c engine/v5/events.mjs && node -c engine/v5/tournament.mjs && node -c engine/regime-to-cc.mjs && bash -n bin/civagent",
-    "validate:regimes": "node test/regime-validator.mjs"
+    "validate:regimes": "node test/regime-validator.mjs",
+    "start:server": "node server/index.mjs",
+    "start:frontend": "cd frontend && npm run dev",
+    "dev": "concurrently \"npm run start:server\" \"npm run start:frontend\""
   },
   "type": "module",
   "engines": {
@@ -26,5 +29,11 @@
     "governance",
     "hermes-agent",
     "skill-sedimentation"
-  ]
+  ],
+  "dependencies": {
+    "better-sqlite3": "^12.11.1",
+    "concurrently": "^10.0.3",
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
+  }
 }

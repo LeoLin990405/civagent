@@ -124,6 +124,8 @@ export function convertRegime(regimeDir) {
   const sourceAgents = tableAgents.length > 0 ? tableAgents : oclawAgents;
   const ccAgents = {};
 
+  const pattern = normalizePattern(metadata.orchestrationPattern);
+
   for (const agent of sourceAgents) {
     const id = agent.agentId || agent.id;
     const name = agent.historicalRole || agent.name || id;
@@ -133,19 +135,19 @@ export function convertRegime(regimeDir) {
 
     ccAgents[id] = {
       description: `[${metadata.name?.zh || metadata.id}] ${name} — ${description}`.slice(0, 200),
-      prompt: buildAgentPrompt(metadata, soul, name, description, role),
+      prompt: buildAgentPrompt(metadata, soul, name, description, role, pattern),
       model: modelConfig.model,
     };
   }
 
   // Generate system prompt for CLAUDE.md
-  const claudeMd = buildClaudeMd(metadata, soul, identity);
+  const claudeMd = buildClaudeMd(metadata, soul, identity, pattern);
 
   return {
     metadata,
     agents: ccAgents,
     claudeMd,
-    orchestrationPattern: metadata.orchestrationPattern || "centralized-hierarchy",
+    orchestrationPattern: pattern,
   };
 }
 
@@ -157,10 +159,18 @@ function detectFunctionalRole(aiRole) {
   return "content";
 }
 
-function buildAgentPrompt(metadata, soul, name, description, role) {
+function buildAgentPrompt(metadata, soul, name, description, role, pattern) {
   const regime = metadata.name?.zh || metadata.id;
   const era = metadata.era?.zh || "";
   const system = metadata.system?.zh || "";
+
+  let extraConstraints = "";
+  if (pattern === "checks-and-balances" && role === "review") {
+    extraConstraints = `
+[CONSTITUTIONAL VETO POWER]
+As a reviewer in a checks-and-balances regime, you possess HARD VETO power.
+If a drafted proposal violates legality, feasibility, or historical consistency, you MUST reject it explicitly by stating "VETO:" followed by your reasoning. Do not passively accept flawed proposals.`;
+  }
 
   return `You are ${name} in the ${regime} (${era}) governance system.
 System: ${system}
@@ -168,19 +178,44 @@ System: ${system}
 Your role: ${description}
 
 ${soul}
-
+${extraConstraints}
 ---
 Respond in the language the user uses. Be concise and professional.
 When your task is complete, report results clearly.
 If a task is outside your jurisdiction, say so and suggest the appropriate agent.`;
 }
 
-function buildClaudeMd(metadata, soul, identity) {
+function buildClaudeMd(metadata, soul, identity, pattern) {
   const regime = metadata.name?.zh || metadata.id;
   const regimeEn = metadata.name?.en || metadata.id;
   const era = metadata.era?.zh || "";
   const system = metadata.system?.zh || "";
-  const pattern = normalizePattern(metadata.orchestrationPattern);
+  let orchestrationRules = `This regime uses the **${pattern}** orchestration pattern.
+Refer to engine/modes/${pattern}.md for execution flow.`;
+
+  if (pattern === "checks-and-balances") {
+    orchestrationRules += `
+
+### 🛡️ Coordinator Rules (Checks & Balances)
+1. **Drafting**: You must first ask the drafting agent to produce a solution.
+2. **Review**: You MUST pass the drafted solution to the Reviewer agent.
+3. **VETO Enforcement**: If the Reviewer issues a \`VETO:\` with feedback, you MUST return the feedback to the Drafter and ask for a revision.
+4. **Loop limit**: Do not exceed 3 rounds of VETO. If the Reviewer still rejects after 3 revisions, escalate to the user as a systemic failure.`;
+  } else if (pattern === "democratic") {
+    orchestrationRules += `
+
+### 🗳️ Coordinator Rules (Democratic)
+1. **Independent Parallelism**: You must ask the involved agents to produce their solutions INDEPENDENTLY (without seeing each other's drafts).
+2. **Vote & Consensus**: Once all solutions are collected, compare them.
+3. **Majority Wins**: The solution that forms the majority consensus MUST be adopted. If there is a tie, prompt the agents to critique each other and run one tie-breaker vote.`;
+  } else if (pattern === "dual-track") {
+    orchestrationRules += `
+
+### 🛤️ Coordinator Rules (Dual-Track)
+1. **Parallel Verification**: Send the exact same task to Track A and Track B agents.
+2. **Blind Processing**: They must not see each other's work.
+3. **Comparison**: Evaluate the two outputs. If they AGREE, proceed with high confidence. If they DISAGREE, you must highlight the discrepancy and synthesize a safe middle path or escalate.`;
+  }
 
   return `# CivAgent v4 — ${regime} (${regimeEn})
 
@@ -200,8 +235,7 @@ ${identity}
 
 ## Orchestration
 
-This regime uses the **${pattern}** orchestration pattern.
-Refer to engine/modes/${pattern}.md for execution flow.
+${orchestrationRules}
 
 ## Multi-Model Routing
 

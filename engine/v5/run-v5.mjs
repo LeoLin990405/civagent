@@ -14,6 +14,7 @@ import { ensureCivHome, validateRegime } from "./civ-memory.mjs";
 import { sediment } from "./skill-sediment.mjs";
 import { resolveBackend, buildBackendArgs } from "./backends.mjs";
 import { EventLog, writeMeta, eventsPath } from "./events.mjs";
+import { retrieveHistoricalContext } from "./history-retriever.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "..", "..");
@@ -112,12 +113,27 @@ async function main() {
     CIVAGENT_BACKEND: backend,
   };
   fs.mkdirSync(env.XDG_CONFIG_HOME, { recursive: true });
-  const ccArgs = buildBackendArgs({ agentsJson, prompt });
+
+  const ragContext = retrieveHistoricalContext(regimeDir, prompt);
+  const finalPrompt = prompt + ragContext;
+  
+  const ccArgs = buildBackendArgs({ agentsJson, prompt: finalPrompt });
 
   const cc = spawn(command, ccArgs, { env, stdio: ["inherit", "pipe", "inherit"] });
+  
+  let vetoTriggered = false;
   cc.stdout.on("data", (chunk) => {
     process.stdout.write(chunk);
-    log.emit("turn", { text: chunk.toString() });
+    const text = chunk.toString();
+    log.emit("turn", { text });
+    
+    // HARDCODED VETO: Intercept and kill if auditing agent invokes veto
+    if ((text.includes("[VETO]") || text.includes("驳回")) && !vetoTriggered) {
+      vetoTriggered = true;
+      console.error("\n[v5-Engine] VETO DETECTED! Hard-aborting execution to simulate constitutional veto.");
+      log.emit("veto_triggered", { reason: "Constitutional veto executed by auditing agent." });
+      cc.kill("SIGKILL");
+    }
   });
 
   let exitCode;
