@@ -19,8 +19,8 @@
     ┌───────┼───────┐           ┌───────┼───────┐
     ▼       ▼       ▼           ▼       ▼       ▼
 ┌────────┐ ┌──────┐ ┌──────┐ ┌────────┐ ┌──────┐ ┌──────┐
-│北院大王│ │北面林牙│ │夷离堇│ │南院大王│ │南面宰相│ │敌烈麻都│
-│总调度  │ │军事    │ │部落  │ │汉地事务│ │文书    │ │监察    │
+│北院大王│ │北面林牙│ │夷离堇│ │南院大王│ │南面宰相│ │夷离毕 │
+│总调度  │ │文翰    │ │部落军事│ │汉地事务│ │文书    │ │司法  │
 └────────┘ └──────┘ └──────┘ └────────┘ └──────┘ └──────┘
 
 ## 角色映射表
@@ -28,19 +28,19 @@
 |---|---|---|---|
 | 可汗 | khan | coordinator | sonnet |
 | 北院大王 | beiyuan-king | management | sonnet |
-| 南面林牙 | beimian-linya | devops | opus |
-| 夷离堇 | yilijin | data | sonnet |
+| 北面林牙 | beimian-linya | content | opus |
+| 夷离堇 | yilijin | devops | sonnet |
 | 南院大王 | nanyuan-king | management | sonnet |
 | 南面宰相 | nanmian-zaixiang | engineering | opus |
-| 敌烈麻都 | diliemadu | review | opus |
+| 夷离毕 | yilibi | legal | opus |
 
 ## 决策流程
 1. **khan** 接到边境急报或汉地事务奏报
 2. **beiyuan-king** 分析任务属性，判断归属北面或南面系统
-3. 北面事务：**beimian-linya** 负责军事部署，**yilijin** 协调部落资源
+3. 北面事务：**yilijin** 统筹部落军事征调，**beimian-linya** 起草北面诏令文书
 4. 南面事务：**nanyuan-king** 统筹汉地行政，**nanmian-zaixiang** 起草文书
 5. 跨系统事务由 **beiyuan-king** 统一协调
-6. **diliemadu** 全程监察工作质量，确保执行到位
+6. **yilibi** 依契丹法审理刑名、复核决策的合法性
 
 ## 制度特点
 - 双轨并行：北面官治游牧，南面官治农耕，互不干涉
