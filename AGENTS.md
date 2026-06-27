@@ -72,6 +72,16 @@ Do not introduce new `@typescript-eslint/no-explicit-any` (that one is an error)
    work in the background; never block the HTTP response on a match/tournament.
 7. **New modules need tests.** Tests must be hermetic — fake every external CLI
    and point `HOME` at a temp dir (see `test/integration-event-contract.test.mjs`).
+8. **Language: English for the engineering surface** (code comments, console/log
+   strings, agent-facing prompts, UI, engineering docs). Use standard sinological
+   terms for historical content (Hucker official titles: Secretariat 中书省,
+   Chancellery 门下省, etc.). Two exceptions stay Chinese because they are
+   *functional or intentional*, not mixed-language slips:
+   - the mechanism markers `圣旨 / 诏书 / 弹劾 / 驳回` (detection of Chinese agent
+     output), `regime-to-cc` ROLE_KEYWORDS + OrgChart matching, and the
+     `regime-validator` section-header regexes — all parse bilingual data;
+   - `regimes/**` and `docs/IDENTITY-TEMPLATE.md` — the regimes are intentionally
+     bilingual (`name.zh`/`name.en`), and the template documents that format.
 
 ## Architecture map
 
