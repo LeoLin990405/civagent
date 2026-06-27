@@ -5,7 +5,7 @@ interface MatchMeta {
   id: string;
   format: string;
   mtime: number;
-  meta: any;
+  meta: { regime?: string; [key: string]: unknown };
 }
 
 interface EventPayload {
