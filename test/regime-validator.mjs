@@ -9,7 +9,7 @@ import { convertRegime } from "../engine/regime-to-cc.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const REGIMES = path.join(ROOT, "regimes");
-// Canonical 6 modes. Historical aliases normalize to these.
+// Canonical 6 core + V6 expanded modes.
 const PATTERN_ALIASES = {
   "centralized-hierarchy": "centralized",
   "democratic-council": "democratic",
@@ -19,8 +19,13 @@ const PATTERN_ALIASES = {
 const VALID_PATTERNS = new Set([
   "centralized", "checks-and-balances", "democratic",
   "dual-track", "federation", "theocratic",
+  // V6 expanded patterns
+  "autocratic", "military-council", "aristocratic-council",
+  "parallel", "bureaucratic", "divination", "consensus", "feudal",
   ...Object.keys(PATTERN_ALIASES),
 ]);
+
+const VALID_MECHANISMS = new Set(["VETO", "IMPEACH", "EDICT"]);
 
 const errors = [];
 const warnings = [];
@@ -68,6 +73,17 @@ for (const region of fs.readdirSync(REGIMES)) {
     if (PATTERN_ALIASES[meta.orchestrationPattern]) {
       warnings.push(`${tag}: pattern "${meta.orchestrationPattern}" is an alias of "${PATTERN_ALIASES[meta.orchestrationPattern]}" — consider normalizing`);
     }
+
+    // V6: mechanisms validation
+    if (meta.mechanisms) {
+      check(Array.isArray(meta.mechanisms), `${tag}: mechanisms must be an array`);
+      if (Array.isArray(meta.mechanisms)) {
+        for (const m of meta.mechanisms) {
+          check(VALID_MECHANISMS.has(m), `${tag}: unknown mechanism "${m}" (valid: VETO, IMPEACH, EDICT)`);
+        }
+      }
+    }
+
 
     for (const f of ["IDENTITY.md", "SOUL.md"]) {
       check(fs.existsSync(path.join(regimeDir, f)),

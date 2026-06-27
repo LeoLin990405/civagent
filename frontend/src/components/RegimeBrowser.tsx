@@ -4,7 +4,7 @@ import type { RegimeDetail } from '../types/api';
 import OrgChart from './regime/OrgChart';
 import ModeComparison from './regime/ModeComparison';
 import { RelationshipNetwork } from './regime/RelationshipNetwork';
-import { RegimeTopology } from '../RegimeTopology';
+import { RegimeTopology } from './RegimeTopology';
 
 interface RegimeBrowserProps {
   regimes: RegimeDetail[];
@@ -124,13 +124,13 @@ export const RegimeBrowser: React.FC<RegimeBrowserProps> = ({ regimes }) => {
                       : 'text-white/50 hover:bg-[rgba(255,255,255,0.05)] border border-transparent'
                   }`}
                 >
-                  {r.metadata.name || r.id}
+                  {typeof r.metadata.name === 'object' ? r.metadata.name.zh : (r.metadata.name || r.id)}
                 </button>
               ))}
             </div>
             <div className="flex-1 flex flex-col">
               <h3 className="text-xl font-bold text-[var(--accent-cyan)] mb-2 px-6">
-                {selectedRegime?.metadata?.name || selectedRegime?.id} Orchestration
+                {(typeof selectedRegime?.metadata?.name === 'object' ? selectedRegime?.metadata?.name.zh : selectedRegime?.metadata?.name) || selectedRegime?.id} Orchestration
               </h3>
               <p className="text-sm text-white/50 mb-4 px-6">{selectedRegime?.metadata?.description?.en}</p>
               <RegimeTopology regime={selectedRegime?.id || 'china/tang'} />
