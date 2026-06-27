@@ -1,4 +1,4 @@
-# Federation Mode (联邦模式)
+# Federation Mode
 
 > Historical model: Zhou Enfeoffment, HRE, Persian Satrapies, EU
 

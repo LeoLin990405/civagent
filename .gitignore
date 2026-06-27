@@ -1,24 +1,24 @@
-# 依赖
+# Dependencies
 node_modules/
 dist/
 
-# 环境和配置（含敏感信息）
+# Environment & config (may contain secrets)
 .env
 .env.*
 openclaw.json
 clawdbot.json
 *.bak
 
-# 状态目录
+# State directories
 .openclaw/
 .clawdbot/
 
-# 系统文件
+# System files
 *.log
 .DS_Store
 Thumbs.db
 
-# 构建产物
+# Build artifacts
 frontend/node_modules/
 frontend/dist/
 frontend/dist-ssr/

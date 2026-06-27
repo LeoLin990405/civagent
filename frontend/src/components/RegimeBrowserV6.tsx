@@ -19,9 +19,9 @@ interface RegimeMeta {
 }
 
 const mechanismIcons: Record<string, { icon: React.ReactNode; color: string; label: string }> = {
-  VETO: { icon: <Shield size={14} />, color: '#ef4444', label: '封驳 VETO' },
-  IMPEACH: { icon: <Scroll size={14} />, color: '#f59e0b', label: '弹劾 IMPEACH' },
-  EDICT: { icon: <Crown size={14} />, color: '#8b5cf6', label: '圣旨 EDICT' },
+  VETO: { icon: <Shield size={14} />, color: '#ef4444', label: 'VETO' },
+  IMPEACH: { icon: <Scroll size={14} />, color: '#f59e0b', label: 'IMPEACH' },
+  EDICT: { icon: <Crown size={14} />, color: '#8b5cf6', label: 'EDICT' },
 };
 
 export const RegimeBrowserV6: React.FC = () => {
@@ -62,11 +62,11 @@ export const RegimeBrowserV6: React.FC = () => {
         <div style={{ padding: '16px 20px', borderBottom: '1px solid var(--border-light)', display: 'flex', gap: '12px' }}>
           <div className="glass-card" style={{ flex: 1, padding: '12px', textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent-crimson)' }}>{chinaCount}</div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>中国朝代</div>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Chinese Dynasties</div>
           </div>
           <div className="glass-card" style={{ flex: 1, padding: '12px', textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent-blue)' }}>{globalCount}</div>
-            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>世界政体</div>
+            <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Global Empires</div>
           </div>
           <div className="glass-card" style={{ flex: 1, padding: '12px', textAlign: 'center' }}>
             <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent-emerald)' }}>{regimes.length}</div>
@@ -189,7 +189,7 @@ export const RegimeBrowserV6: React.FC = () => {
             {/* System */}
             <div className="glass-card" style={{ padding: '20px', marginBottom: '16px' }}>
               <h4 style={{ margin: '0 0 8px', fontSize: '13px', color: 'var(--accent-gold)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                制度 System
+                System
               </h4>
               <div style={{ fontSize: '15px', fontWeight: 600 }}>{selected.metadata.system.zh}</div>
               <div style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>{selected.metadata.system.en}</div>
@@ -198,7 +198,7 @@ export const RegimeBrowserV6: React.FC = () => {
             {/* Description */}
             <div className="glass-card" style={{ padding: '20px', marginBottom: '16px' }}>
               <h4 style={{ margin: '0 0 8px', fontSize: '13px', color: 'var(--accent-blue)', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                描述 Description
+                Description
               </h4>
               <p style={{ margin: 0, lineHeight: 1.7 }}>{selected.metadata.description.zh}</p>
               <p style={{ margin: '8px 0 0', color: 'var(--text-muted)', fontSize: '13px', lineHeight: 1.7 }}>{selected.metadata.description.en}</p>

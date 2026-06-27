@@ -1,4 +1,4 @@
-# Centralized Mode (集权模式)
+# Centralized Mode
 
 > Historical model: Qin Dynasty, Yuan Dynasty, Napoleonic France, Soviet Politburo
 

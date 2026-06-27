@@ -39,7 +39,7 @@ ${BOLD}Usage:${NC}
 
 ${BOLD}Examples:${NC}
   civagent switch china/tang
-  civagent run --v5 "重构这个模块的代码"
+  civagent run --v5 "refactor this module"
   civagent tournament --civs china/tang,china/qin,global/athens,global/roman-republic \\
                      "how do we handle a famine on the eastern frontier?"
 
@@ -307,7 +307,7 @@ cmd_tournament() {
 
 # Verify the cn-cc-workflow launchers the cn:* backends depend on (engine/cn-cc.mjs).
 cmd_doctor() {
-  echo -e "${BOLD}CivAgent — cn-cc-workflow 依赖自检 / dependency check${NC}"
+  echo -e "${BOLD}CivAgent — cn-cc-workflow dependency check${NC}"
   CIVAGENT_ENGINE="$ENGINE_DIR" node --input-type=module -e '
 const { checkCnCc } = await import(`${process.env.CIVAGENT_ENGINE}/cn-cc.mjs`);
 const r = checkCnCc();

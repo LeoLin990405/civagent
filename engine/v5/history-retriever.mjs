@@ -42,11 +42,11 @@ export function retrieveHistoricalContext(regimeDir, taskPrompt) {
     let resultString = '';
     
     if (top.length > 0) {
-      resultString += `\n\n### 📜 史馆档案检索 (Historical Static RAG)\n\n根据当前任务，翰林院为您检索到以下历史典籍参考资料：\n\n` + top.map(t => `> ${t.text}`).join('\n\n') + '\n';
+      resultString += `\n\n### 📜 Archival Retrieval — Bureau of Historiography (Static RAG)\n\nFor the present task, the Hanlin Academy has drawn the following references from the historical record:\n\n` + top.map(t => `> ${t.text}`).join('\n\n') + '\n';
     }
 
     if (episodicMatches.length > 0) {
-      resultString += `\n\n### 🔮 平行宇宙历史经验 (Episodic Memory RAG)\n\n在过往的多次推演中，你的政体（或类似体制）积累了以下成败经验，务必吸取教训：\n\n` + episodicMatches.map(m => `> [历时 ${m.timestamp}] ${m.content}`).join('\n\n') + '\n';
+      resultString += `\n\n### 🔮 Precedents from Prior Deliberations (Episodic Memory RAG)\n\nAcross earlier simulations your polity (or comparable systems) accumulated the following successes and failures — heed these lessons:\n\n` + episodicMatches.map(m => `> [${m.timestamp}] ${m.content}`).join('\n\n') + '\n';
     }
 
     return resultString;
