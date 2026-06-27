@@ -10,7 +10,12 @@ import os from "node:os";
 
 export const ROOT = path.join(os.homedir(), ".civagent");
 
-export const EVENT_TYPES = ["match_start", "turn", "tool", "judge", "skill", "match_end"];
+export const EVENT_TYPES = [
+  "match_start", "turn", "tool", "judge", "skill", "match_end",
+  // V6 constitutional mechanisms — emitted by engine/mechanisms/* when a
+  // [VETO] / [IMPEACH] / [EDICT] marker fires during a match.
+  "veto_triggered", "impeach_triggered", "edict_triggered",
+];
 
 export function matchDir(matchId) {
   const dir = path.join(ROOT, "matches", String(matchId));
