@@ -6,27 +6,25 @@
 这一制度在西部延续近五百年，支撑了横跨欧亚非的治理、成文法的统一执行与罗马和平（Pax Romana）所代表的长期稳定。 This system lasted nearly five centuries in the West and sustained governance across Europe, Asia, and Africa, the uniform execution of written law, and the long stability associated with the Pax Romana.
 
 ## 组织架构图 (Organization Chart)
->                               ┌──────────────┐
->                               │ 皇帝 /       │
->                               │ Imperator    │
->                               └──────┬───────┘
->                                      │
->                     ┌────────────────▼────────────────┐
->                     │近卫军长官 / Praetorian Prefect  │
->                     │         chief minister          │
->                     └───┬─────────┬─────────┬──────────┘
->                         │         │         │
->            ┌────────────▼┐ ┌──────▼──────┐ ┌▼──────────────┐
->            │城市行政长官  │ │行政总管     │ │财务大臣       │
->            │Urban Prefect │ │Master of    │ │Count of Sacred│
->            │Rome          │ │Offices      │ │Largesse       │
->            └──────────────┘ └──────┬──────┘ └──────┬───────┘
->                                   │                │
->                            ┌──────▼──────┐   ┌─────▼────────┐
->                            │法务官        │   │军事长官      │
->                            │Quaestor      │   │Master of     │
->                            │Sacri Palatii │   │Soldiers      │
->                            └──────────────┘   └──────────────┘
+>                          ┌──────────────┐
+>                          │  皇帝 /      │
+>                          │  Imperator   │
+>                          └──────┬───────┘
+>              ┌──────────────────┴───────────────────┐
+>              │ 民政 / civil              军事 / military │
+>     ┌────────▼─────────┐                 ┌──────────▼─────────┐
+>     │近卫军长官         │                 │军事长官             │
+>     │Praetorian Prefect│                 │Magister Militum     │
+>     │(首席行政)        │                 │(独立统帅诸军)       │
+>     └────────┬─────────┘                 └─────────────────────┘
+>              │ 统辖宫廷诸大臣 (co-equal palatine ministers)
+>     ┌─────────┬┴────────┬───────────┐
+>     ▼         ▼         ▼           ▼
+> ┌─────────┐┌─────────┐┌──────────┐┌───────────────┐
+> │城市长官 ││行政总管 ││法务官    ││财务大臣       │
+> │Urban    ││Master of││Quaestor  ││Count of Sacred│
+> │Prefect  ││Offices  ││Sacri Pal.││Largesse       │
+> └─────────┘└─────────┘└──────────┘└───────────────┘
 
 ## 角色映射表 (Role Mapping Table)
 | 历史角色 | Agent ID | AI 职责 | 推荐模型 |
