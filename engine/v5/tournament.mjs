@@ -42,11 +42,25 @@ export function parseJudgeScores(output, civRegimes) {
     const reasonCell = cells[3] || "";
     const scoreMatch = scoreCell.match(/^(\d+(?:\.\d+)?)/);
     if (!scoreMatch) continue;
-    // Match against known regime ids: exact or partial (regime's slug part)
-    const regime = civRegimes.find((r) => {
+    // Match against known regime ids. Prefer exact (full id or slug), then fall
+    // back to substring — but pick the LONGEST match so that e.g. "qing" is not
+    // mis-bound to "qin", or "han-dynasty" to "han".
+    const exact = civRegimes.find((r) => {
       const slug = r.split("/")[1] || r;
-      return nameCell === r || nameCell.includes(r) || nameCell.includes(slug);
+      return nameCell === r || nameCell === slug;
     });
+    const regime =
+      exact ||
+      civRegimes
+        .filter((r) => {
+          const slug = r.split("/")[1] || r;
+          return nameCell.includes(r) || nameCell.includes(slug);
+        })
+        .sort((a, b) => {
+          const al = Math.max(a.length, (a.split("/")[1] || a).length);
+          const bl = Math.max(b.length, (b.split("/")[1] || b).length);
+          return bl - al;
+        })[0];
     if (regime) {
       scores.push({ regime, score: parseFloat(scoreMatch[1]), reason: reasonCell });
     }
@@ -107,9 +121,16 @@ function runCiv({ regime, backend }, task, tournamentId, outDir) {
     });
     proc.stdout.pipe(out, { end: false });
     proc.stderr.pipe(out, { end: false });
-    proc.on("close", (code) => {
+    // Without an "error" handler a spawn failure (ENOENT, EMFILE under load)
+    // throws an unhandled exception and "close" may never fire, hanging the
+    // whole Promise.all. Resolve with a null code so the tournament continues.
+    proc.on("error", (err) => {
       out.end();
-      resolve({ regime, backend, matchId, code, logFile });
+      resolve({ regime, backend, matchId, code: null, logFile, error: err.message });
+    });
+    proc.on("close", (code, signal) => {
+      out.end();
+      resolve({ regime, backend, matchId, code, signal, logFile });
     });
   });
 }
@@ -226,17 +247,15 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   
   let task = rest.join(" ").trim();
   if (taskFile) {
-    import("node:fs").then(fs => {
-      task = fs.readFileSync(taskFile, "utf8");
-      runTournament({ civs, task }).catch((e) => {
-        console.error(e);
-        process.exit(1);
-      });
-    });
-  } else {
-    runTournament({ civs, task }).catch((e) => {
-      console.error(e);
+    try {
+      task = fs.readFileSync(taskFile, "utf8").trim();
+    } catch (e) {
+      console.error(`[tournament] cannot read --task-file ${taskFile}: ${e.message}`);
       process.exit(1);
-    });
+    }
   }
+  runTournament({ civs, task }).catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
 }

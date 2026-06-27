@@ -12,7 +12,7 @@
     "ts": { "type": "integer", "description": "Unix epoch milliseconds." },
     "type": {
       "type": "string",
-      "enum": ["match_start", "turn", "tool", "judge", "skill", "match_end"],
+      "enum": ["match_start", "turn", "tool", "judge", "skill", "match_end", "veto_triggered", "impeach_triggered", "edict_triggered"],
       "description": "Event kind."
     },
     "regime": { "type": "string", "description": "region/regime-id, e.g. china/tang. Present on match_start." },
@@ -20,13 +20,16 @@
     "command": { "type": "string", "description": "Resolved binary the backend mapped to. Present on match_start." },
     "task": { "type": "string", "description": "The governance task. Present on match_start." },
     "text": { "type": "string", "description": "Streamed output chunk. Present on turn events." },
-    "exitCode": { "type": ["integer", "null"], "description": "Process exit code. Present on match_end." },
+    "exitCode": { "type": ["integer", "null"], "description": "Process exit code. Present on match_end (null when killed by signal, e.g. a veto SIGKILL)." },
+    "signal": { "type": ["string", "null"], "description": "Signal that terminated the backend, e.g. SIGKILL from a veto. Present on match_end." },
+    "mechanisms": { "type": "object", "description": "Cumulative constitutional-mechanism counts {vetoes, impeachments, edicts}. Present on match_end." },
+    "target": { "type": "string", "description": "Impeachment target. Present on impeach_triggered events." },
     "provider": { "type": "string", "description": "Judge provider id. Present on judge events." },
     "error": { "type": "string", "description": "Failure reason, when a judge/skill step failed." },
     "status": {
       "type": "string",
-      "enum": ["saved", "rejected", "skipped", "error"],
-      "description": "Sedimentation outcome. Present on skill events."
+      "enum": ["saved", "rejected", "skipped", "error", "done", "vetoed", "failed"],
+      "description": "Sedimentation outcome (saved|rejected|skipped|error) on skill events, or match outcome (done|vetoed|failed) on match_end."
     },
     "skillPath": { "type": "string", "description": "Absolute path of the saved skill file. Present on skill events when status=saved." },
     "auditedBy": { "type": ["string", "null"], "description": "Provider that audited the skill. Present on skill events when an audit was attempted." },

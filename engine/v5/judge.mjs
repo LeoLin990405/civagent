@@ -61,7 +61,14 @@ export function runJudge(prompt, {
   for (const id of available) {
     const { cmd, args } = JUDGE_PROVIDERS[id];
     for (let attempt = 0; attempt <= retries; attempt++) {
-      const r = _spawn(cmd, args(prompt), { encoding: "utf8", timeout, env: process.env });
+      // maxBuffer: judge transcripts can exceed Node's 1 MB stdout default,
+      // which would otherwise fail the call with ERR_CHILD_PROCESS_STDIO_MAXBUFFER.
+      const r = _spawn(cmd, args(prompt), {
+        encoding: "utf8",
+        timeout,
+        env: process.env,
+        maxBuffer: 64 * 1024 * 1024,
+      });
       if (r.status === 0 && r.stdout != null) {
         return { provider: id, attempt, output: String(r.stdout).trim() };
       }

@@ -128,6 +128,16 @@ export function convertRegime(regimeDir) {
 
   for (const agent of sourceAgents) {
     const id = agent.agentId || agent.id;
+    // Skip rows with no usable id — an undefined id becomes the object key
+    // "undefined" and collapses every id-less agent into one entry.
+    if (!id) {
+      console.error(`[regime-to-cc] skipping agent row with empty id: ${JSON.stringify(agent).slice(0, 120)}`);
+      continue;
+    }
+    if (Object.prototype.hasOwnProperty.call(ccAgents, id)) {
+      console.error(`[regime-to-cc] duplicate agent id "${id}" — keeping the first, ignoring later row`);
+      continue;
+    }
     const name = agent.historicalRole || agent.name || id;
     const description = agent.aiRole || agent.identity?.theme || agent.description || "";
     const role = agent.id ? detectRole(agent) : detectFunctionalRole(agent.aiRole || "");
