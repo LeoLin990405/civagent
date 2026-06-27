@@ -2,9 +2,9 @@
 
 ## 制度简介 / System Overview
 
-The European Union is a unique supranational polity — neither a federation nor a mere international organization. Born from the ashes of World War II, the European project began with the Coal and Steel Community (1951) and evolved through the Treaties of Rome (1957), Maastricht (1992), and Lisbon (2007) into a union of 27 member states with a single market, common currency (for 20 states), and shared institutions. Power is distributed among the Commission (executive/initiative), the Council (member states), the Parliament (citizens), the European Council (strategic direction), the ECJ (law), the ECB (money), and the High Representative (foreign policy). The principle of subsidiarity ensures decisions are made at the most appropriate level.
+The European Union is a unique supranational polity — neither a federation nor a mere international organization. Born from the ashes of World War II, the European project began with the Coal and Steel Community (1951) and evolved through the Treaties of Rome (1957), Maastricht (1992), and Lisbon (2007) into a union of 27 member states with a single market, common currency (for 21 states, after Bulgaria adopted the euro on 1 Jan 2026), and shared institutions. Power is distributed among the Commission (executive/initiative), the Council (member states), the Parliament (citizens), the European Council (strategic direction), the ECJ (law), the ECB (money), and the High Representative (foreign policy). The principle of subsidiarity ensures decisions are made at the most appropriate level.
 
-欧盟是一个独特的超国家政体——既非联邦，也非单纯的国际组织。从二战废墟中诞生，欧洲一体化从煤钢共同体（1951年）起步，经罗马条约（1957年）、马斯特里赫特条约（1992年）和里斯本条约（2007年），发展为拥有单一市场、共同货币（20国）和共同机构的27国联盟。权力分布于委员会（行政/提案）、理事会（成员国）、议会（公民）、欧洲理事会（战略方向）、欧洲法院（法律）、欧洲央行（货币）和高级代表（外交）之间。辅助性原则确保决策在最合适的层级做出。
+欧盟是一个独特的超国家政体——既非联邦，也非单纯的国际组织。从二战废墟中诞生，欧洲一体化从煤钢共同体（1951年）起步，经罗马条约（1957年）、马斯特里赫特条约（1992年）和里斯本条约（2007年），发展为拥有单一市场、共同货币（21国，保加利亚于2026年1月1日加入欧元区）和共同机构的27国联盟。权力分布于委员会（行政/提案）、理事会（成员国）、议会（公民）、欧洲理事会（战略方向）、欧洲法院（法律）、欧洲央行（货币）和高级代表（外交）之间。辅助性原则确保决策在最合适的层级做出。
 
 ## 组织架构图 / Org Chart
 
