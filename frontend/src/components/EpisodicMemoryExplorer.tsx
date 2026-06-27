@@ -42,7 +42,7 @@ export const EpisodicMemoryExplorer: React.FC<EpisodicMemoryExplorerProps> = ({ 
       <div style={{ borderBottom: '1px solid var(--border-light)', padding: '24px', flexShrink: 0, display: 'flex', alignItems: 'center', gap: '12px' }}>
         <BookOpen size={24} style={{ color: 'var(--accent-blue)' }} />
         <div>
-          <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-main)', margin: 0 }}>平行宇宙史书 (Episodic Memory Archive)</h2>
+          <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-main)', margin: 0 }}>Episodic Memory Archive</h2>
           <p style={{ fontSize: '14px', color: 'var(--text-muted)', margin: '4px 0 0 0' }}>
             Documenting the structural evolution and historical precedents of <span style={{ color: 'var(--accent-emerald)' }}>{regime}</span> across timelines.
           </p>

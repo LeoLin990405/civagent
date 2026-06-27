@@ -98,7 +98,7 @@ export const LiveCourt: React.FC = () => {
         <div key={idx} className="veto-badge" style={{ padding: '16px', borderRadius: '12px', marginBottom: '12px', display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
           <ShieldAlert size={24} style={{ flexShrink: 0 }} />
           <div>
-            <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 'bold' }}>CENSORATE VETO TRIGGERED (封驳)</h4>
+            <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 'bold' }}>CENSORATE VETO TRIGGERED</h4>
             <p style={{ margin: 0, fontSize: '12px', opacity: 0.8 }}>{ev.reason || 'The policy was rejected on moral or procedural grounds.'}</p>
           </div>
         </div>
@@ -111,7 +111,7 @@ export const LiveCourt: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
             <AlertTriangle size={24} style={{ flexShrink: 0, color: 'var(--accent-gold)' }} />
             <div>
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 'bold', color: 'var(--accent-gold)' }}>IMPEACHMENT FILED (弹劾)</h4>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 'bold', color: 'var(--accent-gold)' }}>IMPEACHMENT FILED</h4>
               <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-muted)' }}>Target: <span style={{ color: 'var(--text-main)', fontWeight: 'bold' }}>{ev.target}</span></p>
               <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: 'var(--text-muted)' }}>{ev.reason}</p>
             </div>
@@ -126,7 +126,7 @@ export const LiveCourt: React.FC = () => {
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
             <Activity size={24} style={{ flexShrink: 0, color: 'var(--accent-purple)' }} />
             <div>
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 'bold', color: 'var(--accent-purple)' }}>IMPERIAL EDICT (圣旨)</h4>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '14px', fontWeight: 'bold', color: 'var(--accent-purple)' }}>IMPERIAL EDICT</h4>
               <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-muted)' }}>{ev.reason || 'Absolute authority exercised.'}</p>
             </div>
           </div>
@@ -145,7 +145,7 @@ export const LiveCourt: React.FC = () => {
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <Radio size={24} style={{ color: connected ? 'var(--accent-emerald)' : 'var(--accent-crimson)', animation: connected ? 'pulse 2s infinite' : 'none' }} />
           <div>
-            <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-main)', margin: 0 }}>Live Imperial Court (朝议现场)</h2>
+            <h2 style={{ fontSize: '20px', fontWeight: 600, color: 'var(--text-main)', margin: 0 }}>Live Imperial Court</h2>
             <p style={{ fontSize: '14px', color: 'var(--text-muted)', margin: '4px 0 0 0' }}>
               Real-time monitoring of agent debates and constitutional mechanism triggers.
             </p>

@@ -24,7 +24,7 @@ export const RegimeTopology: React.FC<TopologyProps> = ({ regime }) => {
         
         {/* Veto line */}
         <path d="M 40% 42% Q 30% 32% 40% 22%" stroke="var(--accent-crimson)" strokeWidth="2" strokeDasharray="5,5" markerEnd="url(#vetohead)" fill="transparent" />
-        <text x="32%" y="32%" fill="var(--accent-crimson)" fontSize="12" dominantBaseline="middle" textAnchor="middle">驳回 (Veto)</text>
+        <text x="32%" y="32%" fill="var(--accent-crimson)" fontSize="12" dominantBaseline="middle" textAnchor="middle">Veto</text>
         
         {/* Branching to 6 ministries */}
         <path d="M 50% 70% L 20% 85%" stroke="var(--accent-cyan)" strokeWidth="2" opacity="0.5" />
@@ -35,24 +35,24 @@ export const RegimeTopology: React.FC<TopologyProps> = ({ regime }) => {
       </svg>
 
       <div className="z-10 bg-[rgba(0,0,0,0.6)] border border-[var(--accent-cyan)] px-6 py-3 rounded text-center shadow-[0_0_15px_rgba(0,255,255,0.2)]">
-        <div className="text-[var(--accent-cyan)] font-bold text-lg">中书省 (Zhongshu)</div>
-        <div className="text-xs text-white/50">起草提案 (Drafting)</div>
+        <div className="text-[var(--accent-cyan)] font-bold text-lg">Secretariat (Zhongshu)</div>
+        <div className="text-xs text-white/50">Drafting</div>
       </div>
 
       <div className="z-10 bg-[rgba(0,0,0,0.6)] border border-[var(--accent-crimson)] px-6 py-3 rounded text-center shadow-[0_0_15px_rgba(255,51,102,0.2)]">
         <div className="text-[var(--accent-crimson)] font-bold text-lg flex items-center gap-2">
-          门下省 (Menxia) <XCircle size={16} />
+          Chancellery (Menxia) <XCircle size={16} />
         </div>
-        <div className="text-xs text-white/50">封驳审核 (Veto / Audit)</div>
+        <div className="text-xs text-white/50">Review &amp; Veto (fengbo)</div>
       </div>
 
       <div className="z-10 bg-[rgba(0,0,0,0.6)] border border-[#00ff9d] px-6 py-3 rounded text-center shadow-[0_0_15px_rgba(0,255,157,0.2)]">
-        <div className="text-[#00ff9d] font-bold text-lg">尚书省 (Shangshu)</div>
-        <div className="text-xs text-white/50">统领执行 (Execution)</div>
+        <div className="text-[#00ff9d] font-bold text-lg">Dept. of State Affairs (Shangshu)</div>
+        <div className="text-xs text-white/50">Execution</div>
       </div>
 
       <div className="z-10 w-full flex justify-between px-10 mt-8">
-        {['吏部', '户部', '礼部', '兵部', '刑部', '工部'].map(bu => (
+        {['Personnel', 'Revenue', 'Rites', 'War', 'Justice', 'Works'].map(bu => (
           <div key={bu} className="bg-[rgba(0,0,0,0.4)] border border-white/20 px-4 py-2 rounded text-center text-sm text-white/80">
             {bu}
           </div>
@@ -74,7 +74,7 @@ export const RegimeTopology: React.FC<TopologyProps> = ({ regime }) => {
         </defs>
         {/* Consular Veto */}
         <path d="M 35% 45% L 65% 45%" stroke="var(--accent-crimson)" strokeWidth="2" strokeDasharray="5,5" markerEnd="url(#vetohead)" markerStart="url(#vetohead)" />
-        <text x="50%" y="43%" fill="var(--accent-crimson)" fontSize="12" dominantBaseline="middle" textAnchor="middle">相互否决 (Intercessio)</text>
+        <text x="50%" y="43%" fill="var(--accent-crimson)" fontSize="12" dominantBaseline="middle" textAnchor="middle">Intercessio (Mutual Veto)</text>
 
         {/* Senate advising */}
         <path d="M 50% 25% L 35% 40%" stroke="var(--accent-cyan)" strokeWidth="2" markerEnd="url(#arrowhead)" strokeDasharray="2,2" />
@@ -86,25 +86,25 @@ export const RegimeTopology: React.FC<TopologyProps> = ({ regime }) => {
       </svg>
 
       <div className="z-10 absolute top-[15%] bg-[rgba(0,0,0,0.6)] border border-[#00ff9d] px-6 py-3 rounded text-center">
-        <div className="text-[#00ff9d] font-bold text-lg">元老院 (Senate)</div>
-        <div className="text-xs text-white/50">战略建议 (Advisory)</div>
+        <div className="text-[#00ff9d] font-bold text-lg">Senate</div>
+        <div className="text-xs text-white/50">Advisory (auctoritas)</div>
       </div>
 
       <div className="z-10 absolute top-[45%] left-[20%] bg-[rgba(0,0,0,0.6)] border border-[var(--accent-cyan)] px-6 py-3 rounded text-center">
-        <div className="text-[var(--accent-cyan)] font-bold text-lg">执政官 A (Consul)</div>
-        <div className="text-xs text-white/50">最高行政军事权</div>
+        <div className="text-[var(--accent-cyan)] font-bold text-lg">Consul A</div>
+        <div className="text-xs text-white/50">Supreme civil &amp; military authority</div>
       </div>
 
       <div className="z-10 absolute top-[45%] right-[20%] bg-[rgba(0,0,0,0.6)] border border-[var(--accent-cyan)] px-6 py-3 rounded text-center">
-        <div className="text-[var(--accent-cyan)] font-bold text-lg">执政官 B (Consul)</div>
-        <div className="text-xs text-white/50">最高行政军事权</div>
+        <div className="text-[var(--accent-cyan)] font-bold text-lg">Consul B</div>
+        <div className="text-xs text-white/50">Supreme civil &amp; military authority</div>
       </div>
 
       <div className="z-10 absolute top-[75%] bg-[rgba(0,0,0,0.6)] border border-[var(--accent-crimson)] px-6 py-3 rounded text-center">
         <div className="text-[var(--accent-crimson)] font-bold text-lg flex items-center justify-center gap-2">
-          保民官 (Tribune) <ShieldCheck size={16} />
+          Tribune of the Plebs <ShieldCheck size={16} />
         </div>
-        <div className="text-xs text-white/50">绝对否决权 (Absolute Veto)</div>
+        <div className="text-xs text-white/50">Absolute Veto</div>
       </div>
     </div>
   );

@@ -1,91 +1,104 @@
 # CivAgent v5 — Learning Loop (Hermes-Inspired)
 
-## 目标
-v4 每局完全无状态。v5 引入 **跨局学习闭环**，让文明随对局积累治理经验。
+## Goal
+v4 is fully stateless per match. v5 introduces a **cross-match learning loop** so a
+civilization accumulates governance experience over successive matches.
 
-灵感来源：NousResearch/hermes-agent 的三个核心设计
-1. Autonomous skill creation（经验沉淀为可复用 skill）
-2. Agent-curated memory（文明专属记忆隔离）
-3. Cross-session recall（跨对局调用历史智慧）
+Inspiration: three core ideas from NousResearch/hermes-agent
+1. Autonomous skill creation (experience sediments into reusable skills)
+2. Agent-curated memory (per-civilization memory isolation)
+3. Cross-session recall (drawing on historical wisdom across matches)
 
-## 新增模块（engine/v5/）
+## New modules (engine/v5/)
 
-### 1. `civ-memory.mjs` — 文明记忆隔离
-- 每个 regime 独占 HOME：`~/.civagent/envs/{region}-{id}/`
-- 内含 `.claude/` 子目录 → 每个文明有独立的 CLAUDE.md、skills、memory
-- 跨局持久化：对局结束后 HOME 保留，下一局同文明自动复用
-- 对比 v4：所有 regime 共享当前 $HOME，互相污染
+### 1. `civ-memory.mjs` — per-civilization memory isolation
+- Each regime owns its HOME: `~/.civagent/envs/{region}-{id}/`
+- Containing a `.claude/` subtree → each civilization has its own CLAUDE.md, skills, memory
+- Cross-match persistence: the HOME survives match end and is reused by the next match of the same civilization
+- Contrast with v4: all regimes shared the current `$HOME` and contaminated each other
 
-### 2. `skill-sediment.mjs` — 经验沉淀
-对局结束后：
+### 2. `skill-sediment.mjs` — experience sedimentation
+After a match:
 ```
-main CC → 读取 transcript（结构化事件流 events.jsonl）
-       → 调用 codex exec 提取「治理经验」
-       → 注入防护 + frontmatter 闸门（确定性，审稿前）
-       → 经 judge.mjs 独立审稿（opencode reviewer → codex 兜底，绝不用 gemini）
-       → 写入 regimes/<civ>/skills/learned-<YYYY-MM-DD>-<topic>-<matchId>.md
+main CC → read the transcript (structured event stream events.jsonl)
+       → call codex exec to extract "governance lessons"
+       → injection guard + frontmatter gate (deterministic, before audit)
+       → independent audit via judge.mjs (opencode reviewer → codex fallback, never gemini)
+       → write regimes/<civ>/skills/learned-<YYYY-MM-DD>-<topic>-<matchId>.md
 ```
-skill 文件格式（与 agentskills.io 标准兼容）：
+Skill file format (compatible with the agentskills.io convention):
 ```yaml
 ---
-name: tang-3省6部-草案冲突仲裁
+name: tang-secretariat-chancellery-draft-arbitration
 type: learned
 civ: china/tang
 source_match: 2026-04-14-001
-description: 中书省草案与门下省审核冲突时的三轮反驳模板
+description: A three-round rebuttal template for when a Secretariat (Zhongshu) draft conflicts with Chancellery (Menxia) review
 ---
 ```
 
-### 3. `run-v5.mjs` — 新入口
-包装 v4 的 `regime-to-cc.mjs` 输出，在启动 CC 前：
-1. 设置 `HOME=~/.civagent/envs/<regime>/`
-2. 加载 `regimes/<civ>/skills/*.md` 到 CC skill 列表
-3. 对局中所有消息写入结构化事件流 `~/.civagent/matches/<match-id>/events.jsonl`（+ `meta.json`，schema 见 `schemas/match-event.schema.json`）
-4. 退出时触发 `skill-sediment.mjs`
+### 3. `run-v5.mjs` — new entry point
+Wraps v4's `regime-to-cc.mjs` output; before launching CC it:
+1. Sets `HOME=~/.civagent/envs/<regime>/`
+2. Loads `regimes/<civ>/skills/*.md` into CC's skill list
+3. Writes every match message to the structured event stream `~/.civagent/matches/<match-id>/events.jsonl` (plus `meta.json`; schema in `schemas/match-event.schema.json`)
+4. Triggers `skill-sediment.mjs` on exit
 
-## MVP 范围（先验证闭环）
-4 个对照文明：
-- `china/tang` — checks-and-balances（Opus drafter + Codex reviewer）
-- `china/qin` — centralized（单 Opus，无审查）
-- `global/athens` — democratic（3 模型并行投票：Opus/Codex/MiMo）
-- `global/rome-republic` — checks-and-balances（对照唐朝）
+## MVP scope (validate the loop first)
+Four contrasting civilizations:
+- `china/tang` — checks-and-balances (Opus drafter + Codex reviewer)
+- `china/qin` — centralized (single Opus, no review)
+- `global/athens` — democratic (3 models voting in parallel: Opus/Codex/MiMo)
+- `global/roman-republic` — checks-and-balances (a foil for Tang)
 
-验证指标：连跑 5 局同题目，观察 `skills/learned-*.md` 是否出现重复治理 pattern，和裁判（Codex via judge.mjs）对「治理质量」打分趋势。
+Validation metric: run the same prompt 5 times and observe whether `skills/learned-*.md`
+shows recurring governance patterns, and the trend in the judge's (Codex via judge.mjs)
+"governance quality" scores.
 
-## Agent Teams 编排
-创建 team `civagent-v5`：
-- `team-lead` (sonnet) — 裁判 + 出题
-- `civ-tang` (opus) — 唐朝 coordinator，沉淀 skill 到 china/tang
-- `civ-qin` (cc-doubao) — 秦朝 coordinator
-- `civ-athens` (cc-glm) — 雅典 coordinator（gemini 已按项目策略移除，GLM 提供第三个模型族）
-- `civ-rome` (codex) — 罗马 coordinator
+## Agent Teams orchestration
+Create team `civagent-v5`:
+- `team-lead` (sonnet) — judge + prompt-setter
+- `civ-tang` (opus) — Tang coordinator, sediments skills to china/tang
+- `civ-qin` (cc-doubao) — Qin coordinator
+- `civ-athens` (cc-glm) — Athens coordinator (gemini removed per project policy; GLM supplies a third model family)
+- `civ-rome` (codex) — Rome coordinator
 
-team-lead 通过 inbox 派发同一题目给 4 个 civ，各自在隔离 HOME 里跑完，回报结果。
+team-lead dispatches the same prompt to the 4 civs via the inbox; each runs to completion
+in its isolated HOME and reports back.
 
-## CLI 变更
+## CLI changes
 ```bash
-civagent run --v5 "题目..."          # 启用学习闭环
-civagent skills <regime>            # 查看该文明累积的 skill
-civagent match-log                  # 列出历史对局
-civagent tournament --civs a,b,c,d  # 启动 Agent Team 对局
+civagent run --v5 "prompt..."        # enable the learning loop
+civagent skills <regime>             # view the skills a civilization has accumulated
+civagent match-log                   # list past matches
+civagent tournament --civs a,b,c,d   # launch an Agent Team match
 ```
 
-## 与 v4 的兼容性
-v5 是 **opt-in**（`--v5` flag）。不加 flag 时 v4 行为完全保留。
-regimes/ 目录结构不变，仅新增 `regimes/<civ>/skills/` 子目录（可选）。
+## Compatibility with v4
+v5 is **opt-in** (the `--v5` flag). Without the flag, v4 behavior is fully preserved.
+The `regimes/` layout is unchanged; only an optional `regimes/<civ>/skills/` subdirectory is added.
 
-## 已知设计局限（来自 Kimi 审查）
-1. **制度复杂性压缩**：把一个朝代/政体映射成单个 agent 的 system prompt 天然有损。唐朝三省六部的制度张力在历史上是多人、多部门、多时段的，`SOUL.md` 只能近似。MVP 接受这个简化，未来可用 multi-agent pattern（每个部门一个子 agent）缓解。
-2. **时间维度缺失**：`regimes/` 把古代王朝与现代民族国家并列（如 `china/tang` 与 `usa/federal`），没有年代校验。跨时代类比是特性，不是 bug，但需在论文/README 明示。
-3. **首次 seed 固化**：v5.1 已修（按 mtime 重 seed），但仅覆盖 SOUL/IDENTITY 的 md 文本更新，不覆盖 regime 的哲学层重构——那种级别应该重命名为 `tang-v2`。
+## Known design limitations (from the Kimi review)
+1. **Institutional-complexity compression**: mapping a whole dynasty/polity onto a single
+   agent's system prompt is inherently lossy. The institutional tension of the Tang Three
+   Departments and Six Ministries was, historically, multi-person, multi-department, and
+   multi-period; `SOUL.md` can only approximate it. The MVP accepts this simplification; a
+   future multi-agent pattern (one sub-agent per department) could ease it.
+2. **Missing temporal dimension**: `regimes/` places ancient dynasties alongside modern
+   nation-states (e.g. `china/tang` next to `usa/federal`) with no chronological check.
+   Cross-era comparison is a feature, not a bug, but should be stated plainly in the
+   paper/README.
+3. **First-seed lock-in**: fixed in v5.1 (re-seed by mtime), but only for SOUL/IDENTITY
+   markdown text updates — not for a philosophical re-architecture of a regime, which should
+   instead be renamed (e.g. `tang-v2`).
 
-## 路线图
-- [x] 设计文档（本文件）
+## Roadmap
+- [x] Design doc (this file)
 - [ ] `engine/v5/civ-memory.mjs`
 - [ ] `engine/v5/skill-sediment.mjs`
 - [ ] `engine/v5/run-v5.mjs`
-- [ ] `bin/civagent` 增加 `--v5` / `skills` / `match-log` / `tournament`
-- [ ] Agent Team `civagent-v5` 配置
-- [ ] MVP 5 局测试 + 裁判评分
-- [ ] 交叉审查（Codex + opencode；gemini 已移除）
+- [ ] `bin/civagent` gains `--v5` / `skills` / `match-log` / `tournament`
+- [ ] Agent Team `civagent-v5` configuration
+- [ ] MVP 5-match test + judge scoring
+- [ ] Cross-review (Codex + opencode; gemini removed)
 - [ ] PR to fork main

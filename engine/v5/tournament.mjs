@@ -79,7 +79,7 @@ governance system responded. Rank them on:
   - resilience (would this survive second-order effects?)
 
 Output ONLY a markdown table with columns: Rank | Civilization | Score /10 | One-line reason.
-Then provide a detailed evaluation section "## 史官评论 (Historian's Commentary)" where you write a paragraph explaining the top choice, mimicking the style of an ancient historian (e.g., Sima Guang's "臣光曰" or similar historical commentary style), analyzing the long-term political consequences of their chosen governance pattern.`;
+Then provide a detailed evaluation section "## Historian's Commentary" where you write a paragraph explaining the top choice in the manner of a traditional court historiographer's appraisal (in the style of Sima Guang's "chen Guang yue" — "Your servant Guang submits" — verdicts in the Zizhi Tongjian), analyzing the long-term political consequences of their chosen governance pattern.`;
 
 function newTournamentId() {
   const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 23); // ms precision
@@ -209,7 +209,7 @@ export async function runTournament({ civs, task }) {
 
   // Record to history SQLite DB for episodic memory RAG
   // Extract historical commentary from judge MD if possible
-  const commentaryMatch = verdict.md.match(/## 史官评论[^\n]*\n+([\s\S]+)$/i);
+  const commentaryMatch = verdict.md.match(/##\s*Historian'?s Commentary[^\n]*\n+([\s\S]+)$/i);
   const commentary = commentaryMatch ? commentaryMatch[1].trim() : '';
 
   const resultsToRecord = manifest.civs.map(c => {

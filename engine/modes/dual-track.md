@@ -1,4 +1,4 @@
-# Dual-Track Verification Mode (双轨模式)
+# Dual-Track Verification Mode
 
 > Historical model: Ming Grand Secretariat + Directorate, Spartan Diarchy, Liao
 

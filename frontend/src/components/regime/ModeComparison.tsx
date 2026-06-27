@@ -8,7 +8,6 @@ interface ModeComparisonProps {
 
 interface PatternInfo {
   id: string;
-  zhName: string;
   enName: string;
   description: string;
   color: string;
@@ -18,49 +17,43 @@ interface PatternInfo {
 const PATTERNS_CATALOG: PatternInfo[] = [
   {
     id: 'centralized',
-    zhName: '星型中央集权制',
     enName: 'Centralized Star Topology',
-    description: '由中心单一协调者直接下达指令、直辖所有执行节点，决策效率与执行速度极高，但缺乏容错与分布式制衡。',
+    description: 'A single central coordinator issues commands directly to all execution nodes — maximal decision and execution speed, but no fault tolerance or distributed checks.',
     color: 'rgba(255, 46, 147, 0.08)',
     borderColor: 'rgba(255, 46, 147, 0.35)',
   },
   {
     id: 'checks-and-balances',
-    zhName: '分权制衡管道制',
     enName: 'Checks & Balances Pipeline',
-    description: '采用起草、审核、执行等管道式级联流程与否决权反馈环，具有高度容错与纠错机制，适用于重特大高危决策。',
+    description: 'A pipelined draft → review → execute cascade with veto feedback loops; highly fault-tolerant and self-correcting, suited to high-stakes decisions.',
     color: 'rgba(255, 215, 0, 0.08)',
     borderColor: 'rgba(255, 215, 0, 0.35)',
   },
   {
     id: 'democratic',
-    zhName: '民主合议投票制',
     enName: 'Democratic Voting Consensus',
-    description: '平行多智能体协作合议，通过多种投票计票表决算法汇聚共识，重视过程正当性与偏好分散对齐。',
+    description: 'Parallel multi-agent deliberation that aggregates consensus via voting/tallying algorithms; prioritizes procedural legitimacy and preference diversity.',
     color: 'rgba(0, 240, 255, 0.08)',
     borderColor: 'rgba(0, 240, 255, 0.35)',
   },
   {
     id: 'dual-track',
-    zhName: '双轨相互独立制',
     enName: 'Dual-Track Redundancy',
-    description: '两条或多条互相独立的平行执行/决策链条并行，提供高度的信息冗余、独立监管与决策双向热备份。',
+    description: 'Two or more mutually independent execution/decision chains run in parallel, providing information redundancy, independent oversight, and hot-standby backup.',
     color: 'rgba(189, 0, 255, 0.08)',
     borderColor: 'rgba(189, 0, 255, 0.35)',
   },
   {
     id: 'federation',
-    zhName: '联邦分布式自治',
     enName: 'Federation Decentralization',
-    description: '中心协调枢纽与各异构自治子节点并存，极具弹性，适用于局部高度专业化与高度差异性的分布式场景。',
+    description: 'A central coordinating hub coexists with heterogeneous autonomous sub-nodes; highly elastic, suited to locally specialized, highly varied distributed scenarios.',
     color: 'rgba(57, 255, 20, 0.08)',
     borderColor: 'rgba(57, 255, 20, 0.35)',
   },
   {
     id: 'theocratic',
-    zhName: '神权对齐解释制',
     enName: 'Theocratic Alignment Hierarchy',
-    description: '基于一致性最高宪法/原则，带有单一神学或终极解释权的层级治理，确保执行层绝对信仰与价值对齐。',
+    description: 'Hierarchical governance under a supreme constitution/principle with a single theological or final-interpretation authority, ensuring absolute value alignment in the execution layer.',
     color: 'rgba(251, 191, 36, 0.08)',
     borderColor: 'rgba(251, 191, 36, 0.35)',
   },
@@ -106,7 +99,7 @@ export const ModeComparison: React.FC<ModeComparisonProps> = ({ regimes }) => {
             return (
               <div key={p.id} className="space-y-2">
                 <div className="flex items-center justify-between text-xs font-bold text-[var(--text-secondary)]">
-                  <span className="uppercase tracking-wider">{p.zhName} ({p.id})</span>
+                  <span className="uppercase tracking-wider">{p.enName} ({p.id})</span>
                   <span className="font-mono text-[var(--text-primary)]">{list.length} Regimes ({percent}%)</span>
                 </div>
                 {/* Visual Bar container */}
@@ -149,10 +142,10 @@ export const ModeComparison: React.FC<ModeComparisonProps> = ({ regimes }) => {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="text-base font-black text-[var(--text-primary)] tracking-wide">
-                      {p.zhName}
+                      {p.enName}
                     </h3>
                     <span className="text-xs font-mono text-[var(--text-muted)] uppercase tracking-widest block mt-1">
-                      {p.enName}
+                      {p.id}
                     </span>
                   </div>
                   <span

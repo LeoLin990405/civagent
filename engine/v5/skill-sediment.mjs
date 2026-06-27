@@ -26,7 +26,7 @@ description: <one line>
 ---
 
 # <Title>
-## 历史情境 (Historical Context)
+## Historical Context
 What historical dilemma or institutional dynamic does this address?
 ## Trigger
 When should future matches apply this pattern?
