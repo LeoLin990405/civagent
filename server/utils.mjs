@@ -1,5 +1,4 @@
 import path from 'node:path';
-import fs from 'node:fs';
 
 const SAFE_ID = /^[a-zA-Z0-9][a-zA-Z0-9_-]*$/;
 

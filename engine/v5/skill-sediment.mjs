@@ -70,6 +70,7 @@ export function hasSkillFrontmatter(s) {
 
 // Strip ANSI escapes and unwrap a transcript (legacy {chunk} JSONL, new
 // {type:"turn",text} events, or plain text) to plain conversation text.
+// eslint-disable-next-line no-control-regex -- intentional: strip ANSI escape codes
 const ANSI_RX = /\x1b\[[0-9;]*[a-zA-Z]/g;
 export function cleanTranscript(raw) {
   const chunks = [];

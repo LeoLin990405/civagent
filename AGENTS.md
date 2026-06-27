@@ -13,9 +13,10 @@ orchestration topologies on the Claude Code runtime.
 # Backend (root)
 npm ci                     # install (better-sqlite3 is a native module — required before tests)
 npm run lint:syntax        # node -c on every engine + server file + bash -n on bin/civagent
+npm run lint:backend       # eslint over engine + server + test (.mjs) — must be clean
 npm test                   # node --test test/*.test.mjs  (must stay 100% green)
 npm run validate:regimes   # mechanical validation of all 57 regimes (CI-gating)
-npm run ci                 # lint:syntax + test + validate:regimes (the backend gate)
+npm run ci                 # lint:syntax + lint:backend + test + validate:regimes (the backend gate)
 npm run start:server       # Express API on :3001 (server/index.mjs)
 npm run dev                # server + Vite frontend concurrently
 

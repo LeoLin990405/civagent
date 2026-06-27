@@ -20,7 +20,6 @@ import { readMatchText, eventsPath } from "./events.mjs";
 import { recordTournamentResult } from "./history-db.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = path.resolve(__dirname, "..", "..");
 const RUN_V5 = path.join(__dirname, "run-v5.mjs");
 const TOURNAMENTS_DIR = path.join(os.homedir(), ".civagent", "tournaments");
 
