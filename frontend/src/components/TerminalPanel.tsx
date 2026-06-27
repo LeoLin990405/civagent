@@ -59,7 +59,7 @@ function formatSediment(sediment: any): { label: string, status: 'saved' | 'reje
 
 function formatSkillEvent(e: MatchEvent): { title: string, desc: string, color: string } {
   if (e.status) {
-    let title = `SKILL ${e.status.toUpperCase()}`;
+    const title = `SKILL ${e.status.toUpperCase()}`;
     let desc = '';
     let color = 'var(--accent-cyan)'; // default cyan for saved
     if (e.status === 'saved') {

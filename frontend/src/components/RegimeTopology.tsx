@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Crosshair, Network, GitPullRequest, Search, FileSignature, XCircle } from 'lucide-react';
+import { ShieldCheck, Network, GitPullRequest, XCircle } from 'lucide-react';
 
 interface TopologyProps {
   regime: string;
