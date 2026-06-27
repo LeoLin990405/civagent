@@ -78,7 +78,7 @@
 ## 历史参考
 
 - 波利比乌斯《历史》(Polybius, *Histories*) — 迦太基制度主要古典来源
-- 阿里斯托《阿非利加战争》(Aristophanes, *Afrinikian Peligkos*) — 布匿战争记述
+- 李维《自建城以来》卷21–30 (Livy, *Ab Urbe Condita*, Books 21–30) — 第二次布匿战争记述
 - 哈利卡纳苏斯的狄俄尼索斯《古代罗马编年史》(Dionysius of Halicarnassus, *Roman Antiquities*)
 - 蒙森《罗马史》(Theodor Mommsen, *Römische Geschichte*)
-- 普鲁塔克《汉尼拔传》(Plutarch, *Life of Hannibal*)
+- Serge Lancel, *Carthage: A History* (1995) — 迦太基制度与社会的现代综合研究

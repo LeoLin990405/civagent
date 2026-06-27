@@ -61,5 +61,5 @@
 ## 历史参考
 - Robert C. Davis, *Shipbuilders of the Venetian Arsenal* (1991)
 - James S. Grubb, *When Myths Lose Power: Four Decades of Venetian Historiography* (1986)
-- William J. R. Curtis, *Venice: The City of Canals* (1987)
-- 《威尼斯史》（Gioconda 光荣的千年共和）
+- Frederic C. Lane, *Venice: A Maritime Republic* (1973)
+- John Julius Norwich, *A History of Venice* (1982)
