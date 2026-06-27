@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import { fileURLToPath } from 'node:url';
 import { initDb } from './db/database.mjs';
 
 import regimesRoutes from './routes/regimes.mjs';
@@ -41,8 +40,9 @@ export function createApp() {
   app.use('/api/history', historyRoutes);
   app.use('/api/analytics', analyticsRoutes);
 
-  // Global error handler — prevents unhandled rejections from crashing the server
-  app.use((err, req, res, next) => {
+  // Global error handler — prevents unhandled rejections from crashing the server.
+  // The 4-arg signature (incl. _next) is what marks this as Express error middleware.
+  app.use((err, req, res, _next) => {
     console.error(`[Server Error] ${req.method} ${req.url}:`, err.message);
     res.status(err.status || 500).json({
       error: err.message || 'Internal Server Error',

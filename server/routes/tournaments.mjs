@@ -2,8 +2,7 @@ import express from 'express';
 import path from 'node:path';
 import fs from 'node:fs';
 import os from 'node:os';
-import { safeResolve, resolveFixedFile, parseEventsJsonl } from '../utils.mjs';
-import { getDb } from '../db/database.mjs';
+import { safeResolve, resolveFixedFile } from '../utils.mjs';
 
 const rootDir = path.join(os.homedir(), '.civagent');
 
@@ -27,7 +26,7 @@ router.get('/', (req, res) => {
             if (resultPath && fs.existsSync(resultPath)) judgeResult = fs.readFileSync(resultPath, 'utf8');
           }
           list.push({ id: dir, manifest, judgeResult });
-        } catch (err) {}
+        } catch { /* skip unreadable tournament dir */ }
       }
     }
   }

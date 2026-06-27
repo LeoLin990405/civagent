@@ -21,7 +21,7 @@ router.get('/', (req, res) => {
         try {
           const meta = JSON.parse(fs.readFileSync(metaPath, 'utf8'));
           list.push({ id: dir, format: 'structured', mtime: fs.statSync(metaPath).mtimeMs, meta });
-        } catch (err) {}
+        } catch { /* skip unreadable entry */ }
       }
     }
   }
@@ -64,11 +64,11 @@ router.get('/:id/stream', (req, res) => {
     const eventsRaw = fs.readFileSync(eventsPath, 'utf8');
     const events = parseEventsJsonl(eventsRaw);
     res.write(`data: ${JSON.stringify(events)}\n\n`);
-  } catch (err) {}
+  } catch { /* skip unreadable entry */ }
 
   let lastSize = fs.statSync(eventsPath).size;
   
-  const watcher = fs.watch(eventsPath, (eventType) => {
+  const watcher = fs.watch(eventsPath, () => {
      try {
        const stats = fs.statSync(eventsPath);
        if (stats.size > lastSize) {
@@ -81,7 +81,7 @@ router.get('/:id/stream', (req, res) => {
            if (newEvents.length > 0) res.write(`data: ${JSON.stringify(newEvents)}\n\n`);
          });
        }
-     } catch (err) {}
+     } catch { /* skip unreadable entry */ }
   });
 
   req.on('close', () => watcher.close());
@@ -99,7 +99,7 @@ router.get('/:id', (req, res) => {
       const events = parseEventsJsonl(fs.readFileSync(eventsPath, 'utf8'));
       let meta = {};
       if (fs.existsSync(metaPath)) {
-        try { meta = JSON.parse(fs.readFileSync(metaPath, 'utf8')); } catch {}
+        try { meta = JSON.parse(fs.readFileSync(metaPath, 'utf8')); } catch { /* keep empty meta */ }
       }
       return res.json({ format: 'structured', meta, events });
     } catch (err) {

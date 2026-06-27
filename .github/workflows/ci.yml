@@ -18,6 +18,8 @@ jobs:
         run: npm ci
       - name: Syntax check (node + bash)
         run: npm run lint:syntax
+      - name: ESLint (engine + server + tests)
+        run: npm run lint:backend
       - name: Unit tests
         run: npm test
       - name: Validate all 57 regimes
