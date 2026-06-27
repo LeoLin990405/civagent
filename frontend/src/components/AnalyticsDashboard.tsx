@@ -25,13 +25,13 @@ export const AnalyticsDashboard: React.FC<{ selectedRegime?: string | null }> = 
     
     setLoading(true);
     // Fetch Radar
-    fetch(`http://localhost:3001/api/analytics/radar/${encodeURIComponent(selectedRegime)}`)
+    fetch(`/api/analytics/radar/${encodeURIComponent(selectedRegime)}`)
       .then(res => res.json())
       .then(data => setRadarData(data))
       .catch(console.error);
       
     // Fetch Trends
-    fetch('http://localhost:3001/api/analytics/trends')
+    fetch('/api/analytics/trends')
       .then(res => res.json())
       .then(data => setTrendData(data))
       .catch(console.error)
