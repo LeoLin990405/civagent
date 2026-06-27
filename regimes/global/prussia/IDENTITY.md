@@ -1,69 +1,78 @@
-# 普鲁士王国 — 军事官僚制
+# 普鲁士王国 — 腓特烈时代军事官僚制
 
-## 制度简介
-普鲁士王国（1701–1918）以"带有国家的军队"著称于世，将容克贵族军官团、高效的常备文官官僚体系与总参谋部制度熔于一炉。从腓特烈大帝的开明专制到俾斯麦的现实政治，这一军事官僚机器最终完成德意志统一，深刻塑造了现代国家建构的范式。
+## 制度简介 / System Overview
 
-The Kingdom of Prussia (1701–1918) was famously "an army with a state"—melding a Junker officer caste, an efficient standing bureaucracy, and the General Staff system. From Frederick the Great's enlightened absolutism to Bismarck's Realpolitik, this military-bureaucratic machine forged German unification and profoundly shaped modern state-building paradigms.
+普鲁士王国在腓特烈·威廉一世与腓特烈大帝治下（约1723–1786）锻造出"带有国家的军队"——以 1723 年设立的总执行部（Generaldirektorium）为枢纽，省级军政-王领厅（Kriegs- und Domänenkammern）为执行臂膀，容克贵族垄断军官团，国王则通过内阁谕令（Kabinettsordre）凌驾于合议机构之上亲政。这一开明专制下的合议-内阁体制，是普鲁士军事官僚机器的成型期，也是现代官僚国家的经典原型。（俾斯麦的帝国宰相制属 19 世纪另一套体系，宜单列。）
 
-## 组织架构图
-                ┌─────────────────┐
-                │    König / 国王   │
-                │  Supreme C-in-C │
-                └────────┬────────┘
-                         │
-          ┌──────────────┼──────────────┐
-          │              │              │
-    ┌─────▼──────┐ ┌────▼────────┐ ┌───▼──────────┐
-    │ Generalstab│ │  Kriegs-    │ │Finanz-       │
-    │ 总参谋部     │ │ ministerium │ │ministerium   │
-    │ (Planning) │ │ 陆军部       │ │财政部         │
-    └─────┬──────┘ └─────┬───────┘ └──────┬───────┘
-          │             │                │
-          │    ┌───────▼────────┐       │
-          │    │ Staats-        │       │
-          │    │ ministerium    │       │
-          │    │ 内阁/国务大臣   │       │
-          │    └───────┬────────┘       │
-          │            │                │
-    ┌─────▼──────┐ ┌───▼─────────┐ ┌────▼─────────┐
-    │ Oberpräsident│ │Kammer-      │ │Ober-        │
-    │ 省长/总督     │ │direktor     │ │Kriegsrat    │
-    │ (Provinces) │ │局长        │ │最高军事法庭  │
-    └────────────┘ └─────────────┘ └─────────────┘
+In the reigns of Frederick William I and Frederick the Great (c. 1723–1786) the Kingdom of Prussia forged "an army with a state." Its hub was the General Directory (Generaldirektorium, est. 1723); its executive arms were the provincial War-and-Domains Chambers (Kriegs- und Domänenkammern); the Junker nobility monopolized the officer corps; and the king ruled personally through cabinet orders (Kabinettsordre) issued above the collegial boards. This collegial-cum-cabinet system of enlightened absolutism is the formative phase of the Prussian military-bureaucratic machine. (Bismarck's chancellor system is a distinct 19th-c. order, best modeled separately.)
 
-## 角色映射表
-| 历史角色 | Agent ID | AI 职责 | 推荐模型 |
+## 组织架构图 / Organization Chart
+
+```
+                      ┌─────────────────────┐
+                      │   König / 国王        │
+                      │  亲政 + 最高统帅       │
+                      └──────────┬──────────┘
+                                 │ Kabinettsordre 内阁谕令
+                      ┌──────────▼──────────┐
+                      │  Kabinett 内阁机要    │
+                      │ (drafts royal orders)│
+                      └──────────┬──────────┘
+          ┌──────────────────────┼──────────────────────┐
+          ▼                      ▼                       ▼
+ ┌──────────────────┐ ┌──────────────────┐  ┌──────────────────┐
+ │ Generaldirektorium│ │ Justiz/Großkanzler│  │ Offizierkorps     │
+ │ 总执行部(财政·军务·│ │ 司法大臣(邦法编纂) │  │ 容克军官团(指挥)   │
+ │ 王领合议院,1723)   │ └──────────────────┘  │  + Generalstab(萌芽)│
+ └────────┬─────────┘                        └──────────────────┘
+          ▼
+ ┌──────────────────┐
+ │ Kriegs- u.       │
+ │ Domänenkammer    │
+ │ 省级军政-王领厅    │
+ │ (征兵·税收·王领)   │
+ └──────────────────┘
+```
+
+## 角色映射表 / Role Mapping Table
+
+| 历史角色 / Historical Role | Agent ID | AI 职责 / AI Responsibility | 推荐模型 / Model |
 |---|---|---|---|
-| 国王 | koenig | coordinator | opus |
-| 总参谋长 | generalstab-chief | engineering | opus |
-| 陆军大臣 | kriegsminister | management | sonnet |
-| 财政大臣 | finanzminister | data | sonnet |
-| 省长/总督 | oberpraesident | management | haiku |
-| 国务大臣 | staatsminister | review | sonnet |
+| 国王 / König | koenig | coordinator | opus |
+| 内阁机要 / Kabinett (Kabinettssekretär) | kabinett | content | sonnet |
+| 总执行部 / Generaldirektorium | generaldirektorium | management | opus |
+| 省级军政-王领厅 / Kriegs- und Domänenkammer | domaenenkammer | devops | haiku |
+| 司法大臣 / Justizminister (Großkanzler) | justizminister | legal | sonnet |
+| 容克军官团 / Offizierkorps (Junker) | offizierkorps | engineering | sonnet |
+| 总参谋部(萌芽) / Generalstab (nascent) | generalstab | research | opus |
 
-## 决策流程
-1. **koenig** 设定国家战略目标（战争/外交/内政）
-2. **generalstab-chief** 据此制定军事计划与动员方案
-3. **staatsminister** 会同 **finanzminister** 评估预算与可行性
-4. **kriegsminister** 签发行政命令并协调各省
-5. **oberpraesident** 在各省组织执行与地方动员
-6. **generalstab-chief** 监督前线进展并反馈调整
-7. **koenig** 在关键节点裁决争议
+## 决策流程 / Decision Flow
 
-## 制度特点
-- 总参谋部独立性：Großer Generalstab 作为独立技术机构，直属国王，绕过陆军部直接指挥作战
-- 容克军官垄断：Junker 贵族阶层世袭占有军官与高级文官职位，形成军政合一精英集团
-- 军事-官僚一体化：征兵、铁路、财政系统全部服务于动员效率，"和平时期的军队，战时的国家"
-- 参谋军官轮换：军官在参谋部与野战部队间定期轮岗，避免官僚化与山头主义
-- 现实政治优先：俾斯麦式"可能即正当"，利益计算高于意识形态，外交服务于军事目标
-- 省级垂直管理：Oberpräsident 由中央直接任命，省长同时是军事征发与税收执行节点
+1. **koenig** 设定国家战略目标（战争/外交/内政），亲自裁断
+2. **kabinett** 将国王意志拟为内阁谕令（Kabinettsordre），绕过合议机构直达各部
+3. **generalstab** 制定作战与动员的技术方案，**generaldirektorium** 评估财政与王领资源可行性
+4. **justizminister** 审核措施是否合于普鲁士邦法（Allgemeines Landrecht 编纂传统）
+5. **generaldirektorium** 下达行政指令，**domaenenkammer** 在各省执行征兵、税收与王领管理
+6. **offizierkorps** 统领军队执行作战，参谋军官在野战部队与参谋部间轮岗反馈
+7. **koenig** 在关键节点裁决争议并签发最终谕令
+
+## 制度特点 / Characteristics
+
+- **合议-内阁双层**：总执行部（Generaldirektorium）为合议制中枢，但国王以内阁谕令（Kabinettsordre）于其上亲政，形成"开明专制"特有的决策捷径
+- **总执行部统财军**：1723 年合并总军务委员会与总财政部，集财政、军务、王领管理于一院，下辖各省军政-王领厅垂直执行
+- **容克军官垄断**：Junker 贵族阶层世袭占有军官与高级文官职位，形成军政合一精英集团；"社会军事化"是其底层逻辑
+- **参谋雏形**：18 世纪的参谋机构尚属萌芽，成熟的大总参谋部（Großer Generalstab）是 19 世纪沙恩霍斯特—毛奇的发展，此处仅为前身
+- **法典化治理**：Cocceji 司法改革与《普鲁士普通邦法》（Allgemeines Landrecht）编纂，使官僚行政有成文法依据
+- **省级垂直管理**：Kriegs- und Domänenkammer 由中央直辖，是军事征发与税收的执行节点
 
 ## Pattern 映射
+
 > **Orchestration pattern**: `centralized`
 
-## 历史参考
-- Clausewitz, *Vom Kriege* (1832) — 普鲁士军事思想经典
-- Bismarck, *Gedanken und Erinnerungen* (1898) — 现实政治实践记录
-- * Allgemeines Landrecht für die Preußischen Staaten* (1794) — 普鲁士国家法典
-- Rothenberg, *The Art of Warfare in the Age of Napoleon* — 总参谋部制度演变
-- Clark, *Iron Kingdom: The Rise and Downfall of Prussia, 1600–1947* (2006) — 综合史
+## 历史参考 / Historical Sources
+
+- Clark, Christopher. *Iron Kingdom: The Rise and Downfall of Prussia, 1600–1947* (2006) — 制度分期，腓特烈体制与俾斯麦体制之别
+- Rosenberg, Hans. *Bureaucracy, Aristocracy and Autocracy: The Prussian Experience 1660–1815* (1958) — 总执行部与容克-官僚融合
+- Johnson, Hubert C. *Frederick the Great and His Officials* (1975) — 总执行部、省级厅与内阁政府的实际运作
+- Büsch, Otto. *Militärsystem und Sozialleben im alten Preußen* (1962) — 容克军官团与社会军事化
+- *Allgemeines Landrecht für die Preußischen Staaten* (1794) — 普鲁士成文邦法
