@@ -51,4 +51,4 @@
 - Roger Savory, *Iran under the Safavids* (Cambridge University Press)
 - Willem Floor, *Safavid Government Institutions* (Mazda Publishers)
 - 《萨法维王朝史》（[波斯] 伊斯坎达尔·贝格·蒙希 著）
-- 钱穆《世界局势阿拔斯大帝改革考》
+- Andrew J. Newman, *Safavid Iran: Rebirth of a Persian Empire* (2006)

@@ -78,6 +78,6 @@ The Meiji Restoration (1868-1912) overthrew the Tokugawa Shogunate and establish
 
 ## 历史参考
 - 伊藤博文《大日本帝国宪法》（1889年颁布）
-- 宫本又次《明治政治史》
-- 信夫淳平《明治政治史》
-- 约翰·霍尔《明治维新》（Marius B. Jansen, The Making of Modern Japan）
+- Marius B. Jansen, *The Making of Modern Japan* (2000) — 明治国家建构权威综合史
+- W. G. Beasley, *The Meiji Restoration* (1972) — 维新进程与权力重组
+- 信夫清三郎《日本政治史》— 明治政治制度史
