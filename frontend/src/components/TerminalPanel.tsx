@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Terminal, ArrowDown, Search, CheckCircle, AlertTriangle, ShieldCheck } from 'lucide-react';
-import type { MatchEvent } from '../types/api';
+import type { MatchEvent, MatchMeta } from '../types/api';
 
 interface TerminalPanelProps {
   regimeId: string;
@@ -9,10 +9,10 @@ interface TerminalPanelProps {
   events: MatchEvent[];
   isStreaming?: boolean;
   status: 'running' | 'completed' | 'failed' | 'idle';
-  sediment?: any;
+  sediment?: MatchMeta['sediment'];
 }
 
-function formatSediment(sediment: any): { label: string, status: 'saved' | 'rejected' | 'skipped' | 'error' | 'none', text: string } {
+function formatSediment(sediment: MatchMeta['sediment']): { label: string, status: 'saved' | 'rejected' | 'skipped' | 'error' | 'none', text: string } {
   if (!sediment) {
     return { label: 'None', status: 'none', text: 'No skill sedimentation recorded.' };
   }

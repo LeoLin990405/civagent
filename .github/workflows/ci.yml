@@ -39,6 +39,5 @@ jobs:
         run: npm ci
       - name: Build (typecheck + bundle)
         run: npm run build
-      - name: Lint (advisory)
+      - name: Lint (no errors; React-Compiler hints remain warnings)
         run: npm run lint
-        continue-on-error: true

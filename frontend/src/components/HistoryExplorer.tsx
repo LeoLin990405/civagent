@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { History, Calendar, ShieldCheck, FileText, ChevronRight, Terminal, Search } from 'lucide-react';
-import type { MatchSummary, MatchEvent } from '../types/api';
+import type { MatchSummary, MatchEvent, MatchMeta } from '../types/api';
 
-function formatSediment(sediment: any): { label: string, status: 'saved' | 'rejected' | 'skipped' | 'error' | 'none', text: string } {
+function formatSediment(sediment: MatchMeta['sediment']): { label: string, status: 'saved' | 'rejected' | 'skipped' | 'error' | 'none', text: string } {
   if (!sediment) {
     return { label: 'None', status: 'none', text: 'No skill sedimentation recorded.' };
   }
@@ -328,7 +328,7 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
                           ts: Date.now(),
                           type: 'skill',
                           seq: 999,
-                          status: formatted.status as any,
+                          status: formatted.status as MatchEvent['status'],
                           text: formatted.text
                         });
                       }

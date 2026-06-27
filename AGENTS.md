@@ -21,13 +21,20 @@ npm run dev                # server + Vite frontend concurrently
 
 # Frontend (from root, delegate into frontend/)
 npm run build:frontend     # tsc -b + vite build (MUST pass — the build gate)
-npm run lint:frontend      # eslint (advisory while the UI WIP stabilizes)
+npm run lint:frontend      # eslint — MUST have 0 errors (warnings allowed)
 ```
 
 A backend change is not done until `npm run ci` is green. A frontend change is not
-done until `npm run build:frontend` (typecheck + bundle) passes. CI
-(`.github/workflows/ci.yml`) has two jobs: **backend** (lint:syntax + test +
-validate) and **frontend** (build = blocking, eslint = advisory).
+done until `npm run build:frontend` (typecheck + bundle) passes AND
+`npm run lint:frontend` has 0 errors. CI (`.github/workflows/ci.yml`) has two
+jobs: **backend** (lint:syntax + test + validate) and **frontend** (build + lint,
+both blocking).
+
+Lint note: the React-Compiler-readiness rules (`react-hooks/set-state-in-effect`,
+`/immutability`, `/purity`) are configured as **warnings**, not errors — they flag
+patterns the future React Compiler would optimize, not correctness bugs. Keep them
+visible (do not silence); a dedicated compiler-readiness refactor can clear them.
+Do not introduce new `@typescript-eslint/no-explicit-any` (that one is an error).
 
 ### Engineering invariants
 - `server/index.mjs` exports `createApp()` and only `listen()`s when run directly,
