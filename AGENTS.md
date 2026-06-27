@@ -10,16 +10,36 @@ orchestration topologies on the Claude Code runtime.
 ## Commands
 
 ```bash
+# Backend (root)
 npm ci                     # install (better-sqlite3 is a native module — required before tests)
-npm run lint:syntax        # node -c on every engine file + bash -n on bin/civagent
+npm run lint:syntax        # node -c on every engine + server file + bash -n on bin/civagent
 npm test                   # node --test test/*.test.mjs  (must stay 100% green)
 npm run validate:regimes   # mechanical validation of all 57 regimes (CI-gating)
+npm run ci                 # lint:syntax + test + validate:regimes (the backend gate)
 npm run start:server       # Express API on :3001 (server/index.mjs)
 npm run dev                # server + Vite frontend concurrently
+
+# Frontend (from root, delegate into frontend/)
+npm run build:frontend     # tsc -b + vite build (MUST pass — the build gate)
+npm run lint:frontend      # eslint (advisory while the UI WIP stabilizes)
 ```
 
-A change is not done until `npm run lint:syntax`, `npm test`, and
-`npm run validate:regimes` all pass. CI (`.github/workflows/ci.yml`) runs all three.
+A backend change is not done until `npm run ci` is green. A frontend change is not
+done until `npm run build:frontend` (typecheck + bundle) passes. CI
+(`.github/workflows/ci.yml`) has two jobs: **backend** (lint:syntax + test +
+validate) and **frontend** (build = blocking, eslint = advisory).
+
+### Engineering invariants
+- `server/index.mjs` exports `createApp()` and only `listen()`s when run directly,
+  so tests mount it on an ephemeral port (see `test/server.test.mjs`). Keep it that way.
+- The API server is **read-only by default** (`database.mjs` `getDb()` opens
+  readonly). Write endpoints must use `getWritableDb()` — do not write through the
+  readonly handle.
+- Frontend↔backend contracts live in `frontend/src/types/api.ts`; when you change an
+  engine event/meta shape, update both `engine/v5/events.mjs` (EVENT_TYPES + schema)
+  and `types/api.ts`.
+- Timestamps crossing the API boundary are numeric epoch-ms, not SQLite DATETIME
+  strings (the frontend does time math on them).
 
 ## Hard rules (violating these breaks the build or the design)
 
