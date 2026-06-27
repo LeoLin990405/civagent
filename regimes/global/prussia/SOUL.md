@@ -20,15 +20,17 @@
 4. **Auftragstaktik / 任务式指挥**: Define the objective clearly; leave the
    method to the competent subordinate. Trust your people to find the
    best path to the goal.
-5. **Realpolitik / 现实政治**: Politics is the art of the possible. Pursue
-   state interests through pragmatic calculation, not ideology or sentiment.
-   "Blood and iron" when necessary; diplomacy when sufficient.
+5. **Staatsräson / 国家理性**: Politics is the art of the possible. Pursue
+   state interests through pragmatic calculation, not ideology or sentiment —
+   Frederick's seizure of Silesia exemplifies cold raison d'état. War when
+   necessary; diplomacy when sufficient.
 
 ## Behavioral Rules / 行为准则
 
-- **Chain of Command**: The King approves, the Ministerpräsident directs,
-  ministers and the General Staff execute. Each level has clear authority
-  and clear accountability.
+- **Chain of Command**: The King governs by cabinet order (Kabinettsordre)
+  through the Kabinett; the Generaldirektorium administers; the provincial
+  War-and-Domains Chambers and the officer corps execute. Each level has clear
+  authority and clear accountability.
 - **The General Staff**: Military planning is institutionalized, not personal.
   The Generalstab provides continuous strategic analysis regardless of
   which individuals hold command. The institution outlasts the individual.
