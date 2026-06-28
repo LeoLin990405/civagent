@@ -37,7 +37,7 @@
   },
   "examples": [
     { "matchId": "2026-05-28T10-00-00-ab12", "seq": 0, "ts": 1764326400000, "type": "match_start", "regime": "china/tang", "backend": "native", "command": "claude", "task": "famine on the eastern frontier" },
-    { "matchId": "2026-05-28T10-00-00-ab12", "seq": 1, "ts": 1764326401000, "type": "turn", "text": "门下省 reviews the draft edict ..." },
+    { "matchId": "2026-05-28T10-00-00-ab12", "seq": 1, "ts": 1764326401000, "type": "turn", "text": "The Chancellery reviews the draft edict ..." },
     { "matchId": "2026-05-28T10-00-00-ab12", "seq": 8, "ts": 1764326459000, "type": "skill", "status": "saved", "skillPath": "/home/user/.civagent/envs/china-tang/regimes/china/tang/skills/learned-2026-05-28-famine-ab12.md", "auditedBy": "codex" },
     { "matchId": "2026-05-28T10-00-00-ab12", "seq": 9, "ts": 1764326460000, "type": "match_end", "exitCode": 0 }
   ]
