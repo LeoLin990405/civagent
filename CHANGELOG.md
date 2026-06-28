@@ -38,7 +38,15 @@ Backend robustness pass (iteration plan: [ITERATION_PLAN.md](./ITERATION_PLAN.md
 
 ---
 
-## v5.0.1 (2026-04-14) — Engine Data Source Fix 🩹
+## [v6.0.0] - 2026-06-26
+
+### Major Architecture Upgrade (CivAgent V6)
+- **Zero-Dependency Refactor:** Completely purged TailwindCSS in favor of Vanilla CSS and Glassmorphism design principles across the frontend.
+- **The Constitutional Engine:** Introduced absolute override mechanisms for agent orchestration: `[VETO]`, `[IMPEACH]`, and `[EDICT]`.
+- **Live Court Dashboard:** Implemented a new Real-Time SSE (Server-Sent Events) streaming component (`LiveCourt.tsx`) to visualize multi-agent debates and mechanism triggers live.
+- **The Dynasty & Global Swarm:** Fully iterated and upgraded all 57 historical regimes (20 Chinese Dynasties + 37 Global Empires) to the new V6 architecture, complete with detailed `IDENTITY.md` and `SOUL.md` prompt directives.
+
+## [v5.0.1] - 2026-02-14) — Engine Data Source Fix 🩹
 
 ### Critical fix
 - **engine/regime-to-cc.mjs**: The v4 engine preferred `openclaw.json.template` (legacy) over `IDENTITY.md`. This made the L-stage canonical rewrite of all 57 regimes (v5.0.0) have zero effect on actual agent generation — every regime produced v4 default agents.
@@ -47,7 +55,7 @@ Backend robustness pass (iteration plan: [ITERATION_PLAN.md](./ITERATION_PLAN.md
 After this one-line flip (PR #7), every civilization's Agent Team authentically reflects its historical governance:
 - **tang**: emperor → zhongshu-sheren (中书舍人, Tang drafter) → 6 ministries (replaced anachronistic 司礼监)
 - **byzantine**: basileus, patriarch, logothete-dromos/genikon, domestikos, eparch, protoasecretis
-- **roman-republic**: consul-a/b (双头制), senate, tribune, praetor, censor, quaestor, aedile
+- **roman-republic**: consul-a/b (dual consulship), senate, tribune, praetor, censor, quaestor, aedile
 - **soviet**: gensec, politburo, gosplan, kgb, pravda, army, supreme
 - ... and 53 more
 
@@ -79,88 +87,88 @@ Inspired by [NousResearch/hermes-agent](https://github.com/NousResearch/hermes-a
 
 ## v3.5.2 (2026-03-13)
 
-### Bug 修复
-- **H-01** `install.sh` — nvm/volta/fnm 环境下不再使用 sudo 安装全局 npm 包，避免系统 npm 与用户 npm 路径冲突
-- **H-05** `gui/server/index.js` — `/api/health` 中 wss/sseClients/metricsBuffer 引用改为 optional chaining，消除死代码风险
-- **H-06** `openclaw.example.json` — `$HOME/clawd` 替换为 `/home/YOUR_USERNAME/clawd` 占位符，JSON 不再依赖 shell 变量展开
-- **H-07** `install.sh` — heredoc 中 `$HOME` 增加空值保护（`${HOME:-/root}`）及空格路径警告
-- **H-09** `gui/server/index.js` — `countSessionFile` 从同步 readSync 改为异步 readline stream，不再阻塞 Node 事件循环；新增 50MB 文件大小上限跳过
+### Bug Fixes
+- **H-01** `install.sh` — no longer uses sudo to install global npm packages under nvm/volta/fnm environments, avoiding conflicts between the system npm and user npm paths
+- **H-05** `gui/server/index.js` — the wss/sseClients/metricsBuffer references in `/api/health` changed to optional chaining, eliminating dead-code risk
+- **H-06** `openclaw.example.json` — `$HOME/clawd` replaced with the `/home/YOUR_USERNAME/clawd` placeholder; the JSON no longer relies on shell variable expansion
+- **H-07** `install.sh` — added null-value protection for `$HOME` in heredocs (`${HOME:-/root}`) and a warning for paths containing spaces
+- **H-09** `gui/server/index.js` — `countSessionFile` changed from synchronous readSync to an asynchronous readline stream, no longer blocking the Node event loop; added a 50MB file-size cap to skip
 
 ---
 
 ## v3.5.1 (2026-03-12)
 
-### 优化
-- **README 重构** — 精简为 ~400 行引导页，详细教程拆分到 `docs/` 目录
-- 修复飞书权限数量描述（8→9 个）
-- 飞书排查权限表补全 `contact:user.employee_id:readonly`
-- 修复 Sandbox 锚点链接
-- 插入 mascot 图片
-- OpenClaw Hub 链接统一为 OpenClaw Skill 生态
-- `clawdhub install` 命令更新为 `openclaw skill install`
-- 基础篇/进阶篇 txt 转 markdown 格式（`docs/tutorial-basics.md`、`docs/tutorial-advanced.md`）
-- 新增 `docs/` 文档索引和多个拆分文档
+### Improvements
+- **README refactor** — slimmed down to a ~400-line landing page, with detailed tutorials split into the `docs/` directory
+- Fixed the Feishu permission count description (8 → 9)
+- Filled in `contact:user.employee_id:readonly` in the Feishu troubleshooting permission table
+- Fixed the Sandbox anchor link
+- Inserted the mascot image
+- Unified the OpenClaw Hub links to the OpenClaw Skill ecosystem
+- Updated the `clawdhub install` command to `openclaw skill install`
+- Converted the Basics/Advanced .txt files to markdown format (`docs/tutorial-basics.md`, `docs/tutorial-advanced.md`)
+- Added the `docs/` documentation index and several split documents
 
 ---
 
 ## v3.5 (2026-03-12)
 
-### 新功能
-- **预装 7 个 Skill** — weather / github / notion / hacker-news / browser-use / quadrants / openviking
-- **飞书配置全面优化** — 所有示例统一 dmPolicy/groupPolicy/botName，权限表补全到 8 项
-- **GUI 品牌可配置** — 通过 `VITE_BRAND_NAME` 环境变量自定义品牌名
-- **install.sh 安装后自动运行 doctor.sh** 健康检查
-- **新增 CONTRIBUTING.md** 贡献指南和 skills/README.md 索引
+### New Features
+- **7 preinstalled Skills** — weather / github / notion / hacker-news / browser-use / quadrants / openviking
+- **Comprehensive Feishu configuration overhaul** — all examples unified on dmPolicy/groupPolicy/botName; the permission table completed to 8 items
+- **Configurable GUI branding** — customize the brand name via the `VITE_BRAND_NAME` environment variable
+- **install.sh automatically runs doctor.sh after installation** for a health check
+- **Added CONTRIBUTING.md** contribution guide and skills/README.md index
 
-### Bug 修复
-- README 飞书配置示例缺 groupPolicy、结构过时（appId 不在 accounts 里）
-- README/README_EN 排查指南权限表从 3 个补全到 8 个
-- README 架构图司礼监标注 (main) → (silijian)
-- Court.tsx core agent filter 未包含 silijian
-- openclaw.example.json 缺少翰林院的 Discord account 和 binding
-- Dockerfile `COPY skills/` 路径硬编码
-- docker-compose.yml 移除废弃的 `version: '3.8'`
-- 基础篇.txt 云服务商占位符替换为 Oracle Cloud 实际链接
+### Bug Fixes
+- The README Feishu configuration example was missing groupPolicy, and the structure was outdated (appId not inside accounts)
+- The README/README_EN troubleshooting permission table completed from 3 to 8 items
+- The README architecture diagram's Directorate of Ceremonial label (main) → (silijian)
+- Court.tsx core agent filter did not include silijian
+- openclaw.example.json was missing the Hanlin Academy's Discord account and binding
+- Dockerfile `COPY skills/` path hard-coded
+- docker-compose.yml removed the deprecated `version: '3.8'`
+- The cloud-provider placeholder in Basics.txt replaced with the actual Oracle Cloud link
 
-### 优化
-- doctor.sh 新增 dmPolicy 和顶层 groupPolicy 检查项
-- install.sh 飞书安装指引补权限步骤和文档链接
-- README_EN 同步预装 Skill 章节和 60+ Skill 措辞
+### Improvements
+- doctor.sh added dmPolicy and top-level groupPolicy check items
+- install.sh Feishu installation guide augmented with permission steps and documentation links
+- README_EN synchronized the preinstalled-Skill section and the "60+ Skill" phrasing
 
 ---
 
 ## v3.4 (2026-03-11)
 
-### 新功能
-- **飞书配置指南** — 完整的飞书接入文档（500+ 行）
-- **doctor.sh 飞书诊断** — 自动检测飞书 appId/appSecret/权限/事件订阅
-- **GUI 多框架支持** — 自动检测 OpenClaw/Clawdbot CLI 和配置目录
-- **Docker 部署** — Dockerfile + docker-compose + entrypoint 初始化
+### New Features
+- **Feishu configuration guide** — complete Feishu integration documentation (500+ lines)
+- **doctor.sh Feishu diagnostics** — automatically detects Feishu appId/appSecret/permissions/event subscriptions
+- **GUI multi-framework support** — automatically detects OpenClaw/Clawdbot CLI and config directories
+- **Docker deployment** — Dockerfile + docker-compose + entrypoint initialization
 
-### Bug 修复
-- GUI 部门映射修正（libu=礼部, libu2=吏部）
-- GUI 兼容 `.openclaw` 和 `.clawdbot` 配置目录
-- GUI 支持 silijian 和 main 两种 agent id
-- Dockerfile/docker-compose 路径参数化
+### Bug Fixes
+- GUI department mapping corrected (libu=Ministry of Rites, libu2=Ministry of Personnel)
+- GUI compatible with both `.openclaw` and `.clawdbot` config directories
+- GUI supports both the silijian and main agent ids
+- Dockerfile/docker-compose paths parameterized
 
 ---
 
 ## v3.0 (2026-03-10)
 
-### 新功能
-- **一键安装脚本三合一** — install.sh (Linux) / install-lite.sh / install-mac.sh
-- **多部署模式** — Discord 多Bot / 飞书多Bot / 纯 WebUI
-- **Web GUI** — React + TypeScript Dashboard（朝堂、会话、Token、Cron 等）
-- **OpenViking Skill** — 向量知识库集成
-- **Quadrants Skill** — 四象限任务管理
+### New Features
+- **Three-in-one one-click install scripts** — install.sh (Linux) / install-lite.sh / install-mac.sh
+- **Multiple deployment modes** — Discord multi-Bot / Feishu multi-Bot / WebUI-only
+- **Web GUI** — React + TypeScript Dashboard (Court, Sessions, Token, Cron, etc.)
+- **OpenViking Skill** — vector knowledge-base integration
+- **Quadrants Skill** — four-quadrant task management
 
 ---
 
 ## v2.0 (2026-02-22)
 
-### 首次发布
-- 三省六部制 × OpenClaw 多 Agent 架构
-- 10 Agent 模板（司礼监 + 内阁 + 都察院 + 六部 + 翰林院）
-- 内置审批流程（代码→都察院审查，重大决策→内阁审议）
-- Discord 多 Bot 模式
-- 小红书系列教程配套文字稿
+### Initial Release
+- The Three Departments and Six Ministries system × OpenClaw multi-Agent architecture
+- 10 Agent templates (Directorate of Ceremonial + Grand Secretariat + Censorate + Six Ministries + Hanlin Academy)
+- Built-in approval workflow (code → Censorate review, major decisions → Grand Secretariat deliberation)
+- Discord multi-Bot mode
+- Companion written scripts for the Xiaohongshu tutorial series

@@ -1,117 +1,118 @@
-# CivAgent 迭代计划（三方协作）
+# CivAgent Iteration Plan (Tripartite Collaboration)
 
-> 更新日期：2026-05-28 · 当前主线：`main` @ 78ea10e  
-> 三方分工：**后端 = Claude Code** · **前端 = antigravity** · **审查 = Codex** · **内容/长推理 = Trae (MiMo)**  
-> 禁用规则：任何场景严禁调用 Gemini（包括 judge、sediment、agent 后端）
+> Updated: 2026-05-28 · Current mainline: `main` @ 78ea10e  
+> Tripartite division of labor: **Backend = Claude Code** · **Frontend = antigravity** · **Review = Codex** · **Content / long reasoning = Trae (MiMo)**  
+> Prohibition rule: invoking Gemini is strictly forbidden in any scenario (including judge, sediment, and agent backend)
 
 ---
 
-## 现状总览（2026-05-28）
+## Current Status Overview (2026-06-26)
 
-| 分支 | 状态 | 待处理 |
+| Status | Details |
+|---|---|
+| **Core architecture** | The V6 engine is fully deployed, introducing the constitutional engine `[VETO]`, `[IMPEACH]`, `[EDICT]`. Backend and frontend are unified at v6.0.0. |
+| **Global multi-agent topology** | Fully expanded to 57 regimes (20 Chinese dynasties + 37 global empires); all data structures, metadata, and IDENTITY prompts have completed their iteration. |
+| **Testing and validation** | `test/regime-validator.mjs` upgraded with added mechanism validation. `test/mechanisms.test.mjs` achieves 100% test coverage. |
+| **Frontend experience** | The zero-dependency Glassmorphism UI has landed; added RegimeBrowser to browse all regimes; integrated the Live Court real-time court-deliberation dashboard. |
+
+### Completed Feature Checklist
+
+- ✅ **R1 engine**: removed Gemini, fixed concurrency lock, multi-backend routing (backends.mjs), structured event stream (events.mjs), skill sedimentation
+- ✅ **R1 frontend**: Dashboard spectating (TerminalPanel + JudgeLeaderboard) + RegimeBrowser + HistoryExplorer + CodexBrowser
+- ✅ **R2 engine** (on `feat/r2-backend-eval`): `multi-judge.mjs` (blind-scoring anonymization + multi-provider aggregation), `skill-quality.mjs` (SHA-256 + Jaccard deduplication), `replay.mjs`, `governance-scenarios.json` (10 scenarios)
+- ✅ **R3 event contract**: `skill` events structured, structured judge fields in the tournament manifest, integration tests fully isolated (no real CLI invocation)
+
+### Core Gaps
+
+1. **R2 + R3 not yet merged to main** — both the write API and the frontend real-data work depend on these landing first
+2. **No write API**: the frontend cannot initiate real matches/tournaments (currently runs sandboxed simulated data)
+3. **The governance scenario library has only 10 entries**, lacking scenarios dedicated to Chinese regimes
+4. **The `tasks/` directory** is the landing location for each party's R4 task files / review conclusions
+
+---
+
+## R1–R3 Completion Status
+
+| Task | Status | Notes |
 |---|---|---|
-| `main` | R1+R3 引擎 + 完整前端；77 测试全绿 | 前端跑沙盒模拟数据；无写 API |
-| `feat/r2-backend-eval` | R2 引擎（multi-judge / skill-quality / replay / prompt-bank）✓ | **未合并 main** → R4 首要任务 |
-| `feat/r3-engine-event-contract` | R3 测试隔离修复（51 测试，完全隔离）✓ | **未合并 main** → R4 首要任务 |
-
-### 已完成功能清单
-
-- ✅ **R1 引擎**：去 Gemini、并发锁修复、多后端路由（backends.mjs）、结构化事件流（events.mjs）、skill sedimentation
-- ✅ **R1 前端**：Dashboard 观战（TerminalPanel + JudgeLeaderboard）+ RegimeBrowser + HistoryExplorer + CodexBrowser
-- ✅ **R2 引擎**（在 `feat/r2-backend-eval`）：`multi-judge.mjs`（盲评匿名化 + 多 provider 聚合）、`skill-quality.mjs`（SHA-256 + Jaccard 去重）、`replay.mjs`、`governance-scenarios.json`（10 场景）
-- ✅ **R3 事件契约**：`skill` 事件结构化、tournament manifest 结构化 judge 字段、集成测试完全隔离（无真实 CLI 调用）
-
-### 核心缺口
-
-1. **R2 + R3 未合并 main** —— 写 API / 前端 real-data 都依赖这两个先到位
-2. **无写 API**：前端无法发起真实对局/锦标赛（目前跑沙盒模拟数据）
-3. **Governance scenario 库仅 10 条**，缺中文政体专项场景
-4. **`tasks/` 目录**是 R4 各方任务文件 / 审查结论的落地位置
+| B1 Remove Gemini | ✅ | judge.mjs + sediment, no gemini in the full chain |
+| B2 Concurrency bug | ✅ | tournament spawns run-v5 directly, no global switch |
+| B3 Multi-backend routing | ✅ | backends.mjs, fail-fast design |
+| B4 Structured event stream | ✅ | events.jsonl + meta.json + tournament manifest |
+| B5 Orchestration-layer tests | ✅ | 51 integration tests, fully isolated |
+| B6 Error handling | ✅ | judge retry + sediment failures recorded to meta |
+| R2 Multi-judge blind scoring | ✅ (r2 branch) | anonymizePrompt + aggregateJudgements |
+| R2 Skill deduplication | ✅ (r2 branch) | SHA-256 + Jaccard 0.6 |
+| R2 Match replay | ✅ (r2 branch) | replay.mjs + replayOf lineage |
+| R2 prompt-bank | ✅ (r2 branch) | 10 scenarios, pending expansion |
+| R3 Event isolation tests | ✅ (r3 branch) | no ~/.civagent contamination, no real CLI |
+| Frontend form ① | ✅ | Dashboard + RegimeBrowser + History |
+| Frontend forms ②③ | 🚧 | real data not connected, no launch UI |
 
 ---
 
-## R1–R3 完成状态
+## Round 4 — "Connect · Write API · Content Expansion"
 
-| 任务 | 状态 | 备注 |
-|---|---|---|
-| B1 去 Gemini | ✅ | judge.mjs + sediment 全链路无 gemini |
-| B2 并发 bug | ✅ | tournament 直接 spawn run-v5，no global switch |
-| B3 多后端路由 | ✅ | backends.mjs，fail-fast 设计 |
-| B4 结构化事件流 | ✅ | events.jsonl + meta.json + tournament manifest |
-| B5 编排层测试 | ✅ | 51 个集成测试，完全隔离 |
-| B6 错误处理 | ✅ | judge 重试 + sediment 失败记录到 meta |
-| R2 多裁判盲评 | ✅ (r2 branch) | anonymizePrompt + aggregateJudgements |
-| R2 skill 去重 | ✅ (r2 branch) | SHA-256 + Jaccard 0.6 |
-| R2 对局回放 | ✅ (r2 branch) | replay.mjs + replayOf lineage |
-| R2 prompt-bank | ✅ (r2 branch) | 10 scenarios，待扩充 |
-| R3 事件隔离测试 | ✅ (r3 branch) | 无 ~/.civagent 污染，无真实 CLI |
-| 前端形态① | ✅ | Dashboard + RegimeBrowser + History |
-| 前端形态②③ | 🚧 | 真实数据未接通，无 launch UI |
+**Overall goal**: upgrade from a demo system to a system that can truly run — the frontend can initiate real tournaments, see real transcript streams, and manage the skill library; the scenario library is expanded to 40+.
 
----
-
-## Round 4 — 「接通 · 写 API · 内容扩充」
-
-**总目标**：从演示系统升级为可真正运行的系统 —— 前端能发起真实锦标赛、看到真实 transcript 流、管理 skill 库；scenario 库扩充到 40+。
-
-### 执行顺序（依赖链）
+### Execution Order (Dependency Chain)
 
 ```
-① Codex 审查 feat/r2-backend-eval          ─┐
-② Codex 审查 feat/r3-engine-event-contract  ─┤→ 输出 tasks/REVIEW-r4-codex.md
+① Codex reviews feat/r2-backend-eval          ─┐
+② Codex reviews feat/r3-engine-event-contract  ─┤→ outputs tasks/REVIEW-r4-codex.md
                                              ↓
-③ Claude Code: cherry-pick 两分支 → main    ─┐
-④ Claude Code: 写 API server               ─┤
-                                            ↓ API 可用
-⑤ Antigravity: 接通真实数据 + Launch UI    ─┤  （并行）
-⑥ Trae (MiMo): 扩充 governance-scenarios  ─┘
+③ Claude Code: cherry-pick both branches → main ─┐
+④ Claude Code: write API server               ─┤
+                                            ↓ API available
+⑤ Antigravity: connect real data + Launch UI   ─┤  (parallel)
+⑥ Trae (MiMo): expand governance-scenarios     ─┘
 ```
 
 ---
 
-## 各方任务（R4）
+## Each Party's Tasks (R4)
 
-> 详细 prompt 见 `tasks/` 目录下对应文件。
+> See the corresponding files under the `tasks/` directory for detailed prompts.
 
 ---
 
-### Codex 任务（tasks/TASK-r4-codex.md）
+### Codex Task (tasks/TASK-r4-codex.md)
 
-审查 feat/r2-backend-eval 与 feat/r3-engine-event-contract，输出合并许可。
+Review feat/r2-backend-eval and feat/r3-engine-event-contract, and issue a merge permit.
 
-**PR-A：feat/r2-backend-eval**（R2 引擎）—— 重点看：
-1. `anonymizePrompt`：前缀重叠安全性（`jin-jurchen` vs `jin` 是否截断正确；按降序长度替换）
-2. `parseScoreTable`：三种表格格式（单分/三维分/无 Rank 列）是否全覆盖，边界行（分隔线）是否跳过
-3. `aggregateJudgements`：空 provider / 空 scores 时的防守逻辑
-4. `skill-quality.mjs`：Jaccard 阈值 0.6 是否偏低（可能误杀差异较大的 skill），`normalizeSkill` 是否剥离 provenance banner
-5. `replay.mjs`：`replayOf` 字段是否防止重放循环（如果连续 replay 会发生什么）
-6. 全仓 `grep -ri gemini engine/ bin/ test/`——确认无残留调用
+**PR-A: feat/r2-backend-eval** (R2 engine) — focus on:
+1. `anonymizePrompt`: prefix-overlap safety (is `jin-jurchen` vs `jin` truncated correctly; replace in descending order of length)
+2. `parseScoreTable`: are all three table formats (single score / three-dimensional score / no Rank column) fully covered, and are boundary rows (separator lines) skipped?
+3. `aggregateJudgements`: defensive logic when providers / scores are empty
+4. `skill-quality.mjs`: is the Jaccard threshold 0.6 too low (it may falsely kill substantially different skills); does `normalizeSkill` strip the provenance banner?
+5. `replay.mjs`: does the `replayOf` field prevent replay loops (what happens if you replay consecutively)?
+6. Repo-wide `grep -ri gemini engine/ bin/ test/` — confirm there are no residual invocations
 
-**PR-B：feat/r3-engine-event-contract**（测试隔离）—— 重点看：
-1. `makeFakeBin`：是否覆盖全部真实 CLI（claude/codex/opencode/cc-glm）？有无遗漏
-2. HOME 隔离：macOS 上 `os.homedir()` 是否读 `process.env.HOME`（Node.js 18+ 应当是），还是走 `getpwuid`
-3. 确定性 tournament 断言（`j.provider === "codex"`, `j.scores[0].score ≈ 9.0`）：这些依赖 fake codex heredoc 格式——heredoc 变量展开是否可能破坏表格
-4. 清理逻辑：`finally` 块是否覆盖所有失败路径（尤其 timeout 情况）
+**PR-B: feat/r3-engine-event-contract** (test isolation) — focus on:
+1. `makeFakeBin`: does it cover all real CLIs (claude/codex/opencode/cc-glm)? Any omissions?
+2. HOME isolation: does `os.homedir()` read `process.env.HOME` on macOS (it should on Node.js 18+), or does it go through `getpwuid`?
+3. Deterministic tournament assertions (`j.provider === "codex"`, `j.scores[0].score ≈ 9.0`): these depend on the fake codex heredoc format — could heredoc variable expansion break the table?
+4. Cleanup logic: does the `finally` block cover all failure paths (especially the timeout case)?
 
-**输出格式**（写入 `tasks/REVIEW-r4-codex.md`）：
+**Output format** (written to `tasks/REVIEW-r4-codex.md`):
 ```markdown
-## PR-A（r2-backend-eval）审查结论
-### P0（必须修才能合并）
-### P1（建议修，本轮内）
-### P2（下轮处理）
-### 结论：APPROVE / REQUEST_CHANGES
+## PR-A (r2-backend-eval) review conclusion
+### P0 (must fix before merging)
+### P1 (recommended fix, within this round)
+### P2 (handle next round)
+### Conclusion: APPROVE / REQUEST_CHANGES
 
-## PR-B（r3-engine-event-contract）审查结论
-（同上格式）
+## PR-B (r3-engine-event-contract) review conclusion
+(same format as above)
 ```
 
 ---
 
-### Claude Code 任务（后端 R4）
+### Claude Code Task (Backend R4)
 
-**步骤 1：合并 R2 引擎到 main**（Codex APPROVE 后）
+**Step 1: Merge the R2 engine into main** (after Codex APPROVE)
 
-cherry-pick 以下文件（只引擎，不含前端回退 diff）：
+Cherry-pick the following files (engine only, excluding the frontend-rollback diff):
 ```
 engine/v5/multi-judge.mjs
 engine/v5/skill-quality.mjs
@@ -120,96 +121,96 @@ engine/prompts/governance-scenarios.json
 test/multi-judge.test.mjs
 test/skill-quality.test.mjs
 test/replay.test.mjs
-bin/civagent  (新增的 --multi-judge / --prompt-bank / replay / skills --stats 部分)
+bin/civagent  (the newly added --multi-judge / --prompt-bank / replay / skills --stats parts)
 ```
-验收：`npm test` 全绿，目标 ≥ 90 tests。
+Acceptance: `npm test` all green, target ≥ 90 tests.
 
-**步骤 2：合并 R3 测试隔离到 main**
+**Step 2: Merge the R3 test isolation into main**
 
-cherry-pick `test/integration-event-contract.test.mjs`（来自 5697e39）。
+Cherry-pick `test/integration-event-contract.test.mjs` (from 5697e39).
 
-**步骤 3：写 API server**（`server/index.mjs`，Node 内置 http，零外部依赖）
+**Step 3: Write the API server** (`server/index.mjs`, Node built-in http, zero external dependencies)
 
-端点清单：
+Endpoint list:
 ```
-GET  /api/regimes                    → 57 个 regime 列表（id / name / metadata）
-GET  /api/regimes/:id                → 单个 regime 详情
-GET  /api/matches                    → 最近 50 条 meta.json 摘要
-GET  /api/matches/:id/events         → events.jsonl → JSON 数组
+GET  /api/regimes                    → list of 57 regimes (id / name / metadata)
+GET  /api/regimes/:id                → single regime details
+GET  /api/matches                    → summary of the most recent 50 meta.json
+GET  /api/matches/:id/events         → events.jsonl → JSON array
 GET  /api/matches/:id/meta           → meta.json
-GET  /api/tournaments                → manifest 列表
-GET  /api/tournaments/:id/manifest   → 单个 manifest.json
+GET  /api/tournaments                → manifest list
+GET  /api/tournaments/:id/manifest   → single manifest.json
 POST /api/tournament                 → {civs, task, backend?, multiJudge?, judgesN?}
-                                        → 立即返回 {tournamentId}（异步 spawn）
-GET  /api/skills/:regime             → skill 列表 + analyzeSkillsDir 统计
+                                        → returns {tournamentId} immediately (async spawn)
+GET  /api/skills/:regime             → skill list + analyzeSkillsDir statistics
 GET  /api/scenarios                  → governance-scenarios.json
 ```
 
-安全要求：
-- 所有路径参数过 `safeResolve`（复用 `engine/v5/events.mjs` 的 SAFE_ID 逻辑）
-- POST 体积上限 32 KB；civs 列表最多 8 个；task 最长 2000 字符
-- POST /api/tournament 在后台 spawn tournament.mjs，不等结束
+Security requirements:
+- All path parameters go through `safeResolve` (reuse the SAFE_ID logic from `engine/v5/events.mjs`)
+- POST body size cap of 32 KB; civs list of at most 8; task at most 2000 characters
+- POST /api/tournament spawns tournament.mjs in the background, without waiting for it to finish
 
-**步骤 4：更新 package.json**
+**Step 4: Update package.json**
 ```json
 "serve":   "node server/index.mjs",
 "dev:all": "concurrently \"npm run serve\" \"npm run dev\""
 ```
-（concurrently 如没有就 `npm i -D concurrently`）
+(if concurrently is not present, run `npm i -D concurrently`)
 
-验收：`npm run serve` 启动；curl 能打所有 GET 端点；POST /api/tournament 返回 tournamentId 且后台真正跑起来。
-
----
-
-### Antigravity 任务（tasks/TASK-r4-antigravity.md）
-
-**前提**：API server（步骤 3）可用，vite.config 已代理 `/api → http://localhost:4242`。
-
-**任务 1：接通真实数据**
-- `App.tsx`：mount 时 `GET /api/regimes`；拿到数据 → 真实模式，失败 → DEMO 沙盒模式（界面加明显 "DEMO" badge）
-- `HistoryExplorer`：轮询 `GET /api/matches`，每条点进去调 `GET /api/matches/:id/events`
-
-**任务 2：Tournament Launcher**（新 component `TournamentLauncher.tsx`）
-- 多选 civs：从 `GET /api/regimes` 加载，最多 6 个
-- 选 task：文本输入 OR 点"随机"从 `GET /api/scenarios` 随机取一条
-- 选 backend：下拉（`native` / `cn:doubao` / `cn:glm`）
-- 开关：Multi-Judge（toggle，N = 2）
-- 提交 → `POST /api/tournament` → 拿 tournamentId → 切到 Dashboard，开始轮询
-- 错误处理：server 不可用时显示明确提示，不崩溃
-
-**任务 3：实时事件流**
-- `TerminalPanel` 改为轮询 `GET /api/matches/:id/events` 每 1.5s
-- 拿到新事件（seq > lastSeq）追加到本地 state
-- 遇 `match_end` 事件 → 停止轮询，显示 "Completed"
-- 遇 `skill` 事件 → 在 terminal 底部显示 skill sedimentation badge
-
-**任务 4：Skill Library tab**（新 component `SkillLibrary.tsx`）
-- 左栏：regime 列表
-- 右栏：`GET /api/skills/:regime`
-  - 每条 skill：文件名、frontmatter name、时间、大小
-  - 重复组标 ⚠️ Duplicate
-  - 顶部 stats badge：total / unique / dup-groups
-
-**约束**：
-- TypeScript strict，新代码无 `any`
-- loading / error 状态缺一不可
-- 不改 CodexBrowser / RegimeBrowser 内部逻辑
-
-**验收**：`npm run dev:all` 启动，手动跑一场 2 文明对局，前端全流程（选 civs → Submit → 看 transcript → 看评分榜）可走通，无 console error。
+Acceptance: `npm run serve` starts; curl can hit all GET endpoints; POST /api/tournament returns a tournamentId and genuinely runs in the background.
 
 ---
 
-### Trae (MiMo) 任务（tasks/TASK-r4-trae.md）
+### Antigravity Task (tasks/TASK-r4-antigravity.md)
 
-**目标**：`engine/prompts/governance-scenarios.json` 从 10 条扩充到 40 条，新增 30 条高质量场景。
+**Prerequisite**: the API server (Step 3) is available, and vite.config has proxied `/api → http://localhost:4242`.
 
-**分布要求**：
-- **中国政体专项 × 10**（以下 topic 各一条）：
-  丝绸之路贸易中断、科举制度改革争议、漕运系统崩溃、藩镇割据与中央失控、宦官集团干政、黄河决堤与赈灾、互市与朝贡体系危机、盐铁官营腐败、军功贵族 vs 文官集团权力争夺、皇位继承礼法冲突
-- **全球政体通用 × 20**：
-  战争融资危机、殖民地独立运动、宗教机构改革、奴隶制废除过渡期动荡、联邦解体与分裂、货币贬值与通胀、继承法中的性别争议、边境贸易城市自治权、海军封锁与外交施压、工业化冲击传统手工业、粮食出口禁令的内外压力、难民潮政策、间谍叛逃与情报危机、教育系统改革阻力、水资源争夺与跨省冲突、军队政变后的合法性重建、债务违约与外债谈判、文化同化政策的抵抗、城市贫困与阶层矛盾、自然灾害后的责任归咎
+**Task 1: Connect real data**
+- `App.tsx`: on mount, `GET /api/regimes`; on receiving data → real mode, on failure → DEMO sandbox mode (a prominent "DEMO" badge added to the UI)
+- `HistoryExplorer`: poll `GET /api/matches`; click into each entry to call `GET /api/matches/:id/events`
 
-**格式要求**：
+**Task 2: Tournament Launcher** (new component `TournamentLauncher.tsx`)
+- Multi-select civs: loaded from `GET /api/regimes`, at most 6
+- Select task: text input OR click "Random" to pick one at random from `GET /api/scenarios`
+- Select backend: dropdown (`native` / `cn:doubao` / `cn:glm`)
+- Toggle: Multi-Judge (toggle, N = 2)
+- Submit → `POST /api/tournament` → obtain tournamentId → switch to Dashboard, begin polling
+- Error handling: display a clear message when the server is unavailable, without crashing
+
+**Task 3: Real-time event stream**
+- Change `TerminalPanel` to poll `GET /api/matches/:id/events` every 1.5s
+- Append new events (seq > lastSeq) to local state
+- On a `match_end` event → stop polling, display "Completed"
+- On a `skill` event → display a skill sedimentation badge at the bottom of the terminal
+
+**Task 4: Skill Library tab** (new component `SkillLibrary.tsx`)
+- Left column: regime list
+- Right column: `GET /api/skills/:regime`
+  - Each skill: filename, frontmatter name, time, size
+  - Duplicate groups marked ⚠️ Duplicate
+  - Top stats badge: total / unique / dup-groups
+
+**Constraints**:
+- TypeScript strict, no `any` in new code
+- loading / error states are both indispensable
+- Do not change the internal logic of CodexBrowser / RegimeBrowser
+
+**Acceptance**: `npm run dev:all` starts; manually run one 2-civilization match; the frontend's full flow (select civs → Submit → view transcript → view leaderboard) is navigable, with no console errors.
+
+---
+
+### Trae (MiMo) Task (tasks/TASK-r4-trae.md)
+
+**Goal**: expand `engine/prompts/governance-scenarios.json` from 10 entries to 40, adding 30 new high-quality scenarios.
+
+**Distribution requirements**:
+- **Chinese-regime-specific × 10** (one entry for each of the following topics):
+  Silk Road trade disruption, disputes over civil-examination reform, collapse of the grain-transport system, regional military separatism and loss of central control, eunuch-faction interference in government, Yellow River breaches and disaster relief, crisis of the frontier-market and tributary system, corruption in the salt-and-iron state monopoly, power struggle between the military aristocracy and the civil-official bloc, ritual-law conflicts over imperial succession
+- **Global-regime general × 20**:
+  War-financing crisis, colonial independence movement, religious-institution reform, instability during the transition to slavery abolition, federal dissolution and fragmentation, currency devaluation and inflation, gender disputes in inheritance law, autonomy rights of border trade cities, naval blockade and diplomatic pressure, industrialization's shock to traditional handicrafts, internal and external pressures of a grain-export ban, refugee-influx policy, espionage defection and intelligence crisis, resistance to education-system reform, contention over water resources and cross-provincial conflict, legitimacy reconstruction after a military coup, debt default and foreign-debt negotiation, resistance to cultural-assimilation policy, urban poverty and class tension, blame attribution after a natural disaster
+
+**Format requirements**:
 ```json
 {
   "id": "silk-road-01",
@@ -217,36 +218,36 @@ GET  /api/scenarios                  → governance-scenarios.json
   "prompt": "The primary overland trade route has been severed by a hostile coalition..."
 }
 ```
-- `id`：`<kebab-case-topic>-01`，全部小写，用连字符
-- `category`：`military` / `political` / `economic` / `social` / `crisis` / `diplomacy` / `internal` / `innovation` 之一
-- `prompt`：英文，60–150 字，**不提具体朝代/地名**，通用到任何政体都能回应
-- 合并后 JSON 数组共 40 条，格式合法（`JSON.parse` 不报错）
+- `id`: `<kebab-case-topic>-01`, all lowercase, hyphenated
+- `category`: one of `military` / `political` / `economic` / `social` / `crisis` / `diplomacy` / `internal` / `innovation`
+- `prompt`: English, 60–150 words, **does not mention specific dynasties/place names**, general enough for any regime to respond
+- After merging, the JSON array totals 40 entries, in valid format (`JSON.parse` does not error)
 
-**输出**：直接覆写 `engine/prompts/governance-scenarios.json`。
+**Output**: directly overwrite `engine/prompts/governance-scenarios.json`.
 
 ---
 
-## 技术约束（全轮通用）
+## Technical Constraints (Common to All Rounds)
 
-| 规则 | 说明 |
+| Rule | Description |
 |---|---|
-| 禁用 Gemini | 任何场景，任何 provider 链 |
-| Git 工作流 | PR 前必须 `git fetch + rebase` 再 push，避免分叉 |
-| 测试门槛 | `npm test` 全绿才能合并；新模块必须有配套测试 |
-| 路径安全 | 所有用户输入路径过 `safeResolve`；禁止 `..` 穿越 |
-| 前端类型 | TypeScript strict，新代码无 `any` |
-| 写 API 异步 | POST 立即返回 id，后台 spawn，不阻塞 HTTP 响应 |
-| 审查顺序 | Codex 出具 APPROVE 才能合并；不合格打回最多 2 轮 |
+| Disable Gemini | Any scenario, any provider chain |
+| Git workflow | Before a PR, you must `git fetch + rebase` then push, to avoid divergence |
+| Test threshold | `npm test` must be all green before merging; new modules must have accompanying tests |
+| Path safety | All user-input paths go through `safeResolve`; `..` traversal is forbidden |
+| Frontend typing | TypeScript strict, no `any` in new code |
+| Async write API | POST returns the id immediately, spawns in the background, and does not block the HTTP response |
+| Review order | Merging requires a Codex APPROVE; non-compliant work is bounced back, at most 2 rounds |
 
 ---
 
-## 里程碑
+## Milestones
 
-| 轮次 | 后端 | 前端 | 内容 | 完成标志 |
+| Round | Backend | Frontend | Content | Completion Marker |
 |---|---|---|---|---|
-| **R4** ← 当前 | 合并 R2/R3 + 写 API server | 真实数据 + Launch UI + Skill 库 | 40 scenarios | UI 全流程可跑真实锦标赛 |
-| **R5** | Regime 编辑 API + 史实审稿入环 | 在线编辑 regime + skill 管理 | 政体史实修订 top-20 | 控制台全功能管理 |
+| **R4** ← current | Merge R2/R3 + write API server | Real data + Launch UI + Skill library | 40 scenarios | UI full flow can run a real tournament |
+| **R5** | Regime-editing API + historical-fact review in the loop | Online regime editing + skill management | Historical-fact revision of the top 20 regimes | Full-featured management console |
 
 ---
 
-_三方协作单一事实源。各方开工前先读这个文件，完成后在 `tasks/` 留下审查结论或产出路径。_
+_Single source of truth for the tripartite collaboration. Each party reads this file before starting, and leaves a review conclusion or output path in `tasks/` upon completion._
