@@ -42,8 +42,9 @@ export interface MatchEvent {
   seq: number;
   actor?: string;
   text?: string;
-  status?: 'saved' | 'rejected' | 'skipped' | 'error';
+  status?: 'saved' | 'rejected' | 'skipped' | 'error' | 'staged';
   skillPath?: string;
+  contentHash?: string;
   reason?: string;
   auditedBy?: string | null;
   meta?: any;

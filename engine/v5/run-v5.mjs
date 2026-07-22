@@ -44,7 +44,9 @@ export function parseArgs(argv, env = process.env) {
 // Returns null if the result is empty or unrecognized.
 export function buildSkillEvent(result) {
   if (!result) return null;
-  if (result.saved)    return { status: "saved",    skillPath: result.saved,    auditedBy: result.auditedBy ?? null };
+  const pin = result.contentHash ? { contentHash: result.contentHash } : {};
+  if (result.saved)    return { status: "saved",    skillPath: result.saved,    auditedBy: result.auditedBy ?? null, ...pin };
+  if (result.staged)   return { status: "staged",   skillPath: result.staged,   reason: String(result.reason || "awaiting human approval").slice(0, 200), ...pin };
   if (result.rejected) return { status: "rejected", reason: String(result.rejected).slice(0, 200), auditedBy: result.auditedBy ?? null };
   if (result.skipped)  return { status: "skipped",  reason: String(result.skipped).slice(0, 200) };
   if (result.error)    return { status: "error",    reason: String(result.error).slice(0, 200) };

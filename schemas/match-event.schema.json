@@ -42,10 +42,11 @@
     "error": { "type": "string", "description": "Failure reason, when a judge/skill step failed." },
     "status": {
       "type": "string",
-      "enum": ["saved", "rejected", "skipped", "error"],
-      "description": "Sedimentation outcome. Present on skill events."
+      "enum": ["saved", "rejected", "skipped", "error", "staged"],
+      "description": "Sedimentation outcome. Present on skill events. 'staged' = written to skills/staging/, awaiting human approval (supply-chain gate)."
     },
-    "skillPath": { "type": "string", "description": "Absolute path of the saved skill file. Present on skill events when status=saved." },
+    "skillPath": { "type": "string", "description": "Absolute path of the saved skill file. Present on skill events when status=saved or staged." },
+    "contentHash": { "type": "string", "description": "sha256 (first 16 hex chars) pinning the skill body. Present on skill events when the skill file was written (saved or staged)." },
     "auditedBy": { "type": ["string", "null"], "description": "Provider that audited the skill. Present on skill events when an audit was attempted." },
     "reason": { "type": "string", "description": "Human-readable reason for rejected/skipped/error status. Present on skill events." }
   },
