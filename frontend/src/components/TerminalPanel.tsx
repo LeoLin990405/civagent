@@ -69,6 +69,14 @@ function formatSkillEvent(e: MatchEvent): { title: string, desc: string, color: 
       if (e.auditedBy) {
         desc += ` (Audited by: ${e.auditedBy})`;
       }
+    } else if (e.status === 'staged') {
+      const parts = (e.skillPath || '').split('/');
+      const skillFile = parts[parts.length - 1] || 'skill.md';
+      desc = `Staged for human review (supply-chain gate): ${skillFile}`;
+      if (e.reason) {
+        desc += ` — ${e.reason}`;
+      }
+      color = 'var(--accent-gold)'; // gold
     } else if (e.status === 'rejected') {
       desc = `Skill rejected: ${e.reason || 'does not meet criteria'}`;
       if (e.auditedBy) {
