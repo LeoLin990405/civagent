@@ -7,7 +7,7 @@
   },
   "scripts": {
     "test": "node --test test/*.test.mjs",
-    "lint:syntax": "node -c engine/v5/civ-memory.mjs && node -c engine/v5/skill-sediment.mjs && node -c engine/v5/skill-scan.mjs && node -c engine/v5/run-v5.mjs && node -c engine/v5/backends.mjs && node -c engine/v5/judge.mjs && node -c engine/v5/events.mjs && node -c engine/v5/tournament.mjs && node -c engine/v5/stats.mjs && node -c engine/regime-to-cc.mjs && node -c engine/topology/validate.mjs && node -c engine/topology/metrics.mjs && bash -n bin/civagent",
+    "lint:syntax": "node -c engine/v5/civ-memory.mjs && node -c engine/v5/skill-sediment.mjs && node -c engine/v5/skill-scan.mjs && node -c engine/v5/run-v5.mjs && node -c engine/v5/backends.mjs && node -c engine/v5/judge.mjs && node -c engine/v5/events.mjs && node -c engine/v5/tournament.mjs && node -c engine/v5/stats.mjs && node -c engine/v5/hillclimb.mjs && node -c engine/regime-to-cc.mjs && node -c engine/topology/validate.mjs && node -c engine/topology/metrics.mjs && bash -n bin/civagent",
     "validate:regimes": "node test/regime-validator.mjs"
   },
   "type": "module",
