@@ -1,0 +1,76 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://github.com/LeoLin990405/civagent/schemas/regime-topology.schema.json",
+  "title": "CivAgent regime topology",
+  "description": "Explicit governance graph for one regime (regimes/<region>/<id>/topology.json). Nodes are roles from the regime's IDENTITY.md role mapping table; edges are typed instruction/information flows between them. This makes the 57 regimes a computable design space.",
+  "type": "object",
+  "required": ["schema_version", "regime", "mode", "nodes", "edges"],
+  "additionalProperties": true,
+  "properties": {
+    "schema_version": { "type": "string", "description": "Topology schema version, e.g. \"1.0\"." },
+    "regime": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+/[a-z0-9-]+$",
+      "description": "region/regime-id, e.g. china/tang. Must match the directory the file lives in."
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["centralized", "checks-and-balances", "democratic", "dual-track", "federation", "theocratic"],
+      "description": "Orchestration mode; must correspond to metadata.json's orchestrationPattern (after alias normalization)."
+    },
+    "nodes": {
+      "type": "array",
+      "minItems": 1,
+      "description": "Role nodes. The set of ids must equal the Agent ID set in the regime's IDENTITY.md role mapping table.",
+      "items": {
+        "type": "object",
+        "required": ["id", "label", "functional_role"],
+        "additionalProperties": true,
+        "properties": {
+          "id": { "type": "string", "minLength": 1, "description": "Agent ID exactly as in IDENTITY.md (e.g. zhongshu-sheren)." },
+          "label": { "type": "string", "minLength": 1, "description": "Human-readable historical role name (e.g. 中书舍人)." },
+          "functional_role": {
+            "type": "string",
+            "enum": ["coordinator", "engineering", "review", "research", "data", "devops", "content", "legal", "management"],
+            "description": "Canonical functional role (same 9-value vocabulary as engine/regime-to-cc.mjs ROLE_MODEL_MAP)."
+          }
+        }
+      }
+    },
+    "edges": {
+      "type": "array",
+      "description": "Typed directed flows between role nodes.",
+      "items": {
+        "type": "object",
+        "required": ["from", "to", "kind"],
+        "additionalProperties": true,
+        "properties": {
+          "from": { "type": "string", "description": "Source node id." },
+          "to": { "type": "string", "description": "Target node id." },
+          "kind": {
+            "type": "string",
+            "enum": ["command", "review", "info", "veto"],
+            "description": "command = instruction flow / reporting; review = checks / auditing; info = information sharing; veto = rejection / 封驳."
+          },
+          "note": { "type": "string", "description": "Optional provenance note (e.g. which IDENTITY.md flow step justifies this edge)." }
+        }
+      }
+    }
+  },
+  "examples": [
+    {
+      "schema_version": "1.0",
+      "regime": "china/qin",
+      "mode": "centralized",
+      "nodes": [
+        { "id": "emperor", "label": "皇帝", "functional_role": "coordinator" },
+        { "id": "chengxiang", "label": "丞相", "functional_role": "management" },
+        { "id": "yushi-censor", "label": "御史大夫", "functional_role": "review" }
+      ],
+      "edges": [
+        { "from": "emperor", "to": "chengxiang", "kind": "command" },
+        { "from": "yushi-censor", "to": "chengxiang", "kind": "review", "note": "御史大夫全程监察百官" }
+      ]
+    }
+  ]
+}
