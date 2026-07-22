@@ -5,7 +5,8 @@ set -euo pipefail
 # Usage: civagent <command> [args]
 
 CIVAGENT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-REGIMES_DIR="$CIVAGENT_ROOT/regimes"
+# Overridable for tests / sandboxed runs.
+REGIMES_DIR="${CIVAGENT_REGIMES_DIR:-$CIVAGENT_ROOT/regimes}"
 ENGINE_DIR="$CIVAGENT_ROOT/engine"
 STATE_DIR="${HOME}/.civagent"
 ACTIVE_FILE="$STATE_DIR/.active-regime"
@@ -27,6 +28,9 @@ ${BOLD}Usage:${NC}
   civagent run [prompt]                 Launch CC with active regime's agents (v4 mode)
   civagent run --v5 "task"              Launch v5 with isolated HOME + skill sedimentation
   civagent skills <regime>              List learned skills for a regime
+  civagent skills pending [regime]      List staged skills awaiting human approval
+  civagent skills approve <regime> <file>
+                                        Promote a staged skill into the active skills dir
   civagent match-log                    Recent match transcripts
   civagent tournament --civs a,b,c,d "task"
                                         Parallel match across civilizations + judge ranking
@@ -273,6 +277,42 @@ cmd_skills() {
   done
 }
 
+# List staged skills (supply-chain gate) across all regimes, or one regime.
+cmd_skills_pending() {
+  local regime="${1:-}"
+  local found=0
+  echo -e "${BOLD}Staged skills awaiting approval${NC}"
+  for dir in "$REGIMES_DIR"/*/skills/staging "$REGIMES_DIR"/*/*/skills/staging; do
+    [[ -d "$dir" ]] || continue
+    local rid=$(basename "$(dirname "$(dirname "$dir")")")
+    local region=$(basename "$(dirname "$(dirname "$(dirname "$dir")")")")
+    [[ -z "$regime" || "$region/$rid" == "$regime" ]] || continue
+    for f in "$dir"/*.md; do
+      [[ -f "$f" ]] || continue
+      found=$((found + 1))
+      echo -e "  ${YELLOW}•${NC} $region/$rid  $(basename "$f")"
+    done
+  done
+  [[ "$found" -gt 0 ]] || echo "  (none)"
+}
+
+# Promote one staged skill into the active skills dir.
+cmd_skills_approve() {
+  local regime="${1:-}"
+  local file="${2:-}"
+  [[ -n "$regime" && -n "$file" ]] || { echo "Usage: civagent skills approve <region/regime-id> <filename>"; exit 1; }
+  # Filename must be a bare basename — no path traversal out of staging.
+  if [[ "$file" != "$(basename "$file")" || "$file" == .* ]]; then
+    echo "Invalid filename: $file"
+    exit 1
+  fi
+  local staging="$REGIMES_DIR/$regime/skills/staging/$file"
+  local dest_dir="$REGIMES_DIR/$regime/skills"
+  [[ -f "$staging" ]] || { echo "Staged skill not found: $staging"; exit 1; }
+  mv "$staging" "$dest_dir/$file"
+  echo -e "${GREEN}✓${NC} Approved: $regime/skills/$file"
+}
+
 cmd_match_log() {
   local dir="$STATE_DIR/matches"
   [[ -d "$dir" ]] || { echo "No matches yet."; return; }
@@ -327,7 +367,12 @@ case "${1:-}" in
   modes)     cmd_modes ;;
   setup)     cmd_setup ;;
   doctor)    cmd_doctor ;;
-  skills)    cmd_skills "${2:-}" ;;
+  skills)
+    case "${2:-}" in
+      pending) cmd_skills_pending "${3:-}" ;;
+      approve) cmd_skills_approve "${3:-}" "${4:-}" ;;
+      *)       cmd_skills "${2:-}" ;;
+    esac ;;
   match-log) cmd_match_log ;;
   tournament) shift; cmd_tournament "$@" ;;
   help|--help|-h|"") usage ;;
