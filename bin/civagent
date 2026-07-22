@@ -30,6 +30,8 @@ ${BOLD}Usage:${NC}
   civagent match-log                    Recent match transcripts
   civagent tournament --civs a,b,c,d "task"
                                         Parallel match across civilizations + judge ranking
+  civagent topology validate <regime>   Validate a regime's topology.json (schema + IDENTITY cross-check)
+  civagent topology metrics <regime>    Graph metrics (density, depth, centrality, check cycles) as JSON
   civagent agents                       Show generated CC agents for active regime
   civagent modes                        List 6 orchestration modes
   civagent setup                        Check tool availability (CC, Codex, opencode, cn-cc)
@@ -303,6 +305,25 @@ cmd_tournament() {
   exec node "$ENGINE_DIR/v5/tournament.mjs" --civs "$civs" "${rest[@]}"
 }
 
+# ── topology ────────────────────────────────────────────────────────────────
+
+cmd_topology() {
+  local sub="${1:-}"
+  local regime="${2:-}"
+  case "$sub" in
+    validate|metrics)
+      [[ -n "$regime" ]] || { echo "Usage: civagent topology $sub <region/regime-id>"; exit 1; }
+      local dir="$REGIMES_DIR/$regime"
+      [[ -f "$dir/metadata.json" ]] || { echo "Regime not found: $regime"; exit 1; }
+      exec node "$ENGINE_DIR/topology/$sub.mjs" "$dir"
+      ;;
+    *)
+      echo "Usage: civagent topology <validate|metrics> <region/regime-id>"
+      exit 1
+      ;;
+  esac
+}
+
 # Verify the cn-cc-workflow launchers the cn:* backends depend on (engine/cn-cc.mjs).
 cmd_doctor() {
   echo -e "${BOLD}CivAgent — cn-cc-workflow 依赖自检 / dependency check${NC}"
@@ -314,6 +335,26 @@ for (const b of r.missing) console.log("  ✗ " + b.id + " → " + b.cmd + " (mi
 if (!r.ok) { console.error("\nMissing cn-cc-workflow launchers. Install:\n  " + r.install + "\n  see " + r.repo); process.exit(1); }
 console.log("\n✓ cn-cc execution engine ready (" + r.present.length + " backends)");
 '
+
+  # Validate topology.json for every regime that has one (others are skipped
+  # silently — topology files are being rolled out incrementally).
+  echo ""
+  echo -e "${BOLD}Regime topology validation${NC}"
+  local topo_fail=0
+  local topo_count=0
+  for dir in "$REGIMES_DIR"/*/*/; do
+    [[ -f "$dir/topology.json" ]] || continue
+    topo_count=$((topo_count + 1))
+    if node "$ENGINE_DIR/topology/validate.mjs" "$dir" >/dev/null 2>&1; then
+      echo -e "  ${GREEN}✓${NC} $(basename "$(dirname "$dir")")/$(basename "$dir")"
+    else
+      topo_fail=$((topo_fail + 1))
+      echo -e "  ${RED}✗${NC} $(basename "$(dirname "$dir")")/$(basename "$dir")"
+      node "$ENGINE_DIR/topology/validate.mjs" "$dir" 2>&1 | sed 's/^/      /'
+    fi
+  done
+  echo -e "  ${CYAN}$topo_count${NC} regimes with topology.json, ${RED}$topo_fail${NC} invalid"
+  [[ "$topo_fail" -eq 0 ]] || exit 1
 }
 
 # ── main ─────────────────────────────────────────────────────────────────────
@@ -327,6 +368,7 @@ case "${1:-}" in
   modes)     cmd_modes ;;
   setup)     cmd_setup ;;
   doctor)    cmd_doctor ;;
+  topology)  cmd_topology "${2:-}" "${3:-}" ;;
   skills)    cmd_skills "${2:-}" ;;
   match-log) cmd_match_log ;;
   tournament) shift; cmd_tournament "$@" ;;
