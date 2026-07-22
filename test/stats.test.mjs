@@ -130,6 +130,7 @@ test("analyze ranks consistently and flags significant pairs", () => {
     assert.equal(r.tournamentsUsed, 12);
     assert.deepEqual(r.warnings, []);
     assert.deepEqual(r.rankings.map((x) => x.regime), ["china/tang", "china/qin", "global/athens"]);
+    assert.ok(r.rankings.every((x) => x.games === 12), "every regime played all 12 tournaments");
     for (const row of r.rankings) {
       assert.ok(row.ci95[0] <= row.ability && row.ability <= row.ci95[1], "ability inside its CI");
       assert.ok(row.ci95[0] > 0, "abilities positive");
