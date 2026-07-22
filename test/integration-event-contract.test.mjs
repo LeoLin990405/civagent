@@ -230,6 +230,37 @@ test("buildSkillEvent saved: auditedBy defaults to null when absent", () => {
   assert.equal(ev.auditedBy, null);
 });
 
+// ── regression: empty-string rejection reason must NOT swallow the skill event ──
+// (smoke experiment 2026-07-22: opencode-reviewer produced no verdict line →
+// sediment returned {rejected: ""} and the event silently vanished from the
+// stream because `if (result.rejected)` is falsy for "")
+
+test("buildSkillEvent keeps the event when rejected is an empty string", () => {
+  const ev = buildSkillEvent({ rejected: "", auditedBy: "opencode-reviewer" });
+  assert.ok(ev, "skill event must be emitted even with an empty rejection reason");
+  assert.equal(ev.status, "rejected");
+  assert.equal(ev.reason, "(no reason given)");
+  assert.equal(ev.auditedBy, "opencode-reviewer");
+});
+
+test("buildSkillEvent keeps the event when skipped/error are empty strings", () => {
+  const s = buildSkillEvent({ skipped: "" });
+  assert.ok(s);
+  assert.equal(s.status, "skipped");
+  assert.equal(s.reason, "(no reason given)");
+
+  const e = buildSkillEvent({ error: "" });
+  assert.ok(e);
+  assert.equal(e.status, "error");
+  assert.equal(e.reason, "(no reason given)");
+});
+
+test("buildSkillEvent still returns null for empty/undefined results", () => {
+  assert.equal(buildSkillEvent(null), null);
+  assert.equal(buildSkillEvent({}), null);
+  assert.equal(buildSkillEvent({ rejected: undefined }), null, "undefined value ≠ present key");
+});
+
 // ── integration: run-v5 event stream ─────────────────────────────────────────
 
 test(

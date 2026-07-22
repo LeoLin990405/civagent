@@ -53,14 +53,21 @@ export function skillLearnEnabled({ noSkill = false, env = process.env } = {}) {
 
 // Convert a sediment() result object to event fields for the skill event type.
 // Returns null if the result is empty or unrecognized.
+//
+// Presence checks (not truthiness) for rejected/skipped/error: the audit can
+// produce an EMPTY string reason (e.g. reviewer output had no verdict line),
+// and a truthiness check would silently drop the whole skill event from the
+// stream even though sedimentation and the audit both ran. Empty reasons get
+// a fallback so the event is always recorded.
 export function buildSkillEvent(result) {
   if (!result) return null;
   const pin = result.contentHash ? { contentHash: result.contentHash } : {};
+  const reason = (v) => String(v ?? "").slice(0, 200) || "(no reason given)";
   if (result.saved)    return { status: "saved",    skillPath: result.saved,    auditedBy: result.auditedBy ?? null, ...pin };
-  if (result.staged)   return { status: "staged",   skillPath: result.staged,   reason: String(result.reason || "awaiting human approval").slice(0, 200), ...pin };
-  if (result.rejected) return { status: "rejected", reason: String(result.rejected).slice(0, 200), auditedBy: result.auditedBy ?? null };
-  if (result.skipped)  return { status: "skipped",  reason: String(result.skipped).slice(0, 200) };
-  if (result.error)    return { status: "error",    reason: String(result.error).slice(0, 200) };
+  if (result.staged)   return { status: "staged",   skillPath: result.staged,   reason: reason(result.reason || "awaiting human approval"), ...pin };
+  if ("rejected" in result && result.rejected !== undefined) return { status: "rejected", reason: reason(result.rejected), auditedBy: result.auditedBy ?? null };
+  if ("skipped" in result && result.skipped !== undefined)   return { status: "skipped",  reason: reason(result.skipped) };
+  if ("error" in result && result.error !== undefined)       return { status: "error",    reason: reason(result.error) };
   return null;
 }
 
