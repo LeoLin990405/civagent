@@ -19,20 +19,29 @@ export function hashShort(input) {
   return crypto.createHash("sha256").update(String(input)).digest("hex").slice(0, 16);
 }
 
-// Injection patterns, superset of the legacy INJECTION_PATTERNS in
-// skill-sediment.mjs (role-override and delimiter-style attacks added).
-export const SCAN_INJECTION_PATTERNS = [
+// Injection patterns, split into two tiers:
+//   STRONG — unambiguous attack markers (instruction override, chat-delimiter
+//     spoofing, jailbreak terms). REJECT: never written to disk.
+//   WEAK   — broader shapes that also appear in benign governance prose
+//     (role assignment, process phrases). FLAG: staging + human review.
+export const STRONG_INJECTION_PATTERNS = [
   /\bignore\s+(all\s+)?(previous|prior|above)\s+instructions?\b/i,
   /\bdisregard\s+(all\s+)?(previous|prior|above)\b/i,
   /\b(system|user|assistant)\s*[:>]\s*you\s+(are|must|should)/i,
   /<\s*\/?\s*(system|tool_use|tool_result)\b/i,
   /\[INST\]|\[\/INST\]/,
   /\brun\s+this\s+command\b/i,
+  /\bjailbreak\b|\bDAN\s+mode\b/i,
+];
+
+export const WEAK_INJECTION_PATTERNS = [
   /\byou\s+are\s+now\b/i,
   /\bfrom\s+now\s+on\b/i,
   /\bnew\s+instructions?\s*[:>]/i,
-  /\bjailbreak\b|\bDAN\s+mode\b/i,
 ];
+
+// Back-compat export: every injection pattern, both tiers.
+export const SCAN_INJECTION_PATTERNS = [...STRONG_INJECTION_PATTERNS, ...WEAK_INJECTION_PATTERNS];
 
 // Each rule: { id, severity, message, test(text) → string|null (matched snippet) }.
 const RULES = [
@@ -85,10 +94,22 @@ const RULES = [
   },
   {
     id: "prompt-injection",
-    severity: "flag",
-    message: "prompt-injection shape (instruction override / role hijack / chat delimiters)",
+    severity: "reject",
+    message: "strong prompt-injection marker (instruction override / chat delimiters / jailbreak)",
     test: (t) => {
-      for (const rx of SCAN_INJECTION_PATTERNS) {
+      for (const rx of STRONG_INJECTION_PATTERNS) {
+        const m = t.match(rx);
+        if (m) return m[0];
+      }
+      return null;
+    },
+  },
+  {
+    id: "prompt-injection-weak",
+    severity: "flag",
+    message: "weak prompt-injection shape (role override phrasing — may be benign governance prose)",
+    test: (t) => {
+      for (const rx of WEAK_INJECTION_PATTERNS) {
         const m = t.match(rx);
         if (m) return m[0];
       }
