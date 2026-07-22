@@ -32,6 +32,8 @@ ${BOLD}Usage:${NC}
                                         Parallel match across civilizations + judge ranking
   civagent topology validate <regime>   Validate a regime's topology.json (schema + IDENTITY cross-check)
   civagent topology metrics <regime>    Graph metrics (density, depth, centrality, check cycles) as JSON
+  civagent stats [--dir D] [--boot N] [--tie X] [--json] [tournamentDir...]
+                                        Cross-tournament Bradley-Terry ranking + bootstrap CI
   civagent agents                       Show generated CC agents for active regime
   civagent modes                        List 6 orchestration modes
   civagent setup                        Check tool availability (CC, Codex, opencode, cn-cc)
@@ -324,6 +326,11 @@ cmd_topology() {
   esac
 }
 
+# Cross-tournament statistics: Bradley-Terry ranking + bootstrap CI (engine/v5/stats.mjs).
+cmd_stats() {
+  exec node "$ENGINE_DIR/v5/stats.mjs" "$@"
+}
+
 # Verify the cn-cc-workflow launchers the cn:* backends depend on (engine/cn-cc.mjs).
 cmd_doctor() {
   echo -e "${BOLD}CivAgent — cn-cc-workflow 依赖自检 / dependency check${NC}"
@@ -372,6 +379,7 @@ case "${1:-}" in
   skills)    cmd_skills "${2:-}" ;;
   match-log) cmd_match_log ;;
   tournament) shift; cmd_tournament "$@" ;;
+  stats)     shift; cmd_stats "$@" ;;
   help|--help|-h|"") usage ;;
   *)         echo "Unknown command: $1"; usage; exit 1 ;;
 esac
