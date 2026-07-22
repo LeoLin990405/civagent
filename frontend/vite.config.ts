@@ -4,6 +4,13 @@ import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
+// Engine topology modules live outside the frontend root; they are plain ESM
+// with zero runtime deps, so the dev-server middleware can reuse the exact
+// validation/metrics logic the CLI uses.
+// @ts-ignore - untyped .mjs engine module
+import { validateRegimeTopology } from '../engine/topology/validate.mjs';
+// @ts-ignore - untyped .mjs engine module
+import { computeMetrics } from '../engine/topology/metrics.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -209,6 +216,46 @@ function civagentApiPlugin() {
             } else {
               json(res, 200, { id, region, raw: null });
             }
+            return;
+          }
+
+          // /api/regimes/:region/:id/topology
+          if (
+            segs.length === 4 &&
+            segs[0] === 'regimes' &&
+            segs[3] === 'topology'
+          ) {
+            const region = segs[1];
+            const id = segs[2];
+
+            const projectRoot = path.resolve(__dirname, '..');
+            const regimesDir = path.join(projectRoot, 'regimes');
+
+            const resolved = safeResolve(regimesDir, region, id);
+            if (!resolved.ok) {
+              json(res, 400, { error: resolved.error });
+              return;
+            }
+
+            const topologyPath = path.join(resolved.resolved, 'topology.json');
+            if (!fs.existsSync(topologyPath)) {
+              json(res, 404, { error: `regime '${region}/${id}' has no topology.json` });
+              return;
+            }
+
+            // Reuse the engine's validator + metrics so the UI and the CLI
+            // always agree on what a valid topology is.
+            const v = validateRegimeTopology(resolved.resolved);
+            if (!v.ok) {
+              json(res, 422, { error: 'invalid topology.json', details: v.errors });
+              return;
+            }
+            json(res, 200, {
+              id,
+              region,
+              topology: v.topology,
+              metrics: computeMetrics(v.topology),
+            });
             return;
           }
 
