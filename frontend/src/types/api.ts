@@ -100,3 +100,52 @@ export interface TournamentSummary {
   manifest: TournamentManifest;
   judgeResult?: string;
 }
+
+// ── Regime topology (governance graph) ──────────────────────────────────────
+
+export type FunctionalRole =
+  | 'coordinator' | 'engineering' | 'review' | 'research' | 'data'
+  | 'devops' | 'content' | 'legal' | 'management';
+
+export type EdgeKind = 'command' | 'review' | 'info' | 'veto';
+
+export interface TopologyNode {
+  id: string;
+  label: string;
+  functional_role: FunctionalRole;
+}
+
+export interface TopologyEdge {
+  from: string;
+  to: string;
+  kind: EdgeKind;
+  note?: string;
+}
+
+export interface RegimeTopology {
+  schema_version: string;
+  regime: string;
+  mode: string;
+  nodes: TopologyNode[];
+  edges: TopologyEdge[];
+}
+
+export interface TopologyMetrics {
+  regime: string;
+  mode: string;
+  nodes: number;
+  edges: number;
+  density: number;
+  command_depth: number;
+  top_in_degree: { id: string; inDegree: number }[];
+  in_degree: { id: string; inDegree: number }[];
+  checks_cycles: number;
+  checks_cycle_nodes: string[][];
+}
+
+export interface TopologyResponse {
+  id: string;
+  region: string;
+  topology: RegimeTopology;
+  metrics: TopologyMetrics;
+}
