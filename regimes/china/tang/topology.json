@@ -4,6 +4,7 @@
   "mode": "checks-and-balances",
   "nodes": [
     { "id": "zhongshu-sheren", "label": "中书舍人（起草）", "functional_role": "coordinator" },
+    { "id": "jishizhong", "label": "给事中（门下省·封驳）", "functional_role": "review" },
     { "id": "bingbu", "label": "兵部·尚书", "functional_role": "engineering" },
     { "id": "hubu", "label": "户部·尚书", "functional_role": "data" },
     { "id": "libu_ritual", "label": "礼部·尚书", "functional_role": "content" },
@@ -12,7 +13,9 @@
     { "id": "libu_personnel", "label": "吏部·尚书", "functional_role": "management" }
   ],
   "edges": [
-    { "from": "zhongshu-sheren", "to": "bingbu", "kind": "command", "note": "中书舍人起草圣旨、分派任务（协作流程 2-3）" },
+    { "from": "zhongshu-sheren", "to": "jishizhong", "kind": "command", "note": "中书舍人草拟诏书后送门下省审核（协作流程 2）" },
+    { "from": "jishizhong", "to": "zhongshu-sheren", "kind": "veto", "note": "给事中封驳：驳回不当诏书、发还重拟（协作流程 3；三省制衡核心）" },
+    { "from": "zhongshu-sheren", "to": "bingbu", "kind": "command", "note": "诏书经门下省放行后分派任务（协作流程 4）" },
     { "from": "zhongshu-sheren", "to": "hubu", "kind": "command", "note": "同上" },
     { "from": "zhongshu-sheren", "to": "libu_ritual", "kind": "command", "note": "同上" },
     { "from": "zhongshu-sheren", "to": "gongbu", "kind": "command", "note": "同上" },

@@ -30,6 +30,7 @@ export interface JudgeScore {
   regime: string;
   score: number;
   reason?: string;
+  dims?: { legality?: number; feasibility?: number; resilience?: number };
 }
 
 export interface MatchEvent {
@@ -46,6 +47,19 @@ export interface MatchEvent {
   reason?: string;
   auditedBy?: string | null;
   meta?: any;
+  // OTel-style envelope (schema v2, all optional for backward compatibility)
+  event_id?: string;
+  schema_version?: string;
+  trace_id?: string;
+  span_id?: string;
+  parent_span_id?: string | null;
+  kind?: 'llm_call' | 'tool_call' | 'judge_score' | 'skill_propose' | 'skill_commit' | 'turn' | 'match_start' | 'match_end';
+  model?: string;
+  model_version?: string;
+  prompt_hash?: string;
+  tokens?: number;
+  cost?: number;
+  payload_hash?: string;
 }
 
 export interface MatchMeta {
@@ -92,6 +106,10 @@ export interface TournamentManifest {
     resultPath: string; // absolute path to result.md
     scores?: JudgeScore[];
     topRegime?: string | null;
+    swap?: boolean;     // whether the order-swapped second judge pass ran
+    passes?: number;    // judge passes actually completed
+    rubric?: { scale: string; dimensions: string[] };
+    events?: string;    // absolute path to the tournament-level judge_score events.jsonl
   };
 }
 
