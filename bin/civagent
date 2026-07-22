@@ -41,6 +41,8 @@ ${BOLD}Usage:${NC}
   civagent ablate <regime> --type persona|checks [--out dir]
                                         Generate an ablation variant into regimes/_ablated/
                                         (A3 skill ablation: run/tournament --no-skill)
+  civagent hillclimb <analyze|propose|validate|apply|rollback>
+                                        L4 loop: diagnose → diff proposals → paired validation → revertible apply
   civagent agents                       Show generated CC agents for active regime
   civagent modes                        List 6 orchestration modes
   civagent setup                        Check tool availability (CC, Codex, opencode, cn-cc)
@@ -379,6 +381,11 @@ cmd_ablate() {
   exec node "$ENGINE_DIR/ablate.mjs" "$@"
 }
 
+# L4 hill-climbing loop (engine/v5/hillclimb.mjs): analyze → propose → validate → apply/rollback.
+cmd_hillclimb() {
+  exec node "$ENGINE_DIR/v5/hillclimb.mjs" "$@"
+}
+
 # Verify the cn-cc-workflow launchers the cn:* backends depend on (engine/cn-cc.mjs).
 cmd_doctor() {
   echo -e "${BOLD}CivAgent — cn-cc-workflow 依赖自检 / dependency check${NC}"
@@ -434,6 +441,7 @@ case "${1:-}" in
   tournament) shift; cmd_tournament "$@" ;;
   stats)     shift; cmd_stats "$@" ;;
   ablate)    shift; cmd_ablate "$@" ;;
+  hillclimb) shift; cmd_hillclimb "$@" ;;
   help|--help|-h|"") usage ;;
   *)         echo "Unknown command: $1"; usage; exit 1 ;;
 esac
