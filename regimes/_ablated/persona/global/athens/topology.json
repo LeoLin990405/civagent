@@ -1,0 +1,99 @@
+{
+  "schema_version": "1.0",
+  "regime": "global/athens",
+  "mode": "democratic",
+  "nodes": [
+    {
+      "id": "ekklesia",
+      "label": "公民大会",
+      "functional_role": "coordinator"
+    },
+    {
+      "id": "boule",
+      "label": "五百人议事会",
+      "functional_role": "management"
+    },
+    {
+      "id": "strategos",
+      "label": "十将军",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "dikasterion",
+      "label": "陪审法庭",
+      "functional_role": "review"
+    },
+    {
+      "id": "archon",
+      "label": "执政官",
+      "functional_role": "devops"
+    },
+    {
+      "id": "rhetor",
+      "label": "演说家",
+      "functional_role": "content"
+    }
+  ],
+  "edges": [
+    {
+      "from": "ekklesia",
+      "to": "boule",
+      "kind": "command",
+      "note": "大会决议/法律约束议事会（架构图 公民大会→五百人议事会）"
+    },
+    {
+      "from": "ekklesia",
+      "to": "strategos",
+      "kind": "command",
+      "note": "大会决议约束十将军（架构图）"
+    },
+    {
+      "from": "ekklesia",
+      "to": "dikasterion",
+      "kind": "command",
+      "note": "大会立法约束法庭（架构图）"
+    },
+    {
+      "from": "boule",
+      "to": "archon",
+      "kind": "command",
+      "note": "议事会领导行政执行（架构图 议事会→执政官）"
+    },
+    {
+      "from": "boule",
+      "to": "ekklesia",
+      "kind": "info",
+      "note": "boule 准备议程并起草预案（Probouleuma）提交大会（决策流程 1）"
+    },
+    {
+      "from": "boule",
+      "to": "rhetor",
+      "kind": "info",
+      "note": "向演说家提供预案内容（架构图 议事会→演说家；决策流程 2）"
+    },
+    {
+      "from": "rhetor",
+      "to": "ekklesia",
+      "kind": "info",
+      "note": "在大会上阐述提案背景、引导辩论（决策流程 2）"
+    },
+    {
+      "from": "dikasterion",
+      "to": "boule",
+      "kind": "review",
+      "note": "对决策过程、法律效力及官员行为事后审计与审判（决策流程 6）"
+    },
+    {
+      "from": "dikasterion",
+      "to": "strategos",
+      "kind": "review",
+      "note": "同上"
+    },
+    {
+      "from": "dikasterion",
+      "to": "archon",
+      "kind": "review",
+      "note": "同上"
+    }
+  ]
+}

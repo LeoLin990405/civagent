@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "regime": "china/qin",
+  "mode": "centralized",
+  "nodes": [
+    {
+      "id": "emperor",
+      "label": "皇帝",
+      "functional_role": "coordinator"
+    },
+    {
+      "id": "chengxiang",
+      "label": "丞相",
+      "functional_role": "management"
+    },
+    {
+      "id": "taiwei",
+      "label": "太尉",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "yushi-censor",
+      "label": "御史大夫",
+      "functional_role": "review"
+    },
+    {
+      "id": "tingwei-justice",
+      "label": "廷尉",
+      "functional_role": "legal"
+    },
+    {
+      "id": "zhisu-finance",
+      "label": "治粟内史",
+      "functional_role": "data"
+    },
+    {
+      "id": "shaofu-works",
+      "label": "少府",
+      "functional_role": "devops"
+    }
+  ],
+  "edges": [
+    {
+      "from": "emperor",
+      "to": "chengxiang",
+      "kind": "command",
+      "note": "皇帝下达诏令，丞相接收（决策流程 1-2；架构图 皇帝→丞相）"
+    },
+    {
+      "from": "emperor",
+      "to": "taiwei",
+      "kind": "command",
+      "note": "架构图 皇帝→太尉"
+    },
+    {
+      "from": "emperor",
+      "to": "yushi-censor",
+      "kind": "command",
+      "note": "架构图 皇帝→御史大夫"
+    },
+    {
+      "from": "chengxiang",
+      "to": "taiwei",
+      "kind": "command",
+      "note": "丞相分解任务并分派至相关卿（决策流程 2-3）"
+    },
+    {
+      "from": "chengxiang",
+      "to": "tingwei-justice",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "chengxiang",
+      "to": "zhisu-finance",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "chengxiang",
+      "to": "shaofu-works",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "taiwei",
+      "to": "chengxiang",
+      "kind": "command",
+      "note": "各卿定期向丞相汇报进度（决策流程 5）"
+    },
+    {
+      "from": "zhisu-finance",
+      "to": "chengxiang",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "shaofu-works",
+      "to": "chengxiang",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "tingwei-justice",
+      "to": "chengxiang",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "yushi-censor",
+      "to": "emperor",
+      "kind": "command",
+      "note": "可直接向皇帝弹劾失职官员（决策流程 6）"
+    }
+  ]
+}

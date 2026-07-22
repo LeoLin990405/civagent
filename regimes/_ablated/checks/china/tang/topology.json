@@ -1,0 +1,127 @@
+{
+  "schema_version": "1.0",
+  "regime": "china/tang",
+  "mode": "checks-and-balances",
+  "nodes": [
+    {
+      "id": "zhongshu-sheren",
+      "label": "中书舍人（起草）",
+      "functional_role": "coordinator"
+    },
+    {
+      "id": "jishizhong",
+      "label": "给事中（门下省·封驳）",
+      "functional_role": "review"
+    },
+    {
+      "id": "bingbu",
+      "label": "兵部·尚书",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "hubu",
+      "label": "户部·尚书",
+      "functional_role": "data"
+    },
+    {
+      "id": "libu_ritual",
+      "label": "礼部·尚书",
+      "functional_role": "content"
+    },
+    {
+      "id": "gongbu",
+      "label": "工部·尚书",
+      "functional_role": "devops"
+    },
+    {
+      "id": "xingbu",
+      "label": "刑部·尚书",
+      "functional_role": "legal"
+    },
+    {
+      "id": "libu_personnel",
+      "label": "吏部·尚书",
+      "functional_role": "management"
+    }
+  ],
+  "edges": [
+    {
+      "from": "zhongshu-sheren",
+      "to": "jishizhong",
+      "kind": "command",
+      "note": "中书舍人草拟诏书后送门下省审核（协作流程 2）"
+    },
+    {
+      "from": "zhongshu-sheren",
+      "to": "bingbu",
+      "kind": "command",
+      "note": "诏书经门下省放行后分派任务（协作流程 4）"
+    },
+    {
+      "from": "zhongshu-sheren",
+      "to": "hubu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "zhongshu-sheren",
+      "to": "libu_ritual",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "zhongshu-sheren",
+      "to": "gongbu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "zhongshu-sheren",
+      "to": "xingbu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "zhongshu-sheren",
+      "to": "libu_personnel",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "bingbu",
+      "to": "zhongshu-sheren",
+      "kind": "command",
+      "note": "奏折上报：完成后向陛下/中书汇报（协作流程 5）"
+    },
+    {
+      "from": "hubu",
+      "to": "zhongshu-sheren",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "libu_ritual",
+      "to": "zhongshu-sheren",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "gongbu",
+      "to": "zhongshu-sheren",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "xingbu",
+      "to": "zhongshu-sheren",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "libu_personnel",
+      "to": "zhongshu-sheren",
+      "kind": "command",
+      "note": "同上"
+    }
+  ]
+}
