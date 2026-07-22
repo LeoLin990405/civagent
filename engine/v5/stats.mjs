@@ -21,7 +21,7 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 
-export const DEFAULT_TIE_THRESHOLD = 0.5;
+export const DEFAULT_TIE_THRESHOLD = 0.8; // /10 scale; smallest rubric grain after swap-normalization is ~0.83
 export const DEFAULT_BOOTSTRAP = 1000;
 export const MIN_SAMPLE = 5; // below this, warn that CIs are indicative only
 

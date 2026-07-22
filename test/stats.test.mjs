@@ -18,6 +18,7 @@ import {
   formatTable,
   mulberry32,
   MIN_SAMPLE,
+  DEFAULT_TIE_THRESHOLD,
 } from "../engine/v5/stats.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -83,9 +84,15 @@ test("extractComparisons builds pairwise records with tie threshold", () => {
 });
 
 test("tie threshold is configurable and boundary is strict (<)", () => {
+  // Default follows the rubric's smallest normalized grain (~0.83 after swap aggregation).
+  assert.equal(DEFAULT_TIE_THRESHOLD, 0.8);
   const manifests = [{ id: "m", manifest: manifestFor([["a", 5.5], ["b", 5.0]]) }];
   assert.equal(extractComparisons(manifests, { tieThreshold: 0.5 }).records[0].winA, 1, "Δ=0.5 is NOT a tie at threshold 0.5");
   assert.equal(extractComparisons(manifests, { tieThreshold: 0.6 }).records[0].winA, 0.5, "Δ=0.5 < 0.6 → tie");
+  // At the new default, Δ=0.5 is a tie but Δ=0.9 is decisive.
+  assert.equal(extractComparisons(manifests).records[0].winA, 0.5, "Δ=0.5 < 0.8 default → tie");
+  const wide = [{ id: "m", manifest: manifestFor([["a", 5.9], ["b", 5.0]]) }];
+  assert.equal(extractComparisons(wide).records[0].winA, 1, "Δ=0.9 ≥ 0.8 default → decisive");
 });
 
 // ── Bradley-Terry fit ────────────────────────────────────────────────────────
