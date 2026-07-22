@@ -206,11 +206,13 @@ export function parseCiv(token) {
 // Pure: build the exact child spec used to launch one civ. Exported so tests can
 // prove we invoke run-v5 directly (not `civagent switch`) and that each civ gets
 // a distinct match id + isolated env.
-export function civSpawnSpec({ regime, backend, matchId, runV5 = RUN_V5 }) {
+export function civSpawnSpec({ regime, backend, matchId, runV5 = RUN_V5, noSkill = false }) {
   return {
     command: "node",
     args: [runV5, "--backend", backend, regime],
-    env: { CIVAGENT_MATCH_ID: matchId },
+    // noSkill propagates the A3 ablation: children neither inject learned
+    // skills nor run sedimentation after the match.
+    env: { CIVAGENT_MATCH_ID: matchId, ...(noSkill ? { CIVAGENT_SKILL_LEARN: "off" } : {}) },
   };
 }
 
@@ -218,9 +220,9 @@ function civMatchId(regime, tournamentId) {
   return `${tournamentId}__${regime.replace(/\//g, "-")}`;
 }
 
-function runCiv({ regime, backend }, task, tournamentId, outDir) {
+function runCiv({ regime, backend }, task, tournamentId, outDir, { noSkill = false } = {}) {
   const matchId = civMatchId(regime, tournamentId);
-  const spec = civSpawnSpec({ regime, backend, matchId });
+  const spec = civSpawnSpec({ regime, backend, matchId, noSkill });
   return new Promise((resolve) => {
     const logFile = path.join(outDir, `${regime.replace(/\//g, "-")}.log`);
     const out = fs.createWriteStream(logFile);
@@ -368,7 +370,7 @@ export async function judge(task, civResults, {
   };
 }
 
-export async function runTournament({ civs, task }) {
+export async function runTournament({ civs, task, noSkill = false }) {
   if (!civs.length || !task) throw new Error("need --civs and a task");
   const parsed = civs.map(parseCiv);
 
@@ -376,7 +378,7 @@ export async function runTournament({ civs, task }) {
   const outDir = path.join(TOURNAMENTS_DIR, id);
   fs.mkdirSync(outDir, { recursive: true });
 
-  console.error(`[tournament] ${id}  civs=${parsed.map((c) => c.regime).join(",")}  out=${outDir}`);
+  console.error(`[tournament] ${id}  civs=${parsed.map((c) => c.regime).join(",")}  out=${outDir}${noSkill ? "  (no-skill: A3 ablation)" : ""}`);
 
   // Tournament-level trace: judge_score events live in their own event stream
   // keyed by the tournament id, so the whole evaluation is auditable.
@@ -386,9 +388,10 @@ export async function runTournament({ civs, task }) {
     actor: "system",
     civs: parsed.map((c) => c.regime),
     tournament: true,
+    ...(noSkill ? { noSkill: true } : {}),
   });
 
-  const results = await Promise.all(parsed.map((c) => runCiv(c, task, id, outDir)));
+  const results = await Promise.all(parsed.map((c) => runCiv(c, task, id, outDir, { noSkill })));
 
   const verdict = await judge(task, results, { eventLog: trace });
   const resultFile = path.join(outDir, "result.md");
@@ -434,16 +437,19 @@ export async function runTournament({ civs, task }) {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const args = process.argv.slice(2);
   let civs = [];
+  let noSkill = false;
   const rest = [];
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--civs" && args[i + 1]) {
       civs = args[++i].split(",").map((s) => s.trim()).filter(Boolean);
+    } else if (args[i] === "--no-skill") {
+      noSkill = true;
     } else {
       rest.push(args[i]);
     }
   }
   const task = rest.join(" ").trim();
-  runTournament({ civs, task }).catch((e) => {
+  runTournament({ civs, task, noSkill }).catch((e) => {
     console.error(e);
     process.exit(1);
   });

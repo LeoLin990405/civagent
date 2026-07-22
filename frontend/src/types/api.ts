@@ -168,3 +168,36 @@ export interface TopologyResponse {
   topology: RegimeTopology;
   metrics: TopologyMetrics;
 }
+
+// ── Cross-tournament statistics (Bradley-Terry rankings) ────────────────────
+
+export interface RankingRow {
+  regime: string;
+  ability: number;
+  ci95: [number, number];
+  rank: number;
+  rankCi95: [number, number];
+  medianRank: number;
+  games: number;
+}
+
+export interface PairwiseRow {
+  a: string;
+  b: string;
+  games: number;
+  winsA: number;
+  winsB: number;
+  logAbilityDiff: number;
+  ci95: [number, number];
+  significant: boolean;
+}
+
+export interface StatsRankingsResponse {
+  rankings: RankingRow[];
+  pairwise: PairwiseRow[];
+  warnings: string[];
+  tournamentsUsed: number;
+  regimes: string[];
+  B: number;
+  minSample: number;
+}

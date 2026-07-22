@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Zap, History, BookOpen, Play, Cpu, Layers, RefreshCw, AlertCircle, PlayCircle } from 'lucide-react';
+import { Zap, History, BookOpen, Play, Cpu, Layers, RefreshCw, AlertCircle, PlayCircle, Trophy } from 'lucide-react';
 import type { RegimeDetail, MatchSummary, MatchEvent } from './types/api';
 import TerminalPanel from './components/TerminalPanel';
 import JudgeLeaderboard from './components/JudgeLeaderboard';
 import HistoryExplorer from './components/HistoryExplorer';
 import CodexBrowser from './components/CodexBrowser';
 import RegimeBrowser from './components/RegimeBrowser';
+import RankingsPanel from './components/RankingsPanel';
 
 // Premium Simulated Data for Sandbox Mode
 const MOCK_PROMPT = "Establish secure and robust border defense policies for agricultural frontiers facing seasonal tribal raids.";
@@ -85,7 +86,7 @@ const MOCK_JUDGE_VERDICTS = {
 };
 
 export const App: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'live' | 'history' | 'codex' | 'regimes'>('live');
+  const [activeTab, setActiveTab] = useState<'live' | 'history' | 'codex' | 'regimes' | 'rankings'>('live');
   const [regimes, setRegimes] = useState<RegimeDetail[]>([]);
   const [matches, setMatches] = useState<MatchSummary[]>([]);
   const [selectedMatch, setSelectedMatch] = useState<MatchSummary | null>(null);
@@ -413,6 +414,18 @@ export const App: React.FC = () => {
           >
             <Layers size={14} /> Regimes Browser
           </button>
+
+          <button
+            onClick={() => setActiveTab('rankings')}
+            className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg border text-xs font-semibold uppercase tracking-wider transition-all ${
+              activeTab === 'rankings'
+                ? 'bg-[rgba(0,240,255,0.06)] border-[rgba(0,240,255,0.3)] text-[var(--accent-cyan)] shadow-[0_0_12px_rgba(0,240,255,0.05)]'
+                : 'bg-transparent border-transparent text-[var(--text-secondary)] hover:bg-[rgba(255,255,255,0.02)]'
+            }`}
+            style={{ display: 'flex', alignItems: 'center', gap: '12px', fontSize: '11px', fontWeight: 600, padding: '12px 16px', textAlign: 'left' }}
+          >
+            <Trophy size={14} /> Rankings
+          </button>
         </nav>
 
         {/* Footer info */}
@@ -707,6 +720,11 @@ export const App: React.FC = () => {
           {/* TAB 4: REGIMES BROWSER */}
           {activeTab === 'regimes' && (
             <RegimeBrowser regimes={regimes} />
+          )}
+
+          {/* TAB 5: CROSS-TOURNAMENT RANKINGS */}
+          {activeTab === 'rankings' && (
+            <RankingsPanel />
           )}
 
         </div>
