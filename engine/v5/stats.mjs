@@ -232,6 +232,13 @@ export function analyze(manifests, {
     }
   }
 
+  // Tournaments played per regime (distinct matches appearing in any record).
+  const gamesPerRegime = new Map(regimes.map((r) => [r, new Set()]));
+  for (const rec of records) {
+    gamesPerRegime.get(rec.a)?.add(rec.match);
+    gamesPerRegime.get(rec.b)?.add(rec.match);
+  }
+
   const rankings = regimes
     .filter((r) => baseAbilities.has(r))
     .map((r) => {
@@ -244,6 +251,7 @@ export function analyze(manifests, {
         rank: baseRanks.get(r),
         rankCi95: [percentile(rkSamples, 0.025), percentile(rkSamples, 0.975)],
         medianRank: percentile(rkSamples, 0.5),
+        games: gamesPerRegime.get(r)?.size ?? 0,
       };
     })
     .sort((x, y) => x.rank - y.rank);

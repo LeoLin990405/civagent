@@ -11,6 +11,8 @@ import { fileURLToPath } from 'node:url';
 import { validateRegimeTopology } from '../engine/topology/validate.mjs';
 // @ts-ignore - untyped .mjs engine module
 import { computeMetrics } from '../engine/topology/metrics.mjs';
+// @ts-ignore - untyped .mjs engine module
+import { collectManifests, analyze, MIN_SAMPLE } from '../engine/v5/stats.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -256,6 +258,49 @@ function civagentApiPlugin() {
               topology: v.topology,
               metrics: computeMetrics(v.topology),
             });
+            return;
+          }
+
+          // /api/stats/rankings[?boot=N] — cross-tournament BT rankings + CI.
+          // Reuses engine/v5/stats.mjs directly (no shell-out). Empty dataset
+          // returns 200 with empty rankings + warnings, never a 500.
+          if (pathname === '/stats/rankings' || pathname === '/stats/rankings/') {
+            const tournamentsDir = path.join(rootDir, 'tournaments');
+            const manifests = collectManifests(tournamentsDir);
+            if (manifests.length === 0) {
+              json(res, 200, {
+                rankings: [],
+                pairwise: [],
+                warnings: [`no tournament manifests found in ${tournamentsDir}`],
+                tournamentsUsed: 0,
+                regimes: [],
+                B: 0,
+                minSample: MIN_SAMPLE,
+              });
+              return;
+            }
+            let B = 500; // lighter than the CLI default for interactive loads
+            try {
+              const q = new URL(req.url || '', 'http://local').searchParams.get('boot');
+              if (q != null) {
+                const n = parseInt(q, 10);
+                if (Number.isFinite(n)) B = Math.min(Math.max(n, 50), 2000);
+              }
+            } catch { /* keep default */ }
+            try {
+              const result = analyze(manifests, { B });
+              json(res, 200, { ...result, minSample: MIN_SAMPLE });
+            } catch (e: any) {
+              json(res, 200, {
+                rankings: [],
+                pairwise: [],
+                warnings: [`stats analysis failed: ${e.message}`],
+                tournamentsUsed: 0,
+                regimes: [],
+                B: 0,
+                minSample: MIN_SAMPLE,
+              });
+            }
             return;
           }
 
