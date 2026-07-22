@@ -26,18 +26,29 @@ function newMatchId() {
 
 // Pure arg parser (exported for tests): pulls --backend out of argv, leaving the
 // regime + prompt. Backend precedence: --backend flag > $CIVAGENT_BACKEND > native.
+// --no-skill disables the learning loop for this match (A3 ablation): no learned
+// skills are injected and sedimentation does not run afterwards.
 export function parseArgs(argv, env = process.env) {
   let backend = env.CIVAGENT_BACKEND || "native";
+  let noSkill = false;
   const rest = [];
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--backend" && argv[i + 1] != null) {
       backend = argv[++i];
+    } else if (argv[i] === "--no-skill") {
+      noSkill = true;
     } else {
       rest.push(argv[i]);
     }
   }
   const [regimeRaw, ...promptParts] = rest;
-  return { backend, regimeRaw, prompt: promptParts.join(" ").trim() };
+  return { backend, regimeRaw, prompt: promptParts.join(" ").trim(), noSkill };
+}
+
+// Is the skill learning loop active? --no-skill or CIVAGENT_SKILL_LEARN=off
+// disables it (A3 ablation); staging/approve mechanics are unaffected.
+export function skillLearnEnabled({ noSkill = false, env = process.env } = {}) {
+  return !noSkill && env.CIVAGENT_SKILL_LEARN !== "off";
 }
 
 // Convert a sediment() result object to event fields for the skill event type.
@@ -54,12 +65,13 @@ export function buildSkillEvent(result) {
 }
 
 async function main() {
-  const { backend, regimeRaw, prompt } = parseArgs(process.argv.slice(2));
+  const { backend, regimeRaw, prompt, noSkill } = parseArgs(process.argv.slice(2));
   if (!regimeRaw) {
-    console.error("usage: run-v5.mjs [--backend <id>] <region/regime-id> [prompt...]");
+    console.error("usage: run-v5.mjs [--backend <id>] [--no-skill] <region/regime-id> [prompt...]");
     process.exit(1);
   }
   const regime = validateRegime(regimeRaw);
+  const skillLearn = skillLearnEnabled({ noSkill });
 
   // Fail-fast on a bad/forbidden backend rather than silently running `claude`.
   let command;
@@ -79,7 +91,7 @@ async function main() {
   // Honor an externally-assigned match id (the tournament uses this to correlate
   // its civs); otherwise mint our own.
   const matchId = process.env.CIVAGENT_MATCH_ID || newMatchId();
-  const home = ensureCivHome(regime, regimeDir);
+  const home = ensureCivHome(regime, regimeDir, { skills: skillLearn });
   const log = new EventLog(matchId);
   const startedAt = Date.now();
 
@@ -139,21 +151,28 @@ async function main() {
   }
   // Run sedimentation BEFORE closing the log so we can emit the skill event
   // inside the same JSONL stream (frontend watches for match_end to stop reading).
-  console.error(`[v5] backend exited ${exitCode}, running skill sedimentation...`);
-  const skillsDir = path.join(regimeDir, "skills");
+  // A3 ablation: with the learning loop disabled, skip sedimentation entirely
+  // and record that in the event stream.
   let sedimentResult;
-  try {
-    sedimentResult = await sediment({
-      matchId,
-      regime,
-      regimeDir,
-      transcriptPath: eventsPath(matchId),
-      existingSkillsDir: skillsDir,
-    });
-    console.error(`[v5] sediment:`, JSON.stringify(sedimentResult));
-  } catch (e) {
-    sedimentResult = { error: e.message };
-    console.error(`[v5] sediment failed: ${e.message}`);
+  if (!skillLearn) {
+    sedimentResult = { skipped: "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)" };
+    console.error(`[v5] backend exited ${exitCode}, skill learning disabled — skipping sedimentation`);
+  } else {
+    console.error(`[v5] backend exited ${exitCode}, running skill sedimentation...`);
+    const skillsDir = path.join(regimeDir, "skills");
+    try {
+      sedimentResult = await sediment({
+        matchId,
+        regime,
+        regimeDir,
+        transcriptPath: eventsPath(matchId),
+        existingSkillsDir: skillsDir,
+      });
+      console.error(`[v5] sediment:`, JSON.stringify(sedimentResult));
+    } catch (e) {
+      sedimentResult = { error: e.message };
+      console.error(`[v5] sediment failed: ${e.message}`);
+    }
   }
 
   // Emit a structured skill event so the frontend can reflect sedimentation status.
