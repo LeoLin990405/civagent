@@ -24,7 +24,7 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 import crypto from "node:crypto";
-import { collectManifests, extractComparisons, mulberry32 } from "./stats.mjs";
+import { collectManifests, extractComparisons, mulberry32, loadAliases, normalizeRegime } from "./stats.mjs";
 
 export const DEFAULTS = {
   minTournaments: 50,        // below this, warn "不建议启动爬山"
@@ -88,6 +88,9 @@ export function analyze({ home = os.homedir(), since = null, minTournaments = DE
   }
 
   // matchId → { regime, score } across all tournaments (for co-occurrence).
+  // Regime ids are alias-normalized (id drift merged, same rule as stats.mjs).
+  const aliases = loadAliases(home);
+  const norm = (r) => (r == null ? r : normalizeRegime(r, aliases));
   const scoreByMatch = new Map();
   const perRegime = new Map(); // regime → { scores[], dims: {d: []}, tasks: Map(task → [{score, ts}]) }
   let swapsOff = 0;
@@ -95,8 +98,9 @@ export function analyze({ home = os.homedir(), since = null, minTournaments = DE
     if (manifest?.judge?.swap === false) swapsOff++;
     const task = manifest.task ?? "";
     const ts = manifest.createdAt ?? 0;
-    for (const s of manifest?.judge?.scores ?? []) {
-      if (!s || typeof s.regime !== "string" || !Number.isFinite(s.score)) continue;
+    for (const sRaw of manifest?.judge?.scores ?? []) {
+      if (!sRaw || typeof sRaw.regime !== "string" || !Number.isFinite(sRaw.score)) continue;
+      const s = { ...sRaw, regime: norm(sRaw.regime) };
       if (!perRegime.has(s.regime)) perRegime.set(s.regime, { scores: [], dims: {}, tasks: new Map() });
       const r = perRegime.get(s.regime);
       r.scores.push(s.score);
@@ -109,12 +113,12 @@ export function analyze({ home = os.homedir(), since = null, minTournaments = DE
       r.tasks.get(task).push({ score: s.score, ts });
     }
     for (const civ of manifest?.civs ?? []) {
-      const sc = (manifest?.judge?.scores ?? []).find((x) => x.regime === civ.regime);
-      if (civ.matchId && sc) scoreByMatch.set(civ.matchId, { regime: civ.regime, score: sc.score });
+      const sc = (manifest?.judge?.scores ?? []).find((x) => norm(x.regime) === norm(civ.regime));
+      if (civ.matchId && sc) scoreByMatch.set(civ.matchId, { regime: norm(civ.regime), score: sc.score });
     }
   }
 
-  const { records } = extractComparisons(manifests.map((m) => ({ id: m.id, manifest: m.manifest })));
+  const { records } = extractComparisons(manifests.map((m) => ({ id: m.id, manifest: m.manifest })), { aliases });
   const ties = records.filter((r) => r.winA === 0.5).length;
   const tieRate = records.length > 0 ? ties / records.length : 0;
 
@@ -150,8 +154,9 @@ export function analyze({ home = os.homedir(), since = null, minTournaments = DE
   const skillStats = {}; // per regime { saved, staged, rejected, skipped, error }
   const cooccur = new Map(); // `${regime}|${skillPath}|${status}` → { with: [], without: [] }
   const byRegimeSkill = new Map(); // `${regime}|${skillPath}` → { status, matchIds: [] }
-  for (const ev of skillEvents) {
-    if (!ev.regime) continue;
+  for (const evRaw of skillEvents) {
+    if (!evRaw.regime) continue;
+    const ev = { ...evRaw, regime: norm(evRaw.regime) };
     if (!skillStats[ev.regime]) skillStats[ev.regime] = { saved: 0, staged: 0, rejected: 0, skipped: 0, error: 0 };
     if (ev.status in skillStats[ev.regime]) skillStats[ev.regime][ev.status]++;
     if (ev.skillPath && (ev.status === "saved" || ev.status === "staged")) {
