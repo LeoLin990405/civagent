@@ -21,9 +21,45 @@ import fs from "node:fs";
 import path from "node:path";
 import os from "node:os";
 
-export const DEFAULT_TIE_THRESHOLD = 0.8; // /10 scale; smallest rubric grain after swap-normalization is ~0.83
+// Swap-double-judging averages two passes, so the real score grain is ~0.4/10
+// (trial batch measured tieRate 70.6% at 0.8 — discrimination collapsed).
+export const DEFAULT_TIE_THRESHOLD = 0.4;
 export const DEFAULT_BOOTSTRAP = 1000;
 export const MIN_SAMPLE = 5; // below this, warn that CIs are indicative only
+
+// ── regime id aliases ────────────────────────────────────────────────────────
+// Historical data contains id drift (e.g. global/athenian == global/athens).
+// Built-in table is intentionally minimal; users extend via
+// ~/.civagent/aliases.json ({ "drifted/id": "canonical/id" }).
+export const ALIASES = { "global/athenian": "global/athens" };
+
+export function loadAliases(home = os.homedir()) {
+  const p = path.join(home, ".civagent", "aliases.json");
+  let user = {};
+  try {
+    if (fs.existsSync(p)) user = JSON.parse(fs.readFileSync(p, "utf8"));
+  } catch {
+    /* a corrupt aliases file must never break stats */
+  }
+  return { ...ALIASES, ...(user && typeof user === "object" ? user : {}) };
+}
+
+export function normalizeRegime(id, aliases = null) {
+  const a = aliases ?? loadAliases();
+  return a[id] || id;
+}
+
+// Split manifests into swap-era (post-#17: judge.swap === true, comparable
+// rubric scale) and legacy (different scale — would pollute the BT fit).
+export function splitSwapEra(manifests, { includeLegacy = false } = {}) {
+  const kept = [];
+  let skippedLegacy = 0;
+  for (const m of manifests) {
+    if (includeLegacy || m?.manifest?.judge?.swap === true) kept.push(m);
+    else skippedLegacy++;
+  }
+  return { kept, skippedLegacy };
+}
 
 // ── data ingestion ───────────────────────────────────────────────────────────
 
@@ -48,7 +84,9 @@ export function collectManifests(dir) {
 // Per-tournament pairwise records. Each record: { match, a, b, winA } where
 // winA ∈ {1, 0.5, 0} from the perspective of regime a (0.5 = tie).
 // Tournaments with fewer than 2 scored regimes contribute nothing.
-export function extractComparisons(manifests, { tieThreshold = DEFAULT_TIE_THRESHOLD } = {}) {
+// Regime ids are normalized through the alias table (id drift merged).
+export function extractComparisons(manifests, { tieThreshold = DEFAULT_TIE_THRESHOLD, aliases = null } = {}) {
+  const norm = (r) => normalizeRegime(r, aliases);
   const records = [];
   let used = 0;
   for (const { id, manifest } of manifests) {
@@ -64,8 +102,8 @@ export function extractComparisons(manifests, { tieThreshold = DEFAULT_TIE_THRES
         const delta = a.score - b.score;
         records.push({
           match: id,
-          a: a.regime,
-          b: b.regime,
+          a: norm(a.regime),
+          b: norm(b.regime),
           winA: Math.abs(delta) < tieThreshold ? 0.5 : delta > 0 ? 1 : 0,
         });
       }
@@ -177,16 +215,25 @@ function percentile(sorted, q) {
 }
 
 // Full analysis: BT fit on all records + bootstrap over tournaments.
-// Returns { rankings, pairwise, warnings, tournamentsUsed, regimes, B }.
+// By default only swap-era tournaments (judge.swap === true, post-#17 rubric
+// scale) are counted; includeLegacy restores the old behavior and legacy
+// manifests are always reported via skippedLegacy.
+// Returns { rankings, pairwise, warnings, tournamentsUsed, skippedLegacy, regimes, B }.
 export function analyze(manifests, {
   tieThreshold = DEFAULT_TIE_THRESHOLD,
   B = DEFAULT_BOOTSTRAP,
   seed = 42,
+  includeLegacy = false,
+  aliases = null,
 } = {}) {
-  const { records, regimes, tournamentsUsed } = extractComparisons(manifests, { tieThreshold });
+  const { kept, skippedLegacy } = splitSwapEra(manifests, { includeLegacy });
+  const { records, regimes, tournamentsUsed } = extractComparisons(kept, { tieThreshold, aliases });
   const warnings = [];
+  if (skippedLegacy > 0) {
+    warnings.push(`skipped ${skippedLegacy} legacy tournaments (pre-swap scale; --include-legacy to keep)`);
+  }
   if (tournamentsUsed === 0) {
-    return { rankings: [], pairwise: [], warnings: ["no tournaments with ≥2 scored regimes found"], tournamentsUsed, regimes, B };
+    return { rankings: [], pairwise: [], warnings: [...warnings, "no tournaments with ≥2 scored regimes found"], tournamentsUsed, skippedLegacy, regimes, B };
   }
   if (tournamentsUsed < MIN_SAMPLE) {
     warnings.push(`样本不足（${tournamentsUsed} < ${MIN_SAMPLE} 场锦标赛），CI 仅供参考`);
@@ -281,7 +328,7 @@ export function analyze(manifests, {
     }
   }
 
-  return { rankings, pairwise, warnings, tournamentsUsed, regimes, B };
+  return { rankings, pairwise, warnings, tournamentsUsed, skippedLegacy, regimes, B };
 }
 
 // ── human-readable output ────────────────────────────────────────────────────
@@ -323,13 +370,14 @@ export function formatTable(result) {
 // ── CLI ──────────────────────────────────────────────────────────────────────
 
 function parseArgs(argv) {
-  const opts = { dir: path.join(os.homedir(), ".civagent", "tournaments"), manifests: [], B: DEFAULT_BOOTSTRAP, tie: DEFAULT_TIE_THRESHOLD, json: false };
+  const opts = { dir: path.join(os.homedir(), ".civagent", "tournaments"), manifests: [], B: DEFAULT_BOOTSTRAP, tie: DEFAULT_TIE_THRESHOLD, json: false, includeLegacy: false };
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
     if (a === "--dir" && argv[i + 1]) opts.dir = argv[++i];
     else if (a === "--boot" && argv[i + 1]) opts.B = parseInt(argv[++i], 10);
     else if (a === "--tie" && argv[i + 1]) opts.tie = parseFloat(argv[++i]);
     else if (a === "--json") opts.json = true;
+    else if (a === "--include-legacy") opts.includeLegacy = true;
     else opts.manifests.push(a);
   }
   return opts;
@@ -363,7 +411,7 @@ if (process.argv[1] && process.argv[1].endsWith("stats.mjs")) {
     process.exit(1);
   }
 
-  const result = analyze(manifests, { tieThreshold: opts.tie, B: opts.B });
+  const result = analyze(manifests, { tieThreshold: opts.tie, B: opts.B, includeLegacy: opts.includeLegacy });
   if (opts.json) {
     console.log(JSON.stringify(result, null, 2));
   } else {

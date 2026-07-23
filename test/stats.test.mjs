@@ -19,6 +19,10 @@ import {
   mulberry32,
   MIN_SAMPLE,
   DEFAULT_TIE_THRESHOLD,
+  splitSwapEra,
+  loadAliases,
+  normalizeRegime,
+  ALIASES,
 } from "../engine/v5/stats.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -28,8 +32,9 @@ const CIVAGENT_BIN = path.join(PROJECT_ROOT, "bin", "civagent");
 
 // ── fixtures ─────────────────────────────────────────────────────────────────
 
-function manifestFor(scores) {
-  return { judge: { scores: scores.map(([regime, score]) => ({ regime, score })) } };
+function manifestFor(scores, { swap = true } = {}) {
+  // swap: true marks post-#17 swap-era manifests (the default stats population)
+  return { judge: { scores: scores.map(([regime, score]) => ({ regime, score })), swap } };
 }
 
 // Write N tournament dirs with manifests into a fresh temp dir.
@@ -84,15 +89,15 @@ test("extractComparisons builds pairwise records with tie threshold", () => {
 });
 
 test("tie threshold is configurable and boundary is strict (<)", () => {
-  // Default follows the rubric's smallest normalized grain (~0.83 after swap aggregation).
-  assert.equal(DEFAULT_TIE_THRESHOLD, 0.8);
+  // Default follows the real score grain after swap-pass averaging (~0.4).
+  assert.equal(DEFAULT_TIE_THRESHOLD, 0.4);
   const manifests = [{ id: "m", manifest: manifestFor([["a", 5.5], ["b", 5.0]]) }];
   assert.equal(extractComparisons(manifests, { tieThreshold: 0.5 }).records[0].winA, 1, "Δ=0.5 is NOT a tie at threshold 0.5");
   assert.equal(extractComparisons(manifests, { tieThreshold: 0.6 }).records[0].winA, 0.5, "Δ=0.5 < 0.6 → tie");
-  // At the new default, Δ=0.5 is a tie but Δ=0.9 is decisive.
-  assert.equal(extractComparisons(manifests).records[0].winA, 0.5, "Δ=0.5 < 0.8 default → tie");
-  const wide = [{ id: "m", manifest: manifestFor([["a", 5.9], ["b", 5.0]]) }];
-  assert.equal(extractComparisons(wide).records[0].winA, 1, "Δ=0.9 ≥ 0.8 default → decisive");
+  // At the new default: Δ=0.3 is a tie, Δ=0.5 is decisive.
+  const narrow = [{ id: "m", manifest: manifestFor([["a", 5.3], ["b", 5.0]]) }];
+  assert.equal(extractComparisons(narrow).records[0].winA, 0.5, "Δ=0.3 < 0.4 default → tie");
+  assert.equal(extractComparisons(manifests).records[0].winA, 1, "Δ=0.5 ≥ 0.4 default → decisive");
 });
 
 // ── Bradley-Terry fit ────────────────────────────────────────────────────────
@@ -259,6 +264,110 @@ test("formatTable renders all sections", () => {
     assert.match(table, /ability CI95/);
     assert.match(table, /pairwise significant/);
     assert.match(table, /样本不足/); // 4 < MIN_SAMPLE
+  } finally {
+    rmrf(dir);
+  }
+});
+
+// ── swap-era filter ──────────────────────────────────────────────────────────
+
+test("splitSwapEra: default keeps only judge.swap === true; includeLegacy keeps all", () => {
+  const era = { id: "new", manifest: manifestFor([["a", 8], ["b", 6]]) }; // swap: true
+  const legacy1 = { id: "old1", manifest: manifestFor([["a", 7], ["b", 5]], { swap: false }) };
+  const legacy2 = { id: "old2", manifest: { judge: { scores: [{ regime: "a", score: 6 }, { regime: "b", score: 4 }] } } }; // no swap field
+  const all = [era, legacy1, legacy2];
+
+  const def = splitSwapEra(all);
+  assert.equal(def.kept.length, 1);
+  assert.equal(def.kept[0].id, "new");
+  assert.equal(def.skippedLegacy, 2);
+
+  const inc = splitSwapEra(all, { includeLegacy: true });
+  assert.equal(inc.kept.length, 3);
+  assert.equal(inc.skippedLegacy, 0);
+});
+
+test("analyze: legacy manifests skipped + reported; --include-legacy restores", () => {
+  const swapSets = STRONG_MID_WEAK.slice(0, 6);
+  const dir = makeTournamentDir(swapSets);
+  try {
+    // Add two pre-swap legacy tournaments (no judge.swap field).
+    for (const [i, scores] of [[["china/tang", 0.9], ["china/qin", 0.1]], [["china/tang", 0.8], ["china/qin", 0.2]]].entries()) {
+      const tdir = `${dir}/legacy${i}`;
+      fs.mkdirSync(tdir, { recursive: true });
+      fs.writeFileSync(`${tdir}/manifest.json`, JSON.stringify({ judge: { scores: scores.map(([regime, score]) => ({ regime, score })) } }));
+    }
+    const all = collectManifests(dir);
+    assert.equal(all.length, 8);
+
+    const r = analyze(all, { B: 50, seed: 2 });
+    assert.equal(r.tournamentsUsed, 6, "only swap-era tournaments counted by default");
+    assert.equal(r.skippedLegacy, 2);
+    assert.ok(r.warnings.some((w) => w.includes("skipped 2 legacy tournaments")));
+
+    const inc = analyze(all, { B: 50, seed: 2, includeLegacy: true });
+    assert.equal(inc.tournamentsUsed, 8);
+    assert.equal(inc.skippedLegacy, 0);
+  } finally {
+    rmrf(dir);
+  }
+});
+
+// ── regime id aliases ────────────────────────────────────────────────────────
+
+test("built-in alias merges global/athenian into global/athens", () => {
+  assert.equal(normalizeRegime("global/athenian", ALIASES), "global/athens");
+  assert.equal(normalizeRegime("global/athens", ALIASES), "global/athens", "canonical id untouched");
+  assert.equal(normalizeRegime("china/tang", ALIASES), "china/tang", "unknown id untouched");
+
+  const manifests = [
+    { id: "m1", manifest: manifestFor([["global/athenian", 9], ["global/athens", 7]]) },
+    { id: "m2", manifest: manifestFor([["global/athenian", 8], ["china/qin", 6]]) },
+  ];
+  const { records, regimes } = extractComparisons(manifests, { aliases: ALIASES });
+  assert.ok(!regimes.includes("global/athenian"), "drifted id must be merged away");
+  assert.ok(regimes.includes("global/athens"));
+  // m1's intra-pair becomes athens-vs-athens (self), still recorded once with tie/own score
+  assert.ok(records.every((r) => r.a !== "global/athenian" && r.b !== "global/athenian"));
+});
+
+test("loadAliases merges ~/.civagent/aliases.json over the built-ins", () => {
+  const home = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-alias-"));
+  try {
+    // No file → built-ins only.
+    assert.deepEqual(loadAliases(home), ALIASES);
+    // User extension merges and can override.
+    fs.mkdirSync(path.join(home, ".civagent"), { recursive: true });
+    fs.writeFileSync(
+      path.join(home, ".civagent", "aliases.json"),
+      JSON.stringify({ "global/ath": "global/athens", "custom/x": "china/tang" }),
+    );
+    const merged = loadAliases(home);
+    assert.equal(merged["global/athenian"], "global/athens", "built-in kept");
+    assert.equal(merged["global/ath"], "global/athens", "user alias added");
+    assert.equal(merged["custom/x"], "china/tang");
+    assert.equal(normalizeRegime("global/ath", merged), "global/athens");
+    // Corrupt file must not break anything.
+    fs.writeFileSync(path.join(home, ".civagent", "aliases.json"), "{not json");
+    assert.deepEqual(loadAliases(home), ALIASES);
+  } finally {
+    rmrf(home);
+  }
+});
+
+test("analyze: aliased regimes collapse into one BT entry", () => {
+  const sets = [
+    ...Array.from({ length: 4 }, () => [["global/athenian", 9], ["china/qin", 5]]),
+    ...Array.from({ length: 4 }, () => [["global/athens", 8.5], ["china/qin", 5]]),
+  ];
+  const dir = makeTournamentDir(sets);
+  try {
+    const r = analyze(collectManifests(dir), { B: 100, seed: 4 });
+    const names = r.rankings.map((x) => x.regime);
+    assert.ok(!names.includes("global/athenian"));
+    assert.ok(names.includes("global/athens"));
+    const athens = r.rankings.find((x) => x.regime === "global/athens");
+    assert.equal(athens.games, 8, "merged id accumulates all games");
   } finally {
     rmrf(dir);
   }
