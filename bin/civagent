@@ -34,6 +34,8 @@ ${BOLD}Usage:${NC}
   civagent match-log                    Recent match transcripts
   civagent tournament --civs a,b,c,d "task"
                                         Parallel match across civilizations + judge ranking
+  civagent tournament --civs a,b --task-file resources/tasks/t3-todo-cli/task.json [--det-weight 0.5]
+                                        T3 mode: deterministic grader blended with judge score
   civagent topology validate <regime>   Validate a regime's topology.json (schema + IDENTITY cross-check)
   civagent topology metrics <regime>    Graph metrics (density, depth, centrality, check cycles) as JSON
   civagent stats [--dir D] [--boot N] [--tie X] [--json] [tournamentDir...]
