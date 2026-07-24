@@ -214,13 +214,18 @@ export function parseCiv(token) {
 // Pure: build the exact child spec used to launch one civ. Exported so tests can
 // prove we invoke run-v5 directly (not `civagent switch`) and that each civ gets
 // a distinct match id + isolated env.
-export function civSpawnSpec({ regime, backend, matchId, runV5 = RUN_V5, noSkill = false }) {
+export function civSpawnSpec({ regime, backend, matchId, runV5 = RUN_V5, noSkill = false, permissionMode = null }) {
   return {
     command: "node",
     args: [runV5, "--backend", backend, regime],
     // noSkill propagates the A3 ablation: children neither inject learned
-    // skills nor run sedimentation after the match.
-    env: { CIVAGENT_MATCH_ID: matchId, ...(noSkill ? { CIVAGENT_SKILL_LEARN: "off" } : {}) },
+    // skills nor run sedimentation after the match. permissionMode (T3)
+    // lets agents actually write files in non-interactive sessions.
+    env: {
+      CIVAGENT_MATCH_ID: matchId,
+      ...(noSkill ? { CIVAGENT_SKILL_LEARN: "off" } : {}),
+      ...(permissionMode ? { CIVAGENT_PERMISSION_MODE: permissionMode } : {}),
+    },
   };
 }
 
@@ -311,9 +316,9 @@ export function mixScores(scores, detByRegime, detWeight = 0.5) {
     .sort((a, b) => b.score - a.score);
 }
 
-function runCiv({ regime, backend }, task, tournamentId, outDir, { noSkill = false, useWorkDir = false } = {}) {
+function runCiv({ regime, backend }, task, tournamentId, outDir, { noSkill = false, useWorkDir = false, permissionMode = null } = {}) {
   const matchId = civMatchId(regime, tournamentId);
-  const spec = civSpawnSpec({ regime, backend, matchId, noSkill });
+  const spec = civSpawnSpec({ regime, backend, matchId, noSkill, permissionMode });
   // T3: give the civ a private writable workdir as cwd so produced code lands
   // in a known place for the deterministic grader.
   const workDir = useWorkDir ? path.join(outDir, "workdir", regime.replace(/\//g, "-")) : null;
@@ -489,7 +494,14 @@ export async function runTournament({ civs, task, noSkill = false, taskSpec = nu
     ...(useWorkDir ? { taskSpecId: taskSpec.id } : {}),
   });
 
-  const results = await Promise.all(parsed.map((c) => runCiv(c, task, id, outDir, { noSkill, useWorkDir })));
+  const results = await Promise.all(parsed.map((c) => runCiv(c, task, id, outDir, {
+    noSkill,
+    useWorkDir,
+    // T3 requires real file writes; non-interactive sessions never see write
+    // approvals, so deterministic tasks run with permissions bypassed (each
+    // civ is still confined to its own isolated HOME + private workdir).
+    permissionMode: useWorkDir ? (taskSpec.permissionMode ?? "bypassPermissions") : null,
+  })));
 
   const verdict = await judge(task, results, { eventLog: trace });
 
