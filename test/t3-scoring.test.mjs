@@ -237,3 +237,26 @@ test(
     }
   },
 );
+
+// ── permission-mode fix (T3 write enablement) ────────────────────────────────
+
+import { withPermissionMode } from "../engine/v5/run-v5.mjs";
+import { civSpawnSpec } from "../engine/v5/tournament.mjs";
+
+test("withPermissionMode appends --permission-mode only when env is set", () => {
+  const base = ["--agents", "{}", "-p", "task"];
+  assert.deepEqual(withPermissionMode(base, {}), base, "unset env → args unchanged");
+  assert.deepEqual(
+    withPermissionMode(base, { CIVAGENT_PERMISSION_MODE: "bypassPermissions" }),
+    [...base, "--permission-mode", "bypassPermissions"],
+  );
+  // input array not mutated
+  assert.equal(base.length, 4);
+});
+
+test("civSpawnSpec propagates CIVAGENT_PERMISSION_MODE when given", () => {
+  const spec = civSpawnSpec({ regime: "china/tang", backend: "native", matchId: "m1", permissionMode: "bypassPermissions" });
+  assert.equal(spec.env.CIVAGENT_PERMISSION_MODE, "bypassPermissions");
+  const plain = civSpawnSpec({ regime: "china/tang", backend: "native", matchId: "m1" });
+  assert.equal(plain.env.CIVAGENT_PERMISSION_MODE, undefined, "non-T3 civs must not get a permission override");
+});

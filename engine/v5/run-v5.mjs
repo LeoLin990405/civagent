@@ -71,6 +71,17 @@ export function buildSkillEvent(result) {
   return null;
 }
 
+// Non-interactive matches cannot answer CC's permission prompts, so any file
+// write (Write tool, `cat >`, tee, python writes) hangs unapproved — the T3
+// smoke showed agents exhausting every write channel and producing nothing.
+// CIVAGENT_PERMISSION_MODE (set by the tournament for deterministic tasks)
+// appends CC's --permission-mode flag so writes can proceed. Unset → CC's
+// default behavior is unchanged.
+export function withPermissionMode(ccArgs, env = process.env) {
+  const mode = env.CIVAGENT_PERMISSION_MODE;
+  return mode ? [...ccArgs, "--permission-mode", mode] : ccArgs;
+}
+
 async function main() {
   const { backend, regimeRaw, prompt, noSkill } = parseArgs(process.argv.slice(2));
   if (!regimeRaw) {
@@ -136,7 +147,7 @@ async function main() {
   const ccArgs = ["--agents", agentsJson];
   if (prompt) ccArgs.push("-p", prompt);
 
-  const cc = spawn(command, ccArgs, { env, stdio: ["inherit", "pipe", "inherit"] });
+  const cc = spawn(command, withPermissionMode(ccArgs), { env, stdio: ["inherit", "pipe", "inherit"] });
   cc.stdout.on("data", (chunk) => {
     process.stdout.write(chunk);
     log.emit("turn", { text: chunk.toString(), actor: regime });
