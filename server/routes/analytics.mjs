@@ -1,7 +1,6 @@
 import express from 'express';
 import { getDb } from '../db/database.mjs';
-
-const router = express.Router();
+import { sendError } from '../http.mjs';
 
 // ── Query logic (pure: take a db handle, return data) — exported for tests ──────
 
@@ -54,26 +53,35 @@ export function queryRadar(db, regime) {
 
 // ── Routes ─────────────────────────────────────────────────────────────────────
 
-// /api/analytics/trends
-router.get('/trends', (req, res) => {
-  const db = getDb();
-  if (!db) return res.status(503).json({ error: 'Database not available' });
-  try {
-    res.json(queryTrends(db));
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// Factory so the router is constructed the same way as the other route modules.
+// These endpoints are DB-backed (no filesystem state dir), so the factory takes
+// no options today — it exists for symmetry and future injectability.
+export function createAnalyticsRouter() {
+  const router = express.Router();
 
-// /api/analytics/radar/:regime
-router.get('/radar/:regime', (req, res) => {
-  const db = getDb();
-  if (!db) return res.status(503).json({ error: 'Database not available' });
-  try {
-    res.json(queryRadar(db, req.params.regime));
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+  // /api/analytics/trends
+  router.get('/trends', (req, res) => {
+    const db = getDb();
+    if (!db) return sendError(res, 503, 'Database not available');
+    try {
+      res.json(queryTrends(db));
+    } catch (err) {
+      sendError(res, 500, err.message);
+    }
+  });
 
-export default router;
+  // /api/analytics/radar/:regime
+  router.get('/radar/:regime', (req, res) => {
+    const db = getDb();
+    if (!db) return sendError(res, 503, 'Database not available');
+    try {
+      res.json(queryRadar(db, req.params.regime));
+    } catch (err) {
+      sendError(res, 500, err.message);
+    }
+  });
+
+  return router;
+}
+
+export default createAnalyticsRouter();
