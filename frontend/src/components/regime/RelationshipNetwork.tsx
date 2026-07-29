@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { HelpCircle, Network } from 'lucide-react';
 import type { RegimeDetail } from '../../types/api';
 
@@ -21,12 +21,7 @@ export const RelationshipNetwork: React.FC<RelationshipNetworkProps> = ({ regime
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Update connection curves whenever hovered node changes
-  useEffect(() => {
-    updatePaths();
-  }, [hoveredRegime, windowWidth]);
-
-  const updatePaths = () => {
+  const updatePaths = useCallback(() => {
     if (!containerRef.current || !hoveredRegime) {
       setConnections([]);
       return;
@@ -41,10 +36,10 @@ export const RelationshipNetwork: React.FC<RelationshipNetworkProps> = ({ regime
     const fromY = fromRect.top - containerRect.top + fromRect.height / 2;
 
     const newConnections: Array<{ from: { x: number; y: number }; to: { x: number; y: number }; id: string }> = [];
-    
+
     // Find regimes sharing >= 1 tag
-    const sharedRegimes = regimes.filter(r => 
-      r.id !== hoveredRegime.id && 
+    const sharedRegimes = regimes.filter(r =>
+      r.id !== hoveredRegime.id &&
       r.metadata?.tags?.some(t => hoveredRegime.metadata?.tags?.includes(t))
     );
 
@@ -63,7 +58,12 @@ export const RelationshipNetwork: React.FC<RelationshipNetworkProps> = ({ regime
     });
 
     setConnections(newConnections);
-  };
+  }, [hoveredRegime, regimes]);
+
+  // Update connection curves whenever hovered node changes
+  useEffect(() => {
+    updatePaths();
+  }, [hoveredRegime, windowWidth, updatePaths]);
 
   const chinaRegimes = regimes.filter(r => r.metadata?.region === 'china');
   const globalRegimes = regimes.filter(r => r.metadata?.region === 'global');
