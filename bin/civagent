@@ -11,19 +11,11 @@ ENGINE_DIR="$CIVAGENT_ROOT/engine"
 STATE_DIR="${HOME}/.civagent"
 ACTIVE_FILE="$STATE_DIR/.active-regime"
 
+# Shared helpers (colors, die, validate_regime, metadata reader) — resolved
+# relative to this script's own location, not the caller's cwd.
+source "$CIVAGENT_ROOT/bin/lib/common.sh"
+
 mkdir -p "$STATE_DIR"
-
-# Colors
-RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[0;33m'
-CYAN='\033[0;36m'; BOLD='\033[1m'; NC='\033[0m'
-
-# Regime ids are interpolated into paths and passed to interpreters; reject
-# anything outside <region>/<kebab-id> before it reaches them.
-validate_regime() {
-  [[ "$1" =~ ^(china|global)/[a-z0-9][a-z0-9-]*$ ]] || {
-    echo "Invalid regime id: $1 (expected china/<id> or global/<id>)"; exit 1;
-  }
-}
 
 usage() {
   cat <<EOF
@@ -86,10 +78,12 @@ cmd_list() {
     [[ -f "$dir/metadata.json" ]] || continue
     local id=$(basename "$dir")
     local regime="china/$id"
-    local name_zh=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d['name']['zh'])" 2>/dev/null || echo "$id")
-    local era=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d['era']['zh'])" 2>/dev/null || echo "")
-    local pattern=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d.get('orchestrationPattern','?'))" 2>/dev/null || echo "?")
-    local agents=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d.get('agentCount','?'))" 2>/dev/null || echo "?")
+    # One python subprocess per regime (was: four).
+    metadata_fields "$dir/metadata.json"
+    local name_zh="${META_NAME_ZH:-$id}"
+    local era="$META_ERA_ZH"
+    local pattern="$META_PATTERN"
+    local agents="$META_AGENTS"
     local marker="  "
     [[ "$regime" == "$active" ]] && marker="${GREEN}▸ ${NC}"
     printf "  ${marker}%-22s %-8s %-14s %-24s %s agents\n" "$regime" "$name_zh" "$era" "$pattern" "$agents"
@@ -101,10 +95,11 @@ cmd_list() {
     [[ -f "$dir/metadata.json" ]] || continue
     local id=$(basename "$dir")
     local regime="global/$id"
-    local name_en=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d['name']['en'])" 2>/dev/null || echo "$id")
-    local era=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d['era']['en'])" 2>/dev/null || echo "")
-    local pattern=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d.get('orchestrationPattern','?'))" 2>/dev/null || echo "?")
-    local agents=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d.get('agentCount','?'))" 2>/dev/null || echo "?")
+    # One python subprocess per regime (was: four).
+    metadata_fields "$dir/metadata.json"
+    local name_en="${META_NAME_EN:-$id}"
+    local pattern="$META_PATTERN"
+    local agents="$META_AGENTS"
     local marker="  "
     [[ "$regime" == "$active" ]] && marker="${GREEN}▸ ${NC}"
     printf "  ${marker}%-28s %-24s %-24s %s agents\n" "$regime" "$name_en" "$pattern" "$agents"
@@ -117,7 +112,7 @@ cmd_info() {
   local regime="$1"
   validate_regime "$regime"
   local dir="$REGIMES_DIR/$regime"
-  [[ -f "$dir/metadata.json" ]] || { echo "Regime not found: $regime"; exit 1; }
+  require_regime_metadata "$regime" "$dir"
 
   python3 -c "
 import json, sys
@@ -142,7 +137,7 @@ cmd_switch() {
   local regime="$1"
   validate_regime "$regime"
   local dir="$REGIMES_DIR/$regime"
-  [[ -f "$dir/metadata.json" ]] || { echo "Regime not found: $regime"; exit 1; }
+  require_regime_metadata "$regime" "$dir"
 
   echo "$regime" > "$ACTIVE_FILE"
 
@@ -152,8 +147,10 @@ cmd_switch() {
   # Generate agents JSON
   node "$ENGINE_DIR/regime-to-cc.mjs" "$dir" --agents > "$STATE_DIR/agents.json"
 
-  local name_zh=$(python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(d['name']['zh'])" "$dir/metadata.json" 2>/dev/null)
-  local pattern=$(python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(d.get('orchestrationPattern','?'))" "$dir/metadata.json" 2>/dev/null)
+  # One python subprocess (was: two) — no fallbacks, matching the old output.
+  metadata_fields "$dir/metadata.json"
+  local name_zh="$META_NAME_ZH"
+  local pattern="$META_PATTERN"
 
   echo -e "${GREEN}✓${NC} Switched to ${BOLD}$name_zh${NC} ($regime)"
   echo -e "  Pattern: ${CYAN}$pattern${NC}"
@@ -166,7 +163,7 @@ cmd_switch() {
 # ── run ──────────────────────────────────────────────────────────────────────
 
 cmd_run() {
-  [[ -f "$ACTIVE_FILE" ]] || { echo "No active regime. Run: civagent switch <regime>"; exit 1; }
+  [[ -f "$ACTIVE_FILE" ]] || die "No active regime. Run: civagent switch <regime>"
   local regime=$(cat "$ACTIVE_FILE")
 
   # v5 opt-in: isolated civ HOME + skill sedimentation
@@ -215,7 +212,7 @@ cmd_run() {
 # ── agents ───────────────────────────────────────────────────────────────────
 
 cmd_agents() {
-  [[ -f "$ACTIVE_FILE" ]] || { echo "No active regime."; exit 1; }
+  [[ -f "$ACTIVE_FILE" ]] || die "No active regime."
   local regime=$(cat "$ACTIVE_FILE")
   echo -e "${BOLD}CC Agents for $regime:${NC}\n"
   cat "$STATE_DIR/agents.json" | python3 -m json.tool 2>/dev/null || cat "$STATE_DIR/agents.json"
@@ -287,13 +284,13 @@ cmd_setup() {
 
 cmd_replay() {
   local match_id="${1:-}"
-  [[ -n "$match_id" ]] || { echo "Usage: civagent replay <matchId>"; exit 1; }
+  [[ -n "$match_id" ]] || die "Usage: civagent replay <matchId>"
   exec node "$ENGINE_DIR/v5/replay.mjs" "$match_id"
 }
 
 cmd_skills() {
   local regime="${1:-}"
-  [[ -n "$regime" ]] || { echo "Usage: civagent skills <region/regime-id> [--stats]"; exit 1; }
+  [[ -n "$regime" ]] || die "Usage: civagent skills <region/regime-id> [--stats]"
   validate_regime "$regime"
   local dir="$REGIMES_DIR/$regime/skills"
 
@@ -339,15 +336,14 @@ cmd_skills_pending() {
 cmd_skills_approve() {
   local regime="${1:-}"
   local file="${2:-}"
-  [[ -n "$regime" && -n "$file" ]] || { echo "Usage: civagent skills approve <region/regime-id> <filename>"; exit 1; }
+  [[ -n "$regime" && -n "$file" ]] || die "Usage: civagent skills approve <region/regime-id> <filename>"
   # Filename must be a bare basename — no path traversal out of staging.
   if [[ "$file" != "$(basename "$file")" || "$file" == .* ]]; then
-    echo "Invalid filename: $file"
-    exit 1
+    die "Invalid filename: $file"
   fi
   local staging="$REGIMES_DIR/$regime/skills/staging/$file"
   local dest_dir="$REGIMES_DIR/$regime/skills"
-  [[ -f "$staging" ]] || { echo "Staged skill not found: $staging"; exit 1; }
+  [[ -f "$staging" ]] || die "Staged skill not found: $staging"
   mv "$staging" "$dest_dir/$file"
   echo -e "${GREEN}✓${NC} Approved: $regime/skills/$file"
 }
@@ -376,8 +372,7 @@ cmd_tournament() {
     esac
   done
   if [[ -z "$civs" || ${#rest[@]} -eq 0 ]]; then
-    echo "Usage: civagent tournament --civs a/x,b/y,c/z \"task prompt\""
-    exit 1
+    die "Usage: civagent tournament --civs a/x,b/y,c/z \"task prompt\""
   fi
   exec node "$ENGINE_DIR/v5/tournament.mjs" --civs "$civs" "${rest[@]}"
 }
@@ -389,14 +384,13 @@ cmd_topology() {
   local regime="${2:-}"
   case "$sub" in
     validate|metrics)
-      [[ -n "$regime" ]] || { echo "Usage: civagent topology $sub <region/regime-id>"; exit 1; }
+      [[ -n "$regime" ]] || die "Usage: civagent topology $sub <region/regime-id>"
       local dir="$REGIMES_DIR/$regime"
-      [[ -f "$dir/metadata.json" ]] || { echo "Regime not found: $regime"; exit 1; }
+      require_regime_metadata "$regime" "$dir"
       exec node "$ENGINE_DIR/topology/$sub.mjs" "$dir"
       ;;
     *)
-      echo "Usage: civagent topology <validate|metrics> <region/regime-id>"
-      exit 1
+      die "Usage: civagent topology <validate|metrics> <region/regime-id>"
       ;;
   esac
 }
