@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, BarChart3, Network, Scroll } from 'lucide-react';
+import { Users, BarChart3, Network, Scroll, Workflow } from 'lucide-react';
 import type { RegimeDetail } from '../types/api';
 import OrgChart from './regime/OrgChart';
 import ModeComparison from './regime/ModeComparison';
@@ -87,6 +87,18 @@ export const RegimeBrowser: React.FC<RegimeBrowserProps> = ({ regimes }) => {
             }`}
           >
             <Network size={16} /> Topology
+          </button>
+
+          <button
+            onClick={() => setSelectedSubTab('topology')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg border text-xs font-semibold uppercase tracking-wider transition-all ${
+              selectedSubTab === 'topology'
+                ? 'bg-[var(--accent-cyan)] text-black border-[var(--accent-cyan)] shadow-[0_0_10px_rgba(0,240,255,0.25)]'
+                : 'bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.05)] text-[var(--text-secondary)] hover:border-[rgba(255,255,255,0.12)]'
+            }`}
+            style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '10px', fontWeight: 600 }}
+          >
+            <Workflow size={14} /> Topology
           </button>
 
         </div>

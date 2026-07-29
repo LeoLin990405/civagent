@@ -3,6 +3,8 @@ import path from 'node:path';
 import fs from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { safeResolve } from '../utils.mjs';
+import { validateRegimeTopology } from '../../engine/topology/validate.mjs';
+import { computeMetrics } from '../../engine/topology/metrics.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const projectRoot = path.resolve(__dirname, '../..');
@@ -66,6 +68,24 @@ router.get('/:region/:id/identity', (req, res) => {
   } else {
     res.json({ id, region, raw: null });
   }
+});
+
+// /api/regimes/:region/:id/topology — reuse the engine's validator + metrics so
+// the UI and the CLI always agree on what a valid topology is.
+router.get('/:region/:id/topology', (req, res) => {
+  const { region, id } = req.params;
+  const regimesDir = path.join(projectRoot, 'regimes');
+  const resolved = safeResolve(regimesDir, region, id);
+  if (!resolved.ok) return res.status(400).json({ error: resolved.error });
+  const topologyPath = path.join(resolved.resolved, 'topology.json');
+  if (!fs.existsSync(topologyPath)) {
+    return res.status(404).json({ error: `regime '${region}/${id}' has no topology.json` });
+  }
+  const v = validateRegimeTopology(resolved.resolved);
+  if (!v.ok) {
+    return res.status(422).json({ error: 'invalid topology.json', details: v.errors });
+  }
+  res.json({ id, region, topology: v.topology, metrics: computeMetrics(v.topology) });
 });
 
 // /api/regimes/:region/:id/mechanisms

@@ -7,7 +7,7 @@
   },
   "scripts": {
     "test": "node --test test/*.test.mjs",
-    "lint:syntax": "node -c engine/v5/civ-memory.mjs && node -c engine/v5/skill-sediment.mjs && node -c engine/v5/run-v5.mjs && node -c engine/v5/backends.mjs && node -c engine/v5/judge.mjs && node -c engine/v5/events.mjs && node -c engine/v5/tournament.mjs && node -c engine/regime-to-cc.mjs && node -c server/index.mjs && node -c server/utils.mjs && node -c server/db/database.mjs && node -c server/routes/regimes.mjs && node -c server/routes/tournaments.mjs && node -c server/routes/matches.mjs && node -c server/routes/history.mjs && node -c server/routes/analytics.mjs && bash -n bin/civagent",
+    "lint:syntax": "node -c engine/v5/civ-memory.mjs && node -c engine/v5/skill-sediment.mjs && node -c engine/v5/skill-scan.mjs && node -c engine/v5/run-v5.mjs && node -c engine/v5/backends.mjs && node -c engine/v5/judge.mjs && node -c engine/v5/events.mjs && node -c engine/v5/tournament.mjs && node -c engine/v5/stats.mjs && node -c engine/v5/hillclimb.mjs && node -c engine/regime-to-cc.mjs && node -c engine/topology/validate.mjs && node -c engine/topology/metrics.mjs && node -c engine/ablate.mjs && node -c server/index.mjs && node -c server/utils.mjs && node -c server/db/database.mjs && node -c server/routes/regimes.mjs && node -c server/routes/tournaments.mjs && node -c server/routes/matches.mjs && node -c server/routes/history.mjs && node -c server/routes/analytics.mjs && node -c server/routes/stats.mjs && bash -n bin/civagent",
     "validate:regimes": "node test/regime-validator.mjs",
     "lint:backend": "eslint .",
     "typecheck:frontend": "cd frontend && tsc -b",
