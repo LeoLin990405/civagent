@@ -58,7 +58,7 @@ export function createTournamentsRouter({
     if (!body || typeof body !== 'object') {
       return res.status(400).json({ error: 'JSON body required' });
     }
-    const { civs, task, backend, noSkill } = body;
+    const { civs, task, backend, noSkill, judgesN, anonCivs } = body;
 
     if (!Array.isArray(civs) || civs.length < 1 || civs.length > MAX_CIVS) {
       return res.status(400).json({ error: `civs must be an array of 1-${MAX_CIVS} regime ids` });
@@ -73,6 +73,9 @@ export function createTournamentsRouter({
     }
     if (backend != null && (typeof backend !== 'string' || !BACKEND_RE.test(backend))) {
       return res.status(400).json({ error: 'invalid backend id' });
+    }
+    if (judgesN != null && (!Number.isInteger(judgesN) || judgesN < 1 || judgesN > 3)) {
+      return res.status(400).json({ error: 'judgesN must be an integer between 1 and 3' });
     }
 
     // A shared backend applies to civs that don't pin one with #backend.
@@ -91,6 +94,8 @@ export function createTournamentsRouter({
 
     const args = [TOURNAMENT_MJS, '--civs', civList.join(','), '--id', id];
     if (noSkill === true) args.push('--no-skill');
+    if (judgesN != null && judgesN > 1) args.push('--judges', String(judgesN));
+    if (anonCivs === true) args.push('--anon-civs');
     args.push(task.trim());
 
     try {
