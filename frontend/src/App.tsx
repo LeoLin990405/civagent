@@ -8,6 +8,7 @@ import { RegimeBrowserV6 } from './components/RegimeBrowserV6';
 import RankingsPanel from './components/RankingsPanel';
 import { TournamentLauncher } from './components/TournamentLauncher';
 import { SkillLibrary } from './components/SkillLibrary';
+import { RegimeEditor } from './components/RegimeEditor';
 import { PlayCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import type { RegimeDetail } from './types/api';
 
@@ -50,6 +51,7 @@ export const App: React.FC = () => {
             {activeTab === 'memory' && 'Episodic Memory'}
             {activeTab === 'veto' && 'Constitution Monitor'}
             {activeTab === 'launch' && 'Tournament Launcher'}
+            {activeTab === 'editor' && 'Regime Editor'}
             {activeTab === 'skills' && 'Skill Library'}
             {activeTab === 'archive' && 'Match Archive'}
             {activeTab === 'live' && 'Live Court'}
@@ -99,6 +101,10 @@ export const App: React.FC = () => {
             <div className="glass-panel" style={{ overflow: 'hidden' }}>
               <EpisodicMemoryExplorer />
             </div>
+          )}
+
+          {activeTab === 'editor' && (
+            <RegimeEditor />
           )}
 
           {activeTab === 'skills' && (
