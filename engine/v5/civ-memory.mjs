@@ -15,7 +15,7 @@ export function envDirFor(regime) {
   return path.join(ROOT, "envs", safe);
 }
 
-export function ensureCivHome(regime, regimeDir) {
+export function ensureCivHome(regime, regimeDir, { skills = true } = {}) {
   const home = envDirFor(regime);
   const claudeDir = path.join(home, ".claude");
   const skillsDir = path.join(claudeDir, "skills");
@@ -40,9 +40,11 @@ export function ensureCivHome(regime, regimeDir) {
     fs.writeFileSync(claudeMd, parts.join("\n\n---\n\n"));
   }
 
-  // Symlink learned skills from regimes/<civ>/skills/ into the HOME's skill dir
+  // Symlink learned skills from regimes/<civ>/skills/ into the HOME's skill dir.
+  // Skipped entirely when skills=false (A3 ablation: --no-skill /
+  // CIVAGENT_SKILL_LEARN=off), so the match sees no learned skills.
   const regimeSkills = path.join(regimeDir, "skills");
-  if (fs.existsSync(regimeSkills)) {
+  if (skills && fs.existsSync(regimeSkills)) {
     for (const file of fs.readdirSync(regimeSkills)) {
       const src = path.join(regimeSkills, file);
       const dst = path.join(skillsDir, file);

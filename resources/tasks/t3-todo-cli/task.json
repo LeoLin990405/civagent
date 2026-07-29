@@ -1,0 +1,10 @@
+{
+  "id": "t3-todo-cli",
+  "type": "deterministic",
+  "task": "在当前目录实现 todo.py（纯标准库 Python），提供函数：add_task(title) 返回整数任务 id；list_tasks() 返回任务 dict 列表（含 id/title/done 键）；done_task(task_id) 将任务标记为完成，id 不存在时返回 False 而不抛异常；delete_task(task_id) 删除任务，id 不存在时返回 False。写操作必须持久化到当前目录的 tasks.json（JSON 数组）。任务完成后打印实现说明与自测结果。用中文交流。",
+  "grader": {
+    "command": "python3",
+    "args": ["grader.py"],
+    "timeoutS": 120
+  }
+}

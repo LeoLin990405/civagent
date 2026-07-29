@@ -1,0 +1,115 @@
+{
+  "schema_version": "1.0",
+  "regime": "china/zhou",
+  "mode": "federation",
+  "nodes": [
+    {
+      "id": "tianzi",
+      "label": "天子",
+      "functional_role": "coordinator"
+    },
+    {
+      "id": "taizai",
+      "label": "太宰",
+      "functional_role": "management"
+    },
+    {
+      "id": "taishi",
+      "label": "太师",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "taibao",
+      "label": "太保",
+      "functional_role": "content"
+    },
+    {
+      "id": "zhuhou",
+      "label": "诸侯",
+      "functional_role": "management"
+    },
+    {
+      "id": "qingdafu",
+      "label": "卿大夫",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "sikou",
+      "label": "司寇",
+      "functional_role": "legal"
+    },
+    {
+      "id": "xingren",
+      "label": "行人",
+      "functional_role": "research"
+    }
+  ],
+  "edges": [
+    {
+      "from": "tianzi",
+      "to": "taizai",
+      "kind": "command",
+      "note": "天子接收天下事务，命太宰拟定方案（决策流程 1-2；架构图 天子→太宰）"
+    },
+    {
+      "from": "tianzi",
+      "to": "taishi",
+      "kind": "command",
+      "note": "架构图 天子→太师"
+    },
+    {
+      "from": "tianzi",
+      "to": "taibao",
+      "kind": "command",
+      "note": "架构图 天子→太保"
+    },
+    {
+      "from": "taizai",
+      "to": "tianzi",
+      "kind": "command",
+      "note": "太宰拟定应对方案，呈报天子裁夺（决策流程 2）"
+    },
+    {
+      "from": "taishi",
+      "to": "taizai",
+      "kind": "info",
+      "note": "太师评估军事/技术可行性并反馈（决策流程 3）"
+    },
+    {
+      "from": "sikou",
+      "to": "taizai",
+      "kind": "review",
+      "note": "司寇审查方案合规性（决策流程 3）"
+    },
+    {
+      "from": "tianzi",
+      "to": "zhuhou",
+      "kind": "command",
+      "note": "天子颁布王命，分封相关诸侯执行（决策流程 4）"
+    },
+    {
+      "from": "zhuhou",
+      "to": "qingdafu",
+      "kind": "command",
+      "note": "诸侯在封国内自主调度卿大夫落实（决策流程 5）"
+    },
+    {
+      "from": "zhuhou",
+      "to": "tianzi",
+      "kind": "command",
+      "note": "诸侯定期朝觐、述职、纳贡（制度特点·朝贡义务）"
+    },
+    {
+      "from": "xingren",
+      "to": "zhuhou",
+      "kind": "info",
+      "note": "行人巡行各国，协调跨诸侯事务（决策流程 6）"
+    },
+    {
+      "from": "xingren",
+      "to": "tianzi",
+      "kind": "info",
+      "note": "行人回报天子（决策流程 6）"
+    }
+  ]
+}

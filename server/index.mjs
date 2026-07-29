@@ -7,6 +7,7 @@ import tournamentsRoutes from './routes/tournaments.mjs';
 import matchesRoutes from './routes/matches.mjs';
 import historyRoutes from './routes/history.mjs';
 import analyticsRoutes from './routes/analytics.mjs';
+import statsRoutes from './routes/stats.mjs';
 
 // Build the Express app. Exported (without listening) so tests can mount it on an
 // ephemeral port; the listen() only runs when this file is executed directly.
@@ -39,6 +40,7 @@ export function createApp() {
   app.use('/api/matches', matchesRoutes);
   app.use('/api/history', historyRoutes);
   app.use('/api/analytics', analyticsRoutes);
+  app.use('/api/stats', statsRoutes);
 
   // Global error handler — prevents unhandled rejections from crashing the server.
   // The 4-arg signature (incl. _next) is what marks this as Express error middleware.

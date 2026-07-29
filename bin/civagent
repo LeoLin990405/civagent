@@ -5,7 +5,8 @@ set -euo pipefail
 # Usage: civagent <command> [args]
 
 CIVAGENT_ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-REGIMES_DIR="$CIVAGENT_ROOT/regimes"
+# Overridable for tests / sandboxed runs.
+REGIMES_DIR="${CIVAGENT_REGIMES_DIR:-$CIVAGENT_ROOT/regimes}"
 ENGINE_DIR="$CIVAGENT_ROOT/engine"
 STATE_DIR="${HOME}/.civagent"
 ACTIVE_FILE="$STATE_DIR/.active-regime"
@@ -35,11 +36,25 @@ ${BOLD}Usage:${NC}
   civagent run [prompt]                 Launch CC with active regime's agents (v4 mode)
   civagent run --v5 "task"              Launch v5 with isolated HOME + skill sedimentation
   civagent skills <regime>              List learned skills for a regime
+  civagent skills pending [regime]      List staged skills awaiting human approval
+  civagent skills approve <regime> <file>
+                                        Promote a staged skill into the active skills dir
   civagent match-log                    Recent match transcripts
   civagent tournament --civs a,b,c,d "task"
                                         Parallel match across civilizations + judge ranking
   civagent tournament --civs a,b --task-file tasks/my-scenario.md
                                         Run tournament using a markdown scenario file
+  civagent tournament --civs a,b --task-file resources/tasks/t3-todo-cli/task.json [--det-weight 0.5]
+                                        T3 mode: deterministic grader blended with judge score
+  civagent topology validate <regime>   Validate a regime's topology.json (schema + IDENTITY cross-check)
+  civagent topology metrics <regime>    Graph metrics (density, depth, centrality, check cycles) as JSON
+  civagent stats [--dir D] [--boot N] [--tie X] [--json] [tournamentDir...]
+                                        Cross-tournament Bradley-Terry ranking + bootstrap CI
+  civagent ablate <regime> --type persona|checks [--out dir]
+                                        Generate an ablation variant into regimes/_ablated/
+                                        (A3 skill ablation: run/tournament --no-skill)
+  civagent hillclimb <analyze|propose|validate|apply|rollback>
+                                        L4 loop: diagnose → diff proposals → paired validation → revertible apply
   civagent agents                       Show generated CC agents for active regime
   civagent modes                        List 6 orchestration modes
   civagent setup                        Check tool availability (CC, Codex, opencode, cn-cc)
@@ -286,6 +301,42 @@ cmd_skills() {
   done
 }
 
+# List staged skills (supply-chain gate) across all regimes, or one regime.
+cmd_skills_pending() {
+  local regime="${1:-}"
+  local found=0
+  echo -e "${BOLD}Staged skills awaiting approval${NC}"
+  for dir in "$REGIMES_DIR"/*/skills/staging "$REGIMES_DIR"/*/*/skills/staging; do
+    [[ -d "$dir" ]] || continue
+    local rid=$(basename "$(dirname "$(dirname "$dir")")")
+    local region=$(basename "$(dirname "$(dirname "$(dirname "$dir")")")")
+    [[ -z "$regime" || "$region/$rid" == "$regime" ]] || continue
+    for f in "$dir"/*.md; do
+      [[ -f "$f" ]] || continue
+      found=$((found + 1))
+      echo -e "  ${YELLOW}•${NC} $region/$rid  $(basename "$f")"
+    done
+  done
+  [[ "$found" -gt 0 ]] || echo "  (none)"
+}
+
+# Promote one staged skill into the active skills dir.
+cmd_skills_approve() {
+  local regime="${1:-}"
+  local file="${2:-}"
+  [[ -n "$regime" && -n "$file" ]] || { echo "Usage: civagent skills approve <region/regime-id> <filename>"; exit 1; }
+  # Filename must be a bare basename — no path traversal out of staging.
+  if [[ "$file" != "$(basename "$file")" || "$file" == .* ]]; then
+    echo "Invalid filename: $file"
+    exit 1
+  fi
+  local staging="$REGIMES_DIR/$regime/skills/staging/$file"
+  local dest_dir="$REGIMES_DIR/$regime/skills"
+  [[ -f "$staging" ]] || { echo "Staged skill not found: $staging"; exit 1; }
+  mv "$staging" "$dest_dir/$file"
+  echo -e "${GREEN}✓${NC} Approved: $regime/skills/$file"
+}
+
 cmd_match_log() {
   local dir="$STATE_DIR/matches"
   [[ -d "$dir" ]] || { echo "No matches yet."; return; }
@@ -316,6 +367,40 @@ cmd_tournament() {
   exec node "$ENGINE_DIR/v5/tournament.mjs" --civs "$civs" "${rest[@]}"
 }
 
+# ── topology ────────────────────────────────────────────────────────────────
+
+cmd_topology() {
+  local sub="${1:-}"
+  local regime="${2:-}"
+  case "$sub" in
+    validate|metrics)
+      [[ -n "$regime" ]] || { echo "Usage: civagent topology $sub <region/regime-id>"; exit 1; }
+      local dir="$REGIMES_DIR/$regime"
+      [[ -f "$dir/metadata.json" ]] || { echo "Regime not found: $regime"; exit 1; }
+      exec node "$ENGINE_DIR/topology/$sub.mjs" "$dir"
+      ;;
+    *)
+      echo "Usage: civagent topology <validate|metrics> <region/regime-id>"
+      exit 1
+      ;;
+  esac
+}
+
+# Cross-tournament statistics: Bradley-Terry ranking + bootstrap CI (engine/v5/stats.mjs).
+cmd_stats() {
+  exec node "$ENGINE_DIR/v5/stats.mjs" "$@"
+}
+
+# Ablation variant generator (engine/ablate.mjs): A1 persona / A2 checks.
+cmd_ablate() {
+  exec node "$ENGINE_DIR/ablate.mjs" "$@"
+}
+
+# L4 hill-climbing loop (engine/v5/hillclimb.mjs): analyze → propose → validate → apply/rollback.
+cmd_hillclimb() {
+  exec node "$ENGINE_DIR/v5/hillclimb.mjs" "$@"
+}
+
 # Verify the cn-cc-workflow launchers the cn:* backends depend on (engine/cn-cc.mjs).
 cmd_doctor() {
   echo -e "${BOLD}CivAgent — cn-cc-workflow dependency check${NC}"
@@ -327,6 +412,26 @@ for (const b of r.missing) console.log("  ✗ " + b.id + " → " + b.cmd + " (mi
 if (!r.ok) { console.error("\nMissing cn-cc-workflow launchers. Install:\n  " + r.install + "\n  see " + r.repo); process.exit(1); }
 console.log("\n✓ cn-cc execution engine ready (" + r.present.length + " backends)");
 '
+
+  # Validate topology.json for every regime that has one (others are skipped
+  # silently — topology files are being rolled out incrementally).
+  echo ""
+  echo -e "${BOLD}Regime topology validation${NC}"
+  local topo_fail=0
+  local topo_count=0
+  for dir in "$REGIMES_DIR"/*/*/; do
+    [[ -f "$dir/topology.json" ]] || continue
+    topo_count=$((topo_count + 1))
+    if node "$ENGINE_DIR/topology/validate.mjs" "$dir" >/dev/null 2>&1; then
+      echo -e "  ${GREEN}✓${NC} $(basename "$(dirname "$dir")")/$(basename "$dir")"
+    else
+      topo_fail=$((topo_fail + 1))
+      echo -e "  ${RED}✗${NC} $(basename "$(dirname "$dir")")/$(basename "$dir")"
+      node "$ENGINE_DIR/topology/validate.mjs" "$dir" 2>&1 | sed 's/^/      /'
+    fi
+  done
+  echo -e "  ${CYAN}$topo_count${NC} regimes with topology.json, ${RED}$topo_fail${NC} invalid"
+  [[ "$topo_fail" -eq 0 ]] || exit 1
 }
 
 # ── main ─────────────────────────────────────────────────────────────────────
@@ -340,9 +445,18 @@ case "${1:-}" in
   modes)     cmd_modes ;;
   setup)     cmd_setup ;;
   doctor)    cmd_doctor ;;
-  skills)    cmd_skills "${2:-}" ;;
+  topology)  cmd_topology "${2:-}" "${3:-}" ;;
+  skills)
+    case "${2:-}" in
+      pending) cmd_skills_pending "${3:-}" ;;
+      approve) cmd_skills_approve "${3:-}" "${4:-}" ;;
+      *)       cmd_skills "${2:-}" ;;
+    esac ;;
   match-log) cmd_match_log ;;
   tournament) shift; cmd_tournament "$@" ;;
+  stats)     shift; cmd_stats "$@" ;;
+  ablate)    shift; cmd_ablate "$@" ;;
+  hillclimb) shift; cmd_hillclimb "$@" ;;
   help|--help|-h|"") usage ;;
   *)         echo "Unknown command: $1"; usage; exit 1 ;;
 esac

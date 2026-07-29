@@ -29,38 +29,70 @@ function newMatchId() {
 
 // Pure arg parser (exported for tests): pulls --backend out of argv, leaving the
 // regime + prompt. Backend precedence: --backend flag > $CIVAGENT_BACKEND > native.
+// --no-skill disables the learning loop for this match (A3 ablation): no learned
+// skills are injected and sedimentation does not run afterwards.
 export function parseArgs(argv, env = process.env) {
   let backend = env.CIVAGENT_BACKEND || "native";
+  let noSkill = false;
   const rest = [];
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--backend" && argv[i + 1] != null) {
       backend = argv[++i];
+    } else if (argv[i] === "--no-skill") {
+      noSkill = true;
     } else {
       rest.push(argv[i]);
     }
   }
   const [regimeRaw, ...promptParts] = rest;
-  return { backend, regimeRaw, prompt: promptParts.join(" ").trim() };
+  return { backend, regimeRaw, prompt: promptParts.join(" ").trim(), noSkill };
+}
+
+// Is the skill learning loop active? --no-skill or CIVAGENT_SKILL_LEARN=off
+// disables it (A3 ablation); staging/approve mechanics are unaffected.
+export function skillLearnEnabled({ noSkill = false, env = process.env } = {}) {
+  return !noSkill && env.CIVAGENT_SKILL_LEARN !== "off";
 }
 
 // Convert a sediment() result object to event fields for the skill event type.
 // Returns null if the result is empty or unrecognized.
+//
+// Presence checks (not truthiness) for rejected/skipped/error: the audit can
+// produce an EMPTY string reason (e.g. reviewer output had no verdict line),
+// and a truthiness check would silently drop the whole skill event from the
+// stream even though sedimentation and the audit both ran. Empty reasons get
+// a fallback so the event is always recorded.
 export function buildSkillEvent(result) {
   if (!result) return null;
-  if (result.saved)    return { status: "saved",    skillPath: result.saved,    auditedBy: result.auditedBy ?? null };
-  if (result.rejected) return { status: "rejected", reason: String(result.rejected).slice(0, 200), auditedBy: result.auditedBy ?? null };
-  if (result.skipped)  return { status: "skipped",  reason: String(result.skipped).slice(0, 200) };
-  if (result.error)    return { status: "error",    reason: String(result.error).slice(0, 200) };
+  const pin = result.contentHash ? { contentHash: result.contentHash } : {};
+  const reason = (v) => String(v ?? "").slice(0, 200) || "(no reason given)";
+  if (result.saved)    return { status: "saved",    skillPath: result.saved,    auditedBy: result.auditedBy ?? null, ...pin };
+  if (result.staged)   return { status: "staged",   skillPath: result.staged,   reason: reason(result.reason || "awaiting human approval"), ...pin };
+  if ("rejected" in result && result.rejected !== undefined) return { status: "rejected", reason: reason(result.rejected), auditedBy: result.auditedBy ?? null };
+  if ("skipped" in result && result.skipped !== undefined)   return { status: "skipped",  reason: reason(result.skipped) };
+  if ("error" in result && result.error !== undefined)       return { status: "error",    reason: reason(result.error) };
   return null;
 }
 
+// Non-interactive matches cannot answer CC's permission prompts, so any file
+// write (Write tool, `cat >`, tee, python writes) hangs unapproved — the T3
+// smoke showed agents exhausting every write channel and producing nothing.
+// CIVAGENT_PERMISSION_MODE (set by the tournament for deterministic tasks)
+// appends CC's --permission-mode flag so writes can proceed. Unset → CC's
+// default behavior is unchanged.
+export function withPermissionMode(ccArgs, env = process.env) {
+  const mode = env.CIVAGENT_PERMISSION_MODE;
+  return mode ? [...ccArgs, "--permission-mode", mode] : ccArgs;
+}
+
 async function main() {
-  const { backend, regimeRaw, prompt } = parseArgs(process.argv.slice(2));
+  const { backend, regimeRaw, prompt, noSkill } = parseArgs(process.argv.slice(2));
   if (!regimeRaw) {
-    console.error("usage: run-v5.mjs [--backend <id>] <region/regime-id> [prompt...]");
+    console.error("usage: run-v5.mjs [--backend <id>] [--no-skill] <region/regime-id> [prompt...]");
     process.exit(1);
   }
   const regime = validateRegime(regimeRaw);
+  const skillLearn = skillLearnEnabled({ noSkill });
 
   // Fail-fast on a bad/forbidden backend rather than silently running `claude`.
   let command;
@@ -80,7 +112,7 @@ async function main() {
   // Honor an externally-assigned match id (the tournament uses this to correlate
   // its civs); otherwise mint our own.
   const matchId = process.env.CIVAGENT_MATCH_ID || newMatchId();
-  const home = ensureCivHome(regime, regimeDir);
+  const home = ensureCivHome(regime, regimeDir, { skills: skillLearn });
   const log = new EventLog(matchId);
   const startedAt = Date.now();
 
@@ -89,7 +121,7 @@ async function main() {
   console.error(`[v5] events=${eventsPath(matchId)}`);
 
   writeMeta(matchId, { regime, backend, command, task: prompt, startedAt, status: "running" });
-  log.emit("match_start", { regime, backend, command, task: prompt });
+  log.emit("match_start", { regime, backend, command, task: prompt, actor: regime });
 
   // Generate agent definitions via v4's converter, piped to CC's --agents.
   const agentsJson = await new Promise((resolve, reject) => {
@@ -132,7 +164,7 @@ async function main() {
     }
   } catch { /* default to all three */ }
 
-  const cc = spawn(command, ccArgs, { env, stdio: ["inherit", "pipe", "inherit"] });
+  const cc = spawn(command, withPermissionMode(ccArgs), { env, stdio: ["inherit", "pipe", "inherit"] });
   const mechEngine = new MechanismEngine(log, cc, allowedMechanisms);
 
   // Mechanism markers ([VETO], [IMPEACH: x], 驳回, 圣旨…) are inline tokens that a
@@ -146,11 +178,11 @@ async function main() {
     while ((nl = lineBuf.indexOf("\n")) >= 0) {
       const line = lineBuf.slice(0, nl + 1);
       lineBuf = lineBuf.slice(nl + 1);
-      log.emit("turn", { text: line });
+      log.emit("turn", { text: line, actor: regime });
       mechEngine.process(line);
     }
     if (flush && lineBuf) {
-      log.emit("turn", { text: lineBuf });
+      log.emit("turn", { text: lineBuf, actor: regime });
       mechEngine.process(lineBuf);
       lineBuf = "";
     }
@@ -179,30 +211,37 @@ async function main() {
   }
   // Run sedimentation BEFORE closing the log so we can emit the skill event
   // inside the same JSONL stream (frontend watches for match_end to stop reading).
-  console.error(`[v5] backend exited ${exitCode}, running skill sedimentation...`);
-  const skillsDir = path.join(regimeDir, "skills");
+  // A3 ablation: with the learning loop disabled, skip sedimentation entirely
+  // and record that in the event stream.
   let sedimentResult;
-  try {
-    sedimentResult = await sediment({
-      matchId,
-      regime,
-      regimeDir,
-      transcriptPath: eventsPath(matchId),
-      existingSkillsDir: skillsDir,
-    });
-    console.error(`[v5] sediment:`, JSON.stringify(sedimentResult));
-  } catch (e) {
-    sedimentResult = { error: e.message };
-    console.error(`[v5] sediment failed: ${e.message}`);
+  if (!skillLearn) {
+    sedimentResult = { skipped: "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)" };
+    console.error(`[v5] backend exited ${exitCode}, skill learning disabled — skipping sedimentation`);
+  } else {
+    console.error(`[v5] backend exited ${exitCode}, running skill sedimentation...`);
+    const skillsDir = path.join(regimeDir, "skills");
+    try {
+      sedimentResult = await sediment({
+        matchId,
+        regime,
+        regimeDir,
+        transcriptPath: eventsPath(matchId),
+        existingSkillsDir: skillsDir,
+      });
+      console.error(`[v5] sediment:`, JSON.stringify(sedimentResult));
+    } catch (e) {
+      sedimentResult = { error: e.message };
+      console.error(`[v5] sediment failed: ${e.message}`);
+    }
   }
 
   // Emit a structured skill event so the frontend can reflect sedimentation status.
   const skillEv = buildSkillEvent(sedimentResult);
-  if (skillEv) log.emit("skill", skillEv);
+  if (skillEv) log.emit("skill", skillEv); // actor defaults to "skill-learner"
 
   // A veto hard-aborts the backend via SIGKILL, which surfaces as exitCode=null.
   // Distinguish a constitutional veto from a clean exit so meta.json/the frontend
-  // don't report a vetoed match as "done".
+  // don't report a vetoed match as "done". actor defaults to "system".
   const mechStats = mechEngine.getStats();
   const vetoed = mechStats.vetoes > 0;
   const status = vetoed ? "vetoed" : "done";

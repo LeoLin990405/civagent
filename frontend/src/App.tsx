@@ -4,6 +4,7 @@ import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { EpisodicMemoryExplorer } from './components/EpisodicMemoryExplorer';
 import { LiveCourt } from './components/LiveCourt';
 import { RegimeBrowserV6 } from './components/RegimeBrowserV6';
+import RankingsPanel from './components/RankingsPanel';
 import { PlayCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import type { RegimeDetail } from './types/api';
 
@@ -40,6 +41,7 @@ export const App: React.FC = () => {
             {activeTab === 'memory' && 'Episodic Memory'}
             {activeTab === 'veto' && 'Constitution Monitor'}
             {activeTab === 'live' && 'Live Court'}
+            {activeTab === 'rankings' && 'Cross-Tournament Rankings'}
           </h1>
         </header>
 
@@ -104,6 +106,10 @@ export const App: React.FC = () => {
             <div className="glass-panel" style={{ overflow: 'hidden' }}>
               <LiveCourt />
             </div>
+          )}
+
+          {activeTab === 'rankings' && (
+            <RankingsPanel />
           )}
         </div>
       </main>

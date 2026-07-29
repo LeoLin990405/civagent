@@ -1,0 +1,92 @@
+{
+  "schema_version": "1.0",
+  "regime": "china/shang",
+  "mode": "theocratic",
+  "nodes": [
+    {
+      "id": "da-wang",
+      "label": "大王",
+      "functional_role": "coordinator"
+    },
+    {
+      "id": "da-wu",
+      "label": "大巫",
+      "functional_role": "research"
+    },
+    {
+      "id": "qingshi-liao",
+      "label": "卿事寮",
+      "functional_role": "management"
+    },
+    {
+      "id": "tai-shi",
+      "label": "太师",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "xiao-chen",
+      "label": "小臣",
+      "functional_role": "content"
+    },
+    {
+      "id": "zai",
+      "label": "宰",
+      "functional_role": "devops"
+    },
+    {
+      "id": "zhen-ren",
+      "label": "贞人",
+      "functional_role": "data"
+    }
+  ],
+  "edges": [
+    {
+      "from": "da-wang",
+      "to": "da-wu",
+      "kind": "command",
+      "note": "王命：命大巫主持占卜（架构图 大王→大巫；决策流程 2）"
+    },
+    {
+      "from": "da-wang",
+      "to": "qingshi-liao",
+      "kind": "command",
+      "note": "王命：卿事寮调度资源（架构图 大王→卿事寮；决策流程 5）"
+    },
+    {
+      "from": "da-wang",
+      "to": "zai",
+      "kind": "command",
+      "note": "王命：宰保障内务运维（架构图 大王→宰；决策流程 7）"
+    },
+    {
+      "from": "da-wu",
+      "to": "zhen-ren",
+      "kind": "command",
+      "note": "大巫领贞人集团执行占卜（架构图 大巫→贞人集团）"
+    },
+    {
+      "from": "da-wu",
+      "to": "da-wang",
+      "kind": "info",
+      "note": "占卜吉凶趋势与风险评估供大王裁断（决策流程 2、4）"
+    },
+    {
+      "from": "zhen-ren",
+      "to": "da-wang",
+      "kind": "info",
+      "note": "贞人记录占卜结果、形成数据档案供裁断（决策流程 3-4）"
+    },
+    {
+      "from": "qingshi-liao",
+      "to": "tai-shi",
+      "kind": "command",
+      "note": "卿事寮分配任务，太师执行技术性工作（架构图；决策流程 5-6）"
+    },
+    {
+      "from": "qingshi-liao",
+      "to": "xiao-chen",
+      "kind": "command",
+      "note": "卿事寮→小臣全程记录（架构图；决策流程 7）"
+    }
+  ]
+}
