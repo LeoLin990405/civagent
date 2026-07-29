@@ -18,6 +18,8 @@ import path from "node:path";
 import os from "node:os";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { BACKEND_COMMANDS } from "../engine/v5/backends.mjs";
+import { JUDGE_PROVIDERS } from "../engine/v5/judge.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "..");
@@ -74,8 +76,18 @@ function makeFakeBin() {
     "exit 0",
   ].join("\n") + "\n");
 
-  writeExe(dir, "opencode", "#!/bin/sh\nexit 1\n");
-  writeExe(dir, "cc-glm",   "#!/bin/sh\nexit 1\n");
+  // Shadow EVERY binary the engine could possibly resolve — derived from the
+  // real registries, so a newly added backend/judge can never silently reach a
+  // real local CLI from inside the test (they all fail fast with exit 1).
+  const shadowCmds = new Set([
+    ...Object.values(BACKEND_COMMANDS),
+    ...Object.values(JUDGE_PROVIDERS).map((p) => p.cmd),
+  ]);
+  shadowCmds.delete("claude"); // purpose-built fake above
+  shadowCmds.delete("codex");  // purpose-built fake above
+  for (const cmd of shadowCmds) {
+    writeExe(dir, cmd, "#!/bin/sh\nexit 1\n");
+  }
 
   return dir;
 }

@@ -214,7 +214,12 @@ export function judgeSwapEnabled(env = process.env) {
   return env.CIVAGENT_JUDGE_SWAP !== "0";
 }
 
-function newTournamentId() {
+// Ids must stay path-safe: they become directory names under ~/.civagent and
+// path segments in the HTTP API. Callers that pre-generate an id (the write
+// API does, so it can answer before the run finishes) validate against this.
+export const TOURNAMENT_ID_RE = /^[A-Za-z0-9][A-Za-z0-9-]{0,63}$/;
+
+export function newTournamentId() {
   const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 23); // ms precision
   return `${stamp}-${Math.random().toString(36).slice(2, 6)}`;
 }
@@ -493,12 +498,13 @@ export async function judge(task, civResults, {
   };
 }
 
-export async function runTournament({ civs, task, noSkill = false, taskSpec = null, detWeight = 0.5 }) {
+export async function runTournament({ civs, task, noSkill = false, taskSpec = null, detWeight = 0.5, id = null }) {
   if (!civs.length || !task) throw new Error("need --civs and a task");
+  if (id != null && !TOURNAMENT_ID_RE.test(id)) throw new Error(`invalid tournament id: ${id}`);
   const parsed = civs.map(parseCiv);
   const useWorkDir = taskSpec?.type === "deterministic";
 
-  const id = newTournamentId();
+  id = id ?? newTournamentId();
   const outDir = path.join(TOURNAMENTS_DIR, id);
   fs.mkdirSync(outDir, { recursive: true });
 
@@ -611,6 +617,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   let noSkill = false;
   let taskFile = null;
   let detWeight = 0.5;
+  let id = null;
   const rest = [];
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--civs" && args[i + 1]) {
@@ -621,6 +628,10 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       taskFile = args[++i];
     } else if (args[i] === "--det-weight" && args[i + 1] != null) {
       detWeight = parseFloat(args[++i]);
+    } else if (args[i] === "--id" && args[i + 1]) {
+      // Pre-generated id, used by the write API so the HTTP response can name
+      // the tournament before the background run finishes.
+      id = args[++i];
     } else {
       rest.push(args[i]);
     }
@@ -642,7 +653,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       }
     }
   }
-  runTournament({ civs, task, noSkill, taskSpec, detWeight }).catch((e) => {
+  runTournament({ civs, task, noSkill, taskSpec, detWeight, id }).catch((e) => {
     console.error(e);
     process.exit(1);
   });
