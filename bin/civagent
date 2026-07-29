@@ -16,6 +16,14 @@ mkdir -p "$STATE_DIR"
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[0;33m'
 CYAN='\033[0;36m'; BOLD='\033[1m'; NC='\033[0m'
 
+# Regime ids are interpolated into paths and passed to interpreters; reject
+# anything outside <region>/<kebab-id> before it reaches them.
+validate_regime() {
+  [[ "$1" =~ ^(china|global)/[a-z0-9][a-z0-9-]*$ ]] || {
+    echo "Invalid regime id: $1 (expected china/<id> or global/<id>)"; exit 1;
+  }
+}
+
 usage() {
   cat <<EOF
 ${BOLD}CivAgent v5${NC} — 5000 Years of Governance × AI Multi-Agent × Learning Loop
@@ -91,12 +99,13 @@ cmd_list() {
 
 cmd_info() {
   local regime="$1"
+  validate_regime "$regime"
   local dir="$REGIMES_DIR/$regime"
   [[ -f "$dir/metadata.json" ]] || { echo "Regime not found: $regime"; exit 1; }
 
   python3 -c "
-import json
-d = json.load(open('$dir/metadata.json'))
+import json, sys
+d = json.load(open(sys.argv[1]))
 print(f\"{'='*60}\")
 print(f\"{d['name']['zh']} ({d['name']['en']})\")
 print(f\"{d['era']['zh']} | {d['era']['en']}\")
@@ -108,13 +117,14 @@ print(f\"{'='*60}\")
 print(d['description']['zh'])
 print()
 print(d['description']['en'])
-"
+" "$dir/metadata.json"
 }
 
 # ── switch ───────────────────────────────────────────────────────────────────
 
 cmd_switch() {
   local regime="$1"
+  validate_regime "$regime"
   local dir="$REGIMES_DIR/$regime"
   [[ -f "$dir/metadata.json" ]] || { echo "Regime not found: $regime"; exit 1; }
 
@@ -126,8 +136,8 @@ cmd_switch() {
   # Generate agents JSON
   node "$ENGINE_DIR/regime-to-cc.mjs" "$dir" --agents > "$STATE_DIR/agents.json"
 
-  local name_zh=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d['name']['zh'])" 2>/dev/null)
-  local pattern=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d.get('orchestrationPattern','?'))" 2>/dev/null)
+  local name_zh=$(python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(d['name']['zh'])" "$dir/metadata.json" 2>/dev/null)
+  local pattern=$(python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(d.get('orchestrationPattern','?'))" "$dir/metadata.json" 2>/dev/null)
 
   echo -e "${GREEN}✓${NC} Switched to ${BOLD}$name_zh${NC} ($regime)"
   echo -e "  Pattern: ${CYAN}$pattern${NC}"
@@ -262,6 +272,7 @@ cmd_setup() {
 cmd_skills() {
   local regime="${1:-}"
   [[ -n "$regime" ]] || { echo "Usage: civagent skills <region/regime-id>"; exit 1; }
+  validate_regime "$regime"
   local dir="$REGIMES_DIR/$regime/skills"
   if [[ ! -d "$dir" ]]; then
     echo "No learned skills yet for $regime."
