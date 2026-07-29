@@ -41,22 +41,29 @@ export const RankingsPanel: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const load = async () => {
+  useEffect(() => {
+    let cancelled = false;
     setLoading(true);
     setError(null);
-    try {
-      const res = await fetch('/api/stats/rankings');
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      setData(await res.json());
-    } catch (e) {
-      setError(e instanceof Error ? e.message : 'fetch failed');
-      setData(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => { load(); }, []);
+    fetch('/api/stats/rankings')
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((json) => {
+        if (!cancelled) setData(json);
+      })
+      .catch((e) => {
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : 'fetch failed');
+          setData(null);
+        }
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   const hasData = !!data && data.rankings.length > 0;
   const smallSample = !!data && data.tournamentsUsed > 0 && data.tournamentsUsed < (data.minSample || 5);
@@ -97,7 +104,15 @@ export const RankingsPanel: React.FC = () => {
           </div>
         </div>
         <button
-          onClick={load}
+          onClick={() => {
+            setLoading(true);
+            setError(null);
+            fetch('/api/stats/rankings')
+              .then((res) => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.json(); })
+              .then((json) => setData(json))
+              .catch((e) => { setError(e instanceof Error ? e.message : 'fetch failed'); setData(null); })
+              .finally(() => setLoading(false));
+          }}
           className="p-2 rounded border border-[rgba(255,255,255,0.08)] bg-[rgba(255,255,255,0.02)] text-[var(--text-secondary)] hover:text-white transition-all"
           title="Recompute rankings"
           style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}

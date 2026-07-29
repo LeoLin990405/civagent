@@ -3,6 +3,7 @@ import { Sidebar } from './components/layout/Sidebar';
 import { AnalyticsDashboard } from './components/AnalyticsDashboard';
 import { EpisodicMemoryExplorer } from './components/EpisodicMemoryExplorer';
 import { LiveCourt } from './components/LiveCourt';
+import { MatchArchive } from './components/MatchArchive';
 import { RegimeBrowserV6 } from './components/RegimeBrowserV6';
 import RankingsPanel from './components/RankingsPanel';
 import { PlayCircle, AlertCircle, RefreshCw } from 'lucide-react';
@@ -11,10 +12,6 @@ import type { RegimeDetail } from './types/api';
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [regimes, setRegimes] = useState<RegimeDetail[]>([]);
-
-  useEffect(() => {
-    fetchRegimes();
-  }, []);
 
   const fetchRegimes = async () => {
     try {
@@ -28,6 +25,15 @@ export const App: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    let cancelled = false;
+    fetch('/api/regimes')
+      .then((res) => res.ok ? res.json() : Promise.reject(new Error(`HTTP ${res.status}`)))
+      .then((data) => { if (!cancelled) setRegimes(data); })
+      .catch((e) => { if (!cancelled) console.warn("Failed to fetch regimes, using fallback.", e); });
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <div className="app-container">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -40,6 +46,7 @@ export const App: React.FC = () => {
             {activeTab === 'analytics' && 'Analytics Dashboard'}
             {activeTab === 'memory' && 'Episodic Memory'}
             {activeTab === 'veto' && 'Constitution Monitor'}
+            {activeTab === 'archive' && 'Match Archive'}
             {activeTab === 'live' && 'Live Court'}
             {activeTab === 'rankings' && 'Cross-Tournament Rankings'}
           </h1>
@@ -100,6 +107,10 @@ export const App: React.FC = () => {
                 </div>
               </div>
             </div>
+          )}
+
+          {activeTab === 'archive' && (
+            <MatchArchive />
           )}
 
           {activeTab === 'live' && (
