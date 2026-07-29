@@ -2,13 +2,20 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TournamentLauncher } from '../TournamentLauncher';
-import type { RegimeMetadata, Scenario } from '../../types/api';
+import type { RegimeSummary, Scenario } from '../../types/api';
 
-const REGIMES: RegimeMetadata[] = Array.from({ length: 8 }, (_, i) => ({
+// Must mirror GET /api/regimes?summary=1 exactly: the server returns
+// { id, metadata }, NOT a bare RegimeMetadata. A flattened mock here would go
+// green against a shape the real endpoint never sends — which is how the
+// launcher shipped reading `r.name` and rendering the id twice.
+const REGIMES: RegimeSummary[] = Array.from({ length: 8 }, (_, i) => ({
   id: `dynasty/d${i + 1}`,
-  name: `Dynasty ${i + 1}`,
-  region: 'china',
-  orchestrationPattern: 'centralized',
+  metadata: {
+    id: `d${i + 1}`,
+    name: { zh: `王朝${i + 1}`, en: `Dynasty ${i + 1}` },
+    region: 'china',
+    orchestrationPattern: 'centralized',
+  },
 }));
 
 const SCENARIOS: Scenario[] = [
