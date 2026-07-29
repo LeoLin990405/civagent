@@ -1,8 +1,14 @@
 # TASK-r5-antigravity: Tournament Launcher + Skill Library + orphan cleanup
 
-Status: PENDING
+Status: DONE (2026-07-30)
 Priority: P0
 Depends on: PR #29 merged (write API `POST /api/tournaments` is live)
+
+> **Completion note**: TournamentLauncher + SkillLibrary tabs landed in
+> `e1b2175` (`frontend/src/components/TournamentLauncher.tsx`,
+> `SkillLibrary.tsx`); the four orphan components (`CodexBrowser`,
+> `JudgeLeaderboard`, `RegimeBrowser`, `TerminalPanel`) retired and match
+> history revived as the `MatchArchive.tsx` tab in `4e99a40` (−1226 lines).
 
 ## Context
 
