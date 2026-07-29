@@ -1,6 +1,31 @@
 # 📜 Changelog
 
-## v5.2.0 (unreleased) — R3 Engine Event Contract 📡
+## v6.1.0 (unreleased) — Reconciliation, Write API, R2 Revival 🔀
+
+The v6 hardening line rejoined main (PRs #19–#28) — see PR #29.
+
+### Added
+- **Write API**: `POST /api/tournaments` — validated launch of a real tournament in a detached background process, answering `202 {tournamentId}` immediately; launch logs in `~/.civagent/server-logs/`.
+- **R2 revival on the v6 architecture**: multi-provider judging (`tournament --judges N`), full civ anonymization for blind judging (`--anon-civs`, covers ids, slugs, and metadata display names), `engine/v5/skill-quality.mjs` (SHA-256 + Jaccard dedup as a sediment gate + `civagent skills <regime> --stats`), `engine/v5/replay.mjs` (`civagent replay <matchId>`, lineage always points at the root match), and the restored `engine/prompts/governance-scenarios.json` served at `GET /api/scenarios`.
+- **Endpoints ported into the Express server**: `GET /api/stats/rankings` (BT rankings + CI), `GET /api/regimes/:region/:id/topology` (validator + metrics, shared with the CLI).
+- **Test hardening**: write-API tests with injected spawn, `parseIdentityTable` contract tests (incl. the prose-IDENTITY→0-agents hazard, swept across all 57 regimes), integration fake-bin list derived from `BACKEND_COMMANDS` + `JUDGE_PROVIDERS`.
+
+### Fixed
+- **CLI injection**: regime ids are whitelist-validated and no longer interpolated into `python -c` program strings (Codex R4 review P1a).
+- **Replay env hygiene**: replay children drop inherited `CIVAGENT_*` vars (P1b); blind judging covers display names (P1c).
+- **china/tang**: audited 9-agent 三省六部 structure with a matching `topology.json`.
+
+---
+
+## [v6.0.0] - 2026-06-26
+
+### Major Architecture Upgrade (CivAgent V6)
+- **Zero-Dependency Refactor:** Completely purged TailwindCSS in favor of Vanilla CSS and Glassmorphism design principles across the frontend.
+- **The Constitutional Engine:** Introduced absolute override mechanisms for agent orchestration: `[VETO]`, `[IMPEACH]`, and `[EDICT]`.
+- **Live Court Dashboard:** Implemented a new Real-Time SSE (Server-Sent Events) streaming component (`LiveCourt.tsx`) to visualize multi-agent debates and mechanism triggers live.
+- **The Dynasty & Global Swarm:** Fully iterated and upgraded all 57 historical regimes (20 Chinese Dynasties + 37 Global Empires) to the new V6 architecture, complete with detailed `IDENTITY.md` and `SOUL.md` prompt directives.
+
+## v5.2.0 — R3 Engine Event Contract 📡 (merged into v6.0.0)
 
 Event contract hardening (Round 3). Focus: structured skill events in the match stream and structured judge fields in the tournament manifest, verified by fake-backend integration tests.
 
@@ -16,9 +41,10 @@ Event contract hardening (Round 3). Focus: structured skill events in the match 
 - **`schemas/match-event.schema.json`** — `skill` event now has defined properties: `status` (enum), `skillPath`, `auditedBy`, `reason`. Added a `skill` example event.
 - **`test/integration-event-contract.test.mjs`** — 13 new tests (32 → 45): fake-backend spawning of `run-v5` and `tournament`, concurrent-civ isolation proof, `parseJudgeScores` unit tests, `buildSkillEvent` unit tests.
 
+
 ---
 
-## v5.1.0 (unreleased) — R1 Engine Robustness 🔧
+## v5.1.0 — R1 Engine Robustness 🔧 (merged into v6.0.0)
 
 Backend robustness pass (iteration plan: [ITERATION_PLAN.md](./ITERATION_PLAN.md), Round 1). Focus: correctness, concurrency safety, and removing the hard external dependency on Gemini.
 
@@ -36,15 +62,8 @@ Backend robustness pass (iteration plan: [ITERATION_PLAN.md](./ITERATION_PLAN.md
 ### Notes
 - Civ backends are Claude-Code-compatible CLIs only (`claude`, `cc-*`). Codex/opencode are judges, not civ backends; the team config's `civ-rome` "codex" backend is an Agent-Team delegation hint, not a `run-v5` backend.
 
+
 ---
-
-## [v6.0.0] - 2026-06-26
-
-### Major Architecture Upgrade (CivAgent V6)
-- **Zero-Dependency Refactor:** Completely purged TailwindCSS in favor of Vanilla CSS and Glassmorphism design principles across the frontend.
-- **The Constitutional Engine:** Introduced absolute override mechanisms for agent orchestration: `[VETO]`, `[IMPEACH]`, and `[EDICT]`.
-- **Live Court Dashboard:** Implemented a new Real-Time SSE (Server-Sent Events) streaming component (`LiveCourt.tsx`) to visualize multi-agent debates and mechanism triggers live.
-- **The Dynasty & Global Swarm:** Fully iterated and upgraded all 57 historical regimes (20 Chinese Dynasties + 37 Global Empires) to the new V6 architecture, complete with detailed `IDENTITY.md` and `SOUL.md` prompt directives.
 
 ## [v5.0.1] - 2026-02-14) — Engine Data Source Fix 🩹
 
