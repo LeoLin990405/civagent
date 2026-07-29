@@ -65,7 +65,9 @@ function detectRole(agentDef) {
   return "content"; // default to lightweight role
 }
 
-function parseIdentityTable(identityMd) {
+// Exported for tests: this parser is the single point where a malformed
+// IDENTITY.md silently compiles to 0 agents (AGENTS.md hard rule #2).
+export function parseIdentityTable(identityMd) {
   // Parse the role mapping table from IDENTITY.md
   const lines = identityMd.split("\n");
   const agents = [];
