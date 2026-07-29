@@ -1,5 +1,5 @@
 import React from 'react';
-import { Layers, Activity, History, ShieldAlert, Cpu, Globe, Trophy } from 'lucide-react';
+import { Layers, Activity, History, ShieldAlert, Cpu, Globe, Trophy, Archive } from 'lucide-react';
 
 interface SidebarProps {
   activeTab: string;
@@ -13,6 +13,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
     { id: 'analytics', label: 'Analytics Dashboard', icon: <Activity size={20} /> },
     { id: 'memory', label: 'Episodic Memory', icon: <History size={20} /> },
     { id: 'veto', label: 'Constitution', icon: <ShieldAlert size={20} /> },
+    { id: 'archive', label: 'Match Archive', icon: <Archive size={20} /> },
     { id: 'live', label: 'Live Court', icon: <Cpu size={20} /> },
     { id: 'rankings', label: 'Rankings', icon: <Trophy size={20} /> },
   ];
