@@ -135,6 +135,27 @@ test("POST validation: task and backend", async () => {
   });
 });
 
+// Codex review R5 P1(2): BACKEND_RE/CIV_RE only checked the shape, so an
+// unknown backend got a 202 and failed later inside the detached child — the
+// client was told a tournament had started that could never run.
+test("POST rejects unknown backends instead of accepting a doomed run", async () => {
+  await withWriteServer(async (base, calls) => {
+    const shared = await post(base, { civs: ["china/tang"], task: "t", backend: "notreal" });
+    assert.equal(shared.status, 400);
+    assert.match((await shared.json()).error, /unknown backend/);
+
+    const pinned = await post(base, { civs: ["china/tang#alsofake"], task: "t" });
+    assert.equal(pinned.status, 400);
+    assert.match((await pinned.json()).error, /unknown backend in civ/);
+
+    assert.equal(calls.length, 0, "nothing is spawned for an unrunnable backend");
+
+    const ok = await post(base, { civs: ["china/tang#cn:glm"], task: "t", backend: "native" });
+    assert.equal(ok.status, 202, "known backends still pass");
+    assert.equal(calls.length, 1);
+  });
+});
+
 test("POST answers 500 (not a crash) when spawn itself throws", async () => {
   const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-writeapi-"));
   const throwingSpawn = () => { throw new Error("EMFILE"); };

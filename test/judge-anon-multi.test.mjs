@@ -42,6 +42,41 @@ test("anonymizeCivs handles prefix-overlapping ids (jin-jurchen before jin)", ()
   }
 });
 
+// Codex review R5 P1(1): the first cut of anonymizeCivs replaced only regime
+// ids, slugs and metadata display names, so a transcript saying "zhongshu
+// drafts, menxia vetoes" still named the Tang three-department system to the
+// judge. Role identity has to be blinded too.
+test("anonymizeCivs blinds agent ids and office names from the real corpus", () => {
+  const anon = anonymizeCivs(["china/tang", "china/ming"]);
+  const transcript =
+    "zhongshu drafts, 中书省 issued; menxia vetoes, 门下省 returned; " +
+    "shangshu dispatches to libu_ritual and libu_personnel. " +
+    "china/ming used shoufu and silijian.";
+  const out = anon.transform(transcript);
+  for (const leak of [
+    "zhongshu", "menxia", "shangshu", "libu_ritual", "libu_personnel",
+    "中书省", "门下省", "shoufu", "silijian", "china/tang", "china/ming",
+  ]) {
+    assert.ok(!out.includes(leak), `"${leak}" must not survive anonymization: ${out}`);
+  }
+  assert.match(out, /Civ-A-R\d+/, "roles are replaced by per-civ slots");
+});
+
+test("one role keeps one slot across its id and its office label", () => {
+  const anon = anonymizeCivs(["china/tang"]);
+  const out = anon.transform("zhongshu drafts and 中书省 issues");
+  const slots = out.match(/Civ-A-R\d+/g) ?? [];
+  assert.equal(slots.length, 2, `both spellings replaced: ${out}`);
+  assert.equal(slots[0], slots[1], `same department must map to one slot, got ${slots.join(" vs ")}`);
+});
+
+test("distinct roles keep distinct slots (the judge can still follow the flow)", () => {
+  const anon = anonymizeCivs(["china/tang"]);
+  const out = anon.transform("zhongshu drafts; menxia vetoes; shangshu dispatches");
+  const slots = out.match(/Civ-A-R\d+/g) ?? [];
+  assert.equal(new Set(slots).size, 3, `three departments must stay distinguishable: ${out}`);
+});
+
 test("anonymizeCivs detransform restores real ids in verdict text", () => {
   const anon = anonymizeCivs(["china/tang", "china/qin"], { regimesRoot: "/nonexistent" });
   assert.equal(anon.detransform("Civ-A beats Civ-B"), "china/tang beats china/qin");
