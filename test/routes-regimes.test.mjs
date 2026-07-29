@@ -150,29 +150,34 @@ test("invalid regime id segment is rejected (path-safety → 400)", async () => 
   });
 });
 
-test("GET /api/regimes serves a process cache: a second hit does not re-read disk", async () => {
+// This test previously asserted the opposite — that an edited IDENTITY.md kept
+// being served from cache — which locked in the root-mtime keying bug the R5
+// review found (a nested edit never changes the parent dir's mtime, so the
+// stale body was served for the life of the process). The cache is now keyed by
+// a recursive fingerprint over the served files, so a caller must never observe
+// a stale regime; see test/services-regimes-cache.test.mjs for the full matrix.
+test("GET /api/regimes reflects an in-place edit to a nested regime file", async () => {
   await withServer(async (base, projectRoot) => {
-    // First request populates the cache.
     const first = await fetch(`${base}/api/regimes`);
     assert.equal(first.status, 200);
     const firstBody = await first.json();
     assert.equal(firstBody.length, 2);
+    assert.equal(firstBody.find((r) => r.id === "china/tang").identity, "# Tang identity");
 
-    // Mutate a regime's IDENTITY.md on disk WITHOUT touching the regimes dir mtime.
-    // The cache is keyed by the regimes dir mtime; since no entry was added/removed,
-    // the dir mtime is unchanged and the cached (stale) body is served.
+    // Editing a nested file leaves the regimes/ dir mtime untouched.
     fs.writeFileSync(path.join(projectRoot, "regimes", "china", "tang", "IDENTITY.md"), "# CHANGED");
 
     const second = await fetch(`${base}/api/regimes`);
-    const secondBody = await second.json();
-    const tang = secondBody.find((r) => r.id === "china/tang");
-    assert.equal(tang.identity, "# Tang identity", "cached body served (no re-read)");
+    const tang = (await second.json()).find((r) => r.id === "china/tang");
+    assert.equal(tang.identity, "# CHANGED", "an edited regime must not be served stale");
+  });
+});
 
-    // After invalidating, the change is visible — proving the value came from the
-    // cache above and the disk now.
+test("GET /api/regimes serves the cache when nothing on disk changed", async () => {
+  await withServer(async (base) => {
     invalidateRegimeCache();
-    const third = await fetch(`${base}/api/regimes`);
-    const thirdBody = await third.json();
-    assert.equal(thirdBody.find((r) => r.id === "china/tang").identity, "# CHANGED");
+    const a = await (await fetch(`${base}/api/regimes`)).json();
+    const b = await (await fetch(`${base}/api/regimes`)).json();
+    assert.deepEqual(a, b, "repeat reads of an unchanged tree are identical");
   });
 });
