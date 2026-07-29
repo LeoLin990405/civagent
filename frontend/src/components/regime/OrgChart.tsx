@@ -18,48 +18,6 @@ export const OrgChart: React.FC<OrgChartProps> = ({
   const [roles, setRoles] = useState<IdentityRole[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Fetch identity MD whenever active regime changes
-  useEffect(() => {
-    if (!selectedRegime) {
-      setRoles([]);
-      return;
-    }
-
-    const fetchIdentity = async () => {
-      setLoading(true);
-      try {
-        const parts = selectedRegime.id.split('/');
-        if (parts.length < 2) {
-          console.warn('Invalid selected regime ID format:', selectedRegime.id);
-          setRoles([]);
-          setLoading(false);
-          return;
-        }
-        const region = parts[0];
-        const id = parts[1];
-        
-        const res = await fetch(`/api/regimes/${region}/${id}/identity`);
-        if (res.ok) {
-          const data: IdentityData = await res.json();
-          
-          if (data.raw) {
-            const parsed = parseIdentityRoles(data.raw);
-            setRoles(parsed);
-          } else {
-            setRoles([]);
-          }
-        }
-      } catch (e) {
-        console.error('Failed to fetch identity MD:', e);
-        setRoles([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchIdentity();
-  }, [selectedRegime]);
-
   // Parse markdown roles table
   const parseIdentityRoles = (rawMarkdown: string): IdentityRole[] => {
     const lines = rawMarkdown.split('\n');
@@ -97,6 +55,48 @@ export const OrgChart: React.FC<OrgChartProps> = ({
     }
     return parsedRoles;
   };
+
+  // Fetch identity MD whenever active regime changes
+  useEffect(() => {
+    if (!selectedRegime) {
+      setRoles([]);
+      return;
+    }
+
+    const fetchIdentity = async () => {
+      setLoading(true);
+      try {
+        const parts = selectedRegime.id.split('/');
+        if (parts.length < 2) {
+          console.warn('Invalid selected regime ID format:', selectedRegime.id);
+          setRoles([]);
+          setLoading(false);
+          return;
+        }
+        const region = parts[0];
+        const id = parts[1];
+
+        const res = await fetch(`/api/regimes/${region}/${id}/identity`);
+        if (res.ok) {
+          const data: IdentityData = await res.json();
+
+          if (data.raw) {
+            const parsed = parseIdentityRoles(data.raw);
+            setRoles(parsed);
+          } else {
+            setRoles([]);
+          }
+        }
+      } catch (e) {
+        console.error('Failed to fetch identity MD:', e);
+        setRoles([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchIdentity();
+  }, [selectedRegime]);
 
   // Group regimes for sidebar listing
   const filteredRegimes = regimes.filter(r => 

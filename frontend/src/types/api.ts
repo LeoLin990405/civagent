@@ -26,6 +26,14 @@ export interface RegimeDetail {
   skills: LearnedSkill[];
 }
 
+// GET /api/regimes?summary=1 — the same envelope as RegimeDetail minus the
+// markdown bodies. Note the shape is { id, metadata }, NOT a bare
+// RegimeMetadata: the display name lives at `metadata.name`, not `name`.
+export interface RegimeSummary {
+  id: string;
+  metadata: RegimeMetadata;
+}
+
 export interface JudgeScore {
   regime: string;
   score: number;
@@ -207,4 +215,57 @@ export interface StatsRankingsResponse {
   regimes: string[];
   B: number;
   minSample: number;
+}
+
+// ── Skill library (per-regime skill stats) ───────────────────────────────────
+
+export interface SkillEntry {
+  filename: string;
+  // Parsed out of the skill's frontmatter / provenance banner; the server sends
+  // null (not an empty string) when a field is absent, e.g. for a hand-written
+  // skill file with no banner.
+  name: string | null;
+  description: string | null;
+  contentHash: string | null;
+  auditedBy: string | null;
+  sizeBytes: number;
+  mtime: number; // epoch ms
+}
+
+export interface SkillsStatsResponse {
+  regime: string;
+  total: number;
+  uniqueTopics: string[];
+  duplicateGroups: string[][];
+  stats: {
+    // ISO date strings (YYYY-MM-DD) parsed from the skill filenames, not
+    // timestamps; null when the regime has no skills yet.
+    firstSedimented: string | null;
+    lastSedimented: string | null;
+    duplicateCount: number;
+  };
+  skills: SkillEntry[];
+}
+
+// ── Tournament launcher ──────────────────────────────────────────────────────
+
+export interface TournamentLaunchRequest {
+  civs: string[];
+  task: string;
+  backend?: string;
+  noSkill?: boolean;
+  judgesN?: 1 | 2 | 3;
+  anonCivs?: boolean;
+}
+
+export interface TournamentLaunchResponse {
+  tournamentId: string;
+}
+
+// ── Scenarios ────────────────────────────────────────────────────────────────
+
+export interface Scenario {
+  id: string;
+  category: string;
+  prompt: string;
 }

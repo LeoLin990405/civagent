@@ -43,3 +43,5 @@ jobs:
         run: npm run build
       - name: Lint (no errors; React-Compiler hints remain warnings)
         run: npm run lint
+      - name: Test (vitest + testing-library)
+        run: npm test

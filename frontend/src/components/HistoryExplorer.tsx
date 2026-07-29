@@ -325,7 +325,7 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
                       if (formatted.status !== 'none') {
                         skillsToDisplay.push({
                           matchId: activeMatchId!,
-                          ts: Date.now(),
+                          ts: matches.find(m => m.id === activeMatchId)?.mtime ?? 0,
                           type: 'skill',
                           seq: 999,
                           status: formatted.status as MatchEvent['status'],
