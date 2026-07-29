@@ -156,6 +156,20 @@ test("POST rejects unknown backends instead of accepting a doomed run", async ()
   });
 });
 
+// Codex re-review P2: the API matched BACKEND_COMMANDS keys exactly while
+// engine/v5/backends.mjs::resolveBackend also tries the lowercased id, so the
+// API rejected runs the engine would have accepted.
+test("backend ids are matched case-insensitively, like the engine resolver", async () => {
+  await withWriteServer(async (base, calls) => {
+    assert.equal((await post(base, { civs: ["china/tang"], task: "t", backend: "NATIVE" })).status, 202);
+    assert.equal((await post(base, { civs: ["china/tang#CN:GLM"], task: "t" })).status, 202);
+    assert.equal(calls.length, 2);
+    // …and an id that is unknown in any casing is still rejected.
+    assert.equal((await post(base, { civs: ["china/tang"], task: "t", backend: "BOGUS" })).status, 400);
+    assert.equal(calls.length, 2, "nothing spawned for the unknown backend");
+  });
+});
+
 test("POST answers 500 (not a crash) when spawn itself throws", async () => {
   const rootDir = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-writeapi-"));
   const throwingSpawn = () => { throw new Error("EMFILE"); };
