@@ -268,11 +268,11 @@ test("checksCycles ignores cycles without review/veto edges", () => {
 
 test("real regime metrics: tang hub, ming dual-track veto cycle, shang flat", () => {
   const tang = computeMetrics(validateRegimeTopology(path.join(PROJECT_ROOT, "regimes/china/tang")).topology);
-  assert.equal(tang.nodes, 8);
-  assert.equal(tang.edges, 14);
-  assert.deepEqual(tang.top_in_degree, [{ id: "zhongshu-sheren", inDegree: 7 }]);
+  assert.equal(tang.nodes, 9);
+  assert.equal(tang.edges, 15);
+  assert.deepEqual(tang.top_in_degree, [{ id: "shangshu", inDegree: 7 }]);
   assert.equal(tang.checks_cycles, 1, "中书→门下封驳 loop is the defining checks-and-balances cycle");
-  assert.deepEqual(tang.checks_cycle_nodes, [["zhongshu-sheren", "jishizhong"]]);
+  assert.deepEqual(tang.checks_cycle_nodes, [["zhongshu", "menxia"]]);
 
   const ming = computeMetrics(validateRegimeTopology(path.join(PROJECT_ROOT, "regimes/china/ming")).topology);
   assert.equal(ming.checks_cycles, 1, "票拟/批红 must form exactly one veto cycle");

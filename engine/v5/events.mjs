@@ -11,7 +11,12 @@ import crypto from "node:crypto";
 
 export const ROOT = path.join(os.homedir(), ".civagent");
 
-export const EVENT_TYPES = ["match_start", "turn", "tool", "judge", "skill", "match_end"];
+export const EVENT_TYPES = [
+  "match_start", "turn", "tool", "judge", "skill", "match_end",
+  // V6 constitutional mechanisms — emitted by engine/mechanisms/* when a
+  // [VETO] / [IMPEACH] / [EDICT] marker fires during a match.
+  "veto_triggered", "impeach_triggered", "edict_triggered",
+];
 
 // ── OTel-style envelope (schema v2) ─────────────────────────────────────────
 // Added back-compatibly: every event keeps its legacy fields (matchId, seq, ts,
@@ -28,6 +33,9 @@ export const KIND_BY_TYPE = {
   judge: "judge_score",
   skill: "skill_commit",
   match_end: "match_end",
+  veto_triggered: "veto_triggered",
+  impeach_triggered: "impeach_triggered",
+  edict_triggered: "edict_triggered",
 };
 
 // Default producer per type when the emitter doesn't pass an explicit actor.
@@ -35,6 +43,9 @@ const DEFAULT_ACTOR_BY_TYPE = {
   judge: "judge",
   skill: "skill-learner",
   match_end: "system",
+  veto_triggered: "system",
+  impeach_triggered: "system",
+  edict_triggered: "system",
 };
 
 // sha256 of `input`, truncated to 16 hex chars (64 bits) — enough to detect

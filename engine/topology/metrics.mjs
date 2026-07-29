@@ -9,7 +9,6 @@
 //
 //   node engine/topology/metrics.mjs <regime-dir>
 
-import fs from "node:fs";
 import path from "node:path";
 import { validateRegimeTopology } from "./validate.mjs";
 

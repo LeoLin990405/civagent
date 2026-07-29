@@ -1,4 +1,4 @@
-# Checks & Balances Mode (制衡模式)
+# Checks & Balances Mode
 
 > Historical model: Tang Three Departments, Roman Republic, Venice, US Federal
 

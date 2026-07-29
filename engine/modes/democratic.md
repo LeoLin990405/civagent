@@ -1,4 +1,4 @@
-# Democratic Council Mode (民主模式)
+# Democratic Council Mode
 
 > Historical model: Athenian Democracy, Mongol Kurultai, Viking Thing, Swiss Confederation
 

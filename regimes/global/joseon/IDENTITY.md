@@ -2,7 +2,7 @@
 
 ## 制度简介 (System Overview)
 朝鲜王朝（1392-1897）建立了以新儒学为核心的官僚制度，强调权力的制衡与士大夫的道德谏议。通过科举选拔的两班阶层在议政府和六曹体系下运作，并受三司（司宪府、司谏院、弘文馆）的严厉监督，形成了独特且持久的文人政治。
-The Joseon Dynasty (1392-1897) established a Neo-Confucian bureaucracy emphasizing power checks and moral remonstrance. The yangban class, selected via civil exams, operated within the State Council and Six Ministries, overseen by the Three Censors (Samsi).
+The Joseon Dynasty (1392-1897) established a Neo-Confucian bureaucracy emphasizing power checks and moral remonstrance. The yangban class, selected via civil exams, operated within the State Council and Six Ministries, overseen by the Three Offices (Samsa: the Office of the Inspector-General, the Office of Censors, and the Office of Special Advisers — the last being academic-advisory, not a censorate).
 
 ## 组织架构图 (Organization Chart)
                 ┌─────────┐
@@ -12,7 +12,7 @@ The Joseon Dynasty (1392-1897) established a Neo-Confucian bureaucracy emphasizi
           ┌──────────┼──────────┐
           ▼          ▼          ▼
       [议政府]    [承政院]     [三司]
-   (State Council) (Secretariat) (Censorate)
+   (State Council) (Secretariat) (Three Offices/Samsa)
           │          │          │
     ┌─────┴──┐   ┌───┴───┐  ┌───┼───┐
     ▼        ▼   ▼       ▼  ▼   ▼   ▼

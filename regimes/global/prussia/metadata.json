@@ -1,14 +1,14 @@
 {
   "id": "prussia",
   "name": { "zh": "普鲁士王国", "en": "Kingdom of Prussia" },
-  "era": { "zh": "1701-1918 军事官僚制时期", "en": "1701-1918 Military Bureaucracy Era" },
+  "era": { "zh": "约1723-1786 腓特烈时代", "en": "c. 1723-1786 Frederician Era" },
   "region": "global",
-  "system": { "zh": "军事官僚制", "en": "Military Bureaucracy" },
+  "system": { "zh": "军事官僚制（合议-内阁）", "en": "Military Bureaucracy (collegial-cabinet)" },
   "description": {
-    "zh": "普鲁士以'带有国家的军队'闻名于世——高效的官僚体系与总参谋部制度相结合，容克贵族阶层提供军官与官僚，腓特烈大帝的开明专制与俾斯麦的现实政治共同锻造了德意志统一的基石。",
-    "en": "Prussia was famously 'an army with a state' — combining efficient bureaucracy with the General Staff system, the Junker class supplying officers and administrators, Frederick the Great's enlightened absolutism and Bismarck's Realpolitik forging the foundation of German unification."
+    "zh": "普鲁士在腓特烈·威廉一世与腓特烈大帝治下锻造出'带有国家的军队'：以1723年总执行部（Generaldirektorium）为枢纽、省级军政-王领厅为执行臂膀，容克贵族垄断军官团，国王以内阁谕令（Kabinettsordre）凌驾合议机构之上亲政。此为普鲁士军事官僚制的成型期，现代官僚国家的经典原型。（俾斯麦帝国宰相制属19世纪另一体系。）",
+    "en": "Under Frederick William I and Frederick the Great, Prussia forged 'an army with a state': hubbed on the General Directory (Generaldirektorium, 1723) with provincial War-and-Domains Chambers as executive arms, a Junker-monopolized officer corps, and a king governing personally by cabinet order (Kabinettsordre) above the collegial boards. This is the formative phase of Prussian military bureaucracy. (Bismarck's chancellor system is a distinct 19th-c. order.)"
   },
-  "agentCount": 6,
-  "tags": ["military-bureaucracy", "general-staff", "junker", "realpolitik", "frederick-great", "bismarck"],
+  "agentCount": 7,
+  "tags": ["military-bureaucracy", "generaldirektorium", "junker", "kabinettsordre", "frederick-great", "enlightened-absolutism"],
   "orchestrationPattern": "centralized"
 }

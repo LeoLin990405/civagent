@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { History, Calendar, ShieldCheck, FileText, ChevronRight, Terminal } from 'lucide-react';
-import type { MatchSummary, MatchEvent } from '../types/api';
+import { History, Calendar, ShieldCheck, FileText, ChevronRight, Terminal, Search } from 'lucide-react';
+import type { MatchSummary, MatchEvent, MatchMeta } from '../types/api';
 
-function formatSediment(sediment: any): { label: string, status: 'saved' | 'rejected' | 'skipped' | 'error' | 'none', text: string } {
+function formatSediment(sediment: MatchMeta['sediment']): { label: string, status: 'saved' | 'rejected' | 'skipped' | 'error' | 'none', text: string } {
   if (!sediment) {
     return { label: 'None', status: 'none', text: 'No skill sedimentation recorded.' };
   }
@@ -49,7 +49,7 @@ function formatSediment(sediment: any): { label: string, status: 'saved' | 'reje
 
 function formatSkillEvent(e: MatchEvent): { title: string, desc: string, color: string } {
   if (e.status) {
-    let title = `SKILL ${e.status.toUpperCase()}`;
+    const title = `SKILL ${e.status.toUpperCase()}`;
     let desc = '';
     let color = 'var(--accent-cyan)'; // default cyan for saved
     if (e.status === 'saved') {
@@ -155,33 +155,37 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
   });
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
       
       {/* List Container */}
-      <div className="lg:col-span-1 glass-panel p-5 flex flex-col h-[580px] overflow-hidden" style={{ gridColumn: 'span 1', display: 'flex', flexDirection: 'column', height: '580px', padding: '20px', borderRadius: '12px' }}>
+      <div className="lg:col-span-1 glass-panel p-6 flex flex-col h-[600px] overflow-hidden">
         
         {/* Title */}
-        <div className="flex items-center gap-2 mb-4 shrink-0" style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-          <History className="text-[var(--accent-cyan)]" size={16} />
-          <h2 className="text-sm font-bold uppercase tracking-wider text-[var(--text-primary)]" style={{ fontSize: '14px', fontWeight: 700 }}>MATCH ARCHIVE</h2>
+        <div className="flex items-center gap-3 mb-5 shrink-0">
+          <div className="flex items-center justify-center w-8 h-8 rounded bg-[rgba(0,240,255,0.05)] border border-[var(--border-glow-cyan)] text-[var(--accent-cyan)] shadow-[var(--shadow-glow-cyan)]">
+            <History size={16} />
+          </div>
+          <h2 className="text-base font-bold uppercase tracking-wider text-[var(--text-primary)]">MATCH ARCHIVE</h2>
         </div>
 
         {/* Filter Input */}
-        <div className="mb-4 shrink-0" style={{ marginBottom: '16px' }}>
-          <input
-            type="text"
-            placeholder="Search by regime, ID or backend..."
-            className="w-full text-xs"
-            value={filterRegime}
-            onChange={(e) => setFilterRegime(e.target.value)}
-            style={{ width: '100%', fontSize: '12px' }}
-          />
+        <div className="mb-5 shrink-0">
+          <div className="flex items-center gap-2 bg-[var(--bg-surface-raised)] rounded-md border border-[var(--border-subtle)] px-3 py-2 focus-within:border-[var(--border-glow-cyan)] transition-colors shadow-[var(--shadow-glass)]">
+            <Search size={14} className="text-[var(--text-muted)]" />
+            <input
+              type="text"
+              placeholder="Search by regime, ID or backend..."
+              className="w-full bg-transparent border-none text-xs text-[var(--text-primary)] font-mono focus:outline-none focus:ring-0 p-0 placeholder-[var(--text-muted)]"
+              value={filterRegime}
+              onChange={(e) => setFilterRegime(e.target.value)}
+            />
+          </div>
         </div>
 
         {/* List of matches */}
-        <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 scroll-fade-y" style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div className="flex-1 overflow-y-auto space-y-3 pr-2 scroll-fade-y">
           {filteredMatches.length === 0 ? (
-            <div className="text-center py-10 text-[var(--text-muted)] text-xs" style={{ textAlign: 'center', padding: '40px 0', fontSize: '12px' }}>
+            <div className="text-center py-10 text-[var(--text-muted)] text-xs font-mono">
               No matches found.
             </div>
           ) : (
@@ -194,39 +198,39 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
                 <div
                   key={m.id}
                   onClick={() => onSelectMatch(m.id)}
-                  className={`p-3.5 rounded-lg border transition-all cursor-pointer flex items-center justify-between group ${
+                  className={`p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between group ${
                     isActive
-                      ? 'bg-[rgba(0,240,255,0.06)] border-[rgba(0,240,255,0.35)] shadow-[0_0_12px_rgba(0,240,255,0.05)]'
-                      : 'bg-[rgba(255,255,255,0.01)] border-[rgba(255,255,255,0.04)] hover:border-[rgba(255,255,255,0.12)]'
+                      ? 'bg-[var(--bg-glass-heavy)] border-[var(--border-glow-cyan)] shadow-[var(--shadow-glow-cyan)] relative overflow-hidden'
+                      : 'bg-[var(--bg-surface-raised)] border-[var(--border-subtle)] hover:border-[var(--text-muted)] hover:bg-[var(--bg-glass-medium)]'
                   }`}
-                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '14px', borderRadius: '8px', cursor: 'pointer' }}
                 >
-                  <div className="space-y-1.5 max-w-[80%]" style={{ display: 'flex', flexDirection: 'column', gap: '6px', maxWidth: '80%' }}>
+                  {isActive && <div className="absolute left-0 top-0 bottom-0 w-1 bg-[var(--accent-cyan)] shadow-[var(--shadow-glow-cyan)]"></div>}
+                  <div className="space-y-2 max-w-[80%] pl-1">
                     
                     {/* Title Regime */}
-                    <div className="flex items-center gap-2" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <span className="text-sm font-semibold text-[var(--text-primary)]" style={{ fontSize: '14px', fontWeight: 600 }}>
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-bold text-[var(--text-primary)]">
                         {label}
                       </span>
-                      <span className={`role-badge ${getFormatBadgeStyle(m.format)}`} style={{ fontSize: '8px', padding: '1px 4px' }}>
+                      <span className={`role-badge ${getFormatBadgeStyle(m.format)}`}>
                         {m.format}
                       </span>
                     </div>
 
                     {/* Meta match stamp */}
-                    <div className="flex flex-wrap items-center gap-2 text-[10px] text-[var(--text-secondary)] font-mono" style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', fontSize: '10px', color: 'var(--text-secondary)' }}>
-                      <span className="flex items-center gap-0.5" style={{ display: 'inline-flex', alignItems: 'center', gap: '2px' }}>
-                        <Calendar size={10} /> {date.toLocaleDateString()}
+                    <div className="flex flex-wrap items-center gap-3 text-[10px] text-[var(--text-secondary)] font-mono uppercase tracking-widest">
+                      <span className="flex items-center gap-1.5">
+                        <Calendar size={12} className="text-[var(--text-muted)]" /> {date.toLocaleDateString()}
                       </span>
-                      <span className="text-[rgba(255,255,255,0.15)]">|</span>
-                      <span>ID: {m.id.substring(0, 13)}...</span>
+                      <span className="text-[var(--text-muted)] opacity-50">|</span>
+                      <span>ID: <span className="text-[var(--accent-gold)]">{m.id.substring(0, 13)}</span></span>
                     </div>
 
                   </div>
 
                   <ChevronRight 
-                    size={16} 
-                    className={`text-[var(--text-muted)] group-hover:text-[var(--accent-cyan)] transition-colors ${isActive ? 'text-[var(--accent-cyan)]' : ''}`} 
+                    size={18} 
+                    className={`text-[var(--text-muted)] group-hover:text-[var(--accent-cyan)] transition-colors group-hover:translate-x-1 duration-300 ${isActive ? 'text-[var(--accent-cyan)] translate-x-1' : ''}`} 
                   />
                 </div>
               );
@@ -236,61 +240,65 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
       </div>
 
       {/* Detail / Playback Viewer */}
-      <div className="lg:col-span-2 glass-panel p-6 flex flex-col h-[580px] overflow-hidden" style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', height: '580px', padding: '24px', borderRadius: '12px' }}>
+      <div className="lg:col-span-2 glass-panel p-0 flex flex-col h-[600px] overflow-hidden">
         {activeMatchId ? (
-          <div className="flex flex-col h-full overflow-hidden" style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
+          <div className="flex flex-col h-full overflow-hidden relative">
             
             {/* Detail Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-[rgba(255,255,255,0.06)] shrink-0" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '16px' }}>
-              <div className="space-y-1" style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-                <span className="text-[10px] font-mono text-[var(--text-muted)] block">ACTIVE MATCH PLAYBACK</span>
-                <h3 className="text-base font-bold text-[var(--text-primary)]" style={{ fontSize: '16px', fontWeight: 700 }}>
-                  Match ID: {activeMatchId}
+            <div className="flex items-center justify-between p-6 border-b border-[var(--border-subtle)] bg-[var(--bg-glass-medium)] shrink-0 z-10 shadow-[var(--shadow-glass)]">
+              <div className="space-y-1">
+                <span className="flex items-center gap-2 text-[10px] font-mono text-[var(--text-muted)] uppercase tracking-widest drop-shadow-[0_0_5px_rgba(255,255,255,0.1)]">
+                  <Terminal size={12} className="animate-pulse" /> Active Match Playback
+                </span>
+                <h3 className="text-lg font-bold text-[var(--text-primary)] font-mono">
+                  ID: <span className="text-[var(--accent-cyan)]">{activeMatchId}</span>
                 </h3>
               </div>
-              <div className="flex items-center gap-3" style={{ display: 'flex', gap: '12px' }}>
-                <span className={`role-badge ${getExitCodeBadgeStyle(matches.find(m => m.id === activeMatchId)?.meta?.exitCode)}`} style={{ fontSize: '9px' }}>
+              <div className="flex items-center gap-3">
+                <span className={`role-badge px-3 py-1.5 ${getExitCodeBadgeStyle(matches.find(m => m.id === activeMatchId)?.meta?.exitCode)}`}>
                   Exit Code: {matches.find(m => m.id === activeMatchId)?.meta?.exitCode ?? '0 (OK)'}
                 </span>
               </div>
             </div>
 
             {/* Main playback and skill timeline split */}
-            <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-6 overflow-hidden mt-6" style={{ flex: 1, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '24px', marginTop: '24px', overflow: 'hidden' }}>
+            <div className="flex-1 grid grid-cols-1 xl:grid-cols-2 overflow-hidden">
               
               {/* Left Column: Logs Stream View */}
-              <div className="flex flex-col overflow-hidden h-full" style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-                <div className="flex items-center gap-2 mb-3 text-[var(--text-secondary)] font-semibold text-xs" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '12px' }}>
-                  <Terminal size={14} />
-                  <span>PLAYBACK LOGS STREAM</span>
+              <div className="flex flex-col overflow-hidden h-full border-r border-[var(--border-subtle)] bg-[#050507]">
+                <div className="flex items-center gap-2.5 px-5 py-3 text-[var(--text-secondary)] font-bold text-[10px] uppercase tracking-widest border-b border-[var(--border-subtle)] bg-[var(--bg-glass-light)] z-10 shadow-[var(--shadow-glass)]">
+                  <Terminal size={14} className="text-[var(--text-muted)]" />
+                  <span>Telemetry Stream Logs</span>
                 </div>
-                <div className="flex-1 bg-[#0c0d16] rounded border border-[rgba(255,255,255,0.04)] p-4 font-mono text-[10px] overflow-y-auto leading-relaxed text-[#a0a5bc]" style={{ flex: 1, overflowY: 'auto', background: '#0c0d16', padding: '16px', fontFamily: 'var(--font-mono)', fontSize: '11px', border: '1px solid rgba(255,255,255,0.04)' }}>
-                  <span className="text-[var(--text-muted)] italic block mb-2">// Reading match event manifest...</span>
-                  <span className="text-[var(--accent-green)] block mb-2">SYSTEM: match stream opened successfully.</span>
+                <div className="flex-1 p-5 font-mono text-[12px] overflow-y-auto leading-relaxed scroll-fade-y space-y-4">
+                  <div className="mb-4">
+                    <span className="text-[var(--text-muted)] italic block">// Initializing match event manifest...</span>
+                    <span className="text-[var(--accent-green)] font-bold block drop-shadow-[0_0_5px_rgba(5,255,161,0.3)]">SYSTEM: match stream opened successfully.</span>
+                  </div>
                   
-                  <div className="space-y-2.5" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  <div className="space-y-4">
                     {activeMatchEvents.length === 0 ? (
                       <span className="text-[var(--text-muted)] block italic">No events loaded for this match.</span>
                     ) : (
                       activeMatchEvents.map((e, idx) => {
                         if (e.type === 'chunk') {
-                          return <span key={idx} className="block whitespace-pre-wrap">{e.text}</span>;
+                          return <span key={idx} className="block whitespace-pre-wrap text-[var(--text-secondary)]">{e.text}</span>;
                         }
                         if (e.type === 'turn') {
                           return (
-                            <div key={idx} className="bg-[rgba(255,255,255,0.02)] p-2 rounded border border-[rgba(255,255,255,0.03)]" style={{ padding: '8px', border: '1px solid rgba(255,255,255,0.03)', borderRadius: '4px' }}>
-                              <div className="flex items-center gap-1.5 mb-1" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '4px' }}>
-                                <span className={`role-badge ${getRoleStyleClass(e.actor || 'agent')}`} style={{ fontSize: '8px' }}>
+                            <div key={idx} className="bg-[var(--bg-glass-light)] p-4 rounded-lg border border-[var(--border-subtle)] hover:bg-[var(--bg-glass-hover)] transition-colors">
+                              <div className="flex items-center gap-2 mb-2 pb-2 border-b border-[var(--border-subtle)]">
+                                <span className={`role-badge ${getRoleStyleClass(e.actor || 'agent')}`}>
                                   {e.actor || 'agent'}
                                 </span>
                               </div>
-                              <p className="text-[10px] text-[#ccd2eb]">{e.text}</p>
+                              <p className="text-[12px] text-[var(--text-primary)] whitespace-pre-wrap break-words">{e.text}</p>
                             </div>
                           );
                         }
                         return (
-                          <div key={idx} className="text-cyan-300">
-                            <span className="text-[var(--text-muted)]">[{e.type}]</span> {e.text}
+                          <div key={idx} className="text-[var(--text-secondary)]">
+                            <span className="text-[var(--text-muted)] font-bold">[{e.type}]</span> {e.text}
                           </div>
                         );
                       })
@@ -300,13 +308,13 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
               </div>
 
               {/* Right Column: Skill Sedimentation Timeline */}
-              <div className="flex flex-col overflow-hidden h-full" style={{ display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden' }}>
-                <div className="flex items-center gap-2 mb-3 text-[var(--accent-cyan)] font-semibold text-xs" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: 'var(--accent-cyan)', marginBottom: '12px' }}>
-                  <ShieldCheck size={14} />
-                  <span>SEDIMENTED SKILL TIMELINE</span>
+              <div className="flex flex-col overflow-hidden h-full bg-[var(--bg-surface-raised)] relative">
+                <div className="flex items-center gap-2.5 px-5 py-3 text-[var(--accent-cyan)] font-bold text-[10px] uppercase tracking-widest border-b border-[var(--border-subtle)] bg-[var(--bg-glass-light)] z-10 shadow-[var(--shadow-glass)]">
+                  <ShieldCheck size={14} className="drop-shadow-[0_0_5px_rgba(0,240,255,0.5)]" />
+                  <span>Sedimentation Timeline</span>
                 </div>
 
-                <div className="flex-1 bg-[rgba(10,11,16,0.3)] rounded border border-[rgba(255,255,255,0.04)] p-4 overflow-y-auto" style={{ flex: 1, overflowY: 'auto', padding: '16px', border: '1px solid rgba(255,255,255,0.04)', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div className="flex-1 p-6 overflow-y-auto scroll-fade-y space-y-6">
                   {(() => {
                     const matchMeta = matches.find(m => m.id === activeMatchId)?.meta;
                     const skillEvents = activeMatchEvents.filter(e => e.type === 'skill');
@@ -320,7 +328,7 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
                           ts: Date.now(),
                           type: 'skill',
                           seq: 999,
-                          status: formatted.status as any,
+                          status: formatted.status as MatchEvent['status'],
                           text: formatted.text
                         });
                       }
@@ -328,8 +336,10 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
 
                     if (skillsToDisplay.length === 0) {
                       return (
-                        <div className="flex flex-col items-center justify-center h-full text-[var(--text-muted)] text-xs italic gap-2" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '8px', fontSize: '12px' }}>
-                          <ShieldCheck size={28} className="text-[rgba(255,255,255,0.06)]" />
+                        <div className="flex flex-col items-center justify-center h-full text-[var(--text-muted)] font-mono uppercase tracking-widest text-[10px] gap-4">
+                          <div className="w-16 h-16 rounded-full border border-[var(--border-subtle)] flex items-center justify-center bg-[var(--bg-glass-light)]">
+                            <ShieldCheck size={24} className="opacity-30" />
+                          </div>
                           <span>No skills sedimented in this match.</span>
                         </div>
                       );
@@ -338,16 +348,19 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
                     return skillsToDisplay.map((e, idx) => {
                       const formatted = formatSkillEvent(e);
                       return (
-                        <div key={idx} className="relative pl-6 border-l-2" style={{ position: 'relative', paddingLeft: '24px', borderLeft: `2px solid ${formatted.color}` }}>
+                        <div key={idx} className="relative pl-8 before:content-[''] before:absolute before:left-3 before:top-4 before:bottom-[-24px] before:w-px before:bg-[var(--border-subtle)] last:before:hidden">
                           <div
-                            className="absolute w-3.5 h-3.5 rounded-full flex items-center justify-center"
-                            style={{ position: 'absolute', left: '-8px', top: '2px', width: '14px', height: '14px', borderRadius: '50%', backgroundColor: formatted.color }}
+                            className="absolute left-[5px] top-1 w-[14px] h-[14px] rounded-full flex items-center justify-center shadow-[0_0_10px_currentColor] ring-4 ring-[var(--bg-surface-raised)]"
+                            style={{ backgroundColor: formatted.color, color: formatted.color }}
                           >
-                            <ShieldCheck size={8} className="text-black" />
+                            <div className="w-1.5 h-1.5 bg-black rounded-full" />
                           </div>
-                          <div>
-                            <span className="text-[10px] font-mono text-[var(--text-secondary)] block">STAGE: SEDIMENT (seq #{e.seq})</span>
-                            <p className="text-xs mt-1 leading-relaxed font-mono" style={{ fontSize: '11px', color: formatted.color, marginTop: '4px' }}>
+                          <div className="glass-panel p-4" style={{ borderColor: `${formatted.color}40`, boxShadow: `0 4px 20px ${formatted.color}10` }}>
+                            <div className="flex items-center gap-2 mb-2 pb-2 border-b" style={{ borderColor: `${formatted.color}20` }}>
+                              <ShieldCheck size={14} style={{ color: formatted.color }} />
+                              <span className="text-[10px] font-bold font-mono tracking-widest uppercase" style={{ color: formatted.color }}>STAGE: SEDIMENT (seq #{e.seq})</span>
+                            </div>
+                            <p className="text-[12px] leading-relaxed font-mono mt-2" style={{ color: formatted.color }}>
                               {formatted.desc}
                             </p>
                           </div>
@@ -357,14 +370,16 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
                   })()}
                 </div>
               </div>
-
             </div>
 
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-full text-[var(--text-muted)] gap-3" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', gap: '12px', color: 'var(--text-muted)' }}>
-            <FileText size={40} className="text-[rgba(255,255,255,0.1)]" />
-            <span>Select a match from the archive list to view playback logs and extracted skills.</span>
+          <div className="flex flex-col items-center justify-center h-full text-[var(--text-muted)] gap-4 w-full relative">
+            <div className="absolute inset-0 bg-[var(--bg-surface)] opacity-50 flex items-center justify-center">
+              <div className="w-[300px] h-[300px] border border-[var(--border-subtle)] rounded-full border-dashed animate-[spin_60s_linear_infinite] opacity-30"></div>
+            </div>
+            <FileText size={48} className="text-[rgba(255,255,255,0.05)] relative z-10" />
+            <span className="font-mono text-[10px] uppercase tracking-widest font-bold relative z-10">Select a match from the archive list</span>
           </div>
         )}
       </div>

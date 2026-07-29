@@ -18,6 +18,8 @@ import path from "node:path";
 import os from "node:os";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { BACKEND_COMMANDS } from "../engine/v5/backends.mjs";
+import { JUDGE_PROVIDERS } from "../engine/v5/judge.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "..");
@@ -74,8 +76,18 @@ function makeFakeBin() {
     "exit 0",
   ].join("\n") + "\n");
 
-  writeExe(dir, "opencode", "#!/bin/sh\nexit 1\n");
-  writeExe(dir, "cc-glm",   "#!/bin/sh\nexit 1\n");
+  // Shadow EVERY binary the engine could possibly resolve — derived from the
+  // real registries, so a newly added backend/judge can never silently reach a
+  // real local CLI from inside the test (they all fail fast with exit 1).
+  const shadowCmds = new Set([
+    ...Object.values(BACKEND_COMMANDS),
+    ...Object.values(JUDGE_PROVIDERS).map((p) => p.cmd),
+  ]);
+  shadowCmds.delete("claude"); // purpose-built fake above
+  shadowCmds.delete("codex");  // purpose-built fake above
+  for (const cmd of shadowCmds) {
+    writeExe(dir, cmd, "#!/bin/sh\nexit 1\n");
+  }
 
   return dir;
 }
@@ -173,6 +185,29 @@ test("parseJudgeScores matches by slug when full regime not in cell", () => {
   const scores = parseJudgeScores(output, ["china/tang"]);
   assert.equal(scores.length, 1);
   assert.equal(scores[0].regime, "china/tang");
+});
+
+test("parseJudgeScores does not mis-bind a substring slug (qing vs qin)", () => {
+  // Regression: nameCell "qing" must bind to china/qing, not the shorter
+  // substring china/qin. Longest-match wins.
+  const output = `
+| 1 | qing | 9.0 | strong |
+| 2 | qin  | 6.0 | harsh |
+`;
+  const scores = parseJudgeScores(output, ["china/qin", "china/qing"]);
+  assert.equal(scores.length, 2);
+  const qing = scores.find((s) => s.regime === "china/qing");
+  const qin = scores.find((s) => s.regime === "china/qin");
+  assert.ok(qing && Math.abs(qing.score - 9.0) < 0.001, "qing → 9.0");
+  assert.ok(qin && Math.abs(qin.score - 6.0) < 0.001, "qin → 6.0");
+});
+
+test("parseJudgeScores binds exact slug over substring when listed in any order", () => {
+  const output = `| 1 | qin | 7.0 | ok |`;
+  // Even with china/qing listed first, an exact "qin" cell must pick china/qin.
+  const scores = parseJudgeScores(output, ["china/qing", "china/qin"]);
+  assert.equal(scores.length, 1);
+  assert.equal(scores[0].regime, "china/qin");
 });
 
 test("parseJudgeScores deduplicates — keeps first occurrence", () => {
@@ -590,3 +625,94 @@ test("parseCiv defaults backend to native when omitted", () => {
   assert.equal(regime,  "china/tang");
   assert.equal(backend, "native");
 });
+
+// ── integration: V6 constitutional mechanisms fire and are recorded ───────────
+// Regression for two bugs:
+//   1. mechanism events (veto_triggered/…) were not in EVENT_TYPES, so a real
+//      veto crashed the whole match with "unknown event type".
+//   2. a [VETO] SIGKILL surfaced as exitCode=null and meta.status stayed "done",
+//      indistinguishable from a clean exit. It must be recorded as "vetoed".
+
+// Build a fake bin whose `claude` emits a [VETO] marker. If splitAcrossChunks is
+// true the marker straddles two stdout writes, exercising chunk-boundary safety.
+function makeVetoBin(splitAcrossChunks = false) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-vetobin-"));
+  const claude = splitAcrossChunks
+    ? [
+        "#!/usr/bin/env node",
+        `process.stdout.write("chancellery deliberates, padding padding padding padding padding [VET");`,
+        `setTimeout(() => { process.stdout.write("O] rejected. more padding padding padding padding padding.\\n"); process.exit(0); }, 60);`,
+      ].join("\n") + "\n"
+    : [
+        "#!/bin/sh",
+        "echo 'chancellery issues [VETO] on procedural grounds — padding padding padding padding padding padding.'",
+        "echo 'second line padding padding padding padding padding.'",
+        "exit 0",
+      ].join("\n") + "\n";
+  writeExe(dir, "claude", claude);
+  writeExe(dir, "codex", "#!/bin/sh\ncat <<'E'\nNO_PATTERN\nE\nexit 0\n");
+  writeExe(dir, "opencode", "#!/bin/sh\nexit 1\n");
+  writeExe(dir, "cc-glm", "#!/bin/sh\nexit 1\n");
+  return dir;
+}
+
+test(
+  "a [VETO] marker is recorded: match status=vetoed, mechanism event emitted, exit 0",
+  { timeout: 60_000 },
+  async () => {
+    const fakeBin = makeVetoBin(false);
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-home-"));
+    const matchId = `test-veto-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    try {
+      const { code } = await spawnAwait(
+        "node",
+        [RUN_V5, "--backend", "native", "china/tang", "test-task"],
+        makeChildEnv(fakeBin, tempHome, { CIVAGENT_MATCH_ID: matchId })
+      );
+      assert.equal(code, 0, "a veto is a normal constitutional outcome, exit 0");
+
+      const matchesBase = path.join(tempHome, ".civagent", "matches", matchId);
+      const meta = JSON.parse(fs.readFileSync(path.join(matchesBase, "meta.json"), "utf8"));
+      assert.equal(meta.status, "vetoed", "meta.status must be vetoed, not done");
+      assert.equal(meta.mechanisms.vetoes, 1, "one veto recorded");
+
+      const events = readJsonl(path.join(matchesBase, "events.jsonl"));
+      assert.ok(
+        events.some((e) => e.type === "veto_triggered"),
+        "a veto_triggered event must be in the stream"
+      );
+      assert.ok(
+        events.some((e) => e.type === "match_end" && e.status === "vetoed"),
+        "match_end must carry status=vetoed"
+      );
+    } finally {
+      rmrf(tempHome);
+      rmrf(fakeBin);
+    }
+  }
+);
+
+test(
+  "a [VETO] marker split across stdout chunks is still detected",
+  { timeout: 60_000 },
+  async () => {
+    const fakeBin = makeVetoBin(true);
+    const tempHome = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-home-"));
+    const matchId = `test-veto-split-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+    try {
+      await spawnAwait(
+        "node",
+        [RUN_V5, "--backend", "native", "china/tang", "test-task"],
+        makeChildEnv(fakeBin, tempHome, { CIVAGENT_MATCH_ID: matchId })
+      );
+      const meta = JSON.parse(
+        fs.readFileSync(path.join(tempHome, ".civagent", "matches", matchId, "meta.json"), "utf8")
+      );
+      assert.equal(meta.status, "vetoed", "chunk-split [VETO] must still be caught");
+      assert.equal(meta.mechanisms.vetoes, 1);
+    } finally {
+      rmrf(tempHome);
+      rmrf(fakeBin);
+    }
+  }
+);

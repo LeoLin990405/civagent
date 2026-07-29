@@ -38,16 +38,23 @@ export interface MatchEvent {
   regime?: string;
   backend?: string;
   ts: number;
-  type: 'match_start' | 'turn' | 'tool' | 'judge' | 'skill' | 'match_end' | 'chunk';
+  type:
+    | 'match_start' | 'turn' | 'tool' | 'judge' | 'skill' | 'match_end' | 'chunk'
+    | 'veto_triggered' | 'impeach_triggered' | 'edict_triggered';
   seq: number;
   actor?: string;
   text?: string;
-  status?: 'saved' | 'rejected' | 'skipped' | 'error' | 'staged';
+  // skill events: saved|rejected|skipped|error|staged; match_end: done|vetoed|failed
+  status?: 'saved' | 'rejected' | 'skipped' | 'error' | 'staged' | 'done' | 'vetoed' | 'failed';
   skillPath?: string;
   contentHash?: string;
   reason?: string;
   auditedBy?: string | null;
-  meta?: any;
+  exitCode?: number | null;
+  signal?: string | null;
+  target?: string;             // impeach_triggered
+  mechanisms?: { vetoes: number; impeachments: number; edicts: number };
+  meta?: unknown;
   // OTel-style envelope (schema v2, all optional for backward compatibility)
   event_id?: string;
   schema_version?: string;
@@ -79,7 +86,7 @@ export interface MatchMeta {
     auditedBy?: string;
   };
   prompt?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface MatchSummary {

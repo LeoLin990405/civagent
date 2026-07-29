@@ -12,7 +12,7 @@ import os from "node:os";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { ablateRegime, ablatePersona, stripChecksFlow, ABLATION_TYPES } from "../engine/ablate.mjs";
-import { parseIdentityAgentIds, validateRegimeTopology } from "../engine/topology/validate.mjs";
+import { parseIdentityAgentIds } from "../engine/topology/validate.mjs";
 import { computeMetrics } from "../engine/topology/metrics.mjs";
 import { parseArgs, skillLearnEnabled } from "../engine/v5/run-v5.mjs";
 import { civSpawnSpec } from "../engine/v5/tournament.mjs";
@@ -32,7 +32,7 @@ test("A1: all 6 typed regimes — graph intact, validation passes, node set iden
   for (const r of TYPED) {
     const outRoot = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-ab1-"));
     try {
-      const { outDir, validation, metrics } = ablateRegime(r, "persona", { outRoot });
+      const { outDir, validation } = ablateRegime(r, "persona", { outRoot });
       assert.ok(validation.ok, `${r}: ${validation.errors.join("; ")}`);
       // topology.json is copied unchanged — the graph is the controlled variable.
       assert.deepEqual(
@@ -96,7 +96,7 @@ test("A2: review/veto edges removed, checks_cycles = 0, nodes unchanged", () => 
   for (const r of TYPED) {
     const outRoot = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-ab2-"));
     try {
-      const { outDir, validation, metrics } = ablateRegime(r, "checks", { outRoot });
+      const { validation, metrics } = ablateRegime(r, "checks", { outRoot });
       assert.ok(validation.ok, `${r}: ${validation.errors.join("; ")}`);
       const topo = validation.topology;
       assert.ok(topo.edges.every((e) => e.kind !== "review" && e.kind !== "veto"), `${r}: no review/veto edges`);

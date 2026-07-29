@@ -15,11 +15,11 @@ import os from "node:os";
 import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { validateRegime } from "./civ-memory.mjs";
-import { runJudge } from "./judge.mjs";
+import { runJudge, resolveJudgeChain, anonymizeCivs } from "./judge.mjs";
 import { readMatchText, eventsPath, EventLog, hashShort, newSpanId } from "./events.mjs";
+import { recordTournamentResult } from "./history-db.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PROJECT_ROOT = path.resolve(__dirname, "..", "..");
 const RUN_V5 = path.join(__dirname, "run-v5.mjs");
 const TOURNAMENTS_DIR = path.join(os.homedir(), ".civagent", "tournaments");
 
@@ -38,15 +38,30 @@ export function parseJudgeScores(output, civRegimes) {
     // cells[1] should contain the civilization name
     const nameCell = cells[1] || "";
     const scoreCell = cells[2] || "";
+    const reasonCell = cells[3] || "";
     const scoreMatch = scoreCell.match(/^(\d+(?:\.\d+)?)/);
     if (!scoreMatch) continue;
-    // Match against known regime ids: exact or partial (regime's slug part)
-    const regime = civRegimes.find((r) => {
+    // Match against known regime ids. Prefer exact (full id or slug), then fall
+    // back to substring — but pick the LONGEST match so that e.g. "qing" is not
+    // mis-bound to "qin", or "han-dynasty" to "han".
+    const exact = civRegimes.find((r) => {
       const slug = r.split("/")[1] || r;
-      return nameCell === r || nameCell.includes(r) || nameCell.includes(slug);
+      return nameCell === r || nameCell === slug;
     });
+    const regime =
+      exact ||
+      civRegimes
+        .filter((r) => {
+          const slug = r.split("/")[1] || r;
+          return nameCell.includes(r) || nameCell.includes(slug);
+        })
+        .sort((a, b) => {
+          const al = Math.max(a.length, (a.split("/")[1] || a).length);
+          const bl = Math.max(b.length, (b.split("/")[1] || b).length);
+          return bl - al;
+        })[0];
     if (regime) {
-      scores.push({ regime, score: parseFloat(scoreMatch[1]) });
+      scores.push({ regime, score: parseFloat(scoreMatch[1]), reason: reasonCell });
     }
   }
   // Remove duplicates (first occurrence wins after sort)
@@ -199,7 +214,12 @@ export function judgeSwapEnabled(env = process.env) {
   return env.CIVAGENT_JUDGE_SWAP !== "0";
 }
 
-function newTournamentId() {
+// Ids must stay path-safe: they become directory names under ~/.civagent and
+// path segments in the HTTP API. Callers that pre-generate an id (the write
+// API does, so it can answer before the run finishes) validate against this.
+export const TOURNAMENT_ID_RE = /^[A-Za-z0-9][A-Za-z0-9-]{0,63}$/;
+
+export function newTournamentId() {
   const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 23); // ms precision
   return `${stamp}-${Math.random().toString(36).slice(2, 6)}`;
 }
@@ -333,21 +353,31 @@ function runCiv({ regime, backend }, task, tournamentId, outDir, { noSkill = fal
     });
     proc.stdout.pipe(out, { end: false });
     proc.stderr.pipe(out, { end: false });
-    proc.on("close", (code) => {
+    // Without an "error" handler a spawn failure (ENOENT, EMFILE under load)
+    // throws an unhandled exception and "close" may never fire, hanging the
+    // whole Promise.all. Resolve with a null code so the tournament continues.
+    proc.on("error", (err) => {
       out.end();
-      resolve({ regime, backend, matchId, code, logFile, workDir });
+      resolve({ regime, backend, matchId, code: null, logFile, workDir, error: err.message });
+    });
+    proc.on("close", (code, signal) => {
+      out.end();
+      resolve({ regime, backend, matchId, code, signal, logFile, workDir });
     });
   });
 }
 
-function transcriptSection(r) {
+function transcriptSection(r, anon = null) {
   // Prefer the structured event stream; fall back to the raw process log.
   const text =
     readMatchText(r.matchId, 6000) ||
     (fs.existsSync(r.logFile) ? fs.readFileSync(r.logFile, "utf8").slice(-6000) : "(no output)");
   // Omit backend from the section header — judges should rank on governance
-  // quality alone, not on which backend happened to run the civ.
-  return `### ${r.regime} (exit ${r.code})\n\n\`\`\`\n${text}\n\`\`\``;
+  // quality alone, not on which backend happened to run the civ. With anon,
+  // even the civ's own name is replaced by its positional label (Civ-A …).
+  const name = anon ? anon.labelFor.get(r.regime) : r.regime;
+  const body = anon ? anon.transform(text) : text;
+  return `### ${name} (exit ${r.code})\n\n\`\`\`\n${body}\n\`\`\``;
 }
 
 // Blind double evaluation: when swap is enabled the same matchup is judged
@@ -355,12 +385,24 @@ function transcriptSection(r) {
 // per-regime scores are averaged across passes. This cancels presentation-order
 // bias. Every pass is recorded as a judge_score event on the tournament trace
 // (provider/model, rubric prompt_hash, swap flag, presentation order).
+//
+// R2 extensions:
+//   judgesN > 1 — run the full pass plan on up to N distinct available
+//     providers (walking the resolved chain, skipping dead providers without
+//     letting them consume a slot); all passes pool into one aggregate.
+//   anonymize — civ ids, slugs, and metadata display names in the transcripts
+//     are replaced by positional labels (Civ-A …), de-anonymized after parsing.
 export async function judge(task, civResults, {
   swap = judgeSwapEnabled(),
+  judgesN = 1,
+  anonymize = false,
   eventLog = null,      // tournament-level EventLog; judge events attach here
   _runJudge = runJudge, // injectable for tests
 } = {}) {
   const civRegimes = civResults.map((r) => r.regime);
+  const anon = anonymize ? anonymizeCivs(civRegimes) : null;
+  // Names the judge sees (and answers with) — labels when blinded.
+  const judgeNames = anon ? anon.labels : civRegimes;
   const baseOrder = civResults.map((_, i) => i);
   const passPlans = swap
     ? [
@@ -369,65 +411,88 @@ export async function judge(task, civResults, {
       ]
     : [{ swapped: false, order: baseOrder }];
 
+  // Provider plan: single-judge mode delegates provider choice to runJudge's
+  // chain fallback (null slot); multi-judge mode walks the chain itself so
+  // each successful provider fills exactly one of the N slots.
+  const providerSlots = judgesN > 1 ? resolveJudgeChain() : [null];
+
   // The judging step itself is one span under the tournament trace root;
   // per-pass judge_score events hang below it.
   const judgeSpanId = newSpanId();
   const passes = [];
   const rawPasses = [];
+  const providers = [];
   let provider = null;
   let failure = null;
   let verdict = "";
 
-  for (const plan of passPlans) {
-    const ordered = plan.order.map((i) => civResults[i]);
-    const prompt = buildJudgePrompt(task, ordered.map(transcriptSection).join("\n\n---\n\n"));
-    const promptHash = hashShort(prompt);
-    const auditFields = {
-      kind: "judge_score",
-      actor: "judge",
-      parent_span_id: judgeSpanId,
-      pass: passes.length,
-      swapped: plan.swapped,
-      order: ordered.map((c) => c.regime),
-      prompt_hash: promptHash,
-    };
-    let r;
-    try {
-      r = _runJudge(prompt);
-    } catch (e) {
-      failure = e;
-      eventLog?.emit("judge", { ...auditFields, error: e.message });
-      break; // judge chain is dead — a swapped re-run would fail the same way
-    }
-    provider = provider ?? r.provider;
-    rawPasses.push({ swapped: plan.swapped, order: auditFields.order, output: r.output });
+  for (const slot of providerSlots) {
+    if (judgesN > 1 && providers.length >= judgesN) break;
+    let slotWorked = false;
 
-    const perRegime = {};
-    const json = parseJudgeJsonScores(r.output, civRegimes);
-    if (json) {
-      if (json.verdict && !verdict) verdict = json.verdict;
-      for (const s of json.scores) {
-        const meanDim = RUBRIC_DIMENSIONS.reduce((sum, d) => sum + s.dims[d], 0) / RUBRIC_DIMENSIONS.length;
-        perRegime[s.regime] = { score10: (meanDim / RUBRIC_SCALE) * 10, dims: s.dims };
+    for (const plan of passPlans) {
+      const ordered = plan.order.map((i) => civResults[i]);
+      const prompt = buildJudgePrompt(task, ordered.map((c) => transcriptSection(c, anon)).join("\n\n---\n\n"));
+      const promptHash = hashShort(prompt);
+      const auditFields = {
+        kind: "judge_score",
+        actor: "judge",
+        parent_span_id: judgeSpanId,
+        pass: passes.length,
+        swapped: plan.swapped,
+        order: ordered.map((c) => c.regime),
+        ...(anon ? { anonymized: true } : {}),
+        prompt_hash: promptHash,
+      };
+      let r;
+      try {
+        r = _runJudge(prompt, slot ? { providers: [slot] } : undefined);
+      } catch (e) {
+        failure = e;
+        eventLog?.emit("judge", { ...auditFields, ...(slot ? { provider: slot } : {}), error: e.message });
+        break; // this provider is dead — a swapped re-run would fail the same way
       }
-    } else {
-      // Backward compatibility: a judge that still answers with a markdown
-      // Rank|Civilization|Score/10 table is parsed with the legacy parser.
-      for (const s of parseJudgeScores(r.output, civRegimes)) {
-        perRegime[s.regime] = { score10: s.score };
+      provider = provider ?? r.provider;
+      slotWorked = true;
+      rawPasses.push({ swapped: plan.swapped, order: auditFields.order, provider: r.provider, output: r.output });
+
+      const perRegime = {};
+      const json = parseJudgeJsonScores(r.output, judgeNames);
+      if (json) {
+        if (json.verdict && !verdict) verdict = anon ? anon.detransform(json.verdict) : json.verdict;
+        for (const s of json.scores) {
+          const real = anon ? anon.realFor.get(s.regime) ?? s.regime : s.regime;
+          const meanDim = RUBRIC_DIMENSIONS.reduce((sum, d) => sum + s.dims[d], 0) / RUBRIC_DIMENSIONS.length;
+          perRegime[real] = { score10: (meanDim / RUBRIC_SCALE) * 10, dims: s.dims };
+        }
+      } else {
+        // Backward compatibility: a judge that still answers with a markdown
+        // Rank|Civilization|Score/10 table is parsed with the legacy parser.
+        for (const s of parseJudgeScores(r.output, judgeNames)) {
+          const real = anon ? anon.realFor.get(s.regime) ?? s.regime : s.regime;
+          perRegime[real] = { score10: s.score, ...(s.reason ? { reason: s.reason } : {}) };
+        }
       }
+      passes.push({ swapped: plan.swapped, provider: r.provider, perRegime });
+      eventLog?.emit("judge", { ...auditFields, provider: r.provider, model: r.provider });
     }
-    passes.push({ swapped: plan.swapped, perRegime });
-    eventLog?.emit("judge", { ...auditFields, provider: r.provider, model: r.provider });
+
+    if (slotWorked) {
+      const used = passes[passes.length - 1]?.provider;
+      if (used && !providers.includes(used)) providers.push(used);
+    }
+    if (judgesN <= 1) break; // single-judge mode: preserve original behavior
   }
 
   if (provider === null) {
     return {
       provider: null,
+      providers: [],
       rawOutput: null,
       scores: [],
       swap,
       passes: 0,
+      anonymized: !!anon,
       md:
         `# Tournament Result — judge unavailable\n\n${failure?.message ?? "unknown error"}\n\n` +
         `Raw civ exit codes:\n${civResults.map((c) => `- ${c.regime} (${c.backend}): ${c.code}`).join("\n")}`,
@@ -439,9 +504,10 @@ export async function judge(task, civResults, {
     `# Tournament — ${new Date().toISOString()}`,
     ``,
     `**Task:** ${task}`,
-    `**Judge:** ${provider}`,
+    `**Judge:** ${providers.length > 1 ? providers.join(" + ") : provider}`,
     `**Order swap:** ${swap ? `enabled (${passes.length} passes, scores averaged)` : "disabled (single pass)"}`,
     `**Rubric:** anchored 4-point scale per dimension (${RUBRIC_DIMENSIONS.join(", ")}), reported as score/10`,
+    ...(anon ? [`**Civ anonymization:** enabled (judges saw Civ-A… labels only)`] : []),
     ``,
   ];
   if (scores.length > 0) {
@@ -458,25 +524,29 @@ export async function judge(task, civResults, {
     lines.push(`## Verdict`, ``, verdict, ``);
   }
   rawPasses.forEach((p, i) => {
-    lines.push(`## Pass ${i + 1}${p.swapped ? " (swapped order)" : ""} — ${p.order.join(" → ")}`, ``, p.output, ``);
+    const who = providers.length > 1 ? ` [${p.provider}]` : "";
+    lines.push(`## Pass ${i + 1}${p.swapped ? " (swapped order)" : ""}${who} — ${p.order.join(" → ")}`, ``, p.output, ``);
   });
 
   return {
     provider,
+    providers,
     rawOutput: rawPasses.map((p) => p.output).join("\n\n"),
     scores,
     swap,
     passes: passes.length,
+    anonymized: !!anon,
     md: lines.join("\n"),
   };
 }
 
-export async function runTournament({ civs, task, noSkill = false, taskSpec = null, detWeight = 0.5 }) {
+export async function runTournament({ civs, task, noSkill = false, taskSpec = null, detWeight = 0.5, id = null, judgesN = 1, anonCivs = false }) {
   if (!civs.length || !task) throw new Error("need --civs and a task");
+  if (id != null && !TOURNAMENT_ID_RE.test(id)) throw new Error(`invalid tournament id: ${id}`);
   const parsed = civs.map(parseCiv);
   const useWorkDir = taskSpec?.type === "deterministic";
 
-  const id = newTournamentId();
+  id = id ?? newTournamentId();
   const outDir = path.join(TOURNAMENTS_DIR, id);
   fs.mkdirSync(outDir, { recursive: true });
 
@@ -503,7 +573,7 @@ export async function runTournament({ civs, task, noSkill = false, taskSpec = nu
     permissionMode: useWorkDir ? (taskSpec.permissionMode ?? "bypassPermissions") : null,
   })));
 
-  const verdict = await judge(task, results, { eventLog: trace });
+  const verdict = await judge(task, results, { eventLog: trace, judgesN, anonymize: anonCivs });
 
   // T3: deterministic grading + blended scores.
   let detResults = null;
@@ -545,6 +615,8 @@ export async function runTournament({ civs, task, noSkill = false, taskSpec = nu
       scores,                          // [{regime, score, dims?, judge_score?, det_score?}] sorted desc
       topRegime,                       // winning regime or null
       swap: verdict.swap,              // whether the order-swapped second pass was enabled
+      ...(verdict.providers?.length > 1 ? { providers: verdict.providers } : {}),
+      ...(verdict.anonymized ? { anonymized: true } : {}),
       passes: verdict.passes,          // judge passes actually completed
       rubric: { scale: `1-${RUBRIC_SCALE}`, dimensions: RUBRIC_DIMENSIONS },
       events: trace.path,              // judge_score audit events (prompt_hash, swap flags)
@@ -556,6 +628,24 @@ export async function runTournament({ civs, task, noSkill = false, taskSpec = nu
     },
   };
   fs.writeFileSync(path.join(outDir, "manifest.json"), JSON.stringify(manifest, null, 2));
+
+  // Record to history SQLite DB for episodic memory RAG. The rubric judge
+  // writes its closing paragraph under "## Verdict"; older judges used
+  // "## Historian's Commentary" — capture either for the episodic record.
+  const commentaryMatch = md.match(/##\s*(?:Verdict|Historian'?s Commentary)[^\n]*\n+([\s\S]+?)(?=\n## |$)/i);
+  const commentary = commentaryMatch ? commentaryMatch[1].trim() : "";
+
+  const resultsToRecord = manifest.civs.map((c) => {
+    const s = scores.find((x) => x.regime === c.regime);
+    return {
+      matchId: c.matchId,
+      regime: c.regime.split("/").pop(),
+      score: s ? s.score : 0,
+      reason: s?.reason ?? "",
+      commentary,
+    };
+  });
+  recordTournamentResult(id, manifest, resultsToRecord);
 
   trace.emit("match_end", { exitCode: 0, actor: "system", topRegime });
   await trace.close();
@@ -571,6 +661,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   let noSkill = false;
   let taskFile = null;
   let detWeight = 0.5;
+  let id = null;
+  let judgesN = 1;
+  let anonCivs = false;
   const rest = [];
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--civs" && args[i + 1]) {
@@ -581,6 +674,14 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       taskFile = args[++i];
     } else if (args[i] === "--det-weight" && args[i + 1] != null) {
       detWeight = parseFloat(args[++i]);
+    } else if (args[i] === "--id" && args[i + 1]) {
+      // Pre-generated id, used by the write API so the HTTP response can name
+      // the tournament before the background run finishes.
+      id = args[++i];
+    } else if (args[i] === "--judges" && args[i + 1] != null) {
+      judgesN = Math.max(1, parseInt(args[++i], 10) || 1);
+    } else if (args[i] === "--anon-civs") {
+      anonCivs = true;
     } else {
       rest.push(args[i]);
     }
@@ -588,10 +689,21 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   let taskSpec = null;
   let task = rest.join(" ").trim();
   if (taskFile) {
-    taskSpec = loadTaskSpec(taskFile);
-    task = taskSpec.task; // spec text is the source of truth for T3
+    if (taskFile.endsWith(".json")) {
+      taskSpec = loadTaskSpec(taskFile);
+      task = taskSpec.task; // spec text is the source of truth for T3
+    } else {
+      // Plain-text scenario file (e.g. tasks/my-scenario.md): the file body
+      // IS the task prompt; no deterministic grading involved.
+      try {
+        task = fs.readFileSync(taskFile, "utf8").trim();
+      } catch (e) {
+        console.error(`[tournament] cannot read --task-file ${taskFile}: ${e.message}`);
+        process.exit(1);
+      }
+    }
   }
-  runTournament({ civs, task, noSkill, taskSpec, detWeight }).catch((e) => {
+  runTournament({ civs, task, noSkill, taskSpec, detWeight, id, judgesN, anonCivs }).catch((e) => {
     console.error(e);
     process.exit(1);
   });

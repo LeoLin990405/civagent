@@ -41,7 +41,7 @@ function writeManifest(home, id, { task = "frontier famine", createdAt = 1, scor
   fs.mkdirSync(dir, { recursive: true });
   const manifest = {
     id, task, createdAt,
-    civs: civs ?? scores.map((s, i) => ({ regime: s.regime, matchId: `${id}__${s.regime.replace("/", "-")}`, backend: "native", exitCode: 0, events: "" })),
+    civs: civs ?? scores.map((s) => ({ regime: s.regime, matchId: `${id}__${s.regime.replace("/", "-")}`, backend: "native", exitCode: 0, events: "" })),
     judge: { provider: "codex", scores, topRegime: scores[0]?.regime ?? null, swap },
   };
   fs.writeFileSync(path.join(dir, "manifest.json"), JSON.stringify(manifest));
@@ -246,7 +246,7 @@ test("pairedCompare: consistent improvement significant; alternating noise not",
 test("validate: plan mode prints commands; fake-backend runs the paired pipeline", () => {
   const home = makeHome();
   try {
-    const { skillPath } = seedCooccurrence(home);
+    seedCooccurrence(home);
     const proposals = writeProposals(analyze({ home }), {}, home);
     const id = proposals[0].id;
 

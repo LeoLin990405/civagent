@@ -1,0 +1,52 @@
+[
+  {
+    "id": "frontier-defense-01",
+    "category": "military",
+    "prompt": "Establish secure and robust border defense policies for agricultural frontiers facing seasonal tribal raids."
+  },
+  {
+    "id": "succession-crisis-01",
+    "category": "political",
+    "prompt": "The head of state has died without a designated heir. Multiple factions claim legitimacy. Design a governance process to resolve the succession crisis without civil war."
+  },
+  {
+    "id": "economic-collapse-01",
+    "category": "economic",
+    "prompt": "A sudden 40% drop in tax revenue threatens the state treasury. Propose emergency fiscal measures that preserve core governance functions while minimising unrest."
+  },
+  {
+    "id": "external-threat-01",
+    "category": "diplomacy",
+    "prompt": "A neighbouring power demands territorial concessions under threat of war. Your military capacity is roughly equal. Design a multi-channel response strategy."
+  },
+  {
+    "id": "internal-revolt-01",
+    "category": "internal",
+    "prompt": "A major province is threatening secession after three consecutive years of drought and perceived neglect from the centre. Draft a reconciliation and relief plan."
+  },
+  {
+    "id": "technological-disruption-01",
+    "category": "innovation",
+    "prompt": "A new military technology is spreading rapidly among rivals. Design an adoption strategy and a counter-proliferation policy that fits your governance structure."
+  },
+  {
+    "id": "plague-response-01",
+    "category": "crisis",
+    "prompt": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure."
+  },
+  {
+    "id": "trade-route-disruption-01",
+    "category": "economic",
+    "prompt": "The main trade route has been cut off by a rival power. Design a diversification strategy to maintain economic stability within 12 months."
+  },
+  {
+    "id": "famine-relief-01",
+    "category": "crisis",
+    "prompt": "Crop failure across three provinces threatens mass starvation. Allocate grain reserves, coordinate relief logistics, and prevent hoarding and speculation."
+  },
+  {
+    "id": "religious-schism-01",
+    "category": "social",
+    "prompt": "A doctrinal split has divided the state's official religion. Factions are mobilising followers against each other. Draft a policy to maintain civil order and state authority."
+  }
+]

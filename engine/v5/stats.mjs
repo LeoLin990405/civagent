@@ -140,8 +140,7 @@ export function aggregateWins(records) {
 // keeps abilities finite and ordered identically.
 export function fitBT(records, regimes, { maxIter = 10_000, tol = 1e-9, prior = 1 } = {}) {
   const { wins, games } = aggregateWins(records);
-  const idx = new Map(regimes.map((r, i) => [r, i]));
-  const m = regimes.length;
+    const m = regimes.length;
   const totalWins = new Float64Array(m);
   const opponents = new Map(); // i -> [{j, n}]
   for (let i = 0; i < m; i++) {
