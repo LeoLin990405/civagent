@@ -1,7 +1,12 @@
 # TASK-r5-codex: review PR #29 (v6 hardening line merged with main P1-P6)
 
-Status: PENDING
+Status: DONE (2026-07-30)
 Priority: P0
+
+> **Completion note**: review delivered in `tasks/REVIEW-r5-codex.md` —
+> REQUEST_CHANGES for both PRs (3 P1 on #29, 1 P1 on #30, 2 deferred P2s).
+> All P1 findings fixed by Claude Code in `1080428` and `9426a8c` with
+> regression tests (backend suite 252 → 287). Codex re-review pending.
 
 ## Scope
 

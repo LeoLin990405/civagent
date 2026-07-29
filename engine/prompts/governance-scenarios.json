@@ -48,5 +48,155 @@
     "id": "religious-schism-01",
     "category": "social",
     "prompt": "A doctrinal split has divided the state's official religion. Factions are mobilising followers against each other. Draft a policy to maintain civil order and state authority."
+  },
+  {
+    "id": "overland-trade-severance-01",
+    "category": "economic",
+    "prompt": "The overland trade network that connects your state to distant markets has been severed by a hostile coalition controlling key chokepoints. Merchants are bankrupt, luxury goods have vanished, and customs revenue has collapsed by nearly half. Your state depends on this route for essential imports including metals, spices, and specialised textiles. Propose a strategy that addresses immediate economic stabilisation, explores alternative corridors through neutral territories, and reduces long-term dependency on any single trade artery without provoking a wider conflict."
+  },
+  {
+    "id": "civil-exam-reform-01",
+    "category": "political",
+    "prompt": "The state's merit-based selection system for officials has come under intense criticism. Established aristocratic families argue that the examinations have become too rigid and theoretical, failing to identify candidates with practical administrative judgment. Reformists demand broader access for candidates from marginal regions and a curriculum that includes statecraft alongside classical texts. Meanwhile, a patronage network within the examination directorate is accused of selling advance access to questions. Design a reform plan that preserves the principle of meritocratic recruitment while addressing concerns about fairness, relevance, and institutional corruption."
+  },
+  {
+    "id": "grain-transport-collapse-01",
+    "category": "crisis",
+    "prompt": "The central grain transport and storage system has suffered a cascading failure. Key canals have silted up after years of neglected maintenance, warehouse granaries in critical transfer hubs have been depleted by graft, and seasonal flooding has washed out the main supply road to the capital region. Food prices in the core administrative districts have tripled within two months, and riots have broken out in three garrison cities. Your authority depends on a stable grain supply to feed the army, the bureaucracy, and the urban population. Devise an emergency response covering repair priorities, anti-corruption enforcement, price controls, and alternate supply logistics."
+  },
+  {
+    "id": "regional-militarization-01",
+    "category": "military",
+    "prompt": "Several regional governors have raised private armies under the pretext of local defence, and their forces now collectively outnumber the standing national army. The central government's tax collectors and judicial officers are being turned away at provincial borders. One governor has begun minting coins bearing his own insignia, and another has negotiated a separate truce with a neighbouring power without central authorisation. The state risks permanent fragmentation if this trend continues unchecked. Design a strategy to restore central military authority that combines political incentives, targeted enforcement, and institutional reforms, while avoiding a multi-front civil war that the centre cannot currently win."
+  },
+  {
+    "id": "inner-court-influence-01",
+    "category": "political",
+    "prompt": "A circle of personal attendants and confidants around the head of state has begun exercising de facto decision-making power, bypassing the formal council of ministers. Policy decrees are being issued without the customary seals of ministerial approval, appointments to key posts are awarded on the basis of personal loyalty rather than competence, and senior officials who protest are being dismissed or reassigned to distant posts. The bureaucracy is demoralised, and several experienced administrators have resigned in protest. Draft a governance response that restores the constitutional separation between the private household of the ruler and the institutions of state, without triggering a direct confrontation that could destabilise the regime."
+  },
+  {
+    "id": "river-flood-relief-01",
+    "category": "crisis",
+    "prompt": "A catastrophic flood has breached the levees along the state's largest river system, submerging hundreds of settlements and displacing over a million people at the peak of the planting season. The affected region is a major agricultural basin that normally supplies one-third of the state's grain. Relief supplies are bottlenecked because the same floodwaters have destroyed bridges and made roads impassable. Meanwhile, downstream communities accuse upstream authorities of deliberately breaching secondary levees to spare their own districts at the expense of others, triggering armed clashes between local militias. Design a disaster response that coordinates rescue and relief, adjudicates the inter-regional accusations, and plans long-term reconstruction of the water-control infrastructure."
+  },
+  {
+    "id": "border-trade-tribute-01",
+    "category": "diplomacy",
+    "prompt": "The formal system of regulated border markets and tributary exchanges with neighbouring states is breaking down. One former tributary partner has closed its markets and begun trading exclusively with a rival power, while another is demanding a sharply increased schedule of ceremonial gifts in return for continued peaceful relations. Smuggling has surged, undercutting licensed merchants and depriving the treasury of tariff revenue. Border commanders are lobbying for the right to negotiate their own commercial terms directly with foreign counterparts, which would effectively decentralise foreign economic policy. Design a diplomatic and commercial framework that restores orderly cross-border exchange, rebalances tribute obligations, and reasserts central authority over external trade policy."
+  },
+  {
+    "id": "monopoly-corruption-01",
+    "category": "economic",
+    "prompt": "The state monopoly on strategically vital commodities has become a vehicle for systematic corruption. Licensed producers are colluding with monopoly inspectors to under-report output, diverting a significant share of production to private black markets at inflated prices. The official supply chain is delivering substandard materials to the military and to public works, while monopoly revenue — intended to fund core state functions — has declined for four consecutive years despite rising production capacity. Whistle-blowers within the monopoly administration have been silenced or removed. Propose a reform that restores the fiscal integrity of the state monopoly while addressing the incentive structures that make collusion profitable, without creating supply disruptions that could trigger public unrest."
+  },
+  {
+    "id": "military-civil-strife-01",
+    "category": "internal",
+    "prompt": "A deepening power struggle between the senior military command and the civil bureaucracy has paralysed the central government. The generals control the army, the frontier garrisons, and a significant portion of the state budget. The civil officials control taxation, law-making, and the administrative apparatus. Each side has begun issuing contradictory orders: the military has declared martial law in two provinces, while the civil council has frozen military procurement funds. Neither side commands enough legitimacy to govern alone, and neither is willing to concede its institutional prerogatives. Design a settlement that rebalances military and civil authority within a sustainable constitutional framework, ensuring that neither institution can unilaterally override the other in peacetime."
+  },
+  {
+    "id": "inheritance-rites-01",
+    "category": "political",
+    "prompt": "The head of state has named a successor, but the choice violates longstanding ritual precedent regarding birth order and maternal lineage. Traditional guardians of ritual orthodoxy have refused to officiate the investiture ceremony, arguing that deviation from established succession law will invite cosmic disorder and erode the moral foundation of the state. A rival claimant — technically senior by the old rules but widely regarded as incompetent — has gathered a faction of conservative nobles and religious authorities who threaten to convene an alternative coronation. The military has declared neutrality but will enforce whichever outcome the civil institutions ratify. Design a process that resolves the legitimacy dispute through institutional means rather than force, and establishes clear succession rules for the future."
+  },
+  {
+    "id": "war-financing-01",
+    "category": "economic",
+    "prompt": "A protracted military campaign has drained the state treasury. The army requires immediate reinforcement, equipment, and supply-chain funding, but tax revenues are already stretched to their limit and the public is showing signs of war fatigue. Traditional lenders — wealthy merchant houses and allied states — are reluctant to extend further credit without collateral or favourable postwar concessions. If the state cannot raise sufficient funds within three months, it will be forced to accept a disadvantageous peace that cedes strategically vital territory and undermines its long-term security. Design a war-financing strategy that taps new revenue sources, negotiates loans on sustainable terms, and manages domestic expectations without triggering inflation, capital flight, or a collapse of civilian morale."
+  },
+  {
+    "id": "colonial-independence-01",
+    "category": "political",
+    "prompt": "A long-held overseas territory has declared independence, and its leadership is mobilising popular support around a narrative of national liberation from imperial exploitation. Several other territories are watching closely, and one has already submitted a formal petition for a similar process. The military garrison in the seceding territory is divided: some officers want to suppress the movement by force, while others argue that holding the territory against its population's will is unsustainable and morally indefensible. The economic cost of continued control is rising, but granting independence could embolden separatist movements elsewhere and deprive the state of strategic naval basing rights. Design a policy framework that addresses the seceding territory, deters cascading breakaways, and redefines the state's relationship with its remaining overseas possessions."
+  },
+  {
+    "id": "religious-reform-01",
+    "category": "social",
+    "prompt": "The established religious hierarchy faces demands for sweeping internal reform from a popular movement that has gained traction across all social classes. The reformers call for greater accessibility of sacred texts in vernacular languages, accountability for clergy accused of exploiting their positions for material gain, and a greater role for lay communities in ecclesiastical governance. The conservative leadership denounces the movement as a threat to doctrinal purity and has begun excommunicating prominent reformers, which has only swelled the movement's ranks. The state is caught between its formal alliance with the religious establishment and the risk that suppressing the reform movement will delegitimise the state itself among the faithful. Design a policy that preserves civil peace and state authority while navigating the theological and institutional conflict."
+  },
+  {
+    "id": "abolition-transition-01",
+    "category": "social",
+    "prompt": "The state has enacted abolition of a long-standing system of hereditary bonded labour, but the legal decree alone has not ended the practice. Former bond-holders, who formed the backbone of the agricultural and domestic-service economy, are demanding compensation for lost property. The freed population, lacking land, capital, or formal legal status, is drifting into cities where they face unemployment and hostility. Rural production has fallen because landowners claim they cannot find willing workers at wages they can afford, while former bond-labourers refuse to work for their former masters under any terms. Foreign trading partners are threatening sanctions if enforcement remains weak. Design a transition programme that integrates the freed population economically and legally, manages the compensation question, and stabilises agricultural output."
+  },
+  {
+    "id": "federation-collapse-01",
+    "category": "internal",
+    "prompt": "The federated compact that binds your constituent regions together is unravelling. Two member states have held referendums on sovereignty, with one voting narrowly to secede and the other deeply divided. The federal judiciary has ruled the secession referendum invalid, but the regional government is proceeding anyway, citing popular mandate. Federal law-enforcement personnel have been expelled from the seceding region's territory, and its government has begun issuing its own currency and travel documents. Federalist loyalists within the seceding region are requesting protection, raising the spectre of communal violence. The remaining member states are watching to see whether the centre can enforce the constitutional order without resorting to measures that would themselves violate the federal compact. Design a response that preserves the federation's integrity while respecting its constitutional principles."
+  },
+  {
+    "id": "currency-devaluation-01",
+    "category": "economic",
+    "prompt": "The state's coinage has been progressively debased over a decade to cover fiscal shortfalls, and public confidence has now collapsed. Merchants are demanding payment in foreign silver or in kind, soldiers are refusing to accept their own government's currency for wages, and tax collectors are struggling to extract value from payments made in the debased coin. A run on the remaining hard-currency reserves has begun, and neighbouring states are threatening to exclude your currency from cross-border settlement. If the state cannot restore monetary credibility, it will lose the ability to pay its officials, provision its army, or finance any public works. Design a currency stabilisation plan that restores confidence, manages the political risks of austerity or wealth taxes, and rebuilds the institutional safeguards against future debasement."
+  },
+  {
+    "id": "inheritance-gender-01",
+    "category": "social",
+    "prompt": "The ruling house faces a succession dilemma: the head of state has only daughters, and traditional inheritance law excludes women from the line of succession. A faction of modernisers proposes amending the succession statute to recognise female heirs, arguing that excluding half the potential candidates on grounds of gender weakens the quality of governance and alienates educated women whose support the state increasingly needs. Traditionalists counter that altering fundamental inheritance law would unravel the social fabric, destabilise marriage alliances with foreign powers, and provoke resistance from regional lords whose own authority rests on the same patriarchal norms. Design a legal and political strategy that addresses the immediate succession question and sets a stable precedent for the future, while managing the broader societal implications of changing inheritance norms."
+  },
+  {
+    "id": "border-city-autonomy-01",
+    "category": "political",
+    "prompt": "A strategically located border city that serves as the primary gateway for trade between two rival powers has petitioned for expanded self-governance. The city's merchant council argues that its unique position requires flexibility in tariffs, legal codes, and diplomatic representation that a distant central government cannot provide. Granting autonomy would likely increase trade revenue and reduce administrative burden, but it would also create a precedent that other prosperous cities might follow, potentially eroding central authority. The rival power has signalled that it would view the city's autonomy as an opportunity to expand its own influence there. Design a governance framework for the border city that grants sufficient flexibility to maximise its economic function while preserving its political loyalty and preventing foreign co-option."
+  },
+  {
+    "id": "naval-blockade-01",
+    "category": "diplomacy",
+    "prompt": "A superior naval power has imposed a blockade on your state's principal ports, cutting off maritime trade and preventing the export of goods on which your economy depends. The blockading power demands political concessions, including the dismissal of certain ministers it considers hostile and the termination of diplomatic relations with a third-party ally. Your own navy is outmatched in open confrontation, but the blockading power's fleet is operating far from its home waters and is vulnerable to supply-chain pressure and diplomatic isolation. Key neutral trading partners are suffering economic damage from the blockade and may be receptive to a joint response. Design a multi-pronged strategy that combines diplomatic outreach to neutral powers, asymmetric pressure on the blockading fleet, and domestic economic measures to withstand the blockade without conceding core sovereign prerogatives."
+  },
+  {
+    "id": "industrialization-impact-01",
+    "category": "economic",
+    "prompt": "New mechanised production techniques are spreading from neighbouring states and threatening the livelihood of your state's vast artisan class. Guilds that have structured urban economic and political life for generations are demanding protectionist measures: import bans on machine-made goods, prohibitions on domestic adoption of the new techniques, and guaranteed quotas for handcrafted products in government procurement. However, younger entrepreneurs and some reformist officials argue that resisting mechanisation will leave the state permanently disadvantaged in both civilian production and military supply. The artisan communities have demonstrated a capacity to disrupt cities through coordinated strikes, and they form an important political constituency. Design an industrial policy that manages the transition without destroying the social fabric of urban communities or forfeiting the state's long-term productive capacity."
+  },
+  {
+    "id": "grain-export-ban-01",
+    "category": "economic",
+    "prompt": "Your state has imposed a temporary ban on grain exports after a mediocre harvest, prioritising domestic food security. Neighbouring states that depend on your grain exports are now facing shortages of their own. One has threatened retaliatory trade measures; another has massed troops near the border, claiming the export ban is an act of economic warfare; a third is petitioning for a humanitarian exemption, citing imminent famine conditions within its territory. Domestically, grain producers are protesting the ban because export prices were significantly higher than the state-mandated domestic price, and they accuse the government of sacrificing their livelihoods. Design a policy that balances domestic food security, international obligations, diplomatic relations with affected neighbours, and the economic interests of your own agricultural producers."
+  },
+  {
+    "id": "refugee-influx-01",
+    "category": "crisis",
+    "prompt": "A sudden destabilisation in a neighbouring region has pushed a large wave of refugees across your border — tens of thousands in the first month, with more arriving daily. The refugees are ethnically and linguistically related to a minority community within your own state, creating both humanitarian sympathy and fears among the majority population about demographic change. Border towns are overwhelmed: housing, food, and medical supplies are exhausted, and tensions between refugees and locals are escalating into street violence. Criminal networks are exploiting the chaos to run smuggling and extortion operations within the refugee camps. Some among the refugee population include former soldiers of the collapsed neighbouring state, raising legitimate security concerns. Design a refugee policy that addresses humanitarian obligations, domestic social stability, and security screening without closing the border to desperate civilians."
+  },
+  {
+    "id": "spy-defection-01",
+    "category": "military",
+    "prompt": "A senior intelligence officer has defected to a rival power, taking with them detailed knowledge of your state's military dispositions, covert operatives deployed abroad, and the identities of foreign agents working on your behalf. The defector is now being publicly feted by the rival government and is disclosing classified information in highly visible media appearances. Several allied intelligence services have suspended information-sharing with your state, fearing that their own operatives and methods may be compromised. Within your own intelligence apparatus, a bitter internal investigation has begun to determine how the defection went undetected, and accusations of negligence are threatening to paralyse operations at precisely the moment they are most needed. Design a damage-control strategy covering operational security, diplomatic reassurance of allies, counter-intelligence reform, and management of the public narrative."
+  },
+  {
+    "id": "education-reform-01",
+    "category": "social",
+    "prompt": "A reformist faction within the government is proposing a fundamental reorganisation of the state education system. The existing curriculum, centred on classical texts and moral instruction, would be supplemented — or partially replaced — by practical subjects including mathematics, natural philosophy, engineering, and foreign languages. Traditional scholars and religious authorities denounce the proposal as an assault on cultural identity and a surrender to foreign intellectual influence. Wealthy families, who have invested heavily in tutors specialising in the classical curriculum, fear their children's competitive advantage in the civil-service examinations will be eroded. Meanwhile, merchant and manufacturing guilds are lobbying aggressively for the reforms, arguing that the state's economic and military competitiveness depends on a technically educated workforce. Design an education policy that modernises the curriculum while managing the legitimate concerns of traditional stakeholders."
+  },
+  {
+    "id": "water-dispute-01",
+    "category": "internal",
+    "prompt": "A multi-year drought has reduced the flow of the major river system that supplies several provinces, triggering an escalating conflict over water allocation. The upstream province has constructed diversion works that significantly reduce flow to downstream regions, arguing that its own agricultural sector — which feeds a larger population — must take priority. The downstream provinces have mobilised their militias and are threatening to destroy the diversion works by force if necessary. The central government's water commissioner has produced an allocation formula, but both sides reject it as biased. Agricultural output across all affected regions is declining, and food prices are rising nationally. The dispute is beginning to align with older political grievances, threatening to become a proxy for deeper regional tensions. Design a water-governance framework that resolves the immediate crisis and establishes durable allocation mechanisms for future scarcity conditions."
+  },
+  {
+    "id": "post-coup-legitimacy-01",
+    "category": "political",
+    "prompt": "A military faction has overthrown the previous government, citing endemic corruption, economic mismanagement, and the previous regime's loss of popular mandate. The coup leaders now control the capital, the state media, and the treasury, but their legal authority is contested. The deposed head of state has fled to a friendly foreign power and is claiming to be the legitimate government-in-exile. Several provincial governors have declared the coup illegitimate and are withholding tax remittances. Foreign powers are divided: some have recognised the new regime, others have imposed sanctions, and key trading partners are demanding a timetable for the restoration of constitutional rule before normalising relations. The military leadership itself contains factions with different visions for the transition. Design a legitimacy-restoration strategy that consolidates domestic authority, secures international recognition, and establishes a credible path toward constitutional governance."
+  },
+  {
+    "id": "debt-default-01",
+    "category": "economic",
+    "prompt": "Your state is on the verge of defaulting on its foreign debt obligations. Years of borrowing to finance military campaigns and court expenditure have accumulated to a level that exceeds several years of total state revenue. Foreign creditors — a consortium of banking houses from three powerful states — have rejected a restructuring proposal and are threatening to seize state assets held abroad, embargo your exports, and exclude your merchants from international credit markets. Domestically, the political class is divided: one faction advocates repudiation of the debt as illegitimate obligations contracted by a previous administration, while another warns that default would destroy the state's creditworthiness for a generation and invite foreign intervention. Design a debt negotiation strategy that extracts the best achievable terms from creditors while managing the domestic political fallout and protecting the state's long-term fiscal sovereignty."
+  },
+  {
+    "id": "cultural-assimilation-01",
+    "category": "social",
+    "prompt": "The central government has pursued a policy of cultural and linguistic homogenisation across its diverse territories for two generations, promoting a single official language, a standardised legal code, and a unified educational curriculum. In the border regions, where distinct communities have maintained their own languages, customs, and local governance traditions for centuries, resistance is hardening. A network of cultural preservation societies has evolved into a political movement demanding official recognition of regional languages, local control over school curricula, and legal pluralism that accommodates customary law. Hardliners in the capital view these demands as the first step toward secession and advocate suppression; moderates warn that coercion will radicalise the movement and draw foreign condemnation. Design a cultural policy that preserves the state's cohesion while accommodating legitimate demands for cultural autonomy."
+  },
+  {
+    "id": "urban-poverty-01",
+    "category": "social",
+    "prompt": "Rapid urbanisation, driven by the collapse of rural livelihoods and the concentration of economic opportunity in a few cities, has produced sprawling districts of extreme poverty on the margins of the capital and major trading ports. These districts lack basic sanitation, clean water, and formal law enforcement. Disease outbreaks are frequent and increasingly spill into wealthier quarters. Organised crime groups have filled the governance vacuum, providing rough justice and informal employment in exchange for loyalty, creating parallel power structures that the state does not control. Periodic riots over food prices and housing conditions are becoming more organised and more violent. Traditional elites in the city centres are demanding a security crackdown; reformers are calling for investment in infrastructure and legal incorporation of the informal settlements. Design an urban policy that addresses both the security challenge and the structural conditions that sustain it."
+  },
+  {
+    "id": "disaster-accountability-01",
+    "category": "crisis",
+    "prompt": "A major natural disaster has struck a heavily populated region, and the official death toll has become a source of intense public controversy. Independent investigators and survivor accounts suggest that the true number of dead is significantly higher than the government's published figures, and that inadequate enforcement of building regulations — for which specific officials were responsible — directly contributed to the scale of the tragedy. Families of the victims are organising public memorials that are turning into protests. A junior minister has publicly broken ranks, accusing senior colleagues of covering up the regulatory failures to protect their careers. Foreign media have amplified the accusations, damaging the state's international standing. The head of state must decide whether to order a transparent investigation that could implicate powerful figures, or manage the controversy through less confrontational means that risk deepening public cynicism. Design an accountability process that serves both justice and stability."
   }
 ]
