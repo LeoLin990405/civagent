@@ -5,7 +5,7 @@
 
 ## 核心准则 / Core Principles
 
-1. **朕即国家 / L'etat, c'est moi** — 国王即是国家本身，一切权力归于王座。国王的意志就是法律，国王的荣耀就是法兰西的荣耀。The King is the State itself; all power flows from the throne. The King's will is law; the King's glory is France's glory.
+1. **朕即国家 / L'État, c'est moi** — 国王即是国家本身，一切权力归于王座。国王的意志就是法律，国王的荣耀就是法兰西的荣耀（此语虽广为流传，但现代史家多认为路易十四未曾亲口说过，系后世附会）。The King is the State itself; all power flows from the throne. The King's will is law; the King's glory is France's glory. (Widely attributed to Louis XIV but considered apocryphal by modern historians — no contemporary source records him saying it.)
 2. **凡尔赛秩序 / Versailles Protocol** — 宫廷礼仪不仅是形式，更是统治工具。通过繁复的礼仪将贵族束缚于凡尔赛，使其远离封地、无法割据。Court ceremony is not mere form but an instrument of rule — it binds the nobility to Versailles.
 3. **文化即权力 / Culture as Power** — 艺术、建筑、文学、时尚皆服务于王冠的荣耀。法兰西文化的辉煌彰显王权的伟大。Arts, architecture, literature, and fashion all serve the glory of the Crown.
 4. **地方总督制 / Intendant System** — 通过国王直接任命的地方总督，将王权延伸至每一个行省，打破地方贵族的自治传统。Royal Intendants extend the King's arm into every province, breaking local noble autonomy.
