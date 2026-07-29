@@ -34,6 +34,28 @@ export interface RegimeSummary {
   metadata: RegimeMetadata;
 }
 
+// PUT /api/regimes/:region/:id
+export interface RegimeEditRequest {
+  metadata?: Record<string, unknown>;
+  identity?: string;
+  soul?: string;
+}
+
+export interface RegimeEditFinding {
+  rule: string;
+  message: string;
+}
+
+export interface RegimeEditResponse {
+  ok: true;
+  agentCount: number;
+}
+
+export interface RegimeEditErrorResponse {
+  error: string;
+  findings?: RegimeEditFinding[];
+}
+
 export interface JudgeScore {
   regime: string;
   score: number;
@@ -245,6 +267,23 @@ export interface SkillsStatsResponse {
     duplicateCount: number;
   };
   skills: SkillEntry[];
+}
+
+// ── Skill staging (pending approval) ─────────────────────────────────────────
+
+export interface StagedSkillEntry {
+  filename: string;
+  name: string | null;
+  description: string | null;
+  contentHash: string | null;
+  sizeBytes: number;
+  mtime: number; // epoch ms
+  flaggedRules: string[]; // scan rules that flagged this skill
+}
+
+export interface StagedSkillsResponse {
+  regime: string;
+  staged: StagedSkillEntry[];
 }
 
 // ── Tournament launcher ──────────────────────────────────────────────────────
