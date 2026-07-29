@@ -17,7 +17,7 @@ test("default chain contains no gemini and only known providers", () => {
 
 test("runJudge picks the first AVAILABLE provider", () => {
   const has = (cmd) => cmd === "opencode"; // only opencode-reviewer available
-  const spawn = (cmd, args) => {
+  const spawn = (cmd, _args) => {
     assert.equal(cmd, "opencode");
     return { status: 0, stdout: "looks good\nAPPROVE" };
   };

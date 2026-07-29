@@ -80,5 +80,5 @@ The Zulu Kingdom (1816–1897) was forged by Shaka Zulu through revolutionary mi
 - Bryant, A. T. *The Zulu People in Pre-European Times* (1949) — 基于祖鲁口述史的系统整理
 - Laband, John. *Rope of Sand: The Rise and Fall of the Zulu Kingdom* (1995) — 军事行政体制分析
 - Knight, Ian. *Zulu 1816–1906* (1995) — 军事编制与战术详解
-- Greaves, Ian. *Isandlwana 1879: The Great Zulu Victory* (2001) — 战役体现的指挥体系
-- Wright, John. *The Colossal Zulu in the Age of Shaka* (1989) — 沙卡改革原始资料汇编
+- Knight, Ian. *Isandlwana 1879: The Great Zulu Victory* (2002) — 战役体现的指挥体系
+- Morris, Donald R. *The Washing of the Spears* (1965) — 祖鲁王国兴衰的经典叙述史

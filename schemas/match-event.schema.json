@@ -12,8 +12,8 @@
     "ts": { "type": "integer", "description": "Unix epoch milliseconds." },
     "type": {
       "type": "string",
-      "enum": ["match_start", "turn", "tool", "judge", "skill", "match_end"],
-      "description": "Coarse event kind (legacy contract)."
+      "enum": ["match_start", "turn", "tool", "judge", "skill", "match_end", "veto_triggered", "impeach_triggered", "edict_triggered"],
+      "description": "Coarse event kind (legacy contract). veto/impeach/edict_triggered are constitutional-mechanism events."
     },
     "event_id": { "type": "string", "description": "UUID uniquely identifying this event (schema v2 envelope)." },
     "schema_version": { "type": "string", "description": "Envelope schema version, e.g. \"2.0\". Absent on pre-v2 events." },
@@ -23,7 +23,7 @@
     "actor": { "type": "string", "description": "Producer identity: regime id, \"judge\", \"skill-learner\", or \"system\"." },
     "kind": {
       "type": "string",
-      "enum": ["llm_call", "tool_call", "judge_score", "skill_propose", "skill_commit", "turn", "match_start", "match_end"],
+      "enum": ["llm_call", "tool_call", "judge_score", "skill_propose", "skill_commit", "turn", "match_start", "match_end", "veto_triggered", "impeach_triggered", "edict_triggered"],
       "description": "Fine-grained event kind; coexists with the legacy coarse `type` field."
     },
     "model": { "type": "string", "description": "Model/provider id that produced this event, when known (e.g. judge provider)." },
@@ -37,13 +37,16 @@
     "command": { "type": "string", "description": "Resolved binary the backend mapped to. Present on match_start." },
     "task": { "type": "string", "description": "The governance task. Present on match_start." },
     "text": { "type": "string", "description": "Streamed output chunk. Present on turn events." },
-    "exitCode": { "type": ["integer", "null"], "description": "Process exit code. Present on match_end." },
+    "exitCode": { "type": ["integer", "null"], "description": "Process exit code. Present on match_end (null when killed by signal, e.g. a veto SIGKILL)." },
+    "signal": { "type": ["string", "null"], "description": "Signal that terminated the backend, e.g. SIGKILL from a veto. Present on match_end." },
+    "mechanisms": { "type": "object", "description": "Cumulative constitutional-mechanism counts {vetoes, impeachments, edicts}. Present on match_end." },
+    "target": { "type": "string", "description": "Impeachment target. Present on impeach_triggered events." },
     "provider": { "type": "string", "description": "Judge provider id. Present on judge events." },
     "error": { "type": "string", "description": "Failure reason, when a judge/skill step failed." },
     "status": {
       "type": "string",
-      "enum": ["saved", "rejected", "skipped", "error", "staged"],
-      "description": "Sedimentation outcome. Present on skill events. 'staged' = written to skills/staging/, awaiting human approval (supply-chain gate)."
+      "enum": ["saved", "rejected", "skipped", "error", "staged", "done", "vetoed", "failed"],
+      "description": "Sedimentation outcome (saved|rejected|skipped|error|staged) on skill events — 'staged' = written to skills/staging/, awaiting human approval (supply-chain gate) — or match outcome (done|vetoed|failed) on match_end."
     },
     "skillPath": { "type": "string", "description": "Absolute path of the saved skill file. Present on skill events when status=saved or staged." },
     "contentHash": { "type": "string", "description": "sha256 (first 16 hex chars) pinning the skill body. Present on skill events when the skill file was written (saved or staged)." },

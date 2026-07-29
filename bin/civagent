@@ -17,6 +17,14 @@ mkdir -p "$STATE_DIR"
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[0;33m'
 CYAN='\033[0;36m'; BOLD='\033[1m'; NC='\033[0m'
 
+# Regime ids are interpolated into paths and passed to interpreters; reject
+# anything outside <region>/<kebab-id> before it reaches them.
+validate_regime() {
+  [[ "$1" =~ ^(china|global)/[a-z0-9][a-z0-9-]*$ ]] || {
+    echo "Invalid regime id: $1 (expected china/<id> or global/<id>)"; exit 1;
+  }
+}
+
 usage() {
   cat <<EOF
 ${BOLD}CivAgent v5${NC} — 5000 Years of Governance × AI Multi-Agent × Learning Loop
@@ -27,13 +35,16 @@ ${BOLD}Usage:${NC}
   civagent switch <regime>              Set active regime
   civagent run [prompt]                 Launch CC with active regime's agents (v4 mode)
   civagent run --v5 "task"              Launch v5 with isolated HOME + skill sedimentation
-  civagent skills <regime>              List learned skills for a regime
+  civagent skills <regime> [--stats]    List learned skills (--stats: dedup/quality JSON)
+  civagent replay <matchId>             Re-run a past match with the same regime/backend/task
   civagent skills pending [regime]      List staged skills awaiting human approval
   civagent skills approve <regime> <file>
                                         Promote a staged skill into the active skills dir
   civagent match-log                    Recent match transcripts
   civagent tournament --civs a,b,c,d "task"
                                         Parallel match across civilizations + judge ranking
+  civagent tournament --civs a,b --task-file tasks/my-scenario.md
+                                        Run tournament using a markdown scenario file
   civagent tournament --civs a,b --task-file resources/tasks/t3-todo-cli/task.json [--det-weight 0.5]
                                         T3 mode: deterministic grader blended with judge score
   civagent topology validate <regime>   Validate a regime's topology.json (schema + IDENTITY cross-check)
@@ -52,7 +63,7 @@ ${BOLD}Usage:${NC}
 
 ${BOLD}Examples:${NC}
   civagent switch china/tang
-  civagent run --v5 "重构这个模块的代码"
+  civagent run --v5 "refactor this module"
   civagent tournament --civs china/tang,china/qin,global/athens,global/roman-republic \\
                      "how do we handle a famine on the eastern frontier?"
 
@@ -104,12 +115,13 @@ cmd_list() {
 
 cmd_info() {
   local regime="$1"
+  validate_regime "$regime"
   local dir="$REGIMES_DIR/$regime"
   [[ -f "$dir/metadata.json" ]] || { echo "Regime not found: $regime"; exit 1; }
 
   python3 -c "
-import json
-d = json.load(open('$dir/metadata.json'))
+import json, sys
+d = json.load(open(sys.argv[1]))
 print(f\"{'='*60}\")
 print(f\"{d['name']['zh']} ({d['name']['en']})\")
 print(f\"{d['era']['zh']} | {d['era']['en']}\")
@@ -121,13 +133,14 @@ print(f\"{'='*60}\")
 print(d['description']['zh'])
 print()
 print(d['description']['en'])
-"
+" "$dir/metadata.json"
 }
 
 # ── switch ───────────────────────────────────────────────────────────────────
 
 cmd_switch() {
   local regime="$1"
+  validate_regime "$regime"
   local dir="$REGIMES_DIR/$regime"
   [[ -f "$dir/metadata.json" ]] || { echo "Regime not found: $regime"; exit 1; }
 
@@ -139,8 +152,8 @@ cmd_switch() {
   # Generate agents JSON
   node "$ENGINE_DIR/regime-to-cc.mjs" "$dir" --agents > "$STATE_DIR/agents.json"
 
-  local name_zh=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d['name']['zh'])" 2>/dev/null)
-  local pattern=$(python3 -c "import json; d=json.load(open('$dir/metadata.json')); print(d.get('orchestrationPattern','?'))" 2>/dev/null)
+  local name_zh=$(python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(d['name']['zh'])" "$dir/metadata.json" 2>/dev/null)
+  local pattern=$(python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(d.get('orchestrationPattern','?'))" "$dir/metadata.json" 2>/dev/null)
 
   echo -e "${GREEN}✓${NC} Switched to ${BOLD}$name_zh${NC} ($regime)"
   echo -e "  Pattern: ${CYAN}$pattern${NC}"
@@ -272,10 +285,25 @@ cmd_setup() {
 
 # ── v5 inspection ────────────────────────────────────────────────────────────
 
+cmd_replay() {
+  local match_id="${1:-}"
+  [[ -n "$match_id" ]] || { echo "Usage: civagent replay <matchId>"; exit 1; }
+  exec node "$ENGINE_DIR/v5/replay.mjs" "$match_id"
+}
+
 cmd_skills() {
   local regime="${1:-}"
-  [[ -n "$regime" ]] || { echo "Usage: civagent skills <region/regime-id>"; exit 1; }
+  [[ -n "$regime" ]] || { echo "Usage: civagent skills <region/regime-id> [--stats]"; exit 1; }
+  validate_regime "$regime"
   local dir="$REGIMES_DIR/$regime/skills"
+
+  if [[ "${2:-}" == "--stats" ]]; then
+    CIVAGENT_ENGINE="$ENGINE_DIR" CIVAGENT_SKILLS_DIR="$dir" node --input-type=module -e '
+const { analyzeSkillsDir } = await import(`${process.env.CIVAGENT_ENGINE}/v5/skill-quality.mjs`);
+console.log(JSON.stringify(analyzeSkillsDir(process.env.CIVAGENT_SKILLS_DIR), null, 2));
+'
+    return
+  fi
   if [[ ! -d "$dir" ]]; then
     echo "No learned skills yet for $regime."
     return
@@ -390,7 +418,7 @@ cmd_hillclimb() {
 
 # Verify the cn-cc-workflow launchers the cn:* backends depend on (engine/cn-cc.mjs).
 cmd_doctor() {
-  echo -e "${BOLD}CivAgent — cn-cc-workflow 依赖自检 / dependency check${NC}"
+  echo -e "${BOLD}CivAgent — cn-cc-workflow dependency check${NC}"
   CIVAGENT_ENGINE="$ENGINE_DIR" node --input-type=module -e '
 const { checkCnCc } = await import(`${process.env.CIVAGENT_ENGINE}/cn-cc.mjs`);
 const r = checkCnCc();
@@ -437,9 +465,10 @@ case "${1:-}" in
     case "${2:-}" in
       pending) cmd_skills_pending "${3:-}" ;;
       approve) cmd_skills_approve "${3:-}" "${4:-}" ;;
-      *)       cmd_skills "${2:-}" ;;
+      *)       cmd_skills "${2:-}" "${3:-}" ;;
     esac ;;
   match-log) cmd_match_log ;;
+  replay)    shift; cmd_replay "$@" ;;
   tournament) shift; cmd_tournament "$@" ;;
   stats)     shift; cmd_stats "$@" ;;
   ablate)    shift; cmd_ablate "$@" ;;

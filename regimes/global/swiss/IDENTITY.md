@@ -66,7 +66,7 @@
 
 ## 历史参考
 - Federal Constitution of Switzerland (1874, as amended) / 瑞士联邦宪法
-- William H. Riker, *The Theory of Political Coalitions* (1968)
+- William H. Riker, *The Theory of Political Coalitions* (1962)
 -《瑞士宪法：政府与政治》（英瓦格纳等，1991）
 - Franz N. Jenni, *Die politischen Systeme der Schweiz und der USA* (1998)
 - Johannes M. B. G. van der Doe, "Consensus Democracy in Switzerland," *Swiss Political Science Review* (2004)

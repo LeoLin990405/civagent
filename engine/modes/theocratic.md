@@ -1,4 +1,4 @@
-# Theocratic Authority Mode (神权模式)
+# Theocratic Authority Mode
 
 > Historical model: Shang Dynasty, Ancient Egypt, Taiping Heavenly Kingdom
 

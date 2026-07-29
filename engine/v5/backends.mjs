@@ -63,6 +63,25 @@ export function isKnownBackend(id) {
   }
 }
 
+/**
+ * Build the argument list for a claude-compatible backend invocation.
+ *
+ * This is the ONE place that encodes the claude-compatible CLI contract
+ * ("--agents <json>" / "-p <prompt>"). Change flag names here and nowhere
+ * else if the flag surface ever changes.
+ *
+ * NOTE: codex and opencode are intentionally NOT invoked this way — they are
+ * judges (engine/v5/judge.mjs) and have their own invocation contract.
+ *
+ * @param {{ agentsJson: string, prompt?: string }} opts
+ * @returns {string[]}
+ */
+export function buildBackendArgs({ agentsJson, prompt }) {
+  const args = ["--agents", agentsJson];
+  if (prompt) args.push("-p", prompt);
+  return args;
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
   const id = process.argv[2];
   if (!id) {

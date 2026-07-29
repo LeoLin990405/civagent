@@ -10,10 +10,13 @@ import fs from "node:fs";
 import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
+import { StringDecoder } from "node:string_decoder";
 import { ensureCivHome, validateRegime } from "./civ-memory.mjs";
 import { sediment } from "./skill-sediment.mjs";
-import { resolveBackend } from "./backends.mjs";
+import { resolveBackend, buildBackendArgs } from "./backends.mjs";
 import { EventLog, writeMeta, eventsPath } from "./events.mjs";
+import { retrieveHistoricalContext } from "./history-retriever.mjs";
+import { MechanismEngine } from "../mechanisms/index.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "..", "..");
@@ -129,6 +132,7 @@ async function main() {
     p.stdout.on("data", (d) => {
       out += d;
     });
+    p.on("error", reject); // ENOENT / spawn failure — otherwise the promise never settles
     p.on("close", (c) => (c === 0 ? resolve(out) : reject(new Error(`regime-to-cc exited ${c}`))));
   });
 
@@ -144,21 +148,59 @@ async function main() {
     CIVAGENT_BACKEND: backend,
   };
   fs.mkdirSync(env.XDG_CONFIG_HOME, { recursive: true });
-  const ccArgs = ["--agents", agentsJson];
-  if (prompt) ccArgs.push("-p", prompt);
+
+  const ragContext = retrieveHistoricalContext(regimeDir, prompt);
+  const finalPrompt = prompt + ragContext;
+  
+  const ccArgs = buildBackendArgs({ agentsJson, prompt: finalPrompt });
+
+  // Respect the regime's declared constitutional mechanisms (metadata.json);
+  // a regime that doesn't grant VETO should never have a veto fire against it.
+  let allowedMechanisms = ["VETO", "IMPEACH", "EDICT"];
+  try {
+    const meta = JSON.parse(fs.readFileSync(path.join(regimeDir, "metadata.json"), "utf8"));
+    if (Array.isArray(meta.mechanisms) && meta.mechanisms.length) {
+      allowedMechanisms = meta.mechanisms;
+    }
+  } catch { /* default to all three */ }
 
   const cc = spawn(command, withPermissionMode(ccArgs), { env, stdio: ["inherit", "pipe", "inherit"] });
+  const mechEngine = new MechanismEngine(log, cc, allowedMechanisms);
+
+  // Mechanism markers ([VETO], [IMPEACH: x], 驳回, 圣旨…) are inline tokens that a
+  // raw "data" chunk can split mid-marker or mid-UTF8-codepoint, silently dropping
+  // a real veto. Decode bytes safely and detect on complete lines instead.
+  const decoder = new StringDecoder("utf8");
+  let lineBuf = "";
+  const feed = (textChunk, flush = false) => {
+    lineBuf += textChunk;
+    let nl;
+    while ((nl = lineBuf.indexOf("\n")) >= 0) {
+      const line = lineBuf.slice(0, nl + 1);
+      lineBuf = lineBuf.slice(nl + 1);
+      log.emit("turn", { text: line, actor: regime });
+      mechEngine.process(line);
+    }
+    if (flush && lineBuf) {
+      log.emit("turn", { text: lineBuf, actor: regime });
+      mechEngine.process(lineBuf);
+      lineBuf = "";
+    }
+  };
+
   cc.stdout.on("data", (chunk) => {
-    process.stdout.write(chunk);
-    log.emit("turn", { text: chunk.toString(), actor: regime });
+    process.stdout.write(chunk);     // raw passthrough preserves exact bytes
+    feed(decoder.write(chunk));
   });
+  cc.stdout.on("end", () => feed(decoder.end(), true));
 
   let exitCode;
+  let exitSignal = null;
   try {
-    exitCode = await new Promise((res, rej) => {
+    ({ code: exitCode, signal: exitSignal } = await new Promise((res, rej) => {
       cc.on("error", rej);
-      cc.on("close", res);
-    });
+      cc.on("close", (code, signal) => res({ code, signal }));
+    }));
   } catch (err) {
     // Binary not found or failed to spawn (e.g. ENOENT).
     console.error(`[v5] backend spawn failed: ${err.message}`);
@@ -197,11 +239,26 @@ async function main() {
   const skillEv = buildSkillEvent(sedimentResult);
   if (skillEv) log.emit("skill", skillEv); // actor defaults to "skill-learner"
 
-  log.emit("match_end", { exitCode }); // actor defaults to "system"
+  // A veto hard-aborts the backend via SIGKILL, which surfaces as exitCode=null.
+  // Distinguish a constitutional veto from a clean exit so meta.json/the frontend
+  // don't report a vetoed match as "done". actor defaults to "system".
+  const mechStats = mechEngine.getStats();
+  const vetoed = mechStats.vetoes > 0;
+  const status = vetoed ? "vetoed" : "done";
+
+  log.emit("match_end", { exitCode, signal: exitSignal, status, mechanisms: mechStats });
   await log.close();
 
-  writeMeta(matchId, { endedAt: Date.now(), exitCode, status: "done", sediment: sedimentResult });
-  process.exit(exitCode ?? 0);
+  writeMeta(matchId, {
+    endedAt: Date.now(),
+    exitCode,
+    signal: exitSignal,
+    status,
+    mechanisms: mechStats,
+    impeachments: mechEngine.getImpeachments(),
+    sediment: sedimentResult,
+  });
+  process.exit(vetoed ? 0 : (exitCode ?? 0));
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) {

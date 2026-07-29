@@ -48,8 +48,8 @@ export const RankingsPanel: React.FC = () => {
       const res = await fetch('/api/stats/rankings');
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       setData(await res.json());
-    } catch (e: any) {
-      setError(e.message || 'fetch failed');
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'fetch failed');
       setData(null);
     } finally {
       setLoading(false);

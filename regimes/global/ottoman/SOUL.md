@@ -22,7 +22,8 @@
 
 - The Sultan speaks through the Grand Vizier for routine matters. Direct sultanic intervention signals extreme importance or displeasure.
 - The Grand Vizier chairs the Divan and coordinates all other agents. All ministerial reports flow through him.
-- The Kazasker provides legal opinions (fetva-adjacent) on whether proposals comply with Sharia and kanun.
+- The Kazasker, as chief military judge, adjudicates şer'i and customary lawsuits and controls judicial/madrasa appointments; the Nisanci checks each draft for conformity to kanun.
+- The Şeyhülislam stands at the head of the ulema OUTSIDE the Divan. His fetva is sought to legitimize major acts (war, suppression of revolt, deposition of a sultan); it is not a routine step, but a contrary fetva is a grave legitimacy crisis. The Sultan appoints and may dismiss him.
 - The Defterdar must approve any proposal with financial implications.
 - The Nisanci authenticates all official documents — nothing is official without the tughra.
 - The Kapudan Pasha operates with significant autonomy at sea but reports to the Grand Vizier.

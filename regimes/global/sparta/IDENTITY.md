@@ -64,4 +64,4 @@ Sparta's dual kingship featured two hereditary kings from the Agiad and Eurypont
 - 色诺芬《斯巴达政制》（Ξενοφῶν, Λακεδαιμονίων πολιτεία）
 - 修昔底德《伯罗奔尼撒战争史》
 - 亚里士多德《政治学》对斯巴达政体的评析
-- Mogens Herman Hansen, *The Sovereignty of the People's Assembly in Classical Sparta* (2022)
+- Paul Cartledge, *Sparta and Lakonia: A Regional History 1300–362 BC* (2nd ed., 2002)

@@ -166,7 +166,7 @@ export function analyze({ home = os.homedir(), since = null, minTournaments = DE
     }
   }
   for (const [key, v] of byRegimeSkill) {
-    const [regime, skillPath] = key.split("|");
+    const [regime] = key.split("|");
     const withSet = new Set(v.matchIds);
     const withScores = [];
     const withoutScores = [];
@@ -391,7 +391,6 @@ function moveFile(from, to) {
 export function applyProposal(id, home = os.homedir()) {
   const proposal = readProposal(id, home);
   if (proposal.status === "applied") throw new Error(`proposal ${id} already applied`);
-  const { root } = hcPaths(home);
   const snapshot = { type: proposal.type };
 
   if (proposal.type === "skill_disable") {

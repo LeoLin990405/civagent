@@ -166,30 +166,30 @@ export const JudgeLeaderboard: React.FC<JudgeLeaderboardProps> = ({
   const hasRealData = hasRealManifest || hasRealResult;
 
   return (
-    <div className="glass-panel glass-panel-gold p-6 space-y-6" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+    <div className="glass-panel glass-panel-gold p-8 space-y-8">
       
       {/* Header */}
-      <div className="flex items-center gap-3" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-        <div className="flex items-center justify-center w-9 h-9 rounded bg-[rgba(255,215,0,0.1)] border border-[rgba(255,215,0,0.3)] text-[var(--accent-gold)]" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <Award size={18} />
+      <div className="flex items-center gap-4">
+        <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-[rgba(255,215,0,0.05)] border border-[var(--border-glow-gold)] text-[var(--accent-gold)] shadow-[var(--shadow-glow-gold)]">
+          <Award size={24} />
         </div>
         <div>
-          <h2 className="text-lg font-bold text-[var(--text-primary)]" style={{ fontSize: '18px', fontWeight: 700 }}>AI Judge Leaderboard</h2>
-          <p className="text-xs text-[var(--text-secondary)]" style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+          <h2 className="text-xl font-extrabold text-[var(--text-primary)] tracking-wide">AI Judge Leaderboard</h2>
+          <p className="text-sm text-[var(--text-secondary)] mt-1">
             Comparative evaluation based on historical constraint compliance, project feasibility, and systemic resilience.
           </p>
         </div>
       </div>
 
       {/* Grid of Results */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '24px' }}>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         
         {/* Score Table */}
-        <div className="md:col-span-1 border-r border-[rgba(255,255,255,0.06)] pr-0 md:pr-6" style={{ borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: '24px' }}>
-          <h3 className="text-xs font-semibold text-[var(--text-muted)] uppercase tracking-wider mb-3" style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 600, letterSpacing: '0.05em', marginBottom: '12px' }}>
+        <div className="md:col-span-1 border-r border-[var(--border-subtle)] pr-0 md:pr-8">
+          <h3 className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-widest mb-4">
             REGIME STANDINGS
           </h3>
-          <div className="space-y-2.5" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          <div className="space-y-3">
             {sortedRegimes.map((regime, index) => {
               const avg = parseFloat(getAverageScore(regime));
               const grade = getGradeBadge(avg);
@@ -199,47 +199,40 @@ export const JudgeLeaderboard: React.FC<JudgeLeaderboardProps> = ({
                 <div
                   key={regime}
                   onClick={() => setSelectedRegime(regime)}
-                  className={`flex items-center justify-between p-3 rounded-lg border transition-all cursor-pointer ${
+                  className={`flex items-center justify-between p-4 rounded-xl border transition-all cursor-pointer group ${
                     isSelected
-                      ? 'bg-[rgba(255,215,0,0.05)] border-[rgba(255,215,0,0.3)] shadow-[0_0_12px_rgba(255,215,0,0.05)]'
-                      : 'bg-[rgba(255,255,255,0.02)] border-[rgba(255,255,255,0.05)] hover:border-[rgba(255,255,255,0.12)]'
+                      ? 'bg-[var(--bg-glass-heavy)] border-[var(--border-glow-gold)] shadow-[var(--shadow-glow-gold)]'
+                      : 'bg-[var(--bg-surface-raised)] border-[var(--border-subtle)] hover:border-[var(--text-muted)] hover:bg-[var(--bg-glass-medium)]'
                   }`}
-                  style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px', borderRadius: '8px', cursor: 'pointer' }}
                 >
-                  <div className="flex items-center gap-3" style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                    <span className="font-mono text-xs text-[var(--text-muted)] w-4" style={{ display: 'inline-block', width: '16px' }}>
+                  <div className="flex items-center gap-4">
+                    <span className="font-mono text-xs text-[var(--text-muted)] w-5 font-bold">
                       #{index + 1}
                     </span>
                     <div>
-                      <span className="text-sm font-semibold block text-[var(--text-primary)]" style={{ display: 'block', fontSize: '14px', fontWeight: 600 }}>
+                      <span className="text-sm font-bold block text-[var(--text-primary)] group-hover:text-[var(--accent-gold)] transition-colors">
                         {getCivName(regime)}
                       </span>
-                      <span className="text-[10px] text-[var(--text-secondary)] block font-mono" style={{ display: 'block', fontSize: '10px' }}>
+                      <span className="text-[10px] text-[var(--text-secondary)] block font-mono mt-0.5">
                         {regime}
                       </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-2" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div className="text-right" style={{ textAlign: 'right' }}>
-                      <span className="text-sm font-bold block font-mono text-[var(--text-primary)]" style={{ display: 'block', fontSize: '14px' }}>
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <span className="text-sm font-black block font-mono text-[var(--text-primary)]">
                         {avg}
                       </span>
-                      <span className="text-[8px] text-[var(--text-muted)] block" style={{ display: 'block', fontSize: '8px' }}>SCORE</span>
+                      <span className="text-[8px] text-[var(--text-muted)] font-bold tracking-widest block">SCORE</span>
                     </div>
                     <span
-                      className="w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs"
+                      className="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow-[var(--shadow-glass)]"
                       style={{
-                        width: '28px',
-                        height: '28px',
-                        borderRadius: '50%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: 'rgba(255,255,255,0.04)',
-                        border: `1px solid ${grade.color}`,
+                        backgroundColor: 'var(--bg-surface)',
+                        border: `2px solid ${grade.color}`,
                         color: grade.color,
-                        boxShadow: `0 0 8px ${grade.color}1e`
+                        boxShadow: `0 0 10px ${grade.color}40`
                       }}
                     >
                       {grade.label}
@@ -252,72 +245,76 @@ export const JudgeLeaderboard: React.FC<JudgeLeaderboardProps> = ({
         </div>
 
         {/* Selected Details & Bar Charts */}
-        <div className="md:col-span-2 space-y-5" style={{ gridColumn: 'span 2', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="md:col-span-2 space-y-6">
           {selectedRegime && (
-            <div className="space-y-5" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+            <div className="space-y-6">
               
               {/* Detailed Scores */}
               {hasRealData ? (
                 /* Unified Score Display for Real Data */
-                <div className="glass-panel p-4 bg-[rgba(255,255,255,0.01)] border-[rgba(255,255,255,0.05)] rounded-lg" style={{ padding: '16px' }}>
-                  <div className="flex justify-between items-center mb-2" style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span className="text-[10px] text-[var(--text-secondary)] font-semibold uppercase tracking-wider" style={{ fontSize: '10px', fontWeight: 600 }}>OVERALL GOVERNANCE SCORE</span>
-                    <span className="text-lg font-bold font-mono text-[var(--accent-gold)]" style={{ fontSize: '18px', color: 'var(--accent-gold)' }}>
+                <div className="glass-panel p-6 bg-[var(--bg-surface-raised)] border border-[var(--border-subtle)] rounded-xl relative overflow-hidden">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-[var(--accent-gold)] shadow-[var(--shadow-glow-gold)]"></div>
+                  <div className="flex justify-between items-center mb-4 pl-2">
+                    <span className="text-xs text-[var(--text-muted)] font-bold uppercase tracking-widest">OVERALL GOVERNANCE SCORE</span>
+                    <span className="text-2xl font-black font-mono text-[var(--accent-gold)] drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]">
                       {getAverageScore(selectedRegime)}/10
                     </span>
                   </div>
-                  <div className="w-full bg-[rgba(255,255,255,0.04)] h-2 rounded-full overflow-hidden" style={{ width: '100%', height: '8px', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: '999px' }}>
+                  <div className="w-full bg-[var(--bg-glass-light)] h-3 rounded-full overflow-hidden mb-5">
                     <div 
-                      className="bg-[var(--accent-gold)] h-full rounded-full transition-all duration-500" 
-                      style={{ width: `${parseFloat(getAverageScore(selectedRegime)) * 10}%`, height: '100%', backgroundColor: 'var(--accent-gold)' }}
+                      className="bg-[var(--accent-gold)] h-full rounded-full transition-all duration-1000 shadow-[var(--shadow-glow-gold)]" 
+                      style={{ width: `${parseFloat(getAverageScore(selectedRegime)) * 10}%` }}
                     ></div>
                   </div>
-                  <div className="mt-3 text-xs text-[var(--text-secondary)] italic leading-relaxed" style={{ marginTop: '12px', fontSize: '12px', lineHeight: '1.6' }}>
-                    <strong>Judge Summary:</strong> {getSelectedReason(selectedRegime)}
+                  <div className="text-sm text-[var(--text-secondary)] italic leading-relaxed p-4 bg-[var(--bg-surface)] rounded-lg border border-[var(--border-subtle)]">
+                    <strong className="text-[var(--text-primary)] font-bold">Judge Summary:</strong> {getSelectedReason(selectedRegime)}
                   </div>
                 </div>
               ) : (
                 /* 3-Dimension Score Display for Demo Mode */
                 scores[selectedRegime] && (
-                  <div className="grid grid-cols-3 gap-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px' }}>
+                  <div className="grid grid-cols-3 gap-6">
                     {/* Legality Card */}
-                    <div className="glass-panel p-3 bg-[rgba(255,255,255,0.01)] border-[rgba(255,255,255,0.05)] rounded-lg text-center" style={{ padding: '12px', textAlign: 'center' }}>
-                      <span className="text-[10px] text-[var(--text-secondary)] block font-semibold mb-1" style={{ display: 'block', fontSize: '10px', fontWeight: 600, marginBottom: '4px' }}>LEGALITY</span>
-                      <span className="text-xl font-bold font-mono text-[var(--accent-gold)]" style={{ fontSize: '20px', color: 'var(--accent-gold)' }}>
+                    <div className="glass-panel p-5 bg-[var(--bg-surface-raised)] border border-[var(--border-subtle)] rounded-xl text-center relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-[var(--accent-gold)] shadow-[var(--shadow-glow-gold)]"></div>
+                      <span className="text-[10px] text-[var(--text-muted)] block font-bold uppercase tracking-widest mb-2">LEGALITY</span>
+                      <span className="text-2xl font-black font-mono text-[var(--accent-gold)] drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]">
                         {scores[selectedRegime].legality}/10
                       </span>
-                      <div className="w-full bg-[rgba(255,255,255,0.04)] h-1.5 rounded-full overflow-hidden mt-2" style={{ width: '100%', height: '6px', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: '999px', marginTop: '8px' }}>
+                      <div className="w-full bg-[var(--bg-glass-light)] h-2 rounded-full overflow-hidden mt-3">
                         <div 
-                          className="bg-[var(--accent-gold)] h-full rounded-full transition-all duration-500" 
-                          style={{ width: `${scores[selectedRegime].legality * 10}%`, height: '100%', backgroundColor: 'var(--accent-gold)' }}
+                          className="bg-[var(--accent-gold)] h-full rounded-full transition-all duration-1000" 
+                          style={{ width: `${scores[selectedRegime].legality * 10}%` }}
                         ></div>
                       </div>
                     </div>
 
                     {/* Feasibility Card */}
-                    <div className="glass-panel p-3 bg-[rgba(255,255,255,0.01)] border-[rgba(255,255,255,0.05)] rounded-lg text-center" style={{ padding: '12px', textAlign: 'center' }}>
-                      <span className="text-[10px] text-[var(--text-secondary)] block font-semibold mb-1" style={{ display: 'block', fontSize: '10px', fontWeight: 600, marginBottom: '4px' }}>FEASIBILITY</span>
-                      <span className="text-xl font-bold font-mono text-[var(--accent-cyan)]" style={{ fontSize: '20px', color: 'var(--accent-cyan)' }}>
+                    <div className="glass-panel p-5 bg-[var(--bg-surface-raised)] border border-[var(--border-subtle)] rounded-xl text-center relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-[var(--accent-cyan)] shadow-[var(--shadow-glow-cyan)]"></div>
+                      <span className="text-[10px] text-[var(--text-muted)] block font-bold uppercase tracking-widest mb-2">FEASIBILITY</span>
+                      <span className="text-2xl font-black font-mono text-[var(--accent-cyan)] drop-shadow-[0_0_5px_rgba(0,240,255,0.5)]">
                         {scores[selectedRegime].feasibility}/10
                       </span>
-                      <div className="w-full bg-[rgba(255,255,255,0.04)] h-1.5 rounded-full overflow-hidden mt-2" style={{ width: '100%', height: '6px', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: '999px', marginTop: '8px' }}>
+                      <div className="w-full bg-[var(--bg-glass-light)] h-2 rounded-full overflow-hidden mt-3">
                         <div 
-                          className="bg-[var(--accent-cyan)] h-full rounded-full transition-all duration-500" 
-                          style={{ width: `${scores[selectedRegime].feasibility * 10}%`, height: '100%', backgroundColor: 'var(--accent-cyan)' }}
+                          className="bg-[var(--accent-cyan)] h-full rounded-full transition-all duration-1000" 
+                          style={{ width: `${scores[selectedRegime].feasibility * 10}%` }}
                         ></div>
                       </div>
                     </div>
 
                     {/* Resilience Card */}
-                    <div className="glass-panel p-3 bg-[rgba(255,255,255,0.01)] border-[rgba(255,255,255,0.05)] rounded-lg text-center" style={{ padding: '12px', textAlign: 'center' }}>
-                      <span className="text-[10px] text-[var(--text-secondary)] block font-semibold mb-1" style={{ display: 'block', fontSize: '10px', fontWeight: 600, marginBottom: '4px' }}>RESILIENCE</span>
-                      <span className="text-xl font-bold font-mono text-[var(--accent-purple)]" style={{ fontSize: '20px', color: 'var(--accent-purple)' }}>
+                    <div className="glass-panel p-5 bg-[var(--bg-surface-raised)] border border-[var(--border-subtle)] rounded-xl text-center relative overflow-hidden">
+                      <div className="absolute top-0 left-0 w-full h-1 bg-[var(--accent-purple)] shadow-[var(--shadow-glow-purple)]"></div>
+                      <span className="text-[10px] text-[var(--text-muted)] block font-bold uppercase tracking-widest mb-2">RESILIENCE</span>
+                      <span className="text-2xl font-black font-mono text-[var(--accent-purple)] drop-shadow-[0_0_5px_rgba(189,0,255,0.5)]">
                         {scores[selectedRegime].resilience}/10
                       </span>
-                      <div className="w-full bg-[rgba(255,255,255,0.04)] h-1.5 rounded-full overflow-hidden mt-2" style={{ width: '100%', height: '6px', backgroundColor: 'rgba(255,255,255,0.04)', borderRadius: '999px', marginTop: '8px' }}>
+                      <div className="w-full bg-[var(--bg-glass-light)] h-2 rounded-full overflow-hidden mt-3">
                         <div 
-                          className="bg-[var(--accent-purple)] h-full rounded-full transition-all duration-500" 
-                          style={{ width: `${scores[selectedRegime].resilience * 10}%`, height: '100%', backgroundColor: 'var(--accent-purple)' }}
+                          className="bg-[var(--accent-purple)] h-full rounded-full transition-all duration-1000" 
+                          style={{ width: `${scores[selectedRegime].resilience * 10}%` }}
                         ></div>
                       </div>
                     </div>
@@ -326,33 +323,19 @@ export const JudgeLeaderboard: React.FC<JudgeLeaderboardProps> = ({
               )}
 
               {/* Verdict Verdict Section */}
-              <div className="glass-panel p-5 bg-[rgba(10,11,16,0.3)] border-[rgba(255,255,255,0.04)] rounded-lg space-y-3 relative overflow-hidden" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                <div className="flex items-center gap-2 text-[var(--accent-gold)]" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-gold)' }}>
-                  <Star size={14} fill="var(--accent-gold)" />
-                  <h4 className="text-xs font-bold uppercase tracking-wider font-heading" style={{ fontSize: '12px', fontWeight: 700 }}>
+              <div className="glass-panel p-6 bg-[var(--bg-glass-medium)] border-[var(--border-subtle)] rounded-xl space-y-4">
+                <div className="flex items-center gap-3 text-[var(--accent-gold)]">
+                  <Star size={16} className="fill-[var(--accent-gold)] drop-shadow-[0_0_5px_rgba(255,215,0,0.5)]" />
+                  <h4 className="text-sm font-black uppercase tracking-widest font-heading">
                     AI JUDGE VERDICT & COMPLIANCE FEEDBACK
                   </h4>
                 </div>
 
-                <div 
-                  className="text-xs text-[var(--text-primary)] leading-relaxed font-mono bg-[rgba(0,0,0,0.2)] p-4 rounded border border-[rgba(255,255,255,0.02)] max-h-56 overflow-y-auto"
-                  style={{
-                    fontSize: '12px',
-                    color: 'var(--text-primary)',
-                    fontFamily: 'var(--font-mono)',
-                    lineHeight: '1.7',
-                    background: 'rgba(0,0,0,0.2)',
-                    padding: '16px',
-                    borderRadius: '4px',
-                    border: '1px solid rgba(255,255,255,0.02)',
-                    maxHeight: '224px',
-                    overflowY: 'auto'
-                  }}
-                >
+                <div className="text-sm text-[var(--text-primary)] leading-relaxed font-mono bg-[var(--bg-surface)] p-5 rounded-lg border border-[var(--border-subtle)] max-h-72 overflow-y-auto scroll-fade-y shadow-[inset_var(--shadow-glass)]">
                   {hasRealData ? (
                     parsed.verdict ? (
                       parsed.verdict.split('\n').map((line, idx) => (
-                        <p key={idx} className="mb-1 text-[var(--text-secondary)]">{line}</p>
+                        <p key={idx} className="mb-2 text-[var(--text-secondary)]">{line}</p>
                       ))
                     ) : (
                       <span className="text-[var(--text-muted)] italic">No detailed analysis compiled by the judge.</span>
@@ -360,18 +343,18 @@ export const JudgeLeaderboard: React.FC<JudgeLeaderboardProps> = ({
                   ) : verdicts[selectedRegime] ? (
                     verdicts[selectedRegime].split('\n\n').map((paragraph, pIdx) => {
                       if (paragraph.startsWith('###')) {
-                        return <h4 key={pIdx} className="text-sm font-semibold mt-3 mb-2 text-[var(--accent-cyan)]">{paragraph.replace('###', '').trim()}</h4>;
+                        return <h4 key={pIdx} className="text-base font-bold mt-4 mb-2 text-[var(--accent-cyan)] drop-shadow-[0_0_3px_rgba(0,240,255,0.3)]">{paragraph.replace('###', '').trim()}</h4>;
                       }
                       if (paragraph.startsWith('-')) {
                         return (
-                          <ul key={pIdx} className="list-disc list-inside ml-2 mb-2 text-[var(--text-secondary)]">
+                          <ul key={pIdx} className="list-disc list-inside ml-4 mb-3 text-[var(--text-secondary)] space-y-1">
                             {paragraph.split('\n').map((li, lIdx) => (
                               <li key={lIdx} className="mb-1">{li.replace('-', '').trim()}</li>
                             ))}
                           </ul>
                         );
                       }
-                      return <p key={pIdx} className="mb-2.5 text-[var(--text-secondary)]">{paragraph}</p>;
+                      return <p key={pIdx} className="mb-3 text-[var(--text-secondary)]">{paragraph}</p>;
                     })
                   ) : (
                     <span className="text-[var(--text-muted)] italic">No detailed analysis compiled by the judge.</span>

@@ -54,5 +54,5 @@
 ## 历史参考
 - 《旧五代史·职官志》
 - 《新五代史·职方考》
-- 欧阳修《五代史记》
+- 王赓武 (Wang Gungwu), *The Structure of Power in North China during the Five Dynasties* (1963)
 - 钱穆《中国历代政治得失》

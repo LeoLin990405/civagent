@@ -52,4 +52,4 @@ The Abbasid Caliphate (750–1258 AD) marked the Islamic Golden Age. It integrat
 - 阿布·哈桑·马瓦尔迪（Al-Mawardi）：《统治的原则》（Al-Ahkam al-Sultaniyya）
 - 塔巴里（Al-Tabari）：《先知与国王的历史》（Tarikh al-Rusul wa al-Muluk）
 - 马歇尔·霍奇森（Marshall Hodgson）：《伊斯兰的历程》（The Venture of Islam）
-- 休·肯尼迪（Hugh Kennedy）：《哈里发：伊斯兰帝国历史》（The Prophet and the Age of the Caliphates）
+- 休·肯尼迪（Hugh Kennedy）：《先知与哈里发时代》（*The Prophet and the Age of the Caliphates*, 1986）
