@@ -1,6 +1,12 @@
 import express from 'express';
 import cors from 'cors';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { initDb } from './db/database.mjs';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const SCENARIOS_PATH = path.resolve(__dirname, '../engine/prompts/governance-scenarios.json');
 
 import regimesRoutes from './routes/regimes.mjs';
 import tournamentsRoutes from './routes/tournaments.mjs';
@@ -32,6 +38,15 @@ export function createApp() {
         heapUsed: Math.round(process.memoryUsage().heapUsed / 1024 / 1024) + 'MB',
       }
     });
+  });
+
+  // Governance scenario library (prompt bank for the tournament launcher)
+  app.get('/api/scenarios', (req, res) => {
+    try {
+      res.json(JSON.parse(fs.readFileSync(SCENARIOS_PATH, 'utf8')));
+    } catch (err) {
+      res.status(500).json({ error: `cannot read scenario library: ${err.message}` });
+    }
   });
 
   // Register modularized routes

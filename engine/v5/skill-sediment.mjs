@@ -12,6 +12,7 @@ import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { runJudge, hasBinary } from "./judge.mjs";
 import { scanSkillText, pinSkillFrontmatter } from "./skill-scan.mjs";
+import { findDuplicate } from "./skill-quality.mjs";
 
 const EXTRACT_PROMPT = `You are reviewing a CivAgent governance match transcript.
 Analyze the interactions from a digital humanities and historical simulation perspective.
@@ -158,6 +159,12 @@ export async function sediment({ matchId, regime, regimeDir, transcriptPath, exi
   if (extracted.includes("NO_PATTERN")) return { skipped: "no pattern" };
 
   if (!hasSkillFrontmatter(extracted)) return { rejected: "missing frontmatter" };
+
+  // R2 dedup gate: deterministic and cheaper than any LLM audit — an exact or
+  // near-duplicate of an already-learned skill is rejected before the scan and
+  // audit spend anything. Threshold via CIVAGENT_SKILL_DUP_THRESHOLD.
+  const dup = findDuplicate(extracted, path.join(regimeDir, "skills"));
+  if (dup) return { rejected: `duplicate of existing skill: ${dup}` };
 
   const gateOn = skillGateEnabled();
   if (!gateOn) {

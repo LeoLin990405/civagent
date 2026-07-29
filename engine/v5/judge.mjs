@@ -9,6 +9,12 @@
 // reintroduced by accident or by a stale config.
 
 import { spawnSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const REGIMES_ROOT = path.resolve(__dirname, "../../regimes");
 
 // id → how to invoke it. Prompt is always passed as the final positional arg so
 // callers don't have to worry about stdin plumbing.
@@ -37,6 +43,51 @@ export function resolveJudgeChain(preferred = DEFAULT_JUDGE_CHAIN) {
     chain.push(id);
   }
   return chain;
+}
+
+// ── Civ anonymization (blind judging, R2 revived) ───────────────────────────
+// Replace every recognisable name of each civ — full id ("china/tang"), slug
+// ("tang"), and the display names from its metadata ("唐朝", "Tang Dynasty") —
+// with a positional label (Civ-A, Civ-B, …). Replacement runs in descending
+// variant-length order so a longer name is never corrupted by a shorter prefix
+// ("china/jin-jurchen" before "china/jin"; "Tang Dynasty" before "tang").
+// Codex review P1(c): stripping only regime ids left display names in the
+// transcripts, defeating the blinding — metadata names are covered here.
+export function anonymizeCivs(civRegimes, { regimesRoot = REGIMES_ROOT } = {}) {
+  const labels = civRegimes.map((_, i) => `Civ-${String.fromCharCode(65 + i)}`);
+  const realFor = new Map(labels.map((l, i) => [l, civRegimes[i]]));
+  const labelFor = new Map(civRegimes.map((r, i) => [r, labels[i]]));
+
+  const variants = []; // [{ text, label }]
+  civRegimes.forEach((regime, i) => {
+    const label = labels[i];
+    variants.push({ text: regime, label });
+    const slug = regime.split("/")[1];
+    if (slug) variants.push({ text: slug, label });
+    try {
+      const meta = JSON.parse(
+        fs.readFileSync(path.join(regimesRoot, regime, "metadata.json"), "utf8"),
+      );
+      for (const name of [meta?.name?.zh, meta?.name?.en]) {
+        if (typeof name === "string" && name.trim()) variants.push({ text: name.trim(), label });
+      }
+    } catch { /* regime dir without metadata — ids/slug still covered */ }
+  });
+  variants.sort((a, b) => b.text.length - a.text.length);
+
+  const transform = (text) => {
+    let out = String(text);
+    for (const { text: t, label } of variants) out = out.split(t).join(label);
+    return out;
+  };
+  // Reverse mapping for human-facing output (verdict paragraphs).
+  const detransform = (text) => {
+    let out = String(text);
+    for (const [label, real] of realFor) out = out.split(label).join(real);
+    return out;
+  };
+
+  return { labels, realFor, labelFor, transform, detransform };
 }
 
 // Run the first available provider in the chain, retrying each `retries` times
