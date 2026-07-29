@@ -1,8 +1,12 @@
 # TASK-r5-trae: expand governance-scenarios.json 10 → 40
 
-Status: PENDING
+Status: DONE (2026-07-30)
 Priority: P1
 Depends on: PR #29 merged (engine/prompts/governance-scenarios.json restored)
+
+> **Completion note**: library expanded 10 → 40 in `adbccfa`
+> (`engine/prompts/governance-scenarios.json` verified to contain exactly
+> 40 entries at `42889fe`).
 
 ## Goal
 

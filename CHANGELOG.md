@@ -9,11 +9,26 @@ The v6 hardening line rejoined main (PRs #19–#28) — see PR #29.
 - **R2 revival on the v6 architecture**: multi-provider judging (`tournament --judges N`), full civ anonymization for blind judging (`--anon-civs`, covers ids, slugs, and metadata display names), `engine/v5/skill-quality.mjs` (SHA-256 + Jaccard dedup as a sediment gate + `civagent skills <regime> --stats`), `engine/v5/replay.mjs` (`civagent replay <matchId>`, lineage always points at the root match), and the restored `engine/prompts/governance-scenarios.json` served at `GET /api/scenarios`.
 - **Endpoints ported into the Express server**: `GET /api/stats/rankings` (BT rankings + CI), `GET /api/regimes/:region/:id/topology` (validator + metrics, shared with the CLI).
 - **Test hardening**: write-API tests with injected spawn, `parseIdentityTable` contract tests (incl. the prose-IDENTITY→0-agents hazard, swept across all 57 regimes), integration fake-bin list derived from `BACKEND_COMMANDS` + `JUDGE_PROVIDERS`.
+- **Route test coverage** (R5 Batch 1): hermetic tests with injectable `rootDir` for the regime/match/history routes — `test/routes-regimes.test.mjs`, `test/routes-matches.test.mjs`, `test/routes-history.test.mjs`.
+- **Skill stats endpoint** (R5 Batch 2): `GET /api/skills/:region/:id/stats` — per-regime dedup/quality analysis over the learned-skills dir (`server/routes/skills.mjs` + `server/services/skills.mjs`, tests in `test/routes-skills.test.mjs`).
+- **Scenario library 10 → 40** (R5 Batch 2): 30 new governance scenarios in `engine/prompts/governance-scenarios.json` (served at `GET /api/scenarios`).
+- **Tournament Launcher + Skill Library tabs** (R5 Batch 2): `frontend/src/components/TournamentLauncher.tsx` launches real tournaments through `POST /api/tournaments`; `frontend/src/components/SkillLibrary.tsx` browses learned skills and their stats; contracts in `frontend/src/types/api.ts`.
+- **Review regression tests** (Codex R5 follow-up): `test/judge-anon-multi.test.mjs` (blind-judge role-name leak), `test/replay.test.mjs` and `test/tournaments-write-api.test.mjs` extensions (path-safe lineage, unknown-backend rejection), `test/services-regimes-cache.test.mjs` (cache staleness). Backend suite 252 → 287.
+
+### Changed
+- **Server modularization** (R5 Batch 1): route files restructured as factories with injectable deps; shared, cached regime catalog service in `server/services/regimes.mjs`; unified error/status helpers in `server/http.mjs` (`server/routes/*.mjs` rewritten on top).
+- **Tournament module split** (R5 Batch 1): `engine/v5/tournament.mjs` cut 710 → 462 lines — blind-judge rubric moved to `engine/v5/judge-rubric.mjs`, T3 deterministic grading to `engine/v5/deterministic-grading.mjs`; the original module re-exports the moved symbols, so the export surface is unchanged.
+- **Frontend cleanup** (R5 Batch 1): retired four orphan components (`CodexBrowser`, `JudgeLeaderboard`, `RegimeBrowser`, `TerminalPanel`, −1226 lines) and revived match history as the `frontend/src/components/MatchArchive.tsx` tab.
+- **CLI de-duplication** (R5 Batch 1): shared helpers extracted to `bin/lib/common.sh` (colors, `die`, `validate_regime`, single-shot metadata reader); `civagent list` now spawns one `python3` per regime instead of four (228 → 57 processes, ~4.1s → ~1.2s).
 
 ### Fixed
 - **CLI injection**: regime ids are whitelist-validated and no longer interpolated into `python -c` program strings (Codex R4 review P1a).
 - **Replay env hygiene**: replay children drop inherited `CIVAGENT_*` vars (P1b); blind judging covers display names (P1c).
 - **china/tang**: audited 9-agent 三省六部 structure with a matching `topology.json`.
+- **Blind-judge role-name leak** (Codex R5 review, P1): anonymization now also neutralizes regime-specific agent IDs / office labels inside transcripts before judge prompts are built, so e.g. `zhongshu`/`menxia` speaker labels no longer reveal `china/tang` to the judge (`engine/v5/judge.mjs`).
+- **Write API accepted unknown backends** (Codex R5 review, P1): `POST /api/tournaments` now validates the shared `backend` and per-civ `#backend` against known backends before answering `202`, instead of failing later in the detached child (`server/routes/tournaments.mjs`).
+- **Replay lineage path escape** (Codex R5 review, P1): match IDs and `replayOf` lineage pointers are validated with the same safe-segment rules as the server, and read paths are split from mkdir-on-write paths, so a corrupted lineage can no longer read metadata outside `~/.civagent/matches` (`engine/v5/replay.mjs`).
+- **Stale regime cache** (Codex review of PR #30, P1): the regime catalog cache is keyed on a recursive fingerprint (mtime + size) of the files it serves, not the top-level `regimes/` directory mtime — nested edits to `metadata.json` / `IDENTITY.md` / `SOUL.md` / `skills/*.md` now invalidate correctly without a server restart (`server/services/regimes.mjs`).
 
 ---
 
