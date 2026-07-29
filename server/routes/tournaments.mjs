@@ -67,8 +67,12 @@ export function createTournamentsRouter({
     // A syntactically valid but unknown backend used to pass validation and
     // only fail inside the detached child, so the client got a 202 for a run
     // that could never execute. Check against the real registry up front.
+    // Match engine/v5/backends.mjs::resolveBackend, which looks the id up both
+    // as given and lowercased — otherwise the API would reject "NATIVE" for a
+    // run the engine would happily execute.
     const knownBackends = Object.keys(BACKEND_COMMANDS);
-    const isKnownBackend = (b) => knownBackends.includes(b);
+    const isKnownBackend = (b) =>
+      knownBackends.includes(b) || knownBackends.includes(String(b).toLowerCase());
 
     for (const c of civs) {
       if (typeof c !== 'string' || !CIV_RE.test(c)) {

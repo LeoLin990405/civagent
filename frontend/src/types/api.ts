@@ -26,6 +26,14 @@ export interface RegimeDetail {
   skills: LearnedSkill[];
 }
 
+// GET /api/regimes?summary=1 — the same envelope as RegimeDetail minus the
+// markdown bodies. Note the shape is { id, metadata }, NOT a bare
+// RegimeMetadata: the display name lives at `metadata.name`, not `name`.
+export interface RegimeSummary {
+  id: string;
+  metadata: RegimeMetadata;
+}
+
 export interface JudgeScore {
   regime: string;
   score: number;

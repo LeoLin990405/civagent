@@ -45,3 +45,61 @@ Checked, no issue found: `server/routes/matches.mjs:47-122` and `server/routes/h
 Checked, no issue found: the cache itself has no in-process data race because all reads and cache replacement are synchronous in one Node event loop. The relevant concurrency/multi-process problem is stale independent process-local caches, covered by the P1 invalidation issue.
 
 ### Conclusion: REQUEST_CHANGES
+
+---
+
+## Re-review (round 2)
+
+## PR #29 review conclusion
+
+### P0 (must fix before merging)
+
+None found.
+
+### P1 (recommended fix, within this round)
+
+None remaining. The three prior P1s are closed:
+
+1. Closed: `engine/v5/judge.mjs:77-118`, `test/judge-anon-multi.test.mjs:45-78` now blind topology node ids, topology labels, bare parenthetical-stripped labels, and Agent IDs from `IDENTITY.md`. Trigger from the prior review (`zhongshu`, `menxia`, `shangshu`, `libu_*`, `shoufu`, `silijian`) no longer survives `anonymizeCivs()`. Impact: the direct role-name leak is fixed while one actor still maps to one stable `Civ-A-Rn` slot.
+
+2. Closed: `server/routes/tournaments.mjs:70-93` now rejects unknown shared and pinned backends before spawning. Empty `#`, multiple `#`, and `#` with no backend are rejected by `CIV_RE` at `server/routes/tournaments.mjs:18`; no comma or shell escape reaches `--civs` because spawn receives argv entries directly at `server/routes/tournaments.mjs:113-118`.
+
+3. Closed: `engine/v5/replay.mjs:23-31`, `engine/v5/replay.mjs:87-93` validate both caller ids and disk-read `replayOf` ids before `metaPath()`. `"."`, `".."`, `"..."`, slash, backslash, and any id containing `".."` are rejected. `newReplayId()` at `engine/v5/replay.mjs:41-46` starts with `replay-` and replaces unsafe original-id prefix chars, so generated ids satisfy the safe-id contract.
+
+### P2 (handle next round)
+
+1. Existing P2 remains: `engine/v5/skill-sediment.mjs:163-178` still runs duplicate detection before injection scanning. This is fail-closed for persistence, but telemetry still misses near-duplicate injection attempts.
+
+2. Non-blocking contract mismatch: `server/routes/tournaments.mjs:70-93` validates backends with exact `BACKEND_COMMANDS` keys, while `engine/v5/backends.mjs:43-49` accepts case-insensitive backend ids via `toLowerCase()`. Trigger: `POST /api/tournaments` with `backend:"NATIVE"` or `civs:["china/tang#CN:GLM"]` returns 400 even though the engine resolver would accept it. Impact: stricter API than engine, not an escape or security issue. Fix: either document canonical lowercase-only API ids or reuse `isKnownBackend()`/normalization from `engine/v5/backends.mjs`.
+
+Checked, no issue found: `engine/v5/tournament.mjs:429-484` plus `aggregateJudgePasses()` at `engine/v5/tournament.mjs:180-208` still pool completed passes only. A provider that succeeds one swapped pass and fails the next contributes exactly one completed pass; failed/unparsed passes do not add scores or denominator weight.
+
+Checked, no issue found: the role-slot `Civ-A-R10` / `Civ-A-R1` prefix concern does not corrupt scoring because transform variants are sorted longest-first at `engine/v5/judge.mjs:120-126`. `detransform()` at `engine/v5/judge.mjs:129-133` can render role labels in verdict prose as `china/tang-Rn`, but that is post-parse human text and not a scoring leak.
+
+Checked, no issue found: semantic fingerprints such as SOUL wording, mode names, tags, and agent counts are not directly injected into the judge header by `transcriptSection()` at `engine/v5/tournament.mjs:370-380`; only transcript/log content remains, which cannot be fully blinded without removing the governance behavior being judged.
+
+### Conclusion: APPROVE
+
+## PR #30 review conclusion
+
+### P0 (must fix before merging)
+
+None found.
+
+### P1 (recommended fix, within this round)
+
+None remaining. The prior cache P1 is closed: `server/services/regimes.mjs:63-99` fingerprints served files recursively using path, `mtimeMs`, and size; `server/services/regimes.mjs:145-164` rebuilds summary/full cache entries when that fingerprint changes. The tests at `test/services-regimes-cache.test.mjs:44-84` cover nested body edits, metadata edits, skill add/remove, and new regimes; `test/services-regimes-cache.test.mjs:98-117` also closes the prior summary cold-read P2 by asserting markdown bodies are not read for `?summary=1`.
+
+### P2 (handle next round)
+
+1. `frontend/src/components/TournamentLauncher.tsx:31-35`, `frontend/src/components/TournamentLauncher.tsx:167-190`, `server/services/regimes.mjs:125-128`, `test/routes-regimes.test.mjs:99-102` - Launcher treats `/api/regimes?summary=1` rows as `RegimeMetadata[]`, but the endpoint contract is `{ id, metadata }[]`. Trigger: open Tournament Launcher; `r.id` works, so selection and POST `civs` are correct, but `r.name` is undefined, so the primary label falls back to `china/tang` and the secondary line also shows `china/tang` instead of `Tang Dynasty` plus id. Impact: display regression only, not a launch correctness bug. Fix: introduce the same `RegimeSummary` shape used by `SkillLibrary.tsx` and read `r.metadata.name`.
+
+2. Documented cache blind spot remains: `server/services/regimes.mjs:80-97` cannot detect a deliberate same-size rewrite whose `mtimeMs` is restored to the old value, for example with `fs.utimesSync()`. Impact is stale catalog until the next detectable change or `invalidateRegimeCache()`. This is not a normal editor/write-path failure and is acceptable as P2.
+
+Checked, no issue found: `server/routes/skills.mjs:21-25` and `server/services/skills.mjs:75-120` use `safeResolve()` for `region/id`, reuse `analyzeSkillsDir()`, normalize missing date stats to null/0, and preserve 200+empty for regimes with no `skills/` dir. The tests at `test/routes-skills.test.mjs:66-188` cover happy path, empty skills, 404, traversal/bad ids, duplicate groups, and missing metadata fields.
+
+Checked, no issue found: `frontend/src/components/SkillLibrary.tsx:20-73` consumes the summary endpoint with the correct `{ id, metadata }` shape. Real metadata files include `region`, for example `regimes/china/tang/metadata.json:5` and `regimes/global/athens/metadata.json:5`, so the China/Global grouping is populated.
+
+Checked, no issue found: the service cache has no in-process race in the inspected code path because directory scan, fingerprinting, reads, and cache replacement are synchronous in one Node event loop. Multi-process servers keep independent caches, but each process recomputes the recursive fingerprint on request.
+
+### Conclusion: APPROVE

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { RegimeMetadata, Scenario, TournamentLaunchRequest } from '../types/api';
+import type { RegimeSummary, Scenario, TournamentLaunchRequest } from '../types/api';
 
 const MAX_CIVS = 6;
 const MAX_TASK_LENGTH = 2000;
@@ -9,7 +9,7 @@ interface TournamentLauncherProps {
 }
 
 export const TournamentLauncher: React.FC<TournamentLauncherProps> = ({ onNavigateToLive }) => {
-  const [regimes, setRegimes] = useState<RegimeMetadata[]>([]);
+  const [regimes, setRegimes] = useState<RegimeSummary[]>([]);
   const [scenarios, setScenarios] = useState<Scenario[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -31,7 +31,7 @@ export const TournamentLauncher: React.FC<TournamentLauncherProps> = ({ onNaviga
     Promise.all([
       fetch('/api/regimes?summary=1').then((r) => {
         if (!r.ok) throw new Error(`Failed to load regimes: ${r.status}`);
-        return r.json() as Promise<RegimeMetadata[]>;
+        return r.json() as Promise<RegimeSummary[]>;
       }),
       fetch('/api/scenarios').then((r) => {
         if (!r.ok) throw new Error(`Failed to load scenarios: ${r.status}`);
@@ -166,7 +166,10 @@ export const TournamentLauncher: React.FC<TournamentLauncherProps> = ({ onNaviga
         >
           {regimes.map((r) => {
             const selected = selectedCivs.includes(r.id);
-            const displayName = typeof r.name === 'object' ? r.name.en : r.name ?? r.id;
+            // The summary endpoint returns { id, metadata } — the display name is
+            // under metadata.name (an {zh,en} pair), not on the row itself.
+            const n = r.metadata?.name;
+            const displayName = typeof n === 'object' ? n.en : n ?? r.id;
             return (
               <button
                 key={r.id}
