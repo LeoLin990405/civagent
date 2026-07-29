@@ -104,3 +104,35 @@ test("replayMatch of a failing child records status=failed", async () => {
 test("replayMatch of an unknown match throws", () => {
   assert.throws(() => readMatchMeta("no-such-match-id-xyz"), /match not found/);
 });
+
+// Codex review R5 P1(3): metaPath() joins the id straight onto
+// ~/.civagent/matches and matchDir() CREATES that directory before the read,
+// so a traversing id both escaped the root and left a directory behind.
+test("readMatchMeta rejects ids that would escape ~/.civagent/matches", () => {
+  for (const bad of ["../../../../tmp/civagent-escape-probe", "a/b", "..", ".", "./x", "x\\y"]) {
+    assert.throws(() => readMatchMeta(bad), /unsafe match id/, `must reject ${JSON.stringify(bad)}`);
+  }
+  assert.ok(
+    !fs.existsSync("/tmp/civagent-escape-probe"),
+    "a rejected id must not have created a directory on the way out",
+  );
+});
+
+test("a damaged replayOf pointer is rejected, not followed", async () => {
+  const matchId = `test-replay-evil-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  writeMeta(matchId, {
+    replayOf: "../../../../tmp/civagent-lineage-probe",
+    regime: "china/tang",
+    backend: "native",
+    task: "t",
+  });
+  try {
+    await assert.rejects(
+      () => replayMatch(matchId, { _spawn: fakeSpawnFactory([]), _runV5: "/fake/run-v5.mjs" }),
+      /unsafe replayOf lineage id/,
+    );
+    assert.ok(!fs.existsSync("/tmp/civagent-lineage-probe"), "no directory created off the bad pointer");
+  } finally {
+    fs.rmSync(path.dirname(metaPath(matchId)), { recursive: true, force: true });
+  }
+});

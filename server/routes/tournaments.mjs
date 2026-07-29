@@ -6,6 +6,7 @@ import { spawn } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { safeResolve, resolveFixedFile } from '../utils.mjs';
 import { newTournamentId, TOURNAMENT_ID_RE } from '../../engine/v5/tournament.mjs';
+import { BACKEND_COMMANDS } from '../../engine/v5/backends.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const TOURNAMENT_MJS = path.resolve(__dirname, '../../engine/v5/tournament.mjs');
@@ -63,9 +64,21 @@ export function createTournamentsRouter({
     if (!Array.isArray(civs) || civs.length < 1 || civs.length > MAX_CIVS) {
       return res.status(400).json({ error: `civs must be an array of 1-${MAX_CIVS} regime ids` });
     }
+    // A syntactically valid but unknown backend used to pass validation and
+    // only fail inside the detached child, so the client got a 202 for a run
+    // that could never execute. Check against the real registry up front.
+    const knownBackends = Object.keys(BACKEND_COMMANDS);
+    const isKnownBackend = (b) => knownBackends.includes(b);
+
     for (const c of civs) {
       if (typeof c !== 'string' || !CIV_RE.test(c)) {
         return res.status(400).json({ error: `invalid civ: ${JSON.stringify(c)} (expected region/regime-id[#backend])` });
+      }
+      const pinned = c.includes('#') ? c.split('#')[1] : null;
+      if (pinned !== null && !isKnownBackend(pinned)) {
+        return res.status(400).json({
+          error: `unknown backend in civ ${JSON.stringify(c)}: ${JSON.stringify(pinned)} (known: ${knownBackends.join(', ')})`,
+        });
       }
     }
     if (typeof task !== 'string' || !task.trim() || task.length > MAX_TASK_CHARS) {
@@ -73,6 +86,11 @@ export function createTournamentsRouter({
     }
     if (backend != null && (typeof backend !== 'string' || !BACKEND_RE.test(backend))) {
       return res.status(400).json({ error: 'invalid backend id' });
+    }
+    if (backend != null && !isKnownBackend(backend)) {
+      return res.status(400).json({
+        error: `unknown backend: ${JSON.stringify(backend)} (known: ${knownBackends.join(', ')})`,
+      });
     }
     if (judgesN != null && (!Number.isInteger(judgesN) || judgesN < 1 || judgesN > 3)) {
       return res.status(400).json({ error: 'judgesN must be an integer between 1 and 3' });

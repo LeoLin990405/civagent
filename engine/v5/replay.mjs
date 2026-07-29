@@ -14,8 +14,25 @@ import { metaPath, writeMeta } from "./events.mjs";
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 export const RUN_V5 = path.join(__dirname, "run-v5.mjs");
 
+// A match id becomes a directory name under ~/.civagent/matches. Anything with
+// a separator or a dot segment would escape that root — and metaPath() calls
+// matchDir(), which CREATES the directory before the read. So ids are validated
+// before they ever reach the filesystem, both for the id the caller passes and
+// for the replayOf field read back off disk (a damaged meta.json is untrusted
+// input, not a trusted pointer).
+export const SAFE_MATCH_ID = /^[A-Za-z0-9][A-Za-z0-9._-]*$/;
+
+export function assertSafeMatchId(matchId, what = "match id") {
+  const id = String(matchId ?? "");
+  if (id.includes("/") || id.includes("\\") || id === "." || id === ".." || id.includes("..") || !SAFE_MATCH_ID.test(id)) {
+    throw new Error(`unsafe ${what}: ${JSON.stringify(matchId)}`);
+  }
+  return id;
+}
+
 // Read and parse a past match's meta.json. Throws if not found.
 export function readMatchMeta(matchId) {
+  assertSafeMatchId(matchId);
   const p = metaPath(matchId);
   if (!fs.existsSync(p)) throw new Error(`match not found: ${matchId} (looked for ${p})`);
   return JSON.parse(fs.readFileSync(p, "utf8"));
@@ -46,7 +63,19 @@ export function replayChildEnv(newMatchId, baseEnv = process.env) {
 
 // Replay a past match. Returns a Promise<{ newMatchId, replayOf, exitCode }>.
 // Accepts injectable _spawn and _runV5 for testing.
-export function replayMatch(originalMatchId, {
+// Returns a Promise, so every failure — including the synchronous validation
+// and meta-reading prelude — must arrive as a rejection. Throwing synchronously
+// from a promise-returning function bypasses the caller's .catch() (the CLI's
+// friendly error path) and surfaces as an unhandled exception instead.
+export function replayMatch(originalMatchId, opts = {}) {
+  try {
+    return replayMatchInner(originalMatchId, opts);
+  } catch (e) {
+    return Promise.reject(e);
+  }
+}
+
+function replayMatchInner(originalMatchId, {
   _runV5 = RUN_V5,
   _spawn = spawn,
 } = {}) {
@@ -57,7 +86,9 @@ export function replayMatch(originalMatchId, {
   const seen = new Set([rootId]);
   while (meta.replayOf) {
     if (seen.has(meta.replayOf)) break; // defensive: broken lineage loop on disk
-    rootId = meta.replayOf;
+    // replayOf comes off disk and may be damaged or hostile; validate it with
+    // the same rule as a caller-supplied id before following the pointer.
+    rootId = assertSafeMatchId(meta.replayOf, "replayOf lineage id");
     seen.add(rootId);
     meta = readMatchMeta(rootId);
   }

@@ -12,6 +12,7 @@ import { spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { parseIdentityAgentIds } from "../topology/validate.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const REGIMES_ROOT = path.resolve(__dirname, "../../regimes");
@@ -72,7 +73,52 @@ export function anonymizeCivs(civRegimes, { regimesRoot = REGIMES_ROOT } = {}) {
         if (typeof name === "string" && name.trim()) variants.push({ text: name.trim(), label });
       }
     } catch { /* regime dir without metadata — ids/slug still covered */ }
+
+    // Role names are as identifying as the regime name: a transcript saying
+    // "zhongshu drafts, menxia vetoes" names the Tang three-department system
+    // outright. Replace every agent id and office label with a neutral,
+    // per-civ role slot (Civ-A-R1 …) so the judge can still follow who did
+    // what without being able to recognise which regime it is.
+    let slot = 0;
+    const seen = new Set();
+    const slotOf = new Map(); // agent id / office name → its role slot
+    // One slot per ROLE, not per spelling: a node's id and its office label are
+    // the same actor, so they must map to the same Civ-A-Rn or the judge will
+    // read one department as two.
+    const pushRole = (...spellings) => {
+      const forms = [];
+      for (const raw of spellings) {
+        const t = typeof raw === "string" ? raw.trim() : "";
+        // 1-char names are too generic to substitute safely (they'd shred prose).
+        if (t.length < 2 || seen.has(t)) continue;
+        forms.push(t);
+        // Topology labels carry a parenthetical gloss ("中书省（起草）"); the bare
+        // office name is what actually appears in a transcript.
+        const bare = t.replace(/[（(][^）)]*[）)]\s*$/, "").trim();
+        if (bare.length >= 2 && bare !== t && !seen.has(bare)) forms.push(bare);
+      }
+      if (forms.length === 0) return;
+      const slotLabel = `${label}-R${++slot}`;
+      for (const f of forms) {
+        seen.add(f);
+        slotOf.set(f, slotLabel);
+        variants.push({ text: f, label: slotLabel });
+      }
+    };
+    try {
+      const topo = JSON.parse(
+        fs.readFileSync(path.join(regimesRoot, regime, "topology.json"), "utf8"),
+      );
+      for (const n of topo?.nodes ?? []) pushRole(n?.id, n?.label);
+    } catch { /* no topology.json — fall back to the IDENTITY table below */ }
+    try {
+      const identity = fs.readFileSync(path.join(regimesRoot, regime, "IDENTITY.md"), "utf8");
+      // Agent ids already covered by a topology node keep that node's slot.
+      for (const id of parseIdentityAgentIds(identity)) pushRole(id);
+    } catch { /* no IDENTITY.md — regime/topology coverage still applies */ }
   });
+  // Longest first, so "libu_personnel" is consumed before "libu", and
+  // "china/jin-jurchen" before "china/jin".
   variants.sort((a, b) => b.text.length - a.text.length);
 
   const transform = (text) => {
