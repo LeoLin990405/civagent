@@ -1,3 +1,5 @@
+> **SUPERSEDED (2026-07-29)** — historical record of R4. Current tasks: tasks/TASK-r5-*.md. Note: the API server listens on port 3001, not 4242.
+
 # TASK-r4-trae — Governance Scenario Bank Expansion
 
 **Assigned to**: Trae (MiMo model)  
