@@ -16,9 +16,13 @@ interface EventPayload {
   ts?: number;
 }
 
-export const LiveCourt: React.FC = () => {
+interface LiveCourtProps {
+  initialMatchId?: string;
+}
+
+export const LiveCourt: React.FC<LiveCourtProps> = ({ initialMatchId }) => {
   const [matches, setMatches] = useState<MatchMeta[]>([]);
-  const [selectedMatch, setSelectedMatch] = useState<string | null>(null);
+  const [selectedMatch, setSelectedMatch] = useState<string | null>(initialMatchId ?? null);
   const [events, setEvents] = useState<EventPayload[]>([]);
   const [connected, setConnected] = useState(false);
   const eventsEndRef = useRef<HTMLDivElement>(null);
@@ -29,12 +33,12 @@ export const LiveCourt: React.FC = () => {
       .then(res => res.json())
       .then(data => {
         setMatches(data);
-        if (data.length > 0) {
+        if (data.length > 0 && !selectedMatch) {
           setSelectedMatch(data[0].id);
         }
       })
       .catch(console.error);
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Connect to SSE stream when a match is selected
   useEffect(() => {
