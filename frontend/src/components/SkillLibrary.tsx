@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import type { RegimeMetadata, SkillsStatsResponse } from '../types/api';
+import { Clock, ShieldAlert } from 'lucide-react';
+import type { RegimeMetadata, SkillsStatsResponse, StagedSkillEntry } from '../types/api';
 
 // A lightweight view of the summary endpoint
 interface RegimeSummary {
@@ -26,6 +27,11 @@ export const SkillLibrary: React.FC = () => {
   const [statsLoading, setStatsLoading] = useState(false);
   const [statsError, setStatsError] = useState<string | null>(null);
 
+  // Staging state
+  const [staged, setStaged] = useState<StagedSkillEntry[]>([]);
+  const [stagedLoading, setStagedLoading] = useState(false);
+  const [stagedError, setStagedError] = useState<string | null>(null);
+
   // Load regime list on mount
   useEffect(() => {
     let cancelled = false;
@@ -46,12 +52,16 @@ export const SkillLibrary: React.FC = () => {
     setStats(null);
     setStatsError(null);
     setStatsLoading(true);
+    setStaged([]);
+    setStagedError(null);
+    setStagedLoading(true);
 
     // Parse "region/id" from the regime id (e.g. "china/tang")
     const parts = regimeId.split('/');
     if (parts.length < 2) {
       setStatsError('Invalid regime id format');
       setStatsLoading(false);
+      setStagedLoading(false);
       return;
     }
     const [region, id] = parts;
@@ -66,6 +76,21 @@ export const SkillLibrary: React.FC = () => {
       .then((data) => { setStats(data); })
       .catch((e) => { setStatsError(e instanceof Error ? e.message : 'Failed to load skills'); })
       .finally(() => { setStatsLoading(false); });
+
+    // Fetch staged skills (endpoint may not exist yet)
+    fetch(`/api/skills/${encodeURIComponent(region)}/${encodeURIComponent(id)}/staged`)
+      .then((r) => {
+        if (r.status === 404) {
+          // Endpoint not implemented yet — not an error
+          setStaged([]);
+          return null;
+        }
+        if (!r.ok) throw new Error(`Server returned ${r.status}`);
+        return r.json() as Promise<{ staged: StagedSkillEntry[] }>;
+      })
+      .then((data) => { if (data) setStaged(data.staged ?? []); })
+      .catch(() => { setStagedError('Staging endpoint not available'); })
+      .finally(() => { setStagedLoading(false); });
   }, []);
 
   // Group regimes by region
@@ -139,6 +164,120 @@ export const SkillLibrary: React.FC = () => {
       <div style={{ overflowY: 'auto', flex: 1 }}>
         {renderGroup('China', chinaRegimes)}
         {renderGroup('Global', globalRegimes)}
+      </div>
+    );
+  };
+
+  // ── Staging section ───────────────────────────────────────────────────────
+  const renderStagingSection = () => {
+    if (stagedLoading) {
+      return (
+        <div style={{ padding: '12px', color: 'var(--text-muted)', fontSize: '13px' }}>
+          Loading staged skills...
+        </div>
+      );
+    }
+    if (stagedError) {
+      return (
+        <div
+          data-testid="staged-unavailable"
+          style={{
+            padding: '12px 16px',
+            borderRadius: '8px',
+            background: 'rgba(255,255,255,0.03)',
+            border: '1px solid var(--border-light)',
+            color: 'var(--text-muted)',
+            fontSize: '13px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px',
+          }}
+        >
+          <ShieldAlert size={14} />
+          <span>Pending approval view unavailable — staging endpoint not yet implemented. Use <code>civagent skills pending</code> CLI.</span>
+        </div>
+      );
+    }
+    if (staged.length === 0) {
+      return (
+        <div style={{ padding: '12px', color: 'var(--text-muted)', fontSize: '13px', opacity: 0.7 }}>
+          No skills pending approval.
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ fontSize: '12px', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '1px' }}>
+          Pending Approval ({staged.length})
+        </div>
+        {staged.map((skill) => (
+          <div
+            key={skill.filename}
+            data-testid="staged-skill"
+            className="glass-panel"
+            style={{
+              padding: '16px',
+              border: '1px solid rgba(234, 179, 8, 0.3)',
+            }}
+          >
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                  <Clock size={14} style={{ color: 'var(--accent-gold)' }} />
+                  <span style={{ fontWeight: 600, fontSize: '14px' }}>{skill.name || skill.filename}</span>
+                </div>
+                {skill.description && (
+                  <p style={{ margin: '0 0 6px 0', fontSize: '13px', color: 'var(--text-muted)', lineHeight: 1.4 }}>
+                    {skill.description}
+                  </p>
+                )}
+                {skill.flaggedRules.length > 0 && (
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginBottom: '6px' }}>
+                    {skill.flaggedRules.map((rule) => (
+                      <span
+                        key={rule}
+                        style={{
+                          padding: '2px 8px',
+                          borderRadius: '4px',
+                          background: 'rgba(239, 68, 68, 0.1)',
+                          border: '1px solid rgba(239, 68, 68, 0.2)',
+                          color: 'var(--accent-crimson)',
+                          fontSize: '11px',
+                        }}
+                      >
+                        {rule}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                <div style={{ fontSize: '12px', color: 'var(--text-muted)', display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+                  <span>File: {skill.filename}</span>
+                  <span>Size: {formatBytes(skill.sizeBytes)}</span>
+                  <span>Modified: {formatTime(skill.mtime)}</span>
+                </div>
+              </div>
+              <button
+                disabled
+                title="Approval via UI not yet supported. Use CLI: civagent skills approve"
+                style={{
+                  padding: '6px 14px',
+                  borderRadius: '6px',
+                  border: '1px solid var(--border-light)',
+                  background: 'rgba(255,255,255,0.03)',
+                  color: 'var(--text-muted)',
+                  cursor: 'not-allowed',
+                  fontSize: '12px',
+                  fontFamily: 'inherit',
+                  opacity: 0.5,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Approve
+              </button>
+            </div>
+          </div>
+        ))}
       </div>
     );
   };
@@ -272,6 +411,9 @@ export const SkillLibrary: React.FC = () => {
             );
           })}
         </div>
+
+        {/* Pending approval (staging) section */}
+        {renderStagingSection()}
       </div>
     );
   };

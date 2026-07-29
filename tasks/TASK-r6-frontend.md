@@ -1,6 +1,6 @@
 # TASK-r6-frontend: online regime editor + skill staging UI
 
-Status: PENDING
+Status: DONE (R6-3)
 Priority: P0
 Owner: Antigravity
 Depends on: R6-1 (regime write API) and R6-4 backend (skill-management API) on the integration branch
@@ -55,3 +55,21 @@ regime → server validation → saved → compiled agents preview updated.
 
 Leave a completion note (components added, screenshots path if any) at the
 bottom of this file.
+
+---
+
+## Completion Note (R6-3, 2026-07-29)
+
+**Components added:**
+- `frontend/src/components/RegimeEditor.tsx` — Full regime editor with metadata JSON, IDENTITY.md, SOUL.md editors; live agent count preview; PUT save with error/finding display
+- `frontend/src/components/SkillLibrary.tsx` — Extended with "Pending approval" staging section (disabled approve button, graceful 404 handling)
+- `frontend/src/components/__tests__/RegimeEditor.test.tsx` — 6 tests covering N=0 disable, PUT findings, success agentCount, metadata validation
+
+**Files modified:**
+- `frontend/src/types/api.ts` — Added RegimeEditRequest/Response, StagedSkillEntry types
+- `frontend/src/components/layout/Sidebar.tsx` — Added "Editor" tab
+- `frontend/src/App.tsx` — Imports and mounts RegimeEditor
+
+**Verification:** `npm test` (20/20 pass), `tsc -b` clean, `lint` 0 errors (6 warnings), `vite build` OK.
+
+**Report:** `/Users/leo/.claude/tasks/reports/R6-3-ui.md`
