@@ -10,6 +10,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
+  parseActor,
+  extractDispatches,
   reconstructRuntimeGraph,
   diffTopology,
   SAFE_MATCH_ID,
@@ -311,19 +313,25 @@ test("diffTopology: all edges unexercised when runtime has different node namesp
     diff.node_id_mismatch_detail.includes("agent-level"),
     "must mention agent-level vs regime-level"
   );
-  assert.equal(diff.unexercised_edges.length, 3, "all 3 declared edges unexercised");
+  assert.equal(diff.unobservable_edges.length, 3, "all 3 declared edges unobservable at this granularity");
   assert.equal(diff.undeclared_edges.length, 2, "both runtime edges undeclared");
   // Not 1.0: across a granularity gap every declared edge is trivially
   // unexercised, so the ratio would read the same for every regime and every
   // match. The raw counts stay; the derived number is withheld.
   assert.equal(diff.unexercised_ratio, null);
   assert.equal(diff.total_declared_edges, 3);
-  assert.equal(diff.total_unexercised, 3);
+  assert.equal(diff.total_unobservable, 3);
+  assert.equal(diff.total_unexercised, null, "no exercise claim from unobservable data");
 
-  // Edge exercise counts should all be 0
-  for (const ec of diff.edge_exercise_counts) {
-    assert.equal(ec.runtimeCount, 0, `${ec.from}→${ec.to}:${ec.kind} must have count=0`);
-    assert.ok(ec.declared);
+  // No per-edge exercise counts: a runtimeCount of 0 for an edge nobody could
+  // have observed reads as "this never fired", which is exactly the claim that
+  // cannot be made here. The edges are still listed, with their declared shape,
+  // under the name that says why.
+  assert.equal(diff.edge_exercise_counts, null,
+    "per-edge exercise counts are not measurable across a granularity gap");
+  for (const ue of diff.unobservable_edges) {
+    assert.ok(ue.from && ue.to && ue.kind, "each listed edge keeps its declared shape");
+    assert.equal(ue.runtimeCount, undefined, "and carries no count it cannot support");
   }
 });
 // REGRESSION: if node_id_match silently returned true without checking, the
@@ -401,7 +409,8 @@ test("diffTopology: empty declared topology (0 edges) → null ratio, no unexerc
   const diff = diffTopology(decl, rt);
   assert.equal(diff.total_declared_edges, 0);
   assert.equal(diff.unexercised_ratio, null, "no declared edges means there is no ratio to report");
-  assert.equal(diff.unexercised_edges.length, 0);
+  assert.equal((diff.unexercised_edges ?? diff.unobservable_edges).length, 0,
+    "either way there is nothing to list — there were no declared edges");
   assert.equal(diff.undeclared_edges.length, 1);
 });
 // REGRESSION: dividing by 0 without the guard would produce NaN, which
@@ -583,7 +592,8 @@ test("unexercised_ratio is null when declared and runtime node ids do not overla
   const d = diffTopology(declared, runtime);
   assert.equal(d.node_id_match, false);
   assert.equal(d.unexercised_ratio, null, "no number may be reported across a granularity gap");
-  assert.equal(d.total_unexercised, 1, "the raw counts are still reported");
+  assert.equal(d.total_unobservable, 1, "the raw list is still reported, under a truthful name");
+  assert.equal(d.total_unexercised, null, "but not as a count of non-exercise");
   assert.ok(d.node_id_mismatch_detail, "and the reason must be readable");
 });
 
@@ -602,4 +612,343 @@ test("unexercised_ratio is a real number when the id spaces do line up", () => {
   const d = diffTopology(declared, runtime);
   assert.equal(d.node_id_match, true);
   assert.equal(d.unexercised_ratio, 0.5, "one of two declared edges went unexercised");
+});
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// New tests: parseActor, extractDispatches, measurement/observed/inferred,
+// and measurement-gated diffTopology comparability
+// ═══════════════════════════════════════════════════════════════════════════════
+
+// ── parseActor ────────────────────────────────────────────────────────────────
+
+test("parseActor: no #, single #, and multiple # all split at the first # only", () => {
+  // no # → office is null, regime is the whole actor
+  assert.deepEqual(parseActor("china/tang"), { regime: "china/tang", office: null, raw: "china/tang" });
+  assert.equal(parseActor("judge").office, null);
+  assert.equal(parseActor("system").office, null);
+
+  // single # → regime / office split at the #
+  const s = parseActor("china/tang#menxia");
+  assert.equal(s.regime, "china/tang");
+  assert.equal(s.office, "menxia");
+  assert.equal(s.raw, "china/tang#menxia");
+
+  // multiple # → office keeps everything after the FIRST # verbatim
+  const m = parseActor("china/tang#libu#personnel");
+  assert.equal(m.regime, "china/tang");
+  assert.equal(m.office, "libu#personnel");
+
+  // edge cases: empty, null, trailing # → office null
+  assert.equal(parseActor("").office, null);
+  assert.equal(parseActor(null).office, null);
+  assert.equal(parseActor("china/tang#").office, null, "trailing # → empty office → null");
+});
+
+// ── reconstructRuntimeGraph: measurement + full shape ─────────────────────────
+
+test("reconstructRuntimeGraph: empty array returns measurement + full observed/inferred shape", () => {
+  const g = reconstructRuntimeGraph([]);
+  assert.deepEqual(g.nodes, []);
+  assert.deepEqual(g.edges, []);
+  assert.deepEqual(g.measurement, { edge_observability: "coordinator_to_office_only" });
+  assert.deepEqual(g.observed.office_turn_counts, {});
+  assert.deepEqual(g.observed.dispatch_sequence, []);
+  assert.deepEqual(g.observed.dispatch_counts, {});
+  assert.deepEqual(g.observed.office_nodes, []);
+  assert.deepEqual(g.inferred.topology_edges, []);
+  assert.equal(typeof g.inferred.note, "string");
+  assert.equal(g.event_count, 0);
+});
+
+// ── observed.office_turn_counts ────────────────────────────────────────────────
+
+test("observed.office_turn_counts: type=turn OR (type missing AND kind=turn); non-office excluded", () => {
+  const events = [
+    makeEv({ actor: "china/tang#menxia", type: "turn", kind: "turn", text: "a" }),      // type=turn ✓
+    makeEv({ actor: "china/tang#menxia", kind: "turn", text: "b" }),                     // no type, kind=turn ✓
+    makeEv({ actor: "china/tang#menxia", type: "tool", kind: "tool_call", text: "c" }),  // not a turn ✗
+    makeEv({ actor: "china/tang#zhongshu", type: "turn", kind: "turn", text: "d" }),     // other office ✓
+    makeEv({ actor: "china/tang", type: "turn", kind: "turn", text: "e" }),              // regime, no office ✗
+  ];
+  const g = reconstructRuntimeGraph(events);
+  assert.equal(g.observed.office_turn_counts.menxia, 2);
+  assert.equal(g.observed.office_turn_counts.zhongshu, 1);
+  assert.equal(Object.keys(g.observed.office_turn_counts).length, 2);
+});
+
+// ── extractDispatches ─────────────────────────────────────────────────────────
+
+test("extractDispatches: [→ office] tokens → seq-stable records with required fields; multi-token counts", () => {
+  const events = [
+    makeEv({ seq: 2, actor: "china/tang", type: "turn", kind: "turn", text: "[→ menxia] review" }),
+    makeEv({ seq: 1, actor: "china/tang", type: "turn", kind: "turn", text: "[→ zhongshu] draft" }),
+  ];
+  const d = extractDispatches(events);
+  assert.equal(d.length, 2);
+  // stably sorted by seq: zhongshu (seq 1) before menxia (seq 2)
+  assert.equal(d[0].seq, 1);
+  assert.equal(d[0].office, "zhongshu");
+  assert.equal(d[0].coordinator, "china/tang");
+  assert.equal(d[0].sequence, 1);
+  assert.equal(typeof d[0].text, "string");
+  assert.equal(d[1].seq, 2);
+  assert.equal(d[1].office, "menxia");
+  assert.equal(d[1].sequence, 2);
+  // record contract: exactly these five fields
+  assert.deepEqual(Object.keys(d[0]).sort(), ["coordinator", "office", "seq", "sequence", "text"]);
+
+  // multiple [→ office] tokens in a single turn are all captured, and
+  // observed.dispatch_counts accumulates per office.
+  const g = reconstructRuntimeGraph([
+    makeEv({ seq: 1, actor: "china/tang", type: "turn", kind: "turn", text: "[→ menxia] a [→ shangshu] b [→ menxia] c" }),
+  ]);
+  assert.equal(g.observed.dispatch_sequence.length, 3);
+  assert.deepEqual(g.observed.dispatch_counts, { menxia: 2, shangshu: 1 });
+});
+
+test("extractDispatches: out-of-order events produce stably seq-sorted sequence", () => {
+  const events = [
+    makeEv({ seq: 3, actor: "china/tang", type: "turn", kind: "turn", text: "[→ c3] x" }),
+    makeEv({ seq: 1, actor: "china/tang", type: "turn", kind: "turn", text: "[→ c1] x" }),
+    makeEv({ seq: 2, actor: "china/tang", type: "turn", kind: "turn", text: "[→ c2] x" }),
+  ];
+  const d = extractDispatches([...events].reverse());
+  assert.deepEqual(d.map((x) => x.seq), [1, 2, 3]);
+  assert.deepEqual(d.map((x) => x.sequence), [1, 2, 3]);
+});
+
+// ── inferred ───────────────────────────────────────────────────────────────────
+
+test("inferred.topology_edges is empty by design with an explanatory note", () => {
+  const g = reconstructRuntimeGraph([
+    makeEv({ actor: "china/tang#menxia", type: "turn", kind: "turn", text: "[→ zhongshu] x" }),
+  ]);
+  assert.deepEqual(g.inferred.topology_edges, []);
+  assert.match(g.inferred.note, /cannot be inferred|left empty/i);
+});
+
+// ── reconstructRuntimeGraph: edge cases ────────────────────────────────────────
+
+test("reconstructRuntimeGraph: stream without match_end is tolerated", () => {
+  const events = [
+    makeEv({ span_id: "root", parent_span_id: null, actor: "china/tang", kind: "match_start" }),
+    makeEv({ span_id: "c1", parent_span_id: "root", actor: "china/tang#menxia", type: "turn", kind: "turn", text: "[→ zhongshu] go" }),
+  ];
+  const g = reconstructRuntimeGraph(events);
+  assert.equal(g.event_count, 2);
+  assert.equal(g.observed.office_turn_counts.menxia, 1);
+  assert.equal(g.observed.dispatch_counts.zhongshu, 1);
+});
+
+test("reconstructRuntimeGraph: office actor + orphan span", () => {
+  const g = reconstructRuntimeGraph([
+    makeEv({ span_id: "child", parent_span_id: "ghost", actor: "china/tang#menxia", kind: "turn" }),
+  ]);
+  assert.equal(g.orphan_spans.length, 1);
+  assert.equal(g.orphan_spans[0].parent_span_id, "ghost");
+  assert.equal(g.edges.length, 1);
+  assert.equal(g.edges[0].from, "<orphan>");
+  assert.equal(g.edges[0].to, "china/tang#menxia");
+  // office-attributed actor still tracked in observed
+  assert.equal(g.observed.office_nodes.length, 1);
+  assert.equal(g.observed.office_nodes[0].id, "menxia");
+});
+
+// ── diffTopology: measurement gating ──────────────────────────────────────────
+
+test("diffTopology: coordinator_to_office_only → comparable=false, ratio=null, detail populated, raw counts=0", () => {
+  // Simulate a real reconstructed graph with coordinator_to_office_only
+  // measurement and office-attributed nodes that overlap declared ids.
+  const events = [
+    makeEv({ span_id: "root", parent_span_id: null, actor: "china/tang", kind: "match_start" }),
+    makeEv({ span_id: "c1", parent_span_id: "root", actor: "china/tang#menxia", type: "turn", kind: "turn", text: "x" }),
+    makeEv({ span_id: "c2", parent_span_id: "root", actor: "china/tang#zhongshu", type: "turn", kind: "turn", text: "y" }),
+  ];
+  const g = reconstructRuntimeGraph(events);
+  const d = diffTopology(TANG_TOPOLOGY, g);
+  assert.equal(d.node_id_match, true, "normalised office ids overlap declared ids");
+  assert.equal(d.comparable, false, "edges not observable");
+  assert.equal(d.incomparable_reason, "edge_observability_limited");
+  assert.equal(d.unexercised_ratio, null);
+  assert.equal(d.total_declared_edges, 3);
+  assert.equal(d.total_unobservable, 3, "raw list still reported, under a truthful name");
+  assert.equal(d.unobservable_edges.length, 3);
+  assert.equal(d.edge_exercise_counts, null, "per-edge exercise counts are not measurable here");
+  assert.ok(d.node_id_mismatch_detail, "detail must be populated");
+  assert.match(d.node_id_mismatch_detail, /edge_observability/);
+  // runtime_node_ids must retain original actor ids (regime#office), not be
+  // replaced with bare office ids — the output is user-facing and must reflect
+  // the actual runtime attribution.
+  assert.ok(
+    d.runtime_node_ids.includes("china/tang#menxia"),
+    "runtime_node_ids must contain original 'china/tang#menxia', not bare 'menxia'"
+  );
+  assert.ok(
+    d.runtime_node_ids.includes("china/tang#zhongshu"),
+    "runtime_node_ids must contain original 'china/tang#zhongshu', not bare 'zhongshu'"
+  );
+});
+
+test("diffTopology: legacy hand-built graph (no measurement) → comparable, real ratio", () => {
+  const rt = makeRuntimeGraph(
+    [{ id: "menxia", eventCount: 3 }, { id: "zhongshu", eventCount: 2 }],
+    [{ from: "menxia", to: "zhongshu", kind: "veto", count: 2 }],
+  );
+  // rt has no `measurement` field → legacy → comparable
+  const d = diffTopology(TANG_TOPOLOGY, rt);
+  assert.equal(d.node_id_match, true);
+  assert.equal(d.comparable, true);
+  assert.equal(d.incomparable_reason, null);
+  assert.equal(d.unexercised_edges.length, 2, "command edges missing → unexercised");
+  assert.equal(d.unexercised_ratio, 2 / 3);
+  assert.equal(d.total_declared_edges, 3);
+  assert.equal(d.edge_exercise_counts.find((e) => e.kind === "veto").runtimeCount, 2);
+});
+
+test("diffTopology: direct_office_typed_edges measurement → comparable, real ratio", () => {
+  const rt = makeRuntimeGraph(
+    [{ id: "menxia" }, { id: "zhongshu" }],
+    [{ from: "zhongshu", to: "menxia", kind: "command", count: 1 }],
+  );
+  rt.measurement = { edge_observability: "direct_office_typed_edges" };
+  const d = diffTopology(TANG_TOPOLOGY, rt);
+  assert.equal(d.comparable, true);
+  assert.equal(d.unexercised_ratio, 2 / 3, "command exercised; veto + command unexercised");
+  assert.equal(d.total_declared_edges, 3);
+});
+
+test("diffTopology: coordinator_to_office_only gate holds even when runtime edge kinds match declared kinds", () => {
+  // This is the strict gate test: runtime edges happen to carry kind="command"
+  // and kind="veto" — the same kinds the declared topology uses — but the
+  // measurement field explicitly says coordinator_to_office_only. The gate must
+  // NOT be fooled by accidental kind coincidence: comparable=false, ratio=null,
+  // all runtimeCounts=0. The only path to comparability is an explicit
+  // measurement.edge_observability of "direct_office_typed_edges" (or legacy
+  // no-measurement for hand-built graphs).
+  const rt = makeRuntimeGraph(
+    [{ id: "menxia", eventCount: 4 }, { id: "zhongshu", eventCount: 2 }],
+    [
+      { from: "zhongshu", to: "menxia", kind: "command", count: 4 },
+      { from: "menxia", to: "zhongshu", kind: "veto", count: 2 },
+    ],
+  );
+  rt.measurement = { edge_observability: "coordinator_to_office_only" };
+  const d = diffTopology(TANG_TOPOLOGY, rt);
+  assert.equal(d.node_id_match, true, "bare office nodes overlap declared ids");
+  assert.equal(d.comparable, false, "coordinator_to_office_only is never comparable");
+  assert.equal(d.incomparable_reason, "edge_observability_limited");
+  assert.equal(d.unexercised_ratio, null, "ratio withheld regardless of kind coincidence");
+  assert.equal(d.total_declared_edges, 3);
+  assert.equal(d.total_unobservable, 3);
+  assert.equal(d.unobservable_edges.length, 3);
+  // Per-edge exercise counts are withheld too. Publishing runtimeCount = 0 for
+  // an edge nobody could have observed reads as "this never fired", which is the
+  // same false claim the ratio was withheld to avoid — a coincidental kind match
+  // in the runtime graph makes that reading even more tempting.
+  assert.equal(d.edge_exercise_counts, null,
+    "a zero count is a claim about behaviour and cannot come from unobservable data");
+  assert.ok(d.node_id_mismatch_detail, "detail must be populated");
+  assert.match(d.node_id_mismatch_detail, /edge_observability/);
+});
+
+// ── diffTopology: regime#office edge endpoint normalization ──────────────────────
+//
+// When measurement.edge_observability='direct_office_typed_edges', runtime edges
+// may carry regime#office endpoints while declared edges use bare office ids.
+// The edge-key matching layer must normalize endpoints with bareOfficeId so that
+// r#a→r#b:command correctly matches declared a→b:command.
+//
+// The user-facing output (undeclared_edges, edge_exercise_counts) retains the
+// original runtime endpoint values — only the lookup key is normalized.
+
+test("diffTopology: direct measurement + regime#office edge endpoints → normalized key match, runtimeCount=1, ratio=0", () => {
+  const declared = {
+    nodes: [{ id: "a" }, { id: "b" }],
+    edges: [{ from: "a", to: "b", kind: "command" }],
+  };
+  const rt = makeRuntimeGraph(
+    [{ id: "r#a", eventCount: 3 }, { id: "r#b", eventCount: 2 }],
+    [{ from: "r#a", to: "r#b", kind: "command", count: 1 }],
+  );
+  rt.measurement = { edge_observability: "direct_office_typed_edges" };
+  const d = diffTopology(declared, rt);
+
+  assert.equal(d.node_id_match, true, "normalised office ids overlap declared ids");
+  assert.equal(d.comparable, true, "direct_office_typed_edges is comparable");
+  assert.equal(d.incomparable_reason, null);
+  assert.equal(d.unexercised_edges.length, 0, "command edge IS exercised after endpoint normalization");
+  assert.equal(d.undeclared_edges.length, 0);
+  assert.equal(d.unexercised_ratio, 0);
+  assert.equal(d.total_declared_edges, 1);
+  assert.equal(d.total_unexercised, 0);
+
+  const ec = d.edge_exercise_counts[0];
+  assert.equal(ec.runtimeCount, 1, "edge key matched after normalizing regime# prefix from endpoints");
+  assert.equal(ec.from, "a");
+  assert.equal(ec.to, "b");
+  assert.equal(ec.kind, "command");
+});
+// REGRESSION: without bareOfficeId normalization on runtime edge endpoints,
+// r#a→r#b:command would not match the declared a→b:command key, so runtimeCount
+// would be 0 and unexercised_ratio would be 1 (all edges falsely unexercised).
+
+// ── "unexercised" must not be reported when nothing was observed ─────────────
+//
+// Codex correctly withheld unexercised_ratio when the stream cannot see typed
+// office→office edges, and correctly refused to infer any. But it still filled
+// unexercised_edges with all 15 declared edges and total_unexercised with 15,
+// while comparable was false. A consumer reading the count without also reading
+// `comparable` concludes that none of Tang's declared edges were exercised —
+// and that is demonstrably false: in the very match this was verified against,
+// the Chancellery reviewed the Secretariat's draft three times, each time using
+// the word 封驳. Those edges were exercised; they are merely unobservable.
+//
+// A count that looks like a measurement and is not one is the same defect this
+// module already rejected once at the ratio level. It has to be rejected at the
+// count level too.
+test("when edges are unobservable, no unexercised count is reported", () => {
+  const declared = {
+    nodes: [{ id: "zhongshu" }, { id: "menxia" }],
+    edges: [
+      { from: "zhongshu", to: "menxia", kind: "command" },
+      { from: "menxia", to: "zhongshu", kind: "veto" },
+    ],
+  };
+  const runtime = {
+    nodes: [{ id: "china/tang" }, { id: "china/tang#zhongshu" }, { id: "china/tang#menxia" }],
+    edges: [],
+    measurement: { edge_observability: "coordinator_to_office_only" },
+  };
+  const d = diffTopology(declared, runtime);
+
+  assert.equal(d.comparable, false, "precondition: typed office edges are not observable here");
+  assert.equal(d.unexercised_ratio, null);
+  assert.equal(d.total_unexercised, null,
+    "a count of non-exercise cannot be produced from data that cannot see exercise");
+  assert.equal(d.unexercised_edges, null,
+    "and the list must not be presented as edges known not to have fired");
+
+  // The information is still useful — it just has to be named for what it is.
+  assert.equal(d.total_unobservable, 2);
+  assert.deepEqual(d.unobservable_edges.map((e) => `${e.from}→${e.to}`), ["zhongshu→menxia", "menxia→zhongshu"]);
+});
+
+test("when edges ARE observable, unexercised is still reported normally", () => {
+  const declared = {
+    nodes: [{ id: "a" }, { id: "b" }, { id: "c" }],
+    edges: [
+      { from: "a", to: "b", kind: "command" },
+      { from: "b", to: "c", kind: "command" },
+    ],
+  };
+  const runtime = {
+    nodes: [{ id: "a" }, { id: "b" }],
+    edges: [{ from: "a", to: "b", kind: "command", count: 3 }],
+    measurement: { edge_observability: "direct_office_typed_edges" },
+  };
+  const d = diffTopology(declared, runtime);
+  assert.equal(d.comparable, true);
+  assert.equal(d.total_unexercised, 1);
+  assert.equal(d.unexercised_ratio, 0.5);
+  assert.equal(d.total_unobservable, null, "nothing is unobservable when the edges are observable");
 });
