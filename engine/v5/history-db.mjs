@@ -129,19 +129,36 @@ export function recordTournamentResult(tournamentId, manifest, results) {
 /**
  * Retrieve episodic memory for a specific regime, matching keywords
  */
-export function queryEpisodicMemory(regime, keywords) {
+// How many of a regime's memories are eligible for scoring. This used to be a
+// `LIMIT 10` in the SQL, which meant the keyword scoring only ever saw the ten
+// most recent rows — everything a regime learned before its eleventh match was
+// physically unreachable, no matter how well it matched the task. Scoring now
+// runs over the regime's whole history; the cap only exists so a regime with
+// thousands of matches cannot blow up memory, and it is deliberately far above
+// any realistic corpus.
+const MAX_SCANNED_MEMORIES = 5000;
+// How many scored memories are handed to the prompt.
+const TOP_MEMORIES = 3;
+
+export function queryEpisodicMemory(regime, keywords, { limit = TOP_MEMORIES } = {}) {
   const handle = getDb();
   if (!handle) return [];
   try {
+    // `timestamp` defaults to CURRENT_TIMESTAMP, which SQLite records at
+    // second granularity — every memory written during the same second ties,
+    // and the order among ties is unspecified. The AUTOINCREMENT id is the only
+    // reliable insertion order, so it breaks the tie. Without it "most recent"
+    // was arbitrary, and combined with the old row cap the retriever could
+    // silently scan the OLDEST rows instead of the newest.
     const stmt = handle.prepare(`
       SELECT content, timestamp FROM episodic_memory
       WHERE regime = ?
-      ORDER BY timestamp DESC
-      LIMIT 10
+      ORDER BY timestamp DESC, id DESC
+      LIMIT ?
     `);
-    const rows = stmt.all(regime);
+    const rows = stmt.all(regime, MAX_SCANNED_MEMORIES);
 
-    // In-memory keyword filtering
+    // In-memory keyword scoring over the full eligible set.
     const scored = rows.map(r => {
       let score = 0;
       const lower = r.content.toLowerCase();
@@ -151,7 +168,9 @@ export function queryEpisodicMemory(regime, keywords) {
       return { ...r, score };
     });
 
-    return scored.filter(r => r.score > 0).sort((a, b) => b.score - a.score).slice(0, 3);
+    // Ties are broken by recency: rows arrive newest-first and sort is stable,
+    // so an older memory never displaces an equally relevant newer one.
+    return scored.filter(r => r.score > 0).sort((a, b) => b.score - a.score).slice(0, limit);
   } catch (err) {
     console.error('Failed to query episodic memory:', err);
     return [];

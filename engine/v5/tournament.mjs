@@ -18,6 +18,7 @@ import { validateRegime } from "./civ-memory.mjs";
 import { runJudge, resolveJudgeChain, anonymizeCivs } from "./judge.mjs";
 import { readMatchText, eventsPath, EventLog, hashShort, newSpanId } from "./events.mjs";
 import { recordTournamentResult } from "./history-db.mjs";
+import { stampTournamentOutcome } from "./skill-outcome.mjs";
 import {
   RUBRIC_DIMENSIONS,
   RUBRIC_SCALE,
@@ -398,6 +399,26 @@ export async function runTournament({ civs, task, noSkill = false, taskSpec = nu
     };
   });
   recordTournamentResult(id, manifest, resultsToRecord);
+
+  // Close the learning loop's feedback gap: sedimentation ran inside each civ's
+  // own match, before any score existed, so the skills it produced are
+  // outcome-blind. Now that the judge has spoken, write the result back into
+  // their frontmatter — skills learned from a losing run are the ones most
+  // likely to transfer badly, and nothing downstream can weight or retire them
+  // without knowing that. Best-effort: never fail the tournament over it.
+  try {
+    const stamped = stampTournamentOutcome({
+      tournamentId: id,
+      civs: manifest.civs,
+      scores,
+      regimesRoot: path.resolve(__dirname, "../../regimes"),
+    });
+    if (stamped.length > 0) {
+      console.error(`[tournament] stamped outcome on ${stamped.length} sedimented skill(s)`);
+    }
+  } catch (e) {
+    console.error(`[tournament] skill outcome stamping failed: ${e.message}`);
+  }
 
   trace.emit("match_end", { exitCode: 0, actor: "system", topRegime });
   await trace.close();
