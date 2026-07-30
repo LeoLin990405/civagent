@@ -37,7 +37,9 @@ export function getWritableDb() {
     writableDb = new Database(dbPath, { timeout: 15_000 });
     writableDb.pragma('busy_timeout = 15000');
     try { writableDb.pragma('journal_mode = WAL'); } catch { /* best-effort */ }
-    // Ensure the schema exists even if the engine hasn't run yet.
+    // Ensure the schema exists even if the engine hasn't run yet. The indexes
+    // below must match engine/v5/history-db.mjs so a row inserted by one handle
+    // is observed as a duplicate by the other, and vice versa.
     writableDb.exec(`
       CREATE TABLE IF NOT EXISTS episodic_memory (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,6 +50,15 @@ export function getWritableDb() {
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    // Migration for pre-existing DBs created before this constraint existed —
+    // CREATE TABLE IF NOT EXISTS does not add a UNIQUE clause to a table that
+    // already has the column without it. The unique index is idempotent and
+    // matches what engine/v5/history-db.mjs adds to its handle.
+    try {
+      writableDb.exec(`CREATE UNIQUE INDEX IF NOT EXISTS ux_episodic_memory_match_end ON episodic_memory(match_id, regime) WHERE event_type = 'match_end'`);
+    } catch (err) {
+      console.warn('[database] could not create episodic_memory match_end index (existing duplicates?):', err.message);
+    }
     return writableDb;
   } catch (err) {
     console.error('Could not open history DB for writing:', err);
