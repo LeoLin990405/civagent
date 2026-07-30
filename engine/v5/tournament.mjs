@@ -28,6 +28,11 @@ import {
   judgeSwapEnabled,
 } from "./judge-rubric.mjs";
 import { loadTaskSpec, runDeterministicGrading, mixScores } from "./deterministic-grading.mjs";
+import {
+  applyVerbosityControl,
+  computeBiasReport,
+  DEFAULT_VERBOSITY_BUDGET,
+} from "./judge-calibration.mjs";
 
 // ── Re-exports (backward compatibility) ─────────────────────────────────────
 // Every symbol originally exported from tournament.mjs remains importable from
@@ -44,6 +49,7 @@ export {
   judgeSwapEnabled,
 } from "./judge-rubric.mjs";
 export { loadTaskSpec, runDeterministicGrading, mixScores } from "./deterministic-grading.mjs";
+export { applyVerbosityControl, computeBiasReport, modelFamilyOf, DEFAULT_VERBOSITY_BUDGET } from "./judge-calibration.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const RUN_V5 = path.join(__dirname, "run-v5.mjs");
@@ -148,10 +154,13 @@ export async function judge(task, civResults, {
   swap = judgeSwapEnabled(),
   judgesN = 1,
   anonymize = false,
+  verbosityBudget = DEFAULT_VERBOSITY_BUDGET, // uniform per-transcript char cap (verbosity-bias hedge)
   eventLog = null,      // tournament-level EventLog; judge events attach here
   _runJudge = runJudge, // injectable for tests
 } = {}) {
   const civRegimes = civResults.map((r) => r.regime);
+  // regime → backend id, for the self-preference (same-family) bias report.
+  const civBackends = Object.fromEntries(civResults.map((r) => [r.regime, r.backend ?? "native"]));
   const anon = anonymize ? anonymizeCivs(civRegimes) : null;
   // Names the judge sees (and answers with) — labels when blinded.
   const judgeNames = anon ? anon.labels : civRegimes;
@@ -177,6 +186,9 @@ export async function judge(task, civResults, {
   let provider = null;
   let failure = null;
   let verdict = "";
+  // Accumulate the verbosity log across passes (for the bias_report); since the
+  // same sections are judged per pass, we keep one representative log.
+  let verbosityLog = [];
 
   for (const slot of providerSlots) {
     if (judgesN > 1 && providers.length >= judgesN) break;
@@ -184,7 +196,14 @@ export async function judge(task, civResults, {
 
     for (const plan of passPlans) {
       const ordered = plan.order.map((i) => civResults[i]);
-      const prompt = buildJudgePrompt(task, ordered.map((c) => transcriptSection(c, anon)).join("\n\n---\n\n"));
+      const rawSections = ordered.map((c) => transcriptSection(c, anon));
+      // Verbosity control: cap every transcript body to a uniform budget so the
+      // judge cannot reward length. Headers + code fences are preserved, and the
+      // before/after lengths are logged for the manifest (never a silent cut).
+      const { sections: controlledSections, verbosityLog: passLog } =
+        applyVerbosityControl(rawSections, { budget: verbosityBudget });
+      if (verbosityLog.length === 0) verbosityLog = passLog;
+      const prompt = buildJudgePrompt(task, controlledSections.join("\n\n---\n\n"));
       const promptHash = hashShort(prompt);
       const auditFields = {
         kind: "judge_score",
@@ -225,7 +244,7 @@ export async function judge(task, civResults, {
           perRegime[real] = { score10: s.score, ...(s.reason ? { reason: s.reason } : {}) };
         }
       }
-      passes.push({ swapped: plan.swapped, provider: r.provider, perRegime });
+      passes.push({ swapped: plan.swapped, provider: r.provider, order: auditFields.order, perRegime });
       eventLog?.emit("judge", { ...auditFields, provider: r.provider, model: r.provider });
     }
 
@@ -245,6 +264,7 @@ export async function judge(task, civResults, {
       swap,
       passes: 0,
       anonymized: !!anon,
+      biasReport: null,
       md:
         `# Tournament Result — judge unavailable\n\n${failure?.message ?? "unknown error"}\n\n` +
         `Raw civ exit codes:\n${civResults.map((c) => `- ${c.regime} (${c.backend}): ${c.code}`).join("\n")}`,
@@ -252,6 +272,10 @@ export async function judge(task, civResults, {
   }
 
   const scores = aggregateJudgePasses(passes, civRegimes);
+  // Bias report — additive metadata; the scores above are unchanged. Surfacing
+  // position effect, self-preference (same-family gap), per-provider spread, and
+  // verbosity so a ranking's statistical basis can be audited.
+  const biasReport = computeBiasReport({ passes, civRegimes, civBackends, verbosityLog });
   const lines = [
     `# Tournament — ${new Date().toISOString()}`,
     ``,
@@ -288,6 +312,7 @@ export async function judge(task, civResults, {
     swap,
     passes: passes.length,
     anonymized: !!anon,
+    biasReport,
     md: lines.join("\n"),
   };
 }
