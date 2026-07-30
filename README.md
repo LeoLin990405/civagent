@@ -478,7 +478,7 @@ Full metadata is in each `regimes/*/*/metadata.json`; the mechanical validation 
 ### 8.1 Installation
 
 **Prerequisites**:
-- Node.js ≥ 18
+- Node.js ≥ 20 (CI runs 20 and 22)
 - Claude Code CLI (`claude`) — [Anthropic Docs](https://docs.anthropic.com/claude/docs/claude-code)
 - `bash`, `python3` (for CLI scripts)
 
@@ -540,7 +540,9 @@ civagent stats [--boot N] [--json]    # cross-tournament Bradley-Terry + bootstr
 
 # Governance graph
 civagent topology validate <regime>   # schema + IDENTITY cross-check
-civagent topology metrics <regime>    # density, depth, centrality, checks cycles
+civagent topology metrics <regime>    # density, depth, centrality, checks cycles, gates
+civagent runtime-graph <matchId> [--diff] [--json]
+                                      # rebuild what actually ran; diff against the declaration
 
 # Experiments
 civagent baseline <regime> --type solo|random|flat [--seed N] [--dest dir]
@@ -617,14 +619,15 @@ Because the second-to-fourth-month spring-plowing season was prone to raids, the
 npm run ci                            # everything below, in order
 npm run lint:syntax                   # node -c + bash -n
 npm run lint:backend                  # ESLint over engine + server + tests
-npm test                              # 369 backend tests (node:test)
+npm test                              # 421 backend tests (node:test)
 npm run validate:regimes              # structural validation (all 57 regimes)
+npm run smoke                         # end-to-end, no API key: validate → metrics → control → validate
 npm run test:frontend                 # 14 frontend tests (vitest)
 ```
 
 GitHub Actions `.github/workflows/ci.yml` runs the same sequence on every PR and every push to `main`; the CI badge at the top of this file reflects that workflow's real status.
 
-**Backend coverage** (369 tests) spans path-traversal protection and regime-id validation, the IDENTITY role-table parser (a prose table compiles to zero agents and would otherwise fail silently), the event contract, topology schema and cross-check, graph metrics, baseline control generation, judge anonymization / swap / bias reporting, episodic memory retrieval, replay path safety, Bradley-Terry statistics, and every server route.
+**Backend coverage** (421 tests) spans path-traversal protection and regime-id validation, the IDENTITY role-table parser (a prose table compiles to zero agents and would otherwise fail silently), the event contract, topology schema and cross-check, graph metrics, baseline control generation, judge anonymization / swap / bias reporting, episodic memory retrieval, replay path safety, Bradley-Terry statistics, and every server route.
 
 **Testing discipline.** Two rules, both learned from tests that passed for the wrong reason:
 
@@ -681,7 +684,11 @@ Known residue:
 
 ### 9.6 Declared vs. Exercised Topology
 
-Every ranking in this project is over a *declared* graph. Nothing yet checks whether a declared edge was traversed during the match. A regime that declares a veto edge and never exercises it behaves like a flat topology while being scored as a checked one — which means the leaderboard may in part be rewarding wiring that was never used. The event stream already carries OpenTelemetry-style `trace_id` / `span_id` / `parent_span_id`, so the runtime graph is reconstructible; until that comparison ships, treat topology-level conclusions as claims about declarations, not about behaviour.
+Every ranking in this project is over a *declared* graph. `civagent runtime-graph <matchId> --diff` now reconstructs what actually happened from the event stream's span tree and compares it against the declared topology — and the first thing it establishes is that **the comparison cannot yet be made at office level**.
+
+Declared nodes are offices (`zhongshu`, `menxia`). Runtime actors are regimes (`china/tang`), because `run-v5.mjs` tags every turn with the regime id: Claude Code runs all of a regime's offices inside one process and the output stream is not attributed per agent. The two id spaces do not overlap at all, so `unexercised_ratio` is reported as `null` rather than the `1.000` it would otherwise show for every regime in every match — a number that looks like a measurement and is not one.
+
+The practical consequence stands until the event stream carries per-agent attribution: **a regime that declares a veto edge and never exercises it is indistinguishable from one that exercises it constantly.** Treat topology-level conclusions as claims about declarations, not about behaviour. What the diff does establish today is cross-actor traffic (regime → judge, regime → skill-learner) and the volume of intra-regime work.
 
 Full audit report: [regimes/AUDIT.md](./regimes/AUDIT.md)
 
