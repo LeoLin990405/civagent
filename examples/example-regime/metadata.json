@@ -1,0 +1,15 @@
+{
+  "id": "example-regime",
+  "name": { "zh": "示例政体", "en": "Example Regime" },
+  "era": { "zh": "示例（非历史政体）", "en": "Example (not a historical regime)" },
+  "region": "example",
+  "system": { "zh": "示例三省制", "en": "Example Three-Office System" },
+  "description": {
+    "zh": "零依赖示例政体：一个最小的、明显是示例的假想政体，用于演示 topology.json 校验、图指标和基线对照的完整链路，不需要任何模型后端。",
+    "en": "Zero-dependency example regime: a minimal, obviously-fictitious governance system used to demonstrate the topology validation, graph metrics, and baseline control pipeline end-to-end without any model backend."
+  },
+  "agentCount": 4,
+  "tags": ["example", "documentation", "checks-and-balances"],
+  "orchestrationPattern": "checks-and-balances",
+  "_note": "This regime lives under examples/, NOT regimes/, so it is excluded from the 57-regime corpus and from validate:regimes on purpose. Its only job is to be the smallest thing that exercises validate → metrics → baseline end-to-end."
+}
