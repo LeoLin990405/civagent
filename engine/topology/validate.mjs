@@ -20,6 +20,19 @@ export const FUNCTIONAL_ROLES = [
 
 export const EDGE_KINDS = ["command", "review", "info", "veto"];
 
+// Structural node kinds (R8-1 node typing). `kind` is OPTIONAL and defaults to
+// "agent" when omitted or null — that is the only kind the 57 pre-typing regimes
+// use, so the default preserves their existing semantics exactly.
+//   agent       = calls the model, produces content (the historical baseline)
+//   gate        = deterministic gate: no model discretion, a rule decides pass/block
+//   checkpoint  = human checkpoint: control handed back to the operator
+//   router      = pure fan-out dispatcher: routes work, produces no content
+export const NODE_KINDS = ["agent", "gate", "checkpoint", "router"];
+// functional_role values that describe a *content-producing* role (they call the
+// model to generate output). A node whose kind declares it does NOT call the model
+// (gate/router/checkpoint) contradicts a content-producing role — see below.
+const CONTENT_ROLES = new Set(["engineering", "research", "data", "devops", "content"]);
+
 // Canonical orchestration modes (engine/modes/*.md). Historical metadata uses
 // some non-canonical names; normalize with the same aliases as regime-to-cc.mjs.
 export const MODES = [
@@ -91,6 +104,9 @@ export function validateTopologyData(topology, { regimeDir = null } = {}) {
     errors.push("nodes must be a non-empty array");
   }
   const nodeIds = new Set();
+  // Map node id -> resolved kind ("agent" when omitted/null). Used by the
+  // edge-level kind constraints below.
+  const nodeKind = new Map();
   for (const [i, n] of (Array.isArray(t.nodes) ? t.nodes : []).entries()) {
     if (!n || typeof n !== "object") { errors.push(`nodes[${i}] must be an object`); continue; }
     if (typeof n.id !== "string" || !n.id) {
@@ -106,6 +122,26 @@ export function validateTopologyData(topology, { regimeDir = null } = {}) {
     if (!FUNCTIONAL_ROLES.includes(n.functional_role)) {
       errors.push(`node ${n.id ?? i}: functional_role must be one of ${FUNCTIONAL_ROLES.join("/")}, got: ${JSON.stringify(n.functional_role)}`);
     }
+    // kind is optional; omitted/null means "agent". A typo like "gat" would
+    // otherwise be silently treated as agent and the node would drop off the
+    // gate/checkpoint counts — under-counting the regime's hard gates.
+    const kind = n.kind ?? "agent";
+    if (!NODE_KINDS.includes(kind)) {
+      errors.push(`node ${n.id ?? i}: kind must be one of ${NODE_KINDS.join("/")} (or omitted for "agent"), got: ${JSON.stringify(n.kind)}`);
+    } else {
+      // Constraint: a non-content kind (gate/checkpoint/router) declares the
+      // node does NOT call the model to produce output. Pairing it with a
+      // content-producing functional_role (engineering/research/data/devops/
+      // content) is self-contradictory — e.g. a "gate" that is also the
+      // "engineering" role claims both "no model discretion" and "writes code".
+      // Real consequence: the metrics/runner would treat it as a hard gate for
+      // counting while the compiler still routes it a content model, so the
+      // graph misreports how many judgment calls vs. deterministic gates exist.
+      if (kind !== "agent" && n.functional_role && CONTENT_ROLES.has(n.functional_role)) {
+        errors.push(`node ${n.id}: kind "${kind}" cannot have content-producing functional_role "${n.functional_role}" (a ${kind} does not call the model to generate content)`);
+      }
+      if (n.id) nodeKind.set(n.id, kind);
+    }
   }
 
   // ── edges ──
@@ -113,6 +149,7 @@ export function validateTopologyData(topology, { regimeDir = null } = {}) {
     errors.push("edges must be an array");
   }
   const edgeKeys = new Set();
+  const hasInbound = new Set(); // node ids that appear as an edge target
   for (const [i, e] of (Array.isArray(t.edges) ? t.edges : []).entries()) {
     if (!e || typeof e !== "object") { errors.push(`edges[${i}] must be an object`); continue; }
     if (!nodeIds.has(e.from)) errors.push(`edges[${i}].from references unknown node: ${JSON.stringify(e.from)}`);
@@ -121,9 +158,31 @@ export function validateTopologyData(topology, { regimeDir = null } = {}) {
     if (!EDGE_KINDS.includes(e.kind)) {
       errors.push(`edges[${i}].kind must be one of ${EDGE_KINDS.join("/")}, got: ${JSON.stringify(e.kind)}`);
     }
+    // Constraint: a router (pure fan-out dispatcher, produces no content, makes
+    // no judgment) may only emit command/info edges. A router emitting review
+    // or veto would be exercising judgment — which means it is not a router but
+    // a gate or agent. Real consequence: mislabeling inflates/deflates
+    // gate_count and lets a "router" silently act as a hard veto gate, hiding a
+    // deterministic block behind a kind that promises none.
+    const srcKind = nodeKind.get(e.from);
+    if (srcKind === "router" && (e.kind === "review" || e.kind === "veto")) {
+      errors.push(`node ${e.from} is kind "router" but emits a ${e.kind} edge; a router only dispatches (command/info) — use kind "gate" or "agent" for a judgment edge`);
+    }
+    if (e.to) hasInbound.add(e.to);
     const key = `${e.from}→${e.to}:${e.kind}`;
     if (edgeKeys.has(key)) errors.push(`duplicate edge: ${key}`);
     edgeKeys.add(key);
+  }
+
+  // Constraint: a gate or checkpoint with no inbound edge is unreachable — it
+  // can never fire, so it protects nothing. This is the classic "looks safe but
+  // does nothing" defect. Real consequence: the regime's topology would
+  // advertise a check (gate_count/checkpoint_count counts it) that can never
+  // execute, overstating the regime's constraints exactly where it matters most.
+  for (const [id, kind] of nodeKind) {
+    if ((kind === "gate" || kind === "checkpoint") && !hasInbound.has(id)) {
+      errors.push(`node ${id} is kind "${kind}" but has no inbound edge — a ${kind} with no incoming flow is a dead node that can never trigger`);
+    }
   }
   return errors;
 }

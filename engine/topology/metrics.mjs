@@ -108,6 +108,15 @@ export function computeMetrics(topology) {
   const m = topology.edges.length;
   const inDegree = inDegreeCentrality(topology);
   const checks = checksCycles(topology);
+  // Count typed non-agent nodes. kind is optional and defaults to "agent" when
+  // omitted, so untyped regimes (all 57 pre-typing topologies) report 0/0 here.
+  let gate_count = 0;
+  let checkpoint_count = 0;
+  for (const node of topology.nodes) {
+    const kind = node.kind ?? "agent";
+    if (kind === "gate") gate_count++;
+    else if (kind === "checkpoint") checkpoint_count++;
+  }
   return {
     regime: topology.regime,
     mode: topology.mode,
@@ -119,6 +128,26 @@ export function computeMetrics(topology) {
     in_degree: inDegree,
     checks_cycles: checks.count,
     checks_cycle_nodes: checks.cycles,
+    // ── node-kind counts (R8-1) ──────────────────────────────────────────────
+    // gate_count       = deterministic gates (no model discretion; a rule
+    //                    decides pass/block).
+    // checkpoint_count = human checkpoints (control handed back to the operator).
+    //
+    // How these differ from checks_cycles:
+    //   checks_cycles counts *elementary cycles* (loops) that contain at least
+    //   one review/veto EDGE. It is a structural property of the edge graph — a
+    //   review/veto edge exists whether or not it is ever actually exercised.
+    //   "There is a veto edge" is NOT "there is a veto that deterministically
+    //   fires": the edge only says agent A *may* reject agent B's output; the
+    //   model still decides whether to.
+    //   gate_count counts *nodes* declared to fire deterministically (no model
+    //   discretion). It answers the different question the edge graph cannot:
+    //   "how many HARD, non-discretionary gates does this regime have?" A regime
+    //   can have checks_cycles > 0 yet gate_count == 0 (all review is model
+    //   discretion), or gate_count > 0 on an acyclic graph (checks_cycles == 0).
+    //   The two metrics are orthogonal axes of "constraint strength".
+    gate_count,
+    checkpoint_count,
   };
 }
 

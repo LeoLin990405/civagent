@@ -33,6 +33,11 @@
             "type": "string",
             "enum": ["coordinator", "engineering", "review", "research", "data", "devops", "content", "legal", "management"],
             "description": "Canonical functional role (same 9-value vocabulary as engine/regime-to-cc.mjs ROLE_MODEL_MAP)."
+          },
+          "kind": {
+            "type": ["string", "null"],
+            "enum": ["agent", "gate", "checkpoint", "router", null],
+            "description": "Structural node kind. Optional with default 'agent' (the historical baseline: every node is an LLM-backed role). 'agent' = calls the model and produces content (the only kind for all 57 pre-typing regimes). 'gate' = deterministic gate: no model discretion, a rule decides pass/block (e.g. the [VETO] hard-abort mechanism). 'checkpoint' = human checkpoint: control is handed back to the operator. 'router' = pure fan-out dispatcher: routes work, produces no content. Omitted/null is always valid and means 'agent'."
           }
         }
       }
