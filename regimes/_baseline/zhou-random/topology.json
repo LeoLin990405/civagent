@@ -1,0 +1,104 @@
+{
+  "schema_version": "1.0",
+  "regime": "baseline-random/china-zhou",
+  "mode": "centralized",
+  "nodes": [
+    {
+      "id": "tianzi",
+      "label": "天子",
+      "functional_role": "coordinator"
+    },
+    {
+      "id": "taizai",
+      "label": "太宰",
+      "functional_role": "management"
+    },
+    {
+      "id": "taishi",
+      "label": "太师",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "taibao",
+      "label": "太保",
+      "functional_role": "content"
+    },
+    {
+      "id": "zhuhou",
+      "label": "诸侯",
+      "functional_role": "management"
+    },
+    {
+      "id": "qingdafu",
+      "label": "卿大夫",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "sikou",
+      "label": "司寇",
+      "functional_role": "legal"
+    },
+    {
+      "id": "xingren",
+      "label": "行人",
+      "functional_role": "research"
+    }
+  ],
+  "edges": [
+    {
+      "from": "xingren",
+      "to": "taishi",
+      "kind": "info"
+    },
+    {
+      "from": "xingren",
+      "to": "taizai",
+      "kind": "command"
+    },
+    {
+      "from": "tianzi",
+      "to": "taizai",
+      "kind": "info"
+    },
+    {
+      "from": "tianzi",
+      "to": "sikou",
+      "kind": "command"
+    },
+    {
+      "from": "qingdafu",
+      "to": "sikou",
+      "kind": "info"
+    },
+    {
+      "from": "taibao",
+      "to": "qingdafu",
+      "kind": "command"
+    },
+    {
+      "from": "taibao",
+      "to": "zhuhou",
+      "kind": "info"
+    },
+    {
+      "from": "tianzi",
+      "to": "zhuhou",
+      "kind": "command"
+    },
+    {
+      "from": "taishi",
+      "to": "tianzi",
+      "kind": "command"
+    },
+    {
+      "from": "sikou",
+      "to": "zhuhou",
+      "kind": "command"
+    },
+    {
+      "from": "taizai",
+      "to": "sikou",
+      "kind": "command"
+    }
+  ]
+}

@@ -16,7 +16,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { validateRegime } from "./civ-memory.mjs";
 import { runJudge, resolveJudgeChain, anonymizeCivs } from "./judge.mjs";
-import { readMatchText, eventsPath, EventLog, hashShort, newSpanId } from "./events.mjs";
+import { selectTranscript, eventsPath, EventLog, hashShort, newSpanId } from "./events.mjs";
 import { recordTournamentResult } from "./history-db.mjs";
 import { stampTournamentOutcome } from "./skill-outcome.mjs";
 import {
@@ -126,17 +126,37 @@ function runCiv({ regime, backend }, task, tournamentId, outDir, { noSkill = fal
   });
 }
 
-function transcriptSection(r, anon = null) {
-  // Prefer the structured event stream; fall back to the raw process log.
-  const text =
-    readMatchText(r.matchId, 6000) ||
-    (fs.existsSync(r.logFile) ? fs.readFileSync(r.logFile, "utf8").slice(-6000) : "(no output)");
+function transcriptSection(r, anon = null, selectOpts = {}) {
+  // Prefer the structured event stream with the same structural sampling rule
+  // for every civ. The legacy raw-log fallback remains tail-only.
+  const { text, selection } = selectTranscript(r.matchId, {
+    maxChars: 6000,
+    strategy: "actor-stratified",
+    ...selectOpts,
+  });
+  const rawLogText = !text && fs.existsSync(r.logFile)
+    ? fs.readFileSync(r.logFile, "utf8")
+    : "";
+  const bodyText = text || rawLogText.slice(-6000) || "(no output)";
+  // If the events file was missing and we fell back to the raw log, record
+  // that the selection metadata reflects the fallback (tail-only, unknown origin).
+  const finalSelection = text
+    ? { ...selection, fallback: false }
+    : { ...selection, strategy: "tail", originalLength: rawLogText.length, selectedLength: bodyText.length,
+        selectedContentChars: rawLogText ? bodyText.length : 0,
+        omittedContentChars: Math.max(0, rawLogText.length - bodyText.length),
+        totalTurns: null, actorCount: null, selectedTurns: null,
+        truncated: rawLogText.length > bodyText.length, fallback: true, fallbackSource: "raw-log",
+        ...(rawLogText ? {} : { placeholder: true }) };
   // Omit backend from the section header — judges should rank on governance
   // quality alone, not on which backend happened to run the civ. With anon,
   // even the civ's own name is replaced by its positional label (Civ-A …).
   const name = anon ? anon.labelFor.get(r.regime) : r.regime;
-  const body = anon ? anon.transform(text) : text;
-  return `### ${name} (exit ${r.code})\n\n\`\`\`\n${body}\n\`\`\``;
+  const body = anon ? anon.transform(bodyText) : bodyText;
+  return {
+    section: `### ${name} (exit ${r.code})\n\n\`\`\`\n${body}\n\`\`\``,
+    selection: { regime: r.regime, ...finalSelection },
+  };
 }
 
 // Blind double evaluation: when swap is enabled the same matchup is judged
@@ -202,6 +222,9 @@ export async function judge(task, civResults, {
   // Accumulate the verbosity log across passes (for the bias_report); since the
   // same sections are judged per pass, we keep one representative log.
   let verbosityLog = [];
+  // Transcript selection metadata — collected once from the first pass (the
+  // same events files are read for every pass, so the selection is identical).
+  let transcriptSelection = null;
 
   for (const slot of providerSlots) {
     if (judgesN > 1 && providers.length >= judgesN) break;
@@ -209,12 +232,32 @@ export async function judge(task, civResults, {
 
     for (const plan of passPlans) {
       const ordered = plan.order.map((i) => civResults[i]);
-      const rawSections = ordered.map((c) => transcriptSection(c, anon));
+      const rawResults = ordered.map((c) => transcriptSection(c, anon));
+      const rawSections = rawResults.map((r) => r.section);
       // Verbosity control: cap every transcript body to a uniform budget so the
       // judge cannot reward length. Headers + code fences are preserved, and the
       // before/after lengths are logged for the manifest (never a silent cut).
       const { sections: controlledSections, verbosityLog: passLog } =
         applyVerbosityControl(rawSections, { budget: verbosityBudget });
+      // Collect selection metadata on the first pass only (every pass reads the
+      // same events files, so the selection is identical). Recorded per civ and
+      // through BOTH later stages: anonymization rewrites names and can change
+      // length, and the verbosity budget can cut again. Only judgeViewLength is
+      // what the judge actually read — reporting selectedLength alone would
+      // overstate how much of a transcript reached the rubric.
+      if (transcriptSelection === null) {
+        transcriptSelection = {
+          maxChars: 6000,
+          verbosityBudget,
+          perCiv: rawResults.map((r, i) => ({
+            ...r.selection,
+            regime: ordered[i].regime,
+            postAnonymizationLength: rawSections[i].length,
+            judgeViewLength: controlledSections[i].length,
+            verbosityTruncated: controlledSections[i].length < rawSections[i].length,
+          })),
+        };
+      }
       if (verbosityLog.length === 0) verbosityLog = passLog;
       const prompt = buildJudgePrompt(task, controlledSections.join("\n\n---\n\n"));
       const promptHash = hashShort(prompt);
@@ -326,6 +369,7 @@ export async function judge(task, civResults, {
     passes: passes.length,
     anonymized: !!anon,
     biasReport,
+    transcriptSelection,
     md: lines.join("\n"),
   };
 }
@@ -416,6 +460,11 @@ export async function runTournament({ civs, task, noSkill = false, taskSpec = nu
       // every completed tournament recorded a ranking with no way to check
       // whether the gaps exceeded the judge's own noise. Persist it.
       ...(verdict.biasReport ? { biasReport: verdict.biasReport } : {}),
+      // Transcript selection: records the strategy used to select transcript text
+      // from the raw event stream, per-civ original/selected lengths, and whether
+      // any portion was omitted. Follows the applyVerbosityControl precedent of
+      // never silently truncating — the manifest truthfully reports what the judge saw.
+      ...(verdict.transcriptSelection ? { transcriptSelection: verdict.transcriptSelection } : {}),
       ...(useWorkDir ? {
         taskSpecId: taskSpec.id,
         detWeight,
