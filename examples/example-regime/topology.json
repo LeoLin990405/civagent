@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "regime": "example/regime",
+  "mode": "checks-and-balances",
+  "nodes": [
+    { "id": "proposer", "label": "Proposer", "functional_role": "coordinator" },
+    { "id": "reviewer", "label": "Reviewer", "functional_role": "review" },
+    { "id": "executor", "label": "Executor", "functional_role": "management" },
+    { "id": "worker",   "label": "Worker",   "functional_role": "engineering" }
+  ],
+  "edges": [
+    { "from": "proposer", "to": "reviewer", "kind": "command", "note": "Proposer sends draft to Reviewer" },
+    { "from": "reviewer", "to": "proposer", "kind": "veto",    "note": "Reviewer may veto and send the draft back" },
+    { "from": "reviewer", "to": "executor", "kind": "command", "note": "Approved draft is handed to Executor" },
+    { "from": "executor", "to": "worker",   "kind": "command", "note": "Executor dispatches the task to Worker" },
+    { "from": "worker",   "to": "executor", "kind": "info",    "note": "Worker reports results back to Executor" }
+  ]
+}
