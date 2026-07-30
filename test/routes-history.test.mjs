@@ -105,3 +105,69 @@ test("POST /api/history/sync backfills synced event types from on-disk matches",
   });
 });
 
+
+// Regression: two vetoes in one match are two facts, not a duplicate.
+//
+// An intermediate version of the idempotency fix put a table-wide
+// UNIQUE(match_id, regime, event_type) on episodic_memory and swallowed the
+// collision with INSERT OR IGNORE. Every assertion above still passed, because
+// each event_type appears once in that fixture. This test is the one that
+// notices: a match in which the Chancellery rejected twice would have silently
+// lost the second rejection — in a project whose subject is checks and
+// balances, the single most damaging row to drop.
+test("POST /api/history/sync keeps every occurrence of a repeated event type", async () => {
+  await withServer(async (base) => {
+    const dir = path.join(rootDir, "matches", "m-repeat");
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, "meta.json"), JSON.stringify({ regime: "china/song" }));
+    const events = [
+      { type: "veto_triggered", ts: 1, reason: "first rejection" },
+      { type: "veto_triggered", ts: 2, reason: "second rejection" },
+      { type: "skill", ts: 3, reason: "learned from the rejections" },
+    ];
+    fs.writeFileSync(
+      path.join(dir, "events.jsonl"),
+      events.map((e) => JSON.stringify(e)).join("\n") + "\n"
+    );
+
+    const res = await fetch(`${base}/api/history/sync`, { method: "POST" });
+    assert.equal(res.status, 200);
+
+    const hist = await fetch(`${base}/api/history/${encodeURIComponent("china/song")}`);
+    const rows = await hist.json();
+    const vetoes = rows.filter((r) => r.event_type === "veto_triggered").map((r) => r.content).sort();
+    assert.deepEqual(vetoes, ["first rejection", "second rejection"],
+      "both rejections must be readable back, with their distinct reasons");
+    assert.equal(rows.length, 3, "no synced event of this match may be dropped");
+  });
+});
+
+// The count the API reports must be rows written, not insert attempts.
+// Measured as a delta, because /sync re-imports every match dir on the disk and
+// these tests share one temp home — an absolute count would be coupled to
+// whatever earlier tests happened to seed.
+test("POST /api/history/sync counts rows written, not insert attempts", async () => {
+  await withServer(async (base) => {
+    const before = (await (await fetch(`${base}/api/history/sync`, { method: "POST" })).json()).imported;
+
+    const dir = path.join(rootDir, "matches", "m-count");
+    fs.mkdirSync(dir, { recursive: true });
+    fs.writeFileSync(path.join(dir, "meta.json"), JSON.stringify({ regime: "china/han" }));
+    const events = [
+      { type: "veto_triggered", ts: 1, reason: "a" },
+      { type: "veto_triggered", ts: 2, reason: "b" },
+      { type: "turn", ts: 3, text: "not synced" },
+    ];
+    fs.writeFileSync(
+      path.join(dir, "events.jsonl"),
+      events.map((e) => JSON.stringify(e)).join("\n") + "\n"
+    );
+
+    const after = (await (await fetch(`${base}/api/history/sync`, { method: "POST" })).json()).imported;
+    const rows = await (await fetch(`${base}/api/history/${encodeURIComponent("china/han")}`)).json();
+
+    assert.equal(rows.length, 2, "both vetoes stored; the turn event is not a synced type");
+    assert.equal(after - before, rows.length,
+      `imported grew by ${after - before} but only ${rows.length} rows are readable`);
+  });
+});

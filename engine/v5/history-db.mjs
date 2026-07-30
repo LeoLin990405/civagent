@@ -71,6 +71,11 @@ function getDb() {
         score INTEGER,
         reason TEXT,
         commentary TEXT,
+        -- One row per (tournament, match) pair. Re-recording the same
+        -- tournamentId (process retry, --id reuse) becomes a no-op on the
+        -- match_results side instead of stacking rows that pollute Bradley-Terry
+        -- counts. Re-record = INSERT OR IGNORE; the original row wins.
+        UNIQUE(tournament_id, match_id),
         FOREIGN KEY(tournament_id) REFERENCES tournaments(id)
       );
 
@@ -104,23 +109,65 @@ export function recordTournamentResult(tournamentId, manifest, results) {
     const stmtTourn = handle.prepare('INSERT OR IGNORE INTO tournaments (id, task, judge) VALUES (?, ?, ?)');
     stmtTourn.run(tournamentId, manifest.task, manifest.judge ? manifest.judge.provider : 'unknown');
 
+    // INSERT OR IGNORE on the UNIQUE(tournament_id, match_id) constraint makes a
+    // second call with the same tournamentId a no-op for rows that already
+    // exist. The original record wins; scores are never silently overwritten.
+    // Observable side-effect: a `changes()` count of < results.length means we
+    // hit a duplicate — surfaced via console.warn so a retry storm is visible.
+    //
+    // Migration for pre-existing DBs created before this constraint existed:
+    // CREATE TABLE IF NOT EXISTS does not add the UNIQUE clause to a table
+    // that's already there. CREATE UNIQUE INDEX IF NOT EXISTS is a no-op when
+    // the inline UNIQUE is already in place, and adds the enforcement when it
+    // isn't. SQLite raises SQLITE_CONSTRAINT if the existing data already has
+    // duplicates that would violate the new constraint — caught here so the
+    // engine still boots; the warning tells the operator what to do.
+    try {
+      handle.exec(`CREATE UNIQUE INDEX IF NOT EXISTS ux_match_results_tm ON match_results(tournament_id, match_id)`);
+    } catch (err) {
+      console.warn('[history-db] could not create match_results uniqueness index (existing duplicates?):', err.message);
+    }
+    // PARTIAL index, restricted to match_end. A table-wide
+    // UNIQUE(match_id, regime, event_type) looks equivalent but is wrong: a
+    // single match can legitimately emit two veto_triggered events or several
+    // skill events, and those are distinct facts, not duplicates. Constraining
+    // the whole table would make the memory unable to represent a match in
+    // which the Chancellery vetoed twice — for a project whose subject is
+    // checks and balances, that is the most damaging row to lose.
+    // recordTournamentResult writes exactly one match_end per (match, regime),
+    // so scoping the constraint to that event_type gives idempotency where it
+    // is needed and costs nothing elsewhere.
+    try {
+      handle.exec(`CREATE UNIQUE INDEX IF NOT EXISTS ux_episodic_memory_match_end ON episodic_memory(match_id, regime) WHERE event_type = 'match_end'`);
+    } catch (err) {
+      console.warn('[history-db] could not create episodic_memory match_end index (existing duplicates?):', err.message);
+    }
     const stmtMatch = handle.prepare(`
-      INSERT INTO match_results (tournament_id, match_id, regime, score, reason, commentary)
+      INSERT OR IGNORE INTO match_results (tournament_id, match_id, regime, score, reason, commentary)
       VALUES (?, ?, ?, ?, ?, ?)
     `);
-    const stmtMem = handle.prepare('INSERT INTO episodic_memory (regime, event_type, content, match_id) VALUES (?, ?, ?, ?)');
+    const stmtMem = handle.prepare('INSERT OR IGNORE INTO episodic_memory (regime, event_type, content, match_id) VALUES (?, ?, ?, ?)');
 
     const insertMany = handle.transaction((rows) => {
+      let skipped = 0;
       for (const res of rows) {
-        stmtMatch.run(tournamentId, res.matchId, res.regime, res.score, res.reason, res.commentary || '');
+        const m = stmtMatch.run(tournamentId, res.matchId, res.regime, res.score, res.reason, res.commentary || '');
+        if (m.changes === 0) skipped++;
 
         // Also add an episodic memory for this regime
         const content = `[Tournament Result] Score: ${res.score}/10. Reason: ${res.reason}. Historian Commentary: ${res.commentary || 'None'}`;
         stmtMem.run(res.regime, 'match_end', content, res.matchId);
       }
+      return skipped;
     });
 
-    insertMany(results);
+    const skipped = insertMany(results);
+    if (skipped > 0) {
+      // Re-record of an already-recorded tournament. The original rows win
+      // (INSERT OR IGNORE). Surface this so a retry storm is observable — a
+      // silent no-op would mask a real bug upstream.
+      console.warn(`[history-db] tournament ${tournamentId}: ${skipped}/${results.length} match_result(s) already recorded, skipped (idempotent re-record)`);
+    }
   } catch (err) {
     console.error('Failed to record tournament result:', err);
   }
