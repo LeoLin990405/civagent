@@ -121,26 +121,34 @@ test("score is stored as-is (a missing score becomes SQL NULL, not a fallback)",
   }
 });
 
-// ── Idempotency — the suspected duplicate-stacking bug ────────────────────────
+// ── Idempotency — re-recording the same tournamentId must NOT stack ──────────
+//
+// Earlier this test asserted the duplicate-stacking behaviour as correct,
+// which was exactly the bug that polluted Bradley-Terry win counts. The
+// behaviour is now fixed at the schema level (UNIQUE(tournament_id, match_id)
+// and UNIQUE(match_id, regime, event_type)) plus INSERT OR IGNORE in
+// recordTournamentResult. A re-record leaves each table at 1 row and the
+// original values win.
 
-test("re-recording the SAME tournamentId duplicates match_results + episodic_memory rows (NOT idempotent)", () => {
+test("re-recording the SAME tournamentId stays idempotent (no row stacking)", () => {
   const id = "dup-test";
   recordTournamentResult(id, manifest(), [resultRow({ matchId: "dup__china-tang" })]);
   recordTournamentResult(id, manifest(), [resultRow({ matchId: "dup__china-tang" })]);
 
   const db = rawDb();
   try {
-    // tournaments is protected by INSERT OR IGNORE (PK) → stays 1 row.
     const tCount = db.prepare("SELECT COUNT(*) AS n FROM tournaments WHERE id = ?").get(id).n;
-    assert.equal(tCount, 1, "tournaments table IS idempotent (INSERT OR IGNORE)");
+    assert.equal(tCount, 1, "tournaments table is idempotent (INSERT OR IGNORE on PK)");
 
-    // match_results has only an autoincrement PK, no unique constraint → stacks.
     const mCount = db.prepare("SELECT COUNT(*) AS n FROM match_results WHERE tournament_id = ?").get(id).n;
-    assert.equal(mCount, 2, "match_results STACKS duplicates on re-record");
+    assert.equal(mCount, 1, "match_results stays at 1 row on re-record (UNIQUE constraint)");
 
-    // episodic_memory likewise stacks.
     const eCount = db.prepare("SELECT COUNT(*) AS n FROM episodic_memory WHERE match_id = ?").get("dup__china-tang").n;
-    assert.equal(eCount, 2, "episodic_memory STACKS duplicates on re-record");
+    assert.equal(eCount, 1, "episodic_memory stays at 1 row on re-record (UNIQUE constraint)");
+
+    // And the original score survived — re-record does NOT silently overwrite.
+    const row = db.prepare("SELECT score FROM match_results WHERE tournament_id = ? AND match_id = ?").get(id, "dup__china-tang");
+    assert.equal(row.score, 8, "original score preserved on re-record");
   } finally {
     db.close();
   }
