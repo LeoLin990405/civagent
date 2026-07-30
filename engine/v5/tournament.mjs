@@ -410,6 +410,12 @@ export async function runTournament({ civs, task, noSkill = false, taskSpec = nu
       passes: verdict.passes,          // judge passes actually completed
       rubric: { scale: `1-${RUBRIC_SCALE}`, dimensions: RUBRIC_DIMENSIONS },
       events: trace.path,              // judge_score audit events (prompt_hash, swap flags)
+      // The bias report is the whole point of the calibrated judge: per-provider
+      // spread, same-family vs cross-family gap, and the position effect between
+      // the two passes. judge() computed it and the manifest dropped it, so
+      // every completed tournament recorded a ranking with no way to check
+      // whether the gaps exceeded the judge's own noise. Persist it.
+      ...(verdict.biasReport ? { biasReport: verdict.biasReport } : {}),
       ...(useWorkDir ? {
         taskSpecId: taskSpec.id,
         detWeight,
