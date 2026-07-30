@@ -50,6 +50,10 @@ graph TD
 The offices above are unchanged from the source regime. Their coordination
 structure is not: this variant follows the flow below and nothing else.
 
+Any description of the historical decision procedure earlier in this file is
+background on the offices, not the procedure to follow. Where it conflicts
+with the flow below, the flow below governs.
+
 - `menxia` directs `xingbu`.
 - `menxia` is kept informed by `gongbu`.
 - `shangshu` directs `gongbu`.

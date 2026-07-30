@@ -13,9 +13,17 @@ import os from "node:os";
 import path from "node:path";
 import { stampFrontmatter, skillsForMatch, stampTournamentOutcome } from "../engine/v5/skill-outcome.mjs";
 
-const BANNER = "<!-- civagent v5 learned skill — source_match=abc123 — audited_by=codex -->\n";
-const SKILL = `${BANNER}---
-name: tang-famine-relief
+// Real tournament child match ids, exactly as engine/v5/tournament.mjs builds
+// them: `${tournamentId}__${regime with / replaced by -}`. Using a made-up
+// shape here is what let the suffix-matching defect stay green — the last six
+// characters of every one of these is "a-tang".
+const MATCH_A = "2026-07-30T06-06-44-953-qhyj__china-tang";
+const MATCH_B = "2026-07-30T09-12-01-004-k3z8__china-tang";
+
+function skillText(matchId, name = "tang-famine-relief") {
+  return `<!-- civagent v5 learned skill — source_match=${matchId} — audited_by=codex -->
+---
+name: ${name}
 type: learned
 description: route grain through the canal
 ---
@@ -24,14 +32,21 @@ description: route grain through the canal
 
 - Activate provincial granaries in sequence.
 `;
+}
 
-function makeTree() {
+const SKILL = skillText(MATCH_A);
+
+// Filename shape mirrors writeSkillFile: learned-<date>-<topic>-<match6>-<rand>.md
+function fileNameFor(matchId, topic, rand) {
+  return `learned-2026-07-30-${topic}-${String(matchId).slice(-6).replace(/[^\w-]/g, "")}-${rand}.md`;
+}
+
+function makeTree(matchId = MATCH_A) {
   const root = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-outcome-"));
   const dir = path.join(root, "china", "tang", "skills");
   fs.mkdirSync(dir, { recursive: true });
-  // Filename shape mirrors writeSkillFile: learned-<date>-<topic>-<match6>-<rand>.md
-  const file = path.join(dir, "learned-2026-07-30-famine-abc123-x1y2.md");
-  fs.writeFileSync(file, SKILL);
+  const file = path.join(dir, fileNameFor(matchId, "famine", "x1y2"));
+  fs.writeFileSync(file, skillText(matchId));
   return { root, dir, file };
 }
 
@@ -57,20 +72,55 @@ test("a file without frontmatter is returned unchanged", () => {
   assert.equal(stampFrontmatter(plain, { outcome_score: 5 }), plain);
 });
 
-test("skillsForMatch matches on the match-id suffix in the filename", () => {
-  const { root, dir } = makeTree();
+test("skillsForMatch attributes by the full match id in the provenance banner", () => {
+  const { root, dir, file } = makeTree(MATCH_A);
   try {
-    fs.writeFileSync(path.join(dir, "learned-2026-07-30-other-zzzzzz-aaaa.md"), SKILL);
-    const found = skillsForMatch(dir, "tournament-1__china-tang-abc123");
-    assert.equal(found.length, 1, `only the matching skill: ${found}`);
-    assert.match(found[0], /abc123/);
+    // A skill from a *different* match, whose filename suffix is identical
+    // because both are china/tang tournament children.
+    fs.writeFileSync(path.join(dir, fileNameFor(MATCH_B, "canal", "aaaa")), skillText(MATCH_B));
+    assert.equal(
+      fileNameFor(MATCH_A, "famine", "x1y2").split("-").at(-2),
+      fileNameFor(MATCH_B, "canal", "aaaa").split("-").at(-2),
+      "precondition: the two filenames really do share a suffix",
+    );
+
+    const found = skillsForMatch(dir, MATCH_A);
+    assert.deepEqual(found, [file], `only the skill from this exact match: ${found}`);
+  } finally {
+    fs.rmSync(root, { recursive: true, force: true });
+  }
+});
+
+// The defect this pins: tournament child ids end in the regime name, so the
+// last six characters are "a-tang" for every china/tang tournament ever run.
+// Suffix matching therefore attributed one tournament's skills to another, and
+// stamping overwrote the outcome metadata of skills learned earlier under an
+// unrelated result — teaching the corpus that a losing pattern had won.
+test("stamping one tournament does not overwrite another tournament's skills", () => {
+  const { root, dir, file: fileA } = makeTree(MATCH_A);
+  try {
+    const fileB = path.join(dir, fileNameFor(MATCH_B, "canal", "aaaa"));
+    fs.writeFileSync(fileB, skillText(MATCH_B, "tang-canal-repair"));
+
+    stampTournamentOutcome({
+      tournamentId: "2026-07-30T06-06-44-953-qhyj",
+      civs: [{ regime: "china/tang", matchId: MATCH_A }],
+      scores: [{ regime: "china/tang", score: 9.1 }, { regime: "china/qin", score: 6.2 }],
+      regimesRoot: root,
+    });
+
+    assert.match(fs.readFileSync(fileA, "utf8"), /outcome_score: 9\.1/, "its own skill is stamped");
+    assert.ok(
+      !fs.readFileSync(fileB, "utf8").includes("outcome_"),
+      "a skill from a different tournament must be left completely alone",
+    );
   } finally {
     fs.rmSync(root, { recursive: true, force: true });
   }
 });
 
 test("skillsForMatch tolerates a regime with no skills dir", () => {
-  assert.deepEqual(skillsForMatch("/nonexistent/skills", "m-abc123"), []);
+  assert.deepEqual(skillsForMatch("/nonexistent/skills", MATCH_A), []);
 });
 
 test("stampTournamentOutcome writes score and rank onto the right regime's skill", () => {
@@ -78,7 +128,7 @@ test("stampTournamentOutcome writes score and rank onto the right regime's skill
   try {
     const stamped = stampTournamentOutcome({
       tournamentId: "T-1",
-      civs: [{ regime: "china/tang", matchId: "T-1__china-tang-abc123" }],
+      civs: [{ regime: "china/tang", matchId: MATCH_A }],
       scores: [{ regime: "china/tang", score: 9.1 }, { regime: "china/qin", score: 6.2 }],
       regimesRoot: root,
     });
@@ -98,7 +148,7 @@ test("a losing regime is stamped with its real rank, not skipped", () => {
   try {
     stampTournamentOutcome({
       tournamentId: "T-2",
-      civs: [{ regime: "china/tang", matchId: "T-2__china-tang-abc123" }],
+      civs: [{ regime: "china/tang", matchId: MATCH_A }],
       scores: [{ regime: "china/qin", score: 9 }, { regime: "china/tang", score: 2.5 }],
       regimesRoot: root,
     });
@@ -115,7 +165,7 @@ test("an unscored civ is skipped without throwing", () => {
   try {
     const stamped = stampTournamentOutcome({
       tournamentId: "T-3",
-      civs: [{ regime: "china/tang", matchId: "T-3__china-tang-abc123" }],
+      civs: [{ regime: "china/tang", matchId: MATCH_A }],
       scores: [], // judge failed entirely
       regimesRoot: root,
     });

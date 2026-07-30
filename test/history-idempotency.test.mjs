@@ -281,3 +281,63 @@ test("rollback proof: pre-fix schema shape stacks duplicates (negative control)"
   const fixedCount = fixedDb.prepare("SELECT COUNT(*) AS n FROM match_results WHERE tournament_id = ?").get("dup").n;
   assert.equal(fixedCount, 1, "fixed shape stays at 1 row — proves the fix works");
 });
+// ── Migration from databases that predate (or mis-implement) the constraints ──
+//
+// Codex review, P2 x2: `CREATE UNIQUE INDEX IF NOT EXISTS` raises on a table
+// that already holds violating rows, and an intermediate build of this fix left
+// a table-wide unique index on (match_id, regime, event_type) that makes a plain
+// INSERT of a second veto fail. Both were caught only because the tests built a
+// fresh schema every time and never exercised an upgrade.
+
+test("migration: a legacy table-wide unique index is dropped", () => {
+  const db = new Database(":memory:");
+  db.exec(`
+    CREATE TABLE episodic_memory (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      regime TEXT, event_type TEXT, content TEXT, match_id TEXT,
+      timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+    CREATE UNIQUE INDEX ux_episodic_memory_mre ON episodic_memory(match_id, regime, event_type);
+  `);
+  // Pre-migration: a second veto is rejected outright.
+  const ins = db.prepare("INSERT INTO episodic_memory (regime, event_type, content, match_id) VALUES (?, ?, ?, ?)");
+  ins.run("tang", "veto_triggered", "first", "m1");
+  assert.throws(() => ins.run("tang", "veto_triggered", "second", "m1"), /UNIQUE/);
+
+  // The migration step this pins.
+  db.exec("DROP INDEX IF EXISTS ux_episodic_memory_mre");
+  db.exec("CREATE UNIQUE INDEX IF NOT EXISTS ux_episodic_memory_match_end ON episodic_memory(match_id, regime) WHERE event_type = 'match_end'");
+
+  assert.doesNotThrow(() => ins.run("tang", "veto_triggered", "second", "m1"));
+  assert.equal(
+    db.prepare("SELECT COUNT(*) AS n FROM episodic_memory WHERE match_id = ?").get("m1").n, 2,
+    "after migration both vetoes are storable",
+  );
+});
+
+test("migration: pre-existing duplicates are collapsed so the index can be created", () => {
+  const db = new Database(":memory:");
+  db.exec(`
+    CREATE TABLE match_results (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      tournament_id TEXT, match_id TEXT, regime TEXT,
+      score INTEGER, reason TEXT, commentary TEXT
+    );
+  `);
+  const ins = db.prepare("INSERT INTO match_results (tournament_id, match_id, regime, score, reason, commentary) VALUES (?, ?, ?, ?, ?, ?)");
+  ins.run("t1", "m1", "tang", 8, "first", "");
+  ins.run("t1", "m1", "tang", 3, "duplicate", "");
+
+  const create = "CREATE UNIQUE INDEX IF NOT EXISTS ux_match_results_tm ON match_results(tournament_id, match_id)";
+  assert.throws(() => db.exec(create), /UNIQUE/, "precondition: duplicates block the index");
+
+  const removed = db.prepare(
+    `DELETE FROM match_results WHERE id NOT IN (SELECT MIN(id) FROM match_results GROUP BY tournament_id, match_id)`
+  ).run().changes;
+  assert.equal(removed, 1);
+  assert.doesNotThrow(() => db.exec(create));
+  assert.equal(
+    db.prepare("SELECT reason FROM match_results WHERE tournament_id = ?").get("t1").reason, "first",
+    "the earliest row survives, matching INSERT OR IGNORE semantics",
+  );
+});

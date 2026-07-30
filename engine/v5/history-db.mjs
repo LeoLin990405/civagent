@@ -122,25 +122,57 @@ export function recordTournamentResult(tournamentId, manifest, results) {
     // isn't. SQLite raises SQLITE_CONSTRAINT if the existing data already has
     // duplicates that would violate the new constraint — caught here so the
     // engine still boots; the warning tells the operator what to do.
+    // Migration for databases created before these constraints existed.
+    //
+    // Two failure modes a bare CREATE UNIQUE INDEX does not survive:
+    //   1. the table already holds rows that violate the new uniqueness, so
+    //      index creation raises SQLITE_CONSTRAINT. Logging and continuing
+    //      leaves INSERT OR IGNORE with nothing to ignore against, and the
+    //      stacking this fix exists to stop silently continues.
+    //   2. an intermediate build of this fix put a table-wide unique index on
+    //      (match_id, regime, event_type). Leaving it in place makes a plain
+    //      INSERT of a second veto_triggered event fail, which is the data loss
+    //      the partial index was introduced to avoid.
+    // Both are handled: drop the superseded index, de-duplicate the offending
+    // rows keeping the earliest (the original record wins, matching
+    // INSERT OR IGNORE semantics), then create the index.
     try {
-      handle.exec(`CREATE UNIQUE INDEX IF NOT EXISTS ux_match_results_tm ON match_results(tournament_id, match_id)`);
+      handle.exec(`DROP INDEX IF EXISTS ux_episodic_memory_mre`);
     } catch (err) {
-      console.warn('[history-db] could not create match_results uniqueness index (existing duplicates?):', err.message);
+      console.warn('[history-db] could not drop superseded episodic_memory index:', err.message);
     }
-    // PARTIAL index, restricted to match_end. A table-wide
-    // UNIQUE(match_id, regime, event_type) looks equivalent but is wrong: a
-    // single match can legitimately emit two veto_triggered events or several
-    // skill events, and those are distinct facts, not duplicates. Constraining
-    // the whole table would make the memory unable to represent a match in
-    // which the Chancellery vetoed twice — for a project whose subject is
-    // checks and balances, that is the most damaging row to lose.
-    // recordTournamentResult writes exactly one match_end per (match, regime),
-    // so scoping the constraint to that event_type gives idempotency where it
-    // is needed and costs nothing elsewhere.
-    try {
-      handle.exec(`CREATE UNIQUE INDEX IF NOT EXISTS ux_episodic_memory_match_end ON episodic_memory(match_id, regime) WHERE event_type = 'match_end'`);
-    } catch (err) {
-      console.warn('[history-db] could not create episodic_memory match_end index (existing duplicates?):', err.message);
+    for (const [label, dedupe, create] of [
+      [
+        'match_results',
+        `DELETE FROM match_results WHERE id NOT IN (
+           SELECT MIN(id) FROM match_results GROUP BY tournament_id, match_id
+         )`,
+        `CREATE UNIQUE INDEX IF NOT EXISTS ux_match_results_tm ON match_results(tournament_id, match_id)`,
+      ],
+      [
+        'episodic_memory',
+        `DELETE FROM episodic_memory WHERE event_type = 'match_end' AND id NOT IN (
+           SELECT MIN(id) FROM episodic_memory WHERE event_type = 'match_end' GROUP BY match_id, regime
+         )`,
+        `CREATE UNIQUE INDEX IF NOT EXISTS ux_episodic_memory_match_end ON episodic_memory(match_id, regime) WHERE event_type = 'match_end'`,
+      ],
+    ]) {
+      try {
+        handle.exec(create);
+      } catch {
+        // Pre-existing duplicates block the index. Collapse them, then retry —
+        // and if the retry still fails, say so loudly rather than proceeding
+        // with the constraint silently absent.
+        try {
+          const removed = handle.prepare(dedupe).run().changes;
+          handle.exec(create);
+          if (removed > 0) {
+            console.warn(`[history-db] ${label}: collapsed ${removed} pre-existing duplicate row(s) to enforce idempotency`);
+          }
+        } catch (err2) {
+          console.error(`[history-db] ${label}: uniqueness NOT enforced — re-recording will still stack rows:`, err2.message);
+        }
+      }
     }
     const stmtMatch = handle.prepare(`
       INSERT OR IGNORE INTO match_results (tournament_id, match_id, regime, score, reason, commentary)

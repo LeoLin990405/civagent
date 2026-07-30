@@ -561,8 +561,17 @@ test(
 
       // The tournament-level trace holds one judge_score event per pass.
       assert.equal(typeof j.events, "string", "judge.events must point at the audit event stream");
-      const judgeEvents = readJsonl(j.events).filter((e) => e.type === "judge");
+      const allJudge = readJsonl(j.events).filter((e) => e.type === "judge");
+      // The judging span is opened by its own event so the span tree is not
+      // orphaned; scoring events are the ones that carry a pass.
+      const opener = allJudge.filter((e) => e.phase === "judging_start");
+      assert.equal(opener.length, 1, "exactly one judging-span opener");
+      const judgeEvents = allJudge.filter((e) => e.phase !== "judging_start");
       assert.equal(judgeEvents.length, 2, "one judge_score event per pass");
+      assert.ok(
+        judgeEvents.every((e) => e.parent_span_id === opener[0].span_id),
+        "every scoring pass hangs off the opened judging span, end to end",
+      );
       assert.equal(judgeEvents[0].kind, "judge_score");
       assert.equal(judgeEvents[0].swapped, false, "pass 1 keeps original order");
       assert.equal(judgeEvents[1].swapped, true, "pass 2 swaps presentation order");

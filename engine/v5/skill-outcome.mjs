@@ -38,11 +38,19 @@ export function stampFrontmatter(text, fields) {
   return src.replace(full, `${banner}${open}${merged}${close}`);
 }
 
-// Which skill files did this match produce? Sedimentation names them with the
-// match id's last six characters (see writeSkillFile), which is what lets us
-// attribute a file to a match without threading state through the child process.
+// Which skill files did this match produce?
+//
+// Attribution reads the provenance banner writeSkillFile() puts at the top of
+// every skill (`source_match=<full match id>`), NOT the filename. The filename
+// carries only the last six characters of the match id as a collision-avoidance
+// tag, and for tournament children those six characters are not distinguishing:
+// a child match id is `${tournamentId}__${regime with / replaced by -}`, so
+// every china/tang tournament child ever run ends in "a-tang". Matching on that
+// suffix attributed a skill to any Tang tournament, and stamping would overwrite
+// the outcome metadata of skills learned in unrelated earlier tournaments —
+// silently teaching the corpus the wrong lesson.
 export function skillsForMatch(skillsDir, matchId) {
-  const suffix = String(matchId).slice(-6).replace(/[^\w-]/g, "") || "x";
+  const needle = `source_match=${String(matchId)}`;
   let entries;
   try {
     entries = fs.readdirSync(skillsDir);
@@ -50,8 +58,17 @@ export function skillsForMatch(skillsDir, matchId) {
     return []; // no skills dir — nothing was sedimented
   }
   return entries
-    .filter((f) => f.endsWith(".md") && f.includes(`-${suffix}-`))
-    .map((f) => path.join(skillsDir, f));
+    .filter((f) => f.endsWith(".md"))
+    .map((f) => path.join(skillsDir, f))
+    .filter((full) => {
+      try {
+        // The banner is the first line; reading the whole (small) file keeps
+        // this simple and still only matches an exact, full match id.
+        return fs.readFileSync(full, "utf8").includes(needle);
+      } catch {
+        return false; // unreadable file — not attributable, so not ours
+      }
+    });
 }
 
 // Annotate every skill produced by this tournament with how its regime scored.

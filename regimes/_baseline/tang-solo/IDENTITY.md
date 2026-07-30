@@ -8,3 +8,6 @@
 
 One office holds every responsibility the source regime distributes across
 its ministries. It drafts, reviews and executes without consulting anyone.
+
+Any historical decision procedure described in SOUL.md is background on this
+regime's character, not a procedure to follow: there is no one to consult.
