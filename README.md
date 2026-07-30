@@ -216,9 +216,11 @@ v6 made the platform runnable. The iterations after it were aimed at a narrower 
 
 4. **Episodic memory retrieval** (`engine/v5/history-db.mjs`, `history-retriever.mjs`). Past matches are queried by keyword with stopword filtering, ordered newest-first with a deterministic tie-break — `CURRENT_TIMESTAMP` is second-granular, so matches recorded in the same second would otherwise come back in arbitrary order.
 
-5. **Graph metrics and topology validation** (`engine/topology/`). Every regime's `topology.json` is schema-checked and cross-checked against its IDENTITY role table, then reduced to density, command-chain depth, in-degree centrality and checks-and-balances cycle count.
+5. **Transcript capture** (`engine/v5/stream-json.mjs`). A regime's offices are Claude Code subagents; under the default `text` output format their deliberation never reached the transcript, and the judge scored whatever the coordinator happened to restate. The backend now streams structured events, rendered back to plain text with per-office attribution. Constitutional signals are matched as bracketed markers only — `[VETO]`, `[EDICT]`, `[IMPEACH: x]` — because the bare words *驳回*, *诏书* and *圣旨* appear as ordinary vocabulary in 33 of the 57 regime files, and a regime describing its own constitution must not be read as exercising it.
 
-6. **Replay and skill accounting** (`engine/v5/replay.mjs`, `skill-outcome.mjs`, `skill-quality.mjs`). A past match can be re-run with the same regime, backend and task; learned skills are deduplicated by content hash and stamped with the tournament outcome they participated in, since the extractor itself is structurally blind to whether the match was won or lost.
+6. **Graph metrics and topology validation** (`engine/topology/`). Every regime's `topology.json` is schema-checked and cross-checked against its IDENTITY role table, then reduced to density, command-chain depth, in-degree centrality and checks-and-balances cycle count.
+
+7. **Replay and skill accounting** (`engine/v5/replay.mjs`, `skill-outcome.mjs`, `skill-quality.mjs`). A past match can be re-run with the same regime, backend and task; learned skills are deduplicated by content hash and stamped with the tournament outcome they participated in, since the extractor itself is structurally blind to whether the match was won or lost.
 
 ---
 
@@ -686,9 +688,11 @@ Known residue:
 
 Every ranking in this project is over a *declared* graph. `civagent runtime-graph <matchId> --diff` now reconstructs what actually happened from the event stream's span tree and compares it against the declared topology — and the first thing it establishes is that **the comparison cannot yet be made at office level**.
 
-Declared nodes are offices (`zhongshu`, `menxia`). Runtime actors are regimes (`china/tang`), because `run-v5.mjs` tags every turn with the regime id: Claude Code runs all of a regime's offices inside one process and the output stream is not attributed per agent. The two id spaces do not overlap at all, so `unexercised_ratio` is reported as `null` rather than the `1.000` it would otherwise show for every regime in every match — a number that looks like a measurement and is not one.
+Until recently the comparison could not be made at all: the backend was spawned with `-p` and the default `text` output format, which prints only the coordinator's final assistant message, so every office's deliberation was discarded before it reached the event stream. Turns were tagged with the regime id because that was the only identity available.
 
-The practical consequence stands until the event stream carries per-agent attribution: **a regime that declares a veto edge and never exercises it is indistinguishable from one that exercises it constantly.** Treat topology-level conclusions as claims about declarations, not about behaviour. What the diff does establish today is cross-actor traffic (regime → judge, regime → skill-learner) and the volume of intra-regime work.
+That is fixed. The backend now runs with `--output-format stream-json --verbose`, and `engine/v5/stream-json.mjs` renders the stream back to plain text while keeping the dispatch mapping — a delegation carries `input.subagent_type`, the reply carries `parent_tool_use_id` — so turns are attributed as `china/tang#menxia`. On one verification run the same regime and scenario went from 579 captured characters to 72,828, with all three departments visible and the Chancellery's three rounds of *fengbo* review in the transcript.
+
+**The remaining gap is narrower but real.** Attribution now exists per office, but `engine/v5/runtime-graph.mjs` still reconstructs the graph at regime granularity, so `unexercised_ratio` remains `null` on a declared-vs-runtime diff. Wiring the office-level actor into that comparison is the next step, and it is now possible rather than blocked. Until it lands, treat topology-level conclusions as claims about declarations rather than about behaviour.
 
 Full audit report: [regimes/AUDIT.md](./regimes/AUDIT.md)
 

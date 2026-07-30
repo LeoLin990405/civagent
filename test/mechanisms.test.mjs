@@ -24,10 +24,23 @@ describe('checkVeto', () => {
     assert.equal(ctx.vetoTriggered, true);
   });
 
-  it('detects Chinese 驳回 keyword', () => {
+  // A control signal has to be distinguishable from prose ABOUT that control.
+  // "驳回" is an ordinary word: 33 of the 57 regime files contain 驳回/诏书/圣旨
+  // as plain historical vocabulary, and only [VETO] is ever taught to agents as
+  // a marker. Matching the bare word killed a real Tang run mid-draft — the
+  // Secretariat was describing the Chancellery's power to amend and return
+  // documents ("直接在文书上批改驳回") and the engine SIGKILLed the process.
+  it('does NOT fire on 驳回 used as ordinary prose', () => {
     const ctx = makeContext();
-    assert.equal(checkVeto('门下省决定驳回此诏书', ctx), true);
+    assert.equal(checkVeto('对六部执行中的不当，可直接在文书上批改驳回。', ctx), false);
+    assert.equal(ctx.vetoTriggered, false, 'and must not mark the match as vetoed');
   });
+
+  it('fires on the explicit bracketed marker', () => {
+    const ctx = makeContext();
+    assert.equal(checkVeto('门下省封驳此诏 [VETO]', ctx), true);
+  });
+
 
   it('does not trigger twice', () => {
     const ctx = makeContext();
@@ -54,10 +67,13 @@ describe('checkImpeach', () => {
     assert.ok(ctx.impeachments.has('Grand Secretary'));
   });
 
-  it('detects Chinese 弹劾 format', () => {
+  it('detects the bracketed Chinese 弹劾 marker', () => {
     const ctx = makeContext();
-    assert.equal(checkImpeach('都察院决定弹劾：丞相', ctx), true);
-    assert.ok(ctx.impeachments.has('丞相'));
+    // Unbracketed "弹劾：李林甫" is ordinary narration of a censorate's duties
+    // and no longer fires; the bracketed form is an act.
+    assert.equal(checkImpeach('御史台弹劾：李林甫，风闻言事', ctx), false);
+    assert.equal(checkImpeach('[弹劾: 李林甫]', ctx), true);
+    assert.ok(ctx.impeachments.has('李林甫'));
   });
 
   it('does not impeach the same target twice', () => {
@@ -81,15 +97,22 @@ describe('checkEdict', () => {
     assert.equal(ctx.vetoImmunity, true);
   });
 
-  it('detects Chinese 圣旨', () => {
+  // 诏书 ("edict") is the most common noun in a Tang governance document. Firing
+  // EDICT on it grants vetoImmunity, which disables the veto mechanism — so
+  // under captured office prose a checks-and-balances regime would silently
+  // lose the very behaviour under study.
+  it('does NOT fire on 诏书/圣旨 used as ordinary prose', () => {
     const ctx = makeContext();
-    assert.equal(checkEdict('皇帝下达圣旨', ctx), true);
+    assert.equal(checkEdict('交门下省封驳，诏书既下，付尚书省施行。', ctx), false);
+    assert.equal(checkEdict('皇帝下达圣旨的流程如下', ctx), false);
+    assert.equal(ctx.vetoImmunity, false, 'veto immunity must not be granted by prose');
   });
 
-  it('detects Chinese 诏书', () => {
+  it('fires on the explicit bracketed marker', () => {
     const ctx = makeContext();
-    assert.equal(checkEdict('发布诏书征调兵马', ctx), true);
+    assert.equal(checkEdict('[EDICT] 敕令直下六部', ctx), true);
   });
+
 
   it('does not trigger twice', () => {
     const ctx = makeContext();
@@ -160,5 +183,35 @@ describe('MechanismEngine', () => {
     engine.process('[IMPEACH: General]');
     const targets = engine.getImpeachments();
     assert.deepEqual(targets.sort(), ['Chancellor', 'General']);
+  });
+});
+
+describe('control signals vs prose about control signals', () => {
+  // The class of defect, stated once. All three mechanisms matched bare natural
+  // language, which is indistinguishable from a regime describing its own
+  // constitution — exactly what its offices spend their output doing. The bare
+  // matches were only dormant because office deliberation was being discarded
+  // before it reached the scanner.
+  const PROSE = [
+    '门下省给事中对所有防疫诏令有封驳之权，违制即封还。',
+    '对六部执行中的不当，可直接在文书上批改驳回。',
+    '中书省起草诏书，交门下省审核，再付尚书省施行。',
+    '御史台可风闻言事，弹劾：不法官员，直达御前。',
+    '皇帝下达圣旨的流程见上。',
+  ].join('\n');
+
+  it('a regime describing its own constitution triggers nothing', () => {
+    const engine = new MechanismEngine({ emit: () => {} }, { kill: () => {} });
+    const fired = engine.process(PROSE);
+    assert.deepEqual(fired, { veto: false, impeach: false, edict: false },
+      'prose about vetoes, edicts and impeachments is not an act of any of them');
+    assert.deepEqual(engine.getStats(), { vetoes: 0, impeachments: 0, edicts: 0 });
+  });
+
+  it('but the explicit markers still work', () => {
+    const engine = new MechanismEngine({ emit: () => {} }, { kill: () => {} });
+    assert.equal(engine.process('[EDICT] 敕').edict, true);
+    assert.equal(engine.process('[IMPEACH: 李林甫]').impeach, true);
+    assert.deepEqual(engine.getImpeachments(), ['李林甫']);
   });
 });

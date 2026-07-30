@@ -11,6 +11,7 @@ import path from "node:path";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { StringDecoder } from "node:string_decoder";
+import { StreamRenderer } from "./stream-json.mjs";
 import { ensureCivHome, validateRegime } from "./civ-memory.mjs";
 import { sediment } from "./skill-sediment.mjs";
 import { resolveBackend, buildBackendArgs } from "./backends.mjs";
@@ -171,25 +172,42 @@ async function main() {
   // raw "data" chunk can split mid-marker or mid-UTF8-codepoint, silently dropping
   // a real veto. Decode bytes safely and detect on complete lines instead.
   const decoder = new StringDecoder("utf8");
+  const renderer = new StreamRenderer();
   let lineBuf = "";
+
+  // One stream-json line renders to zero or more lines of readable transcript.
+  // Emitting the rendered text (not the raw envelope) keeps three consumers
+  // working unchanged: the judge reads these turn events, cleanTranscript()
+  // unwraps them for the skill extractor, and the dashboard streams them.
+  // It also keeps the mechanism engine scanning prose: a `[VETO]` marker buried
+  // in a JSON string escape would not match the same way.
+  const handleLine = (line) => {
+    const rendered = renderer.render(line);
+    if (!rendered) return;
+    // actor is the office when the line came from a subagent, and the regime
+    // otherwise — the first time an office's own output is attributable.
+    const actor = rendered.actor ? `${regime}#${rendered.actor}` : regime;
+    const text = rendered.text.endsWith("\n") ? rendered.text : `${rendered.text}\n`;
+    log.emit("turn", { text, actor });
+    process.stdout.write(text);   // the human-readable log, not the envelope
+    mechEngine.process(text);
+  };
+
   const feed = (textChunk, flush = false) => {
     lineBuf += textChunk;
     let nl;
     while ((nl = lineBuf.indexOf("\n")) >= 0) {
-      const line = lineBuf.slice(0, nl + 1);
+      const line = lineBuf.slice(0, nl);
       lineBuf = lineBuf.slice(nl + 1);
-      log.emit("turn", { text: line, actor: regime });
-      mechEngine.process(line);
+      handleLine(line);
     }
     if (flush && lineBuf) {
-      log.emit("turn", { text: lineBuf, actor: regime });
-      mechEngine.process(lineBuf);
+      handleLine(lineBuf);
       lineBuf = "";
     }
   };
 
   cc.stdout.on("data", (chunk) => {
-    process.stdout.write(chunk);     // raw passthrough preserves exact bytes
     feed(decoder.write(chunk));
   });
   cc.stdout.on("end", () => feed(decoder.end(), true));

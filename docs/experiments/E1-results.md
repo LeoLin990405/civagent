@@ -127,3 +127,54 @@ score in the two interpretable scenarios is transcript length, and the low
 scores are traceable to missing transcripts rather than to governance quality.
 No claim about whether governance topology affects multi-agent performance is
 supported by this run.
+
+---
+
+## Follow-up (same day): the blocker is fixed, and E1 must be re-run
+
+The root cause of the missing transcripts was found and fixed after this run.
+It was not the model summarising instead of answering — the work was real and
+the harness was discarding it.
+
+**Cause.** The backend was spawned as `claude --agents <json> -p "<task>"`. The
+default output format for `-p` is `text`, which prints only the coordinator's
+final assistant message. A regime's offices are Claude Code subagents, so every
+word they exchanged went to the subagent channel and was never captured.
+
+**Correction to this document's reading of the tang S1 cell.** Above, that
+transcript's claim that an edict "was already drafted, debated through two rounds
+of Menxia veto ... and dispatched" is described as something the judge scored
+instead of the work. The claim was **true**. A verification run of the same
+regime on the same scenario, with capture fixed, produced three full rounds of
+Chancellery *fengbo* review (5,262 + 4,247 + 3,004 characters), including
+substantive historical criticism of the draft. The deliberation was happening
+all along.
+
+**Effect.**
+
+| | E1 (as run) | after the fix |
+|---|---|---|
+| turn events | 3 | 60 |
+| captured characters | 579 | 72,828 |
+| actors | `china/tang` | `china/tang` + `#zhongshu` `#menxia` `#shangshu` |
+
+**A second defect, exposed by the first fix.** With office prose finally
+reaching the mechanism engine, the first verification run was `SIGKILL`ed
+mid-draft. The veto detector matched the bare substring *驳回*, and the
+Secretariat had merely *described* the Chancellery's power to amend and return
+documents. The same class of defect existed in all three mechanisms: `checkEdict`
+matched bare *诏书* — the commonest noun in a Tang governance document — and
+firing EDICT grants `vetoImmunity`, which would have silently disabled the veto
+mechanism in exactly the regimes whose checks-and-balances behaviour is under
+study. Only `[VETO]` is ever taught to agents as a marker; 33 of the 57 regime
+files contain those bare words as ordinary vocabulary. All three now require
+bracketed markers.
+
+Both defects were dormant only because the transcripts were empty. Fixing
+capture is what made them reachable.
+
+**Status of E1.** Superseded. Every score above was produced from transcripts
+that omitted most of what the regimes did, and the three lowest scores are the
+three cells where the omission was worst. The pre-registration stands and should
+be re-run unchanged, so that the same predictions are tested against transcripts
+that contain the deliberation.
