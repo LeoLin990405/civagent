@@ -1,0 +1,33 @@
+{
+  "id": "athens-random",
+  "name": {
+    "zh": "雅典民主制 (Random-6)",
+    "en": "Athenian Democracy (Random-6)"
+  },
+  "era": {
+    "zh": "公元前508年-公元前322年",
+    "en": "508-322 BC"
+  },
+  "region": "global",
+  "system": {
+    "zh": "随机基线对照 (6 agents, seed=42)",
+    "en": "Random Baseline Control (6 agents, seed=42)"
+  },
+  "description": {
+    "zh": "基线对照变体（random-6）：6 个 agent，边数 ≈ 原政体，边的种类按原分布随机采样，seed=42 保证可复现。",
+    "en": "Baseline control variant (random-6): 6 agents, edge count ≈ original, edge kinds randomly sampled from original distribution, seed=42 for reproducibility."
+  },
+  "agentCount": 6,
+  "tags": [
+    "baseline",
+    "random",
+    "control"
+  ],
+  "orchestrationPattern": "centralized",
+  "_baseline": {
+    "type": "random",
+    "source": "global/athens",
+    "agentCount": 6,
+    "seed": 42
+  }
+}

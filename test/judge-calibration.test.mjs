@@ -11,6 +11,7 @@ import {
   computeBiasReport,
   modelFamilyOf,
 } from "../engine/v5/judge-calibration.mjs";
+import { TRANSCRIPT_STRATEGIES } from "../engine/v5/events.mjs";
 import { judge } from "../engine/v5/tournament.mjs";
 
 // ── modelFamilyOf ─────────────────────────────────────────────────────────────
@@ -252,4 +253,27 @@ test("judge() bias_report null when the judge is unavailable", async () => {
   const v = await judge("task", CIVS, { swap: true, _runJudge: fakeRunJudge });
   assert.equal(v.provider, null);
   assert.equal(v.biasReport, null);
+});
+
+// ── Transcript selection integration with judge() ─────────────────────────────
+
+test("judge() returns transcriptSelection with per-civ selection metadata", async () => {
+  const fakeRunJudge = () => ({ provider: "codex", output: jsonOut({ legality: 4, feasibility: 4, resilience: 4 }, { legality: 2, feasibility: 2, resilience: 2 }) });
+  const v = await judge("task", CIVS, { swap: false, _runJudge: fakeRunJudge });
+  assert.ok(v.transcriptSelection, "transcriptSelection present");
+  assert.equal(v.transcriptSelection.maxChars, 6000);
+  assert.equal(v.transcriptSelection.verbosityBudget, 6000);
+  assert.equal(v.transcriptSelection.perCiv.length, 2, "one entry per civ");
+
+  for (const entry of v.transcriptSelection.perCiv) {
+    assert.ok(entry.regime, "each entry has a regime");
+    assert.equal(typeof entry.originalLength, "number", "originalLength is a number");
+    assert.equal(typeof entry.selectedLength, "number", "selectedLength is a number");
+    assert.equal(typeof entry.postAnonymizationLength, "number");
+    assert.equal(typeof entry.judgeViewLength, "number");
+    assert.equal(typeof entry.verbosityTruncated, "boolean");
+    assert.equal(typeof entry.truncated, "boolean", "truncated is a boolean");
+    assert.ok(TRANSCRIPT_STRATEGIES.includes(entry.strategy), `strategy ${entry.strategy} is valid`);
+    assert.equal(entry.fallback, true, "missing structured events are explicitly marked as raw-log fallback");
+  }
 });

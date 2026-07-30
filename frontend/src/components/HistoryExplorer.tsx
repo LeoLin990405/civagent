@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { History, Calendar, ShieldCheck, FileText, ChevronRight, Terminal, Search } from 'lucide-react';
 import type { MatchSummary, MatchEvent, MatchMeta } from '../types/api';
+import { splitActor } from '../utils/actorName';
 
 function formatSediment(sediment: MatchMeta['sediment']): { label: string, status: 'saved' | 'rejected' | 'skipped' | 'error' | 'none', text: string } {
   if (!sediment) {
@@ -285,12 +286,22 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
                           return <span key={idx} className="block whitespace-pre-wrap text-[var(--text-secondary)]">{e.text}</span>;
                         }
                         if (e.type === 'turn') {
+                          const { regime: actorRegime, office: actorOffice } = splitActor(e.actor);
+                          const actorLabel = actorOffice || actorRegime || 'agent';
                           return (
                             <div key={idx} className="bg-[var(--bg-glass-light)] p-4 rounded-lg border border-[var(--border-subtle)] hover:bg-[var(--bg-glass-hover)] transition-colors">
                               <div className="flex items-center gap-2 mb-2 pb-2 border-b border-[var(--border-subtle)]">
-                                <span className={`role-badge ${getRoleStyleClass(e.actor || 'agent')}`}>
-                                  {e.actor || 'agent'}
+                                <span
+                                  className={`role-badge ${actorOffice ? 'office-badge' : getRoleStyleClass(actorLabel)}`}
+                                  data-testid="actor-role"
+                                >
+                                  {actorLabel}
                                 </span>
+                                {actorOffice && actorRegime && (
+                                  <span className="actor-regime-context" data-testid="actor-regime">
+                                    {actorRegime}
+                                  </span>
+                                )}
                               </div>
                               <p className="text-[12px] text-[var(--text-primary)] whitespace-pre-wrap break-words">{e.text}</p>
                             </div>
