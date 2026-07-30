@@ -3,31 +3,145 @@
   "regime": "china/tang",
   "mode": "checks-and-balances",
   "nodes": [
-    { "id": "zhongshu", "label": "中书省（起草）", "functional_role": "coordinator" },
-    { "id": "menxia", "label": "门下省（封驳审核）", "functional_role": "review" },
-    { "id": "shangshu", "label": "尚书省（执行调度）", "functional_role": "management" },
-    { "id": "bingbu", "label": "兵部尚书", "functional_role": "engineering" },
-    { "id": "hubu", "label": "户部尚书", "functional_role": "data" },
-    { "id": "libu_ritual", "label": "礼部尚书", "functional_role": "content" },
-    { "id": "gongbu", "label": "工部尚书", "functional_role": "devops" },
-    { "id": "xingbu", "label": "刑部尚书", "functional_role": "legal" },
-    { "id": "libu_personnel", "label": "吏部尚书", "functional_role": "management" }
+    {
+      "id": "zhongshu",
+      "label": "中书省（起草）",
+      "functional_role": "coordinator"
+    },
+    {
+      "id": "menxia",
+      "label": "门下省（封驳审核）",
+      "functional_role": "review",
+      "note": "LLM 审核者，非确定性门：封驳/批红是模型判断，不是规则判定。[VETO] 机制本身是确定性的，但它实现在 engine/mechanisms/veto.mjs，监听这个 agent 的输出，并不是图上的一个节点。"
+    },
+    {
+      "id": "shangshu",
+      "label": "尚书省（执行调度）",
+      "functional_role": "management",
+      "kind": "router",
+      "note": "只接收门下省签署通过的政令并向六部分派，本身不产出内容（IDENTITY.md 执行 / SOUL.md 只接收…负责派发）"
+    },
+    {
+      "id": "bingbu",
+      "label": "兵部尚书",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "hubu",
+      "label": "户部尚书",
+      "functional_role": "data"
+    },
+    {
+      "id": "libu_ritual",
+      "label": "礼部尚书",
+      "functional_role": "content"
+    },
+    {
+      "id": "gongbu",
+      "label": "工部尚书",
+      "functional_role": "devops"
+    },
+    {
+      "id": "xingbu",
+      "label": "刑部尚书",
+      "functional_role": "legal"
+    },
+    {
+      "id": "libu_personnel",
+      "label": "吏部尚书",
+      "functional_role": "management"
+    }
   ],
   "edges": [
-    { "from": "zhongshu", "to": "menxia", "kind": "command", "note": "中书省草拟方略后送门下省审核（协作流程 3）" },
-    { "from": "menxia", "to": "zhongshu", "kind": "veto", "note": "门下封驳：驳回不当草案、发还重拟（三省制衡核心）" },
-    { "from": "menxia", "to": "shangshu", "kind": "command", "note": "审核通过的方略移交尚书省执行（协作流程 4）" },
-    { "from": "shangshu", "to": "bingbu", "kind": "command", "note": "尚书省向六部分派具体执行任务（协作流程 5）" },
-    { "from": "shangshu", "to": "hubu", "kind": "command", "note": "同上" },
-    { "from": "shangshu", "to": "libu_ritual", "kind": "command", "note": "同上" },
-    { "from": "shangshu", "to": "gongbu", "kind": "command", "note": "同上" },
-    { "from": "shangshu", "to": "xingbu", "kind": "command", "note": "同上" },
-    { "from": "shangshu", "to": "libu_personnel", "kind": "command", "note": "同上" },
-    { "from": "bingbu", "to": "shangshu", "kind": "info", "note": "执行结果奏报尚书省汇总" },
-    { "from": "hubu", "to": "shangshu", "kind": "info", "note": "同上" },
-    { "from": "libu_ritual", "to": "shangshu", "kind": "info", "note": "同上" },
-    { "from": "gongbu", "to": "shangshu", "kind": "info", "note": "同上" },
-    { "from": "xingbu", "to": "shangshu", "kind": "info", "note": "同上" },
-    { "from": "libu_personnel", "to": "shangshu", "kind": "info", "note": "同上" }
+    {
+      "from": "zhongshu",
+      "to": "menxia",
+      "kind": "command",
+      "note": "中书省草拟方略后送门下省审核（协作流程 3）"
+    },
+    {
+      "from": "menxia",
+      "to": "zhongshu",
+      "kind": "veto",
+      "note": "门下封驳：驳回不当草案、发还重拟（三省制衡核心）"
+    },
+    {
+      "from": "menxia",
+      "to": "shangshu",
+      "kind": "command",
+      "note": "审核通过的方略移交尚书省执行（协作流程 4）"
+    },
+    {
+      "from": "shangshu",
+      "to": "bingbu",
+      "kind": "command",
+      "note": "尚书省向六部分派具体执行任务（协作流程 5）"
+    },
+    {
+      "from": "shangshu",
+      "to": "hubu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "shangshu",
+      "to": "libu_ritual",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "shangshu",
+      "to": "gongbu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "shangshu",
+      "to": "xingbu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "shangshu",
+      "to": "libu_personnel",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "bingbu",
+      "to": "shangshu",
+      "kind": "info",
+      "note": "执行结果奏报尚书省汇总"
+    },
+    {
+      "from": "hubu",
+      "to": "shangshu",
+      "kind": "info",
+      "note": "同上"
+    },
+    {
+      "from": "libu_ritual",
+      "to": "shangshu",
+      "kind": "info",
+      "note": "同上"
+    },
+    {
+      "from": "gongbu",
+      "to": "shangshu",
+      "kind": "info",
+      "note": "同上"
+    },
+    {
+      "from": "xingbu",
+      "to": "shangshu",
+      "kind": "info",
+      "note": "同上"
+    },
+    {
+      "from": "libu_personnel",
+      "to": "shangshu",
+      "kind": "info",
+      "note": "同上"
+    }
   ]
 }
