@@ -464,12 +464,21 @@ test("gate_count and checks_cycles are independent measures", () => {
   assert.equal(tang.gate_count, 0, "…and still no deterministic gate");
 });
 
-test("router typing survives on a real regime", () => {
-  // shangshu is the one real annotation kept: SOUL.md says it only receives
-  // approved edicts and dispatches them to the Six Ministries.
-  const { topology } = validateRegimeTopology(path.join(PROJECT_ROOT, "regimes/china/tang"));
-  const shangshu = topology.nodes.find((n) => n.id === "shangshu");
-  assert.equal(shangshu.kind, "router", "shangshu dispatches, it does not adjudicate");
+// No real regime carries a kind annotation at all, and that is the honest state.
+// shangshu was briefly marked "router" on the strength of its SOUL text, but
+// engine/regime-to-cc.mjs still compiles it into a model-backed subagent with a
+// prompt — while the schema defines router as a node that makes no model call
+// and produces no content. Until the runtime has a genuine non-LLM dispatch
+// node, the annotation would be the graph asserting something the runtime does
+// not implement. The typing mechanism stays; the unearned labels do not.
+test("no real regime claims a node kind the runtime does not implement", () => {
+  for (const r of ["china/tang", "china/ming", "china/qin", "global/athens"]) {
+    const { topology } = validateRegimeTopology(path.join(PROJECT_ROOT, "regimes", r));
+    for (const n of topology.nodes) {
+      assert.ok(n.kind === undefined || n.kind === "agent",
+        `${r}/${n.id}: every node is model-backed today, so kind must be agent or unset (got ${n.kind})`);
+    }
+  }
 });
 
 // ── CLI smoke ────────────────────────────────────────────────────────────────

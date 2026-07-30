@@ -324,9 +324,13 @@ export function readEventsFile(matchId) {
 // Read a regime's topology.json. Returns the parsed object.
 // Throws if the regime directory or topology file doesn't exist.
 export function loadDeclaredTopology(regime) {
-  // Validate regime id format (same as bin/lib/common.sh validate_regime)
-  if (!/^(china|global)\/[a-z0-9][a-z0-9-]*$/.test(regime)) {
-    throw new Error(`invalid regime id: ${regime} (expected china/<id> or global/<id>)`);
+  // Same contract as engine/v5/civ-memory.mjs::validateRegime, deliberately:
+  // hardcoding china|global here excluded _baseline/* and _ablated/*, which are
+  // exactly the control arms this comparison exists to evaluate. A control could
+  // run as a civ, produce events, and then be the one match whose declared graph
+  // could not be looked up.
+  if (!/^_?[a-z0-9][a-z0-9_-]*\/[a-z0-9][a-z0-9_-]*$/i.test(regime)) {
+    throw new Error(`invalid regime id: ${regime}`);
   }
   const topoPath = path.join(PROJECT_ROOT, "regimes", regime, "topology.json");
   if (!fs.existsSync(topoPath)) {

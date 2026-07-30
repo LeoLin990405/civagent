@@ -619,3 +619,41 @@ test("control IDENTITY diagram matches the control's own edges, not the source's
     rmrf(outRoot);
   }
 });
+
+test("a non-mermaid organization chart is rewritten too", () => {
+  // china/ming draws its dual-track chart as ASCII in a plain fence. An earlier
+  // version matched only ```mermaid, so the flat control declared zero edges in
+  // topology.json while still showing the model 皇帝 → 内阁/司礼监 → 六部. The
+  // model reads IDENTITY.md, not topology.json, so that control isolated nothing.
+  const outRoot = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-bsl-ascii-"));
+  try {
+    const src = fs.readFileSync(path.join(PROJECT_ROOT, "regimes/china/ming/IDENTITY.md"), "utf8");
+    assert.ok(/```\s*\n\s*┌/.test(src), "precondition: ming's chart is a plain fence, not mermaid");
+
+    const r = generateBaseline("china/ming", "flat", { outRoot, seed: 1 });
+    const identity = fs.readFileSync(path.join(r.outDir, "IDENTITY.md"), "utf8");
+    const fences = [...identity.matchAll(/```([\s\S]*?)```/g)].map((m) => m[1]);
+    assert.equal(fences.length, 1, "exactly one diagram survives — a control has one wiring");
+    assert.ok(!/[┌└├─┬▼]/.test(identity), "no box-drawing chart may survive into the control");
+    assert.match(fences[0], /graph TD/, "the surviving diagram is the control's own");
+  } finally {
+    rmrf(outRoot);
+  }
+});
+
+test("the control's decision flow explicitly overrides the historical prose", () => {
+  // The institutional summary near the top of every IDENTITY describes the
+  // source regime's procedure. It is persona and must stay, but a control
+  // rewires the flow, so the file must say which one governs.
+  const outRoot = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-bsl-override-"));
+  try {
+    for (const type of ["flat", "random"]) {
+      const r = generateBaseline("china/tang", type, { outRoot, seed: 3 });
+      const identity = fs.readFileSync(path.join(r.outDir, "IDENTITY.md"), "utf8");
+      assert.match(identity, /the flow below governs/,
+        `${type}: the control must resolve the conflict with the historical description`);
+    }
+  } finally {
+    rmrf(outRoot);
+  }
+});

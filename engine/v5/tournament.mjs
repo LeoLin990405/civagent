@@ -179,8 +179,20 @@ export async function judge(task, civResults, {
   const providerSlots = judgesN > 1 ? resolveJudgeChain() : [null];
 
   // The judging step itself is one span under the tournament trace root;
-  // per-pass judge_score events hang below it.
+  // per-pass judge_score events hang below it. The span has to be *opened* with
+  // an event that carries it as its own span_id — without one, every judge event
+  // points at a parent that was never written, and runtime-graph reconstructs
+  // them as orphans hanging off <orphan> instead of the tournament.
   const judgeSpanId = newSpanId();
+  eventLog?.emit("judge", {
+    span_id: judgeSpanId,
+    actor: "judge",
+    kind: "judge_score",
+    phase: "judging_start",
+    judges_n: judgesN,
+    anonymized: Boolean(anon),
+    passes_planned: passPlans.length,
+  });
   const passes = [];
   const rawPasses = [];
   const providers = [];

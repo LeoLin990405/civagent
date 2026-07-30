@@ -131,28 +131,38 @@ function baselineSoul(sourceSoul, metadata, type) {
 // reviews → 尚書省 dispatches") and a model follows the prose, not the JSON. If
 // the prose were left intact the topology would be scrambled on disk and obeyed
 // as-written at runtime, and the control would silently be no control at all.
-// The source IDENTITY.md draws its wiring twice: once as a mermaid diagram and
-// once as prose. A control that rewrites only the prose leaves the diagram
+// The source IDENTITY.md draws its wiring twice: once as a diagram and once as
+// prose. The diagram is not always mermaid — several regimes (china/ming among
+// them) draw an ASCII org chart in a plain fence. An earlier version matched
+// only ```mermaid, so the Ming flat control declared zero edges in
+// topology.json while still showing the model the full dual-track chart. The
+// model reads IDENTITY.md, not topology.json, so that control isolated nothing. A control that rewrites only the prose leaves the diagram
 // asserting the original topology, so the agent reads two contradictory wirings
 // and follows whichever it happened to read last — which silently reintroduces
 // the very variable the control exists to isolate. Rewrite the diagram from the
 // control's own edges, or drop it when the control has no edges to draw.
-function rewriteMermaid(lines, edges) {
+function rewriteDiagram(lines, edges) {
+  const graph = ["```mermaid", "graph TD"];
+  if (edges && edges.length) {
+    for (const e of edges) graph.push(`    ${e.from} -->|${e.kind}| ${e.to}`);
+  } else {
+    graph.push("    %% experimental control: no inter-office edges");
+  }
+  graph.push("```");
+
   const out = [];
   let inFence = false;
+  let replaced = false;
   for (const line of lines) {
-    if (!inFence && /^\s*```mermaid/.test(line)) {
+    if (!inFence && /^\s*```/.test(line)) {
       inFence = true;
-      out.push("```mermaid", "graph TD");
-      if (edges && edges.length) {
-        for (const e of edges) out.push(`    ${e.from} -->|${e.kind}| ${e.to}`);
-      } else {
-        out.push("    %% experimental control: no inter-office edges");
-      }
+      // Only the first diagram becomes the control's wiring. A control has one
+      // wiring; a second surviving chart would contradict it.
+      if (!replaced) { out.push(...graph); replaced = true; }
       continue;
     }
     if (inFence) {
-      if (/^\s*```\s*$/.test(line)) { inFence = false; out.push("```"); }
+      if (/^\s*```\s*$/.test(line)) inFence = false;
       continue;
     }
     out.push(line);
@@ -161,7 +171,7 @@ function rewriteMermaid(lines, edges) {
 }
 
 function controlIdentity(sourceIdentity, agentIds, flowLines, edges = null) {
-  const lines = rewriteMermaid(String(sourceIdentity).split(/\r?\n/), edges);
+  const lines = rewriteDiagram(String(sourceIdentity).split(/\r?\n/), edges);
   // Keep everything up to and including the role-mapping table; the table ends
   // at the first non-pipe line after it started.
   const kept = [];
@@ -178,6 +188,10 @@ function controlIdentity(sourceIdentity, agentIds, flowLines, edges = null) {
     ``,
     `The offices above are unchanged from the source regime. Their coordination`,
     `structure is not: this variant follows the flow below and nothing else.`,
+    ``,
+    `Any description of the historical decision procedure earlier in this file is`,
+    `background on the offices, not the procedure to follow. Where it conflicts`,
+    `with the flow below, the flow below governs.`,
     ``,
     ...flowLines,
     ``,
@@ -219,6 +233,9 @@ function soloIdentity(sourceIdentity) {
     ``,
     `One office holds every responsibility the source regime distributes across`,
     `its ministries. It drafts, reviews and executes without consulting anyone.`,
+    ``,
+    `Any historical decision procedure described in SOUL.md is background on this`,
+    `regime's character, not a procedure to follow: there is no one to consult.`,
     ``,
   ].join("\n");
 }

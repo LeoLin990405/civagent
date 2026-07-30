@@ -18,8 +18,7 @@
       "id": "shangshu",
       "label": "尚书省（执行调度）",
       "functional_role": "management",
-      "kind": "router",
-      "note": "只接收门下省签署通过的政令并向六部分派，本身不产出内容（IDENTITY.md 执行 / SOUL.md 只接收…负责派发）"
+      "note": "原标为 router，已撤销：engine/regime-to-cc.mjs 仍把尚书省编译成一个带提示词的模型后端子代理，而 schema 把 router 定义为不调模型、不产内容。在运行时真的有非 LLM 分发节点之前，这个标注是图对运行时的错误声明。"
     },
     {
       "id": "bingbu",
