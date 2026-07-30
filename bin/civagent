@@ -46,8 +46,9 @@ ${BOLD}Usage:${NC}
   civagent ablate <regime> --type persona|checks [--out dir]
                                         Generate an ablation variant into regimes/_ablated/
                                         (A3 skill ablation: run/tournament --no-skill)
-  civagent baseline <regime> --type solo|random|flat [--seed N] [--out dir]
+  civagent baseline <regime> --type solo|random|flat [--seed N] [--out dir] [--dest dir]
                                         Generate a baseline control variant into regimes/_baseline/
+                                        (--dest stages it at an exact runnable path, e.g. regimes/baseline/tang-random)
   civagent hillclimb <analyze|propose|validate|apply|rollback>
                                         L4 loop: diagnose → diff proposals → paired validation → revertible apply
   civagent agents                       Show generated CC agents for active regime

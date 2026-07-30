@@ -1,0 +1,31 @@
+{
+  "id": "tang-solo",
+  "name": {
+    "zh": "唐朝 (Solo)",
+    "en": "Tang Dynasty (Solo)"
+  },
+  "era": {
+    "zh": "618年-907年",
+    "en": "618-907 AD"
+  },
+  "region": "china",
+  "system": {
+    "zh": "单人基线对照",
+    "en": "Solo Baseline Control"
+  },
+  "description": {
+    "zh": "基线对照变体（solo）：单 agent，无拓扑结构，仅保留政体身份标识。",
+    "en": "Baseline control variant (solo): single agent, no topology, minimal identity only."
+  },
+  "agentCount": 1,
+  "tags": [
+    "baseline",
+    "solo",
+    "control"
+  ],
+  "orchestrationPattern": "centralized",
+  "_baseline": {
+    "type": "solo",
+    "source": "china/tang"
+  }
+}

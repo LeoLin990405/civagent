@@ -3,15 +3,31 @@
 //
 // Three variant types, all generated into regimes/_baseline/<type>/<region>/<id>/:
 //
-//   solo     — 1 agent, 0 edges. Strips all governance structure; keeps only
-//              minimal regime identity. The null hypothesis: "topology doesn't
-//              matter, a single agent performs just as well."
+//   solo     — 1 agent, 0 edges. Collapses all governance structure into a
+//              single office. The null hypothesis: "topology doesn't matter,
+//              a single agent performs just as well."
 //   flat-N   — N agents (same count as original), 0 edges. All agents work in
 //              parallel with no inter-agent communication. Tests whether raw
 //              agent count alone explains performance.
 //   random-N — N agents, random edges (same count as original, edge kinds
 //              sampled from the original's distribution, seeded for reproducibility).
 //              Tests whether a *specific* topology outperforms random wiring.
+//
+// WHAT A CONTROL MAY AND MAY NOT CHANGE
+//
+// The only variable a control isolates is the wiring between offices. Persona
+// carries over untouched: SOUL.md is copied verbatim (plus a provenance
+// comment), office ids, labels and duty descriptions stay as the source wrote
+// them, and only the Decision Flow prose and the mermaid diagram are rewritten
+// to describe the control's own edges.
+//
+// This is not stylistic. An earlier generator replaced every office with
+// "Baseline Agent N — generic governance agent" and cut SOUL.md to a 571-byte
+// disclaimer. A smoke run then scored the source regime 10 and the control 2.5
+// — but the control's transcript was the model asking the operator how to
+// configure the experiment. With persona and topology both removed, the
+// measured gap was persona presence, and said nothing about topology at all.
+// test/baseline.test.mjs has revert-verified guards against that regression.
 //
 // Seeded PRNG (mulberry32) guarantees byte-identical output for the same seed.
 // Connectivity is enforced: random graphs include a random spanning tree so
@@ -86,57 +102,168 @@ export function parseIdentityAgentIds(identityMd) {
   return ids;
 }
 
-// Build a minimal SOUL for baseline variants — keep the regime's core identity
-// (name, era, one-line description) but strip all governance process language.
-function baselineSoul(metadata) {
-  const zh = metadata.name?.zh || metadata.id || "Unknown";
-  const en = metadata.name?.en || metadata.id || "Unknown";
-  const era = metadata.era?.zh || "";
-  const desc = metadata.description?.zh || "";
+// A control has to isolate ONE variable: the wiring between roles. An earlier
+// version also replaced every office with "Baseline Agent N — generic
+// governance agent, no historical role" and cut SOUL.md down to a disclaimer.
+// That is not a topology control, it is a persona control — and in a live smoke
+// run the model, left with no role to play, abandoned the scenario entirely and
+// started asking the operator how to configure the experiment. The resulting
+// 10-vs-2.5 gap looked like proof that topology matters and was nothing of the
+// kind. Persona is therefore carried over verbatim; only the wiring changes.
+
+// SOUL.md is the persona. It is copied unchanged, with one appended note so a
+// reader (or a future auditor of the corpus) can tell a control from a regime.
+function baselineSoul(sourceSoul, metadata, type) {
+  return `${sourceSoul.trimEnd()}
+
+---
+
+<!-- experimental control: variant "${type}" derived from ${metadata.id}.
+     The historical persona above is carried over verbatim and unchanged.
+     Only the coordination structure below differs from the source regime —
+     that is the single variable this control isolates. -->
+`;
+}
+
+// The role table keeps the source regime's offices, agent ids, duties and model
+// hints exactly. Only the flow description that follows it is rewritten, because
+// the source prose narrates the real chain of command ("中書省 drafts → 門下省
+// reviews → 尚書省 dispatches") and a model follows the prose, not the JSON. If
+// the prose were left intact the topology would be scrambled on disk and obeyed
+// as-written at runtime, and the control would silently be no control at all.
+// The source IDENTITY.md draws its wiring twice: once as a mermaid diagram and
+// once as prose. A control that rewrites only the prose leaves the diagram
+// asserting the original topology, so the agent reads two contradictory wirings
+// and follows whichever it happened to read last — which silently reintroduces
+// the very variable the control exists to isolate. Rewrite the diagram from the
+// control's own edges, or drop it when the control has no edges to draw.
+function rewriteMermaid(lines, edges) {
+  const out = [];
+  let inFence = false;
+  for (const line of lines) {
+    if (!inFence && /^\s*```mermaid/.test(line)) {
+      inFence = true;
+      out.push("```mermaid", "graph TD");
+      if (edges && edges.length) {
+        for (const e of edges) out.push(`    ${e.from} -->|${e.kind}| ${e.to}`);
+      } else {
+        out.push("    %% experimental control: no inter-office edges");
+      }
+      continue;
+    }
+    if (inFence) {
+      if (/^\s*```\s*$/.test(line)) { inFence = false; out.push("```"); }
+      continue;
+    }
+    out.push(line);
+  }
+  return out;
+}
+
+function controlIdentity(sourceIdentity, agentIds, flowLines, edges = null) {
+  const lines = rewriteMermaid(String(sourceIdentity).split(/\r?\n/), edges);
+  // Keep everything up to and including the role-mapping table; the table ends
+  // at the first non-pipe line after it started.
+  const kept = [];
+  let inTable = false;
+  for (const line of lines) {
+    if (line.includes("Agent ID") || line.includes("agent_id")) inTable = true;
+    if (inTable && line.trim() && !line.startsWith("|")) break;
+    kept.push(line);
+  }
   return [
-    `# ${zh} / ${en} — Baseline Control`,
+    ...kept,
     ``,
-    `> ${era} — ${desc.slice(0, 120)}`,
+    `## Decision Flow (experimental control — rewired)`,
     ``,
-    `## Identity`,
+    `The offices above are unchanged from the source regime. Their coordination`,
+    `structure is not: this variant follows the flow below and nothing else.`,
     ``,
-    `This is a **baseline control variant**. It does not represent any historically`,
-    `accurate governance structure. It exists solely as an experimental control`,
-    `to measure the effect of governance topology on multi-agent task performance.`,
+    ...flowLines,
     ``,
-    `Source regime: ${metadata.id}`,
+    `Agents: ${agentIds.join(", ")}`,
     ``,
   ].join("\n");
 }
 
-// Build a minimal IDENTITY.md table with N generic agents.
-// Returns markdown string with a table that parseIdentityTable will recognise.
-function baselineIdentity(n, _functionalRole = "content") {
-  const lines = [
-    `# Baseline Control — Agent Table`,
+// Prose that matches a flat topology: everyone answers in parallel, no routing.
+function flatFlowLines(agentIds) {
+  return [
+    `- Every office responds to the task independently and in parallel.`,
+    `- No office reviews, approves, vetoes or dispatches to another.`,
+    `- There is no drafting order and no final consolidator; the ${agentIds.length}`,
+    `  responses stand side by side.`,
+  ];
+}
+
+// Prose generated from the scrambled edge list, so the narrated flow and the
+// topology.json agree.
+function randomFlowLines(edges) {
+  const verb = { command: "directs", review: "reviews the output of", info: "is kept informed by", veto: "may veto" };
+  return edges.map((e) => `- \`${e.from}\` ${verb[e.kind] ?? "coordinates with"} \`${e.to}\`.`);
+}
+
+// Solo keeps the persona too, collapsed into a single office that carries the
+// whole regime. It answers "does splitting the work across offices help at all",
+// which is a different question from "does the wiring matter".
+function soloIdentity(sourceIdentity) {
+  const title = String(sourceIdentity).split(/\r?\n/).find((l) => l.startsWith("#")) || "# Regime";
+  return [
+    title,
     ``,
     `| Role | Agent ID | Duty | Model |`,
     `|---|---|---|---|`,
-  ];
-  for (let i = 0; i < n; i++) {
-    const id = i === 0 ? "role_a" : `role_${String.fromCharCode(97 + i)}`;
-    lines.push(`| Baseline Agent ${i + 1} | \`${id}\` | Generic governance agent — no historical role | sonnet |`);
-  }
-  return lines.join("\n") + "\n";
+    `| Sole Minister | \`sole\` | Carries the entire governance burden of this regime alone | opus |`,
+    ``,
+    `## Decision Flow (experimental control — single office)`,
+    ``,
+    `One office holds every responsibility the source regime distributes across`,
+    `its ministries. It drafts, reviews and executes without consulting anyone.`,
+    ``,
+  ].join("\n");
 }
 
 // ── topology generation ─────────────────────────────────────────────────────
 
+// Reuse the source topology's node objects when available so the offices keep
+// their historical names; fall back to the agent id itself, never to a
+// "Baseline Agent N" placeholder.
+function sourceNodes(agentIds, originalTopology) {
+  const byId = new Map((originalTopology?.nodes ?? []).map((n) => [n.id, n]));
+  return agentIds.map((id, i) => {
+    const src = byId.get(id);
+    return {
+      id,
+      label: src?.label ?? id,
+      functional_role: src?.functional_role ?? FUNCTIONAL_ROLES[i % FUNCTIONAL_ROLES.length],
+    };
+  });
+}
+
 // Build a flat topology: N nodes with same count as original, 0 edges.
-function flatTopology(regimeId, agentIds) {
-  const nodes = agentIds.map((id, i) => ({
-    id,
-    label: `Baseline Agent ${i + 1}`,
-    functional_role: FUNCTIONAL_ROLES[i % FUNCTIONAL_ROLES.length],
-  }));
+// topology.regime must name the directory the file actually lands in — the
+// validator cross-checks the two whenever a control is staged at
+// regimes/<region>/<id>. A synthetic "baseline-<type>/<dashed-source>" is only
+// correct when the control sits somewhere the validator does not check, so
+// derive the field from destDir and fall back to the synthetic form.
+function controlRegimeField(destDir, type, regimeId) {
+  // Mirror the validator's own rule (topology/validate.mjs) rather than
+  // reimplementing it: it only cross-checks when the path ends in
+  // regimes/<region>/<id>, so match exactly that shape.
+  const posix = String(destDir).split(path.sep).join("/");
+  const m = posix.match(/regimes\/([a-z0-9-]+\/[a-z0-9-]+)$/);
+  if (m) return m[1];
+  return `baseline-${type}/${regimeId.replace(/\//g, "-")}`;
+}
+
+function flatTopology(regimeId, destDir, agentIds, originalTopology) {
+  // Nodes keep the source regime's office ids, labels and functional roles —
+  // renaming them to "Baseline Agent N" would blank out the persona and turn a
+  // topology control into a persona control.
+  const nodes = sourceNodes(agentIds, originalTopology);
   return {
     schema_version: "1.0",
-    regime: `baseline-flat/${regimeId.replace(/\//g, "-")}`,
+    regime: controlRegimeField(destDir, "flat", regimeId),
     mode: "centralized",
     nodes,
     edges: [],
@@ -146,7 +273,7 @@ function flatTopology(regimeId, agentIds) {
 // Build a random-N topology: N nodes, same edge count as original,
 // edge kinds sampled from the original's distribution.
 // Connectivity guaranteed via a random spanning tree.
-function randomTopology(regimeId, agentIds, originalTopology, rand) {
+function randomTopology(regimeId, destDir, agentIds, originalTopology, rand) {
   const origEdges = originalTopology.edges || [];
   const origEdgeCount = origEdges.length;
 
@@ -164,11 +291,10 @@ function randomTopology(regimeId, agentIds, originalTopology, rand) {
     for (const k of EDGE_KINDS) kindPool.push(k);
   }
 
-  const nodes = agentIds.map((id, i) => ({
-    id,
-    label: `Baseline Agent ${i + 1}`,
-    functional_role: FUNCTIONAL_ROLES[i % FUNCTIONAL_ROLES.length],
-  }));
+  // Nodes keep the source regime's office ids, labels and functional roles —
+  // renaming them to "Baseline Agent N" would blank out the persona and turn a
+  // topology control into a persona control.
+  const nodes = sourceNodes(agentIds, originalTopology);
 
   const edges = [];
   const edgeKeys = new Set();
@@ -201,7 +327,7 @@ function randomTopology(regimeId, agentIds, originalTopology, rand) {
 
   return {
     schema_version: "1.0",
-    regime: `baseline-random/${regimeId.replace(/\//g, "-")}`,
+    regime: controlRegimeField(destDir, "random", regimeId),
     mode: "centralized",
     nodes,
     edges,
@@ -213,14 +339,20 @@ function randomTopology(regimeId, agentIds, originalTopology, rand) {
 // Generate a solo (1-agent) baseline variant.
 function generateSolo(regimeId, srcDir, destDir) {
   const metadata = readJson(path.join(srcDir, "metadata.json"));
-  const identityOut = baselineIdentity(1, "coordinator");
-  const soulOut = baselineSoul(metadata);
+  const srcIdentity = fs.readFileSync(path.join(srcDir, "IDENTITY.md"), "utf8");
+  const srcSoul = fs.readFileSync(path.join(srcDir, "SOUL.md"), "utf8");
+  const identityOut = soloIdentity(srcIdentity);
+  const soulOut = baselineSoul(srcSoul, metadata, "solo");
 
   fs.mkdirSync(destDir, { recursive: true });
   fs.writeFileSync(path.join(destDir, "IDENTITY.md"), identityOut);
   fs.writeFileSync(path.join(destDir, "SOUL.md"), soulOut);
   fs.writeFileSync(path.join(destDir, "metadata.json"), JSON.stringify({
-    id: metadata.id,
+    // The variant lives in its own directory, and the validator requires
+    // metadata.id to match that directory name — copying the source id makes
+    // every generated control fail validate:regimes the moment it is staged
+    // somewhere runnable.
+    id: path.basename(destDir),
     name: { zh: `${metadata.name?.zh ?? metadata.id} (Solo)`, en: `${metadata.name?.en ?? metadata.id} (Solo)` },
     era: metadata.era,
     region: metadata.region,
@@ -243,9 +375,9 @@ function generateSolo(regimeId, srcDir, destDir) {
   if (fs.existsSync(topoPath)) {
     const soloTopo = {
       schema_version: "1.0",
-      regime: `baseline-solo/${regimeId.replace(/\//g, "-")}`,
+      regime: controlRegimeField(destDir, "solo", regimeId),
       mode: "centralized",
-      nodes: [{ id: "role_a", label: "Baseline Agent 1", functional_role: "coordinator" }],
+      nodes: [{ id: "sole", label: "Sole Minister", functional_role: "coordinator" }],
       edges: [],
     };
     fs.writeFileSync(path.join(destDir, "topology.json"), JSON.stringify(soloTopo, null, 2) + "\n");
@@ -260,14 +392,21 @@ function generateSolo(regimeId, srcDir, destDir) {
 // Generate a flat-N baseline variant.
 function generateFlat(regimeId, srcDir, destDir, agentCount) {
   const metadata = readJson(path.join(srcDir, "metadata.json"));
-  const identityOut = baselineIdentity(agentCount);
-  const soulOut = baselineSoul(metadata);
+  const srcIdentity = fs.readFileSync(path.join(srcDir, "IDENTITY.md"), "utf8");
+  const srcSoul = fs.readFileSync(path.join(srcDir, "SOUL.md"), "utf8");
+  const srcAgentIds = parseIdentityAgentIds(srcIdentity);
+  const identityOut = controlIdentity(srcIdentity, srcAgentIds, flatFlowLines(srcAgentIds));
+  const soulOut = baselineSoul(srcSoul, metadata, "flat");
 
   fs.mkdirSync(destDir, { recursive: true });
   fs.writeFileSync(path.join(destDir, "IDENTITY.md"), identityOut);
   fs.writeFileSync(path.join(destDir, "SOUL.md"), soulOut);
   fs.writeFileSync(path.join(destDir, "metadata.json"), JSON.stringify({
-    id: metadata.id,
+    // The variant lives in its own directory, and the validator requires
+    // metadata.id to match that directory name — copying the source id makes
+    // every generated control fail validate:regimes the moment it is staged
+    // somewhere runnable.
+    id: path.basename(destDir),
     name: { zh: `${metadata.name?.zh ?? metadata.id} (Flat-${agentCount})`, en: `${metadata.name?.en ?? metadata.id} (Flat-${agentCount})` },
     era: metadata.era,
     region: metadata.region,
@@ -284,7 +423,7 @@ function generateFlat(regimeId, srcDir, destDir, agentCount) {
 
   const topoPath = path.join(srcDir, "topology.json");
   if (fs.existsSync(topoPath)) {
-    const ft = flatTopology(regimeId, parseIdentityAgentIds(identityOut));
+    const ft = flatTopology(regimeId, destDir, parseIdentityAgentIds(identityOut), readJson(topoPath));
     fs.writeFileSync(path.join(destDir, "topology.json"), JSON.stringify(ft, null, 2) + "\n");
   }
 
@@ -297,14 +436,31 @@ function generateFlat(regimeId, srcDir, destDir, agentCount) {
 // Generate a random-N baseline variant (seeded, reproducible edge wiring).
 function generateRandom(regimeId, srcDir, destDir, agentCount, seed, rand) {
   const metadata = readJson(path.join(srcDir, "metadata.json"));
-  const identityOut = baselineIdentity(agentCount);
-  const soulOut = baselineSoul(metadata);
+  const srcIdentity = fs.readFileSync(path.join(srcDir, "IDENTITY.md"), "utf8");
+  const srcSoul = fs.readFileSync(path.join(srcDir, "SOUL.md"), "utf8");
+  const srcAgentIds = parseIdentityAgentIds(srcIdentity);
+  const soulOut = baselineSoul(srcSoul, metadata, "random");
+
+  // The scrambled wiring has to exist before IDENTITY.md can describe it: the
+  // Decision Flow section in the control must be the prose form of the same
+  // edges the topology declares, or the two artefacts contradict each other and
+  // the agent follows whichever it read last.
+  const topoPath = path.join(srcDir, "topology.json");
+  const randomTopo = fs.existsSync(topoPath)
+    ? randomTopology(regimeId, destDir, srcAgentIds, readJson(topoPath), rand)
+    : null;
+  const flowLines = randomTopo ? randomFlowLines(randomTopo.edges) : flatFlowLines(srcAgentIds);
+  const identityOut = controlIdentity(srcIdentity, srcAgentIds, flowLines, randomTopo?.edges ?? null);
 
   fs.mkdirSync(destDir, { recursive: true });
   fs.writeFileSync(path.join(destDir, "IDENTITY.md"), identityOut);
   fs.writeFileSync(path.join(destDir, "SOUL.md"), soulOut);
   fs.writeFileSync(path.join(destDir, "metadata.json"), JSON.stringify({
-    id: metadata.id,
+    // The variant lives in its own directory, and the validator requires
+    // metadata.id to match that directory name — copying the source id makes
+    // every generated control fail validate:regimes the moment it is staged
+    // somewhere runnable.
+    id: path.basename(destDir),
     name: { zh: `${metadata.name?.zh ?? metadata.id} (Random-${agentCount})`, en: `${metadata.name?.en ?? metadata.id} (Random-${agentCount})` },
     era: metadata.era,
     region: metadata.region,
@@ -319,11 +475,8 @@ function generateRandom(regimeId, srcDir, destDir, agentCount, seed, rand) {
     _baseline: { type: "random", source: regimeId, agentCount, seed },
   }, null, 2) + "\n");
 
-  const topoPath = path.join(srcDir, "topology.json");
-  if (fs.existsSync(topoPath)) {
-    const originalTopo = readJson(topoPath);
-    const rt = randomTopology(regimeId, parseIdentityAgentIds(identityOut), originalTopo, rand);
-    fs.writeFileSync(path.join(destDir, "topology.json"), JSON.stringify(rt, null, 2) + "\n");
+  if (randomTopo) {
+    fs.writeFileSync(path.join(destDir, "topology.json"), JSON.stringify(randomTopo, null, 2) + "\n");
   }
 
   const validation = fs.existsSync(path.join(destDir, "topology.json"))
@@ -338,6 +491,7 @@ function generateRandom(regimeId, srcDir, destDir, agentCount, seed, rand) {
 export function generateBaseline(regimeId, type, {
   projectRoot = PROJECT_ROOT,
   outRoot = null,
+  destDir: destDirOverride = null,
   seed = Date.now(),
 } = {}) {
   if (!BASELINE_TYPES.includes(type)) {
@@ -351,8 +505,14 @@ export function generateBaseline(regimeId, type, {
   const metadata = readJson(path.join(srcDir, "metadata.json"));
   const agentCount = metadata.agentCount;
 
+  // destDir lets a caller stage a control at a runnable location such as
+  // regimes/baseline/tang-random; without it every control lands three levels
+  // deep, where the validator's regime/directory cross-check never fires and a
+  // wrong regime field would ship unnoticed.
   const baseOut = outRoot || path.join(projectRoot, "regimes", "_baseline");
-  const destDir = path.join(baseOut, type, regimeId);
+  const destDir = destDirOverride
+    ? path.resolve(projectRoot, destDirOverride)
+    : path.join(baseOut, type, regimeId);
 
   // Ensure seed is a 32-bit integer for the PRNG.
   const seed32 = (typeof seed === "number" ? seed : String(seed).split("").reduce((a, c) => ((a << 5) - a + c.charCodeAt(0)) | 0, 0)) | 0;
@@ -377,18 +537,20 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const regimeId = args[0];
   let type = null;
   let outRoot = null;
+  let destDir = null;
   let seed = Date.now();
   for (let i = 1; i < args.length; i++) {
     if (args[i] === "--type" && args[i + 1]) type = args[++i];
     else if (args[i] === "--out" && args[i + 1]) outRoot = args[++i];
+    else if (args[i] === "--dest" && args[i + 1]) destDir = args[++i];
     else if (args[i] === "--seed" && args[i + 1] != null) seed = parseInt(args[++i], 10);
   }
   if (!regimeId || !type) {
-    console.error("usage: baseline.mjs <region/id> --type solo|random|flat [--seed N] [--out dir]");
+    console.error("usage: baseline.mjs <region/id> --type solo|random|flat [--seed N] [--out dir] [--dest dir]");
     process.exit(1);
   }
   try {
-    const r = generateBaseline(regimeId, type, { outRoot, seed });
+    const r = generateBaseline(regimeId, type, { outRoot, destDir, seed });
     if (r.validation && !r.validation.ok) {
       console.error(`✗ variant failed validation:\n  ${r.validation.errors.join("\n  ")}`);
       process.exit(1);
