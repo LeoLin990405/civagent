@@ -51,6 +51,8 @@ ${BOLD}Usage:${NC}
                                         (--dest stages it at an exact runnable path, e.g. regimes/baseline/tang-random)
   civagent hillclimb <analyze|propose|validate|apply|rollback>
                                         L4 loop: diagnose → diff proposals → paired validation → revertible apply
+  civagent runtime-graph <matchId> [--diff] [--json]
+                                        Reconstruct runtime graph from match events; --diff compares to declared topology
   civagent agents                       Show generated CC agents for active regime
   civagent modes                        List 6 orchestration modes
   civagent setup                        Check tool availability (CC, Codex, opencode, cn-cc)
@@ -418,6 +420,14 @@ cmd_hillclimb() {
   exec node "$ENGINE_DIR/v5/hillclimb.mjs" "$@"
 }
 
+# Runtime graph reconstruction + declared-vs-runtime diff (R8-2).
+cmd_runtime_graph() {
+  local match_id="${1:-}"
+  [[ -n "$match_id" ]] || die "Usage: civagent runtime-graph <matchId> [--diff] [--json]"
+  shift
+  exec node "$ENGINE_DIR/v5/runtime-graph.mjs" "$match_id" "$@"
+}
+
 # Verify the cn-cc-workflow launchers the cn:* backends depend on (engine/cn-cc.mjs).
 cmd_doctor() {
   echo -e "${BOLD}CivAgent — cn-cc-workflow dependency check${NC}"
@@ -476,6 +486,7 @@ case "${1:-}" in
   ablate)    shift; cmd_ablate "$@" ;;
   baseline)  shift; cmd_baseline "$@" ;;
   hillclimb) shift; cmd_hillclimb "$@" ;;
+  runtime-graph) shift; cmd_runtime_graph "$@" ;;
   help|--help|-h|"") usage ;;
   *)         echo "Unknown command: $1"; usage; exit 1 ;;
 esac
