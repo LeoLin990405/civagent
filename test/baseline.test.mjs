@@ -248,12 +248,27 @@ test("all baseline IDENTITY files parse as valid agent tables", async () => {
 
 test("generated variants always go under _baseline/ by default", () => {
   // Use default projectRoot so the output path uses regimes/_baseline/.
+  // A sentinel stands in for the committed control arms that live in this
+  // directory: the cleanup below must not take them with it.
+  const sentinelDir = path.join(PROJECT_ROOT, "regimes", "_baseline");
+  const sentinel = path.join(sentinelDir, ".cleanup-sentinel");
+  fs.mkdirSync(sentinelDir, { recursive: true });
+  fs.writeFileSync(sentinel, "");
   const r = generateBaseline("china/tang", "solo", { seed: 1 });
   assert.ok(r.outDir.includes("_baseline"), `solo: output must be under _baseline/, got ${r.outDir}`);
   assert.ok(r.outDir.includes("solo"), `solo: output path must include type name`);
-  // Clean up.
+  // Clean up only what this test created. Deleting the whole _baseline tree —
+  // which is what this did before — wipes the committed control arms that live
+  // alongside it, so a full `npm test` silently removed staged experiment
+  // regimes from the working tree.
   const baseOut = r.outDir.split("/_baseline/")[0] + "/_baseline";
-  try { fs.rmSync(baseOut, { recursive: true, force: true }); } catch { /* ignore */ }
+  fs.rmSync(r.outDir, { recursive: true, force: true });
+  for (let dir = path.dirname(r.outDir); dir.startsWith(baseOut + path.sep); dir = path.dirname(dir)) {
+    try { fs.rmdirSync(dir); } catch { break; } // stops at the first non-empty parent
+  }
+  assert.ok(fs.existsSync(sentinel),
+    "cleanup must not delete unrelated contents of _baseline/");
+  fs.rmSync(sentinel, { force: true });
 });
 
 test("generated variants honor custom outRoot", () => {
@@ -445,8 +460,14 @@ test("regression: IDENTITY→topology cross-check fails with mismatched agent ID
   try {
     const r = generateBaseline("china/tang", "solo", { outRoot, seed: 1 });
     const identity = fs.readFileSync(path.join(r.outDir, "IDENTITY.md"), "utf8");
-    // Corrupt the agent ID to cause a cross-check mismatch.
-    const broken = identity.replace("`role_a`", "`wrong_id`");
+    // Read the real agent ID out of the file rather than hardcoding one: the
+    // solo control names its single office after the source regime, so a
+    // hardcoded id silently turns this into a no-op replace that "passes"
+    // because nothing was corrupted at all.
+    const realId = identity.match(/\|\s*[^|]+\|\s*`([^`]+)`/)?.[1];
+    assert.ok(realId, "solo IDENTITY must declare an agent id in its table");
+    const broken = identity.replace(`\`${realId}\``, "`wrong_id`");
+    assert.notStrictEqual(broken, identity, "corruption must actually change the file");
     fs.writeFileSync(path.join(r.outDir, "IDENTITY.md"), broken);
     const v = validateRegimeTopology(r.outDir);
     assert.ok(!v.ok, "mismatched agent ID must fail cross-check");
@@ -520,6 +541,80 @@ test("regression: flat must produce original agent count (not 1)", () => {
     const ids = parseIdentityAgentIds(identity);
     assert.equal(ids.length, orig.agentCount,
       `flat must produce ${orig.agentCount} agents, got ${ids.length}`);
+  } finally {
+    rmrf(outRoot);
+  }
+});
+
+// ── persona parity ──────────────────────────────────────────────────────────
+// A control exists to isolate ONE variable: the wiring between offices. An
+// earlier generator also replaced every office with "Baseline Agent N" and cut
+// SOUL.md to a one-line disclaimer, so a smoke run scored the source 10 and the
+// control 2.5 — but the control's transcript was the model asking the operator
+// how to configure the experiment. That gap measured persona presence, not
+// topology. These tests fail if persona ever gets stripped again.
+
+const SRC = path.join(PROJECT_ROOT, "regimes", "china/tang");
+
+test("control SOUL.md carries the source persona verbatim", () => {
+  const srcSoul = fs.readFileSync(path.join(SRC, "SOUL.md"), "utf8");
+  for (const type of BASELINE_TYPES) {
+    const outRoot = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-bsl-soul-"));
+    try {
+      const r = generateBaseline("china/tang", type, { outRoot, seed: 7 });
+      const soul = fs.readFileSync(path.join(r.outDir, "SOUL.md"), "utf8");
+      assert.ok(soul.includes(srcSoul.trimEnd()),
+        `${type}: SOUL.md must contain the source persona verbatim`);
+      assert.ok(soul.length >= srcSoul.length,
+        `${type}: SOUL.md (${soul.length}B) must not be shorter than source (${srcSoul.length}B)`);
+    } finally {
+      rmrf(outRoot);
+    }
+  }
+});
+
+test("flat/random controls keep every source office id and label", () => {
+  const srcIdentity = fs.readFileSync(path.join(SRC, "IDENTITY.md"), "utf8");
+  const srcIds = parseIdentityAgentIds(srcIdentity);
+  assert.ok(srcIds.length > 1, "fixture must have several offices");
+  for (const type of ["flat", "random"]) {
+    const outRoot = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-bsl-role-"));
+    try {
+      const r = generateBaseline("china/tang", type, { outRoot, seed: 7 });
+      const identity = fs.readFileSync(path.join(r.outDir, "IDENTITY.md"), "utf8");
+      assert.deepEqual(parseIdentityAgentIds(identity), srcIds,
+        `${type}: office ids must be identical to the source`);
+      assert.ok(!/Baseline Agent/.test(identity),
+        `${type}: offices must not be renamed to generic placeholders`);
+      const topo = JSON.parse(fs.readFileSync(path.join(r.outDir, "topology.json"), "utf8"));
+      const srcTopo = JSON.parse(fs.readFileSync(path.join(SRC, "topology.json"), "utf8"));
+      const labels = Object.fromEntries(topo.nodes.map((n) => [n.id, n.label]));
+      for (const n of srcTopo.nodes) {
+        assert.equal(labels[n.id], n.label, `${type}: node ${n.id} must keep its office label`);
+      }
+    } finally {
+      rmrf(outRoot);
+    }
+  }
+});
+
+test("control IDENTITY diagram matches the control's own edges, not the source's", () => {
+  const outRoot = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-bsl-merm-"));
+  try {
+    const r = generateBaseline("china/tang", "random", { outRoot, seed: 7 });
+    const identity = fs.readFileSync(path.join(r.outDir, "IDENTITY.md"), "utf8");
+    const topo = JSON.parse(fs.readFileSync(path.join(r.outDir, "topology.json"), "utf8"));
+    const block = identity.match(/```mermaid\n([\s\S]*?)```/);
+    assert.ok(block, "control must still carry a diagram");
+    const drawn = [...block[1].matchAll(/^\s*(\S+)\s*-->\|(\S+)\|\s*(\S+)\s*$/gm)]
+      .map((m) => `${m[1]}→${m[3]}:${m[2]}`).sort();
+    const declared = topo.edges.map((e) => `${e.from}→${e.to}:${e.kind}`).sort();
+    assert.deepEqual(drawn, declared,
+      "diagram and topology.json must describe the same wiring");
+    // The source diagram used mermaid node syntax with display names; if any of
+    // it survived, the control asserts two contradictory wirings at once.
+    assert.ok(!/Emperor|Zhongshu\(|Menxia\(/.test(block[1]),
+      "source diagram must not survive inside the control");
   } finally {
     rmrf(outRoot);
   }

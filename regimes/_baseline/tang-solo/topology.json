@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "regime": "baseline-solo/china-tang",
+  "mode": "centralized",
+  "nodes": [
+    {
+      "id": "sole",
+      "label": "Sole Minister",
+      "functional_role": "coordinator"
+    }
+  ],
+  "edges": []
+}

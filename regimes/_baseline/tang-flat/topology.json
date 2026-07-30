@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "regime": "baseline-flat/china-tang",
+  "mode": "centralized",
+  "nodes": [
+    {
+      "id": "zhongshu",
+      "label": "中书省（起草）",
+      "functional_role": "coordinator"
+    },
+    {
+      "id": "menxia",
+      "label": "门下省（封驳审核）",
+      "functional_role": "review"
+    },
+    {
+      "id": "shangshu",
+      "label": "尚书省（执行调度）",
+      "functional_role": "management"
+    },
+    {
+      "id": "bingbu",
+      "label": "兵部尚书",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "hubu",
+      "label": "户部尚书",
+      "functional_role": "data"
+    },
+    {
+      "id": "libu_ritual",
+      "label": "礼部尚书",
+      "functional_role": "content"
+    },
+    {
+      "id": "gongbu",
+      "label": "工部尚书",
+      "functional_role": "devops"
+    },
+    {
+      "id": "xingbu",
+      "label": "刑部尚书",
+      "functional_role": "legal"
+    },
+    {
+      "id": "libu_personnel",
+      "label": "吏部尚书",
+      "functional_role": "management"
+    }
+  ],
+  "edges": []
+}

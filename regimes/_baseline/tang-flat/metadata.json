@@ -1,0 +1,32 @@
+{
+  "id": "tang-flat",
+  "name": {
+    "zh": "唐朝 (Flat-9)",
+    "en": "Tang Dynasty (Flat-9)"
+  },
+  "era": {
+    "zh": "618年-907年",
+    "en": "618-907 AD"
+  },
+  "region": "china",
+  "system": {
+    "zh": "水平基线对照 (9 agents)",
+    "en": "Flat Baseline Control (9 agents)"
+  },
+  "description": {
+    "zh": "基线对照变体（flat-9）：9 个 agent，零边，完全并行互不通信。",
+    "en": "Baseline control variant (flat-9): 9 agents, zero edges, fully parallel with no inter-agent communication."
+  },
+  "agentCount": 9,
+  "tags": [
+    "baseline",
+    "flat",
+    "control"
+  ],
+  "orchestrationPattern": "centralized",
+  "_baseline": {
+    "type": "flat",
+    "source": "china/tang",
+    "agentCount": 9
+  }
+}
