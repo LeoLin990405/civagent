@@ -76,8 +76,15 @@ export function isKnownBackend(id) {
  * @param {{ agentsJson: string, prompt?: string }} opts
  * @returns {string[]}
  */
-export function buildBackendArgs({ agentsJson, prompt }) {
+// `-p` defaults to --output-format=text, which prints ONLY the coordinator's
+// final assistant message. A regime's offices are Claude Code subagents, so
+// under `text` everything they said to each other is discarded — the E1 pilot
+// produced three transcripts containing no policy at all, only a claim that the
+// work had been done, and each scored last in its scenario. stream-json carries
+// the subagent channel; engine/v5/stream-json.mjs renders it back to plain text.
+export function buildBackendArgs({ agentsJson, prompt, streamJson = true }) {
   const args = ["--agents", agentsJson];
+  if (streamJson) args.push("--output-format", "stream-json", "--verbose");
   if (prompt) args.push("-p", prompt);
   return args;
 }
