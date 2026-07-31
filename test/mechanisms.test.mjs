@@ -215,3 +215,41 @@ describe('control signals vs prose about control signals', () => {
     assert.deepEqual(engine.getImpeachments(), ['李林甫']);
   });
 });
+
+describe('the marker taught to agents is the marker the engine detects', () => {
+  // Codex pre-merge review, P1. The bare-substring removal was correct, but it
+  // left the OTHER half of the contract untouched: engine/regime-to-cc.mjs was
+  // still teaching reviewers to write "VETO:" while checkVeto only accepted
+  // "[VETO]". Every checks-and-balances regime therefore had a veto power that
+  // no agent could exercise — and all 472 tests stayed green, because the
+  // mechanism tests hand-write the bracketed marker instead of taking it from a
+  // real compiled prompt. A test that supplies its own correct input cannot
+  // notice that the production input is wrong.
+  it('a real compiled reviewer prompt teaches a marker checkVeto accepts', async () => {
+    const { convertRegime } = await import('../engine/regime-to-cc.mjs');
+    const { agents } = convertRegime('./regimes/china/tang');
+    // Only the offices actually GRANTED the power must be taught how to use it;
+    // other offices merely have it described to them.
+    const reviewers = Object.entries(agents)
+      .filter(([, a]) => /\[CONSTITUTIONAL VETO POWER\]/.test(a.prompt ?? ''));
+    assert.ok(reviewers.length > 0, 'tang must compile at least one veto-bearing office');
+
+    for (const [id, agent] of reviewers) {
+      const taught = agent.prompt.match(/\[VETO\]|\[封驳\]/);
+      assert.ok(taught, `${id} is told about VETO but never taught a bracketed marker`);
+      const ctx = makeContext();
+      assert.equal(
+        checkVeto(`${taught[0]} the draft is unlawful`, ctx), true,
+        `${id} is taught ${taught[0]}, which the engine must accept`,
+      );
+    }
+  });
+
+  it('the unbracketed form the compiler used to teach still does nothing', () => {
+    // Kept as a live reminder of what the defect looked like: this is the exact
+    // string every Tang reviewer was instructed to emit, and it is inert.
+    const ctx = makeContext();
+    assert.equal(checkVeto('VETO: legality defect', ctx), false);
+    assert.equal(ctx.vetoTriggered, false);
+  });
+});
