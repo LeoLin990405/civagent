@@ -1,5 +1,11 @@
 [Original Project](https://github.com/wanikua/danghuangshang) | [CREDITS](./CREDITS.md) | [CHANGELOG](./CHANGELOG.md) | [V5 Design](./docs/V5-DESIGN.md) | [AUDIT](./regimes/AUDIT.md) | [IDENTITY Template](./docs/IDENTITY-TEMPLATE.md)
 
+<div align="center">
+
+[![English](https://img.shields.io/badge/Language-English-2ea44f?style=for-the-badge)](README.md) &nbsp; [![中文](https://img.shields.io/badge/语言-中文-555555?style=for-the-badge)](README.zh-CN.md)
+
+</div>
+
 <p align="center">
   <img src="./images/civagent-v4-banner.svg" alt="CivAgent Banner" width="100%" />
 </p>
@@ -218,9 +224,13 @@ v6 made the platform runnable. The iterations after it were aimed at a narrower 
 
 5. **Transcript capture** (`engine/v5/stream-json.mjs`). A regime's offices are Claude Code subagents; under the default `text` output format their deliberation never reached the transcript, and the judge scored whatever the coordinator happened to restate. The backend now streams structured events, rendered back to plain text with per-office attribution. Constitutional signals are matched as bracketed markers only — `[VETO]`, `[EDICT]`, `[IMPEACH: x]` — because the bare words *驳回*, *诏书* and *圣旨* appear as ordinary vocabulary in 33 of the 57 regime files, and a regime describing its own constitution must not be read as exercising it.
 
-6. **Graph metrics and topology validation** (`engine/topology/`). Every regime's `topology.json` is schema-checked and cross-checked against its IDENTITY role table, then reduced to density, command-chain depth, in-degree centrality and checks-and-balances cycle count.
+6. **Transcript selection for judging** (`engine/v5/events.mjs`). The judge used to read `text.slice(-6000)` — a blind tail. Harmless when transcripts were kilobytes; after capture was fixed a Tang match runs to 72,830 characters, and the tail contained *none* of the Secretariat's, Chancellery's or Department of State Affairs' segments. Selection is now actor-stratified, and the per-civ record states what never reached the judge (67,867 characters on that match) rather than reporting only what was kept.
 
-7. **Replay and skill accounting** (`engine/v5/replay.mjs`, `skill-outcome.mjs`, `skill-quality.mjs`). A past match can be re-run with the same regime, backend and task; learned skills are deduplicated by content hash and stamped with the tournament outcome they participated in, since the extractor itself is structurally blind to whether the match was won or lost.
+7. **Dispatch plan and enforcement** (`engine/v5/dispatch-plan.mjs`, `plan-diff.mjs`). The coordinator first states, with tools disabled, which offices it would call; enforcement then requires the offices that are targets of incoming edges in that arm's *own* topology — identically for a historical regime and for its scrambled control. The pre-enforcement plan measures voluntary adoption; only post-enforcement output is eligible for a quality comparison. Participation is recorded as `observed` / `not_observed` / `unknown`, never as an execution rate.
+
+8. **Graph metrics and topology validation** (`engine/topology/`). Every regime's `topology.json` is schema-checked and cross-checked against its IDENTITY role table, then reduced to density, command-chain depth, in-degree centrality and checks-and-balances cycle count.
+
+9. **Replay and skill accounting** (`engine/v5/replay.mjs`, `skill-outcome.mjs`, `skill-quality.mjs`). A past match can be re-run with the same regime, backend and task; learned skills are deduplicated by content hash and stamped with the tournament outcome they participated in, since the extractor itself is structurally blind to whether the match was won or lost.
 
 ---
 
@@ -621,15 +631,15 @@ Because the second-to-fourth-month spring-plowing season was prone to raids, the
 npm run ci                            # everything below, in order
 npm run lint:syntax                   # node -c + bash -n
 npm run lint:backend                  # ESLint over engine + server + tests
-npm test                              # 421 backend tests (node:test)
+npm test                              # 472 backend tests (node:test)
 npm run validate:regimes              # structural validation (all 57 regimes)
 npm run smoke                         # end-to-end, no API key: validate → metrics → control → validate
-npm run test:frontend                 # 14 frontend tests (vitest)
+npm run test:frontend                 # 19 frontend tests (vitest)
 ```
 
 GitHub Actions `.github/workflows/ci.yml` runs the same sequence on every PR and every push to `main`; the CI badge at the top of this file reflects that workflow's real status.
 
-**Backend coverage** (421 tests) spans path-traversal protection and regime-id validation, the IDENTITY role-table parser (a prose table compiles to zero agents and would otherwise fail silently), the event contract, topology schema and cross-check, graph metrics, baseline control generation, judge anonymization / swap / bias reporting, episodic memory retrieval, replay path safety, Bradley-Terry statistics, and every server route.
+**Backend coverage** (472 tests) spans path-traversal protection and regime-id validation, the IDENTITY role-table parser (a prose table compiles to zero agents and would otherwise fail silently), the event contract, topology schema and cross-check, graph metrics, baseline control generation, judge anonymization / swap / bias reporting, episodic memory retrieval, replay path safety, Bradley-Terry statistics, and every server route.
 
 **Testing discipline.** Two rules, both learned from tests that passed for the wrong reason:
 
@@ -700,6 +710,18 @@ Full audit report: [regimes/AUDIT.md](./regimes/AUDIT.md)
 
 ---
 
+### 9.7 What the Experiments Have Actually Shown
+
+Two pilots have been run and both are recorded in `docs/experiments/`, including the outcomes that count against this project's own proposition.
+
+**E1** (5 regimes × 3 scenarios, no control arm) could not be interpreted: score tracked transcript length with Spearman ρ = +1.00 on the one scenario whose spread exceeded the judge's noise, and the three lowest-scoring cells were the three whose transcripts were missing most of the work. That run is superseded — it predates the capture fix.
+
+**E1-control** (5 source/control pairs × 3 scenarios) was scored against pre-registered rules: historical wiring won **0** resolved pairs, the seeded random rewiring won 1, 5 were inside the judge's own noise, and 9 were excluded. The exclusions are the finding: **in 13 of 30 arms the regime never called a single office**, so neither topology was exercised. Delegation turned out to be driven by the scenario (plague 10/10 delegated, militarization 2/10) rather than by the constitution, and source and control arms failed to delegate at exactly the same rate — 7/15 each.
+
+So the honest status is: **no claim that governance topology affects multi-agent performance is supported yet, and neither is the opposite.** The obstacle moved from "the harness discards the deliberation" (fixed) to "the regimes frequently do not deliberate", which §3.5's dispatch plan and enforcement exist to separate. E2 is designed and pre-registered at `docs/experiments/E2-preregistration.md`; it has not been run.
+
+---
+
 ## 10. Related Work
 
 ### 10.1 Multi-Agent Orchestration Frameworks
@@ -728,6 +750,7 @@ Full audit report: [regimes/AUDIT.md](./regimes/AUDIT.md)
 |---|---|---|---|
 | **v6.0.0** | 2026-05 | Constitutional mechanism engine (`[VETO]` / `[IMPEACH]` / `[EDICT]`); Express route architecture + better-sqlite3; React SPA dashboard with live SSE court | — |
 | *post-v6 (R5–R7)* | 2026-07 | Experimental-validity layer: tournament write API, 40-scenario library, anonymized multi-judge scoring with bias report, persona-preserving topology controls, episodic memory retrieval, topology validation + graph metrics, replay. Backend tests 9 → 369 | [#29](https://github.com/LeoLin990405/civagent/pull/29), [#30](https://github.com/LeoLin990405/civagent/pull/30) |
+| *post-v6 (R8–R11)* | 2026-07-30 | Governance-graph node typing; runtime-graph reconstruction and declared-vs-exercised diff; CI with a runnable example and an end-to-end smoke; idempotent tournament recording; **stream-json transcript capture** (a Tang match went from 579 to 72,830 captured characters); actor-stratified transcript selection for judging; dispatch plan + equal-roster enforcement. Backend tests 369 → 472 | [#32](https://github.com/LeoLin990405/civagent/pull/32) |
 | **v5.0.1** | 2026-04-14 | Engine data-source fix: the IDENTITY.md canonical table becomes the primary source; the 57-regime rewrite truly takes effect; README rewritten in an academic register | [#7](https://github.com/LeoLin990405/civagent/pull/7), [#8](https://github.com/LeoLin990405/civagent/pull/8) |
 | **v5.0.0** | 2026-04-14 | Hermes-inspired learning loop; cc-deepseek as the 7th Chinese backend; canonical rewrite of the 57 regimes; tests + CI + tournament mode | [#3](https://github.com/LeoLin990405/civagent/pull/3), [#4](https://github.com/LeoLin990405/civagent/pull/4), [#5](https://github.com/LeoLin990405/civagent/pull/5), [#6](https://github.com/LeoLin990405/civagent/pull/6) |
 | **v4.x** | 2026-03 | Complete rewrite on top of the Claude Code runtime; first version of 57 regimes + 6 modes + 10 models | — |
