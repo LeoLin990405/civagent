@@ -57,7 +57,7 @@ transcript contained.
 
 ## The finding that outranks the scoreboard
 
-**In 13 of 30 arms the regime never delegated to a single office.** The
+**In 14 of 30 arms the regime never delegated to a single office.** The
 coordinator answered the task itself, so no topology — historical or scrambled —
 was exercised at all. This is not a capture problem: C3's raw-log fallback
 count is 0/30 and every arm used actor-stratified selection. The offices simply

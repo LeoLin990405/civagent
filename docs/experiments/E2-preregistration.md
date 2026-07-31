@@ -5,7 +5,7 @@ and tests the instrument only; it does not run a model experiment.
 
 ## Questions and the measurement boundary
 
-E1-control found 13/30 arms with one actor and no office delegation. It could
+E1-control found 14/30 arms with one actor and no office delegation. It could
 not separate:
 
 - **A — quality under an equal dispatch requirement:** when each arm is
@@ -164,7 +164,7 @@ therefore measures **stated intent when asked**, not spontaneous behaviour.
 
 Three consequences, all of which must be honoured when the results are read:
 
-1. **E2's plan-stage adoption rate is not comparable to E1-control's 13/30
+1. **E2's plan-stage adoption rate is not comparable to E1-control's 14/30
    single-actor arms.** That baseline was collected with no plan question. Any
    comparison across the two is confounded by the question itself.
 2. **The source-versus-control contrast inside E2 is unaffected.** Both arms
