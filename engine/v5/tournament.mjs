@@ -16,7 +16,16 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { validateRegime } from "./civ-memory.mjs";
 import { runJudge, resolveJudgeChain, anonymizeCivs } from "./judge.mjs";
-import { selectTranscript, eventsPath, EventLog, hashShort, newSpanId } from "./events.mjs";
+import {
+  selectTranscript,
+  eventsPath,
+  metaPath,
+  writeMeta,
+  EventLog,
+  hashShort,
+  newSpanId,
+} from "./events.mjs";
+import { classifyTopologyParticipation } from "./runtime-graph.mjs";
 import { recordTournamentResult } from "./history-db.mjs";
 import { stampTournamentOutcome } from "./skill-outcome.mjs";
 import {
@@ -76,7 +85,15 @@ export function parseCiv(token) {
 // Pure: build the exact child spec used to launch one civ. Exported so tests can
 // prove we invoke run-v5 directly (not `civagent switch`) and that each civ gets
 // a distinct match id + isolated env.
-export function civSpawnSpec({ regime, backend, matchId, runV5 = RUN_V5, noSkill = false, permissionMode = null }) {
+export function civSpawnSpec({
+  regime,
+  backend,
+  matchId,
+  runV5 = RUN_V5,
+  noSkill = false,
+  permissionMode = null,
+  enforceDispatch = false,
+}) {
   return {
     command: "node",
     args: [runV5, "--backend", backend, regime],
@@ -87,6 +104,7 @@ export function civSpawnSpec({ regime, backend, matchId, runV5 = RUN_V5, noSkill
       CIVAGENT_MATCH_ID: matchId,
       ...(noSkill ? { CIVAGENT_SKILL_LEARN: "off" } : {}),
       ...(permissionMode ? { CIVAGENT_PERMISSION_MODE: permissionMode } : {}),
+      ...(enforceDispatch ? { CIVAGENT_ENFORCE_DISPATCH: "1" } : {}),
     },
   };
 }
@@ -95,9 +113,21 @@ function civMatchId(regime, tournamentId) {
   return `${tournamentId}__${regime.replace(/\//g, "-")}`;
 }
 
-function runCiv({ regime, backend }, task, tournamentId, outDir, { noSkill = false, useWorkDir = false, permissionMode = null } = {}) {
+function runCiv({ regime, backend }, task, tournamentId, outDir, {
+  noSkill = false,
+  useWorkDir = false,
+  permissionMode = null,
+  enforceDispatch = false,
+} = {}) {
   const matchId = civMatchId(regime, tournamentId);
-  const spec = civSpawnSpec({ regime, backend, matchId, noSkill, permissionMode });
+  const spec = civSpawnSpec({
+    regime,
+    backend,
+    matchId,
+    noSkill,
+    permissionMode,
+    enforceDispatch,
+  });
   // T3: give the civ a private writable workdir as cwd so produced code lands
   // in a known place for the deterministic grader.
   const workDir = useWorkDir ? path.join(outDir, "workdir", regime.replace(/\//g, "-")) : null;
@@ -374,7 +404,17 @@ export async function judge(task, civResults, {
   };
 }
 
-export async function runTournament({ civs, task, noSkill = false, taskSpec = null, detWeight = 0.5, id = null, judgesN = 1, anonCivs = false }) {
+export async function runTournament({
+  civs,
+  task,
+  noSkill = false,
+  taskSpec = null,
+  detWeight = 0.5,
+  id = null,
+  judgesN = 1,
+  anonCivs = false,
+  enforceDispatch = false,
+}) {
   if (!civs.length || !task) throw new Error("need --civs and a task");
   if (id != null && !TOURNAMENT_ID_RE.test(id)) throw new Error(`invalid tournament id: ${id}`);
   const parsed = civs.map(parseCiv);
@@ -384,7 +424,7 @@ export async function runTournament({ civs, task, noSkill = false, taskSpec = nu
   const outDir = path.join(TOURNAMENTS_DIR, id);
   fs.mkdirSync(outDir, { recursive: true });
 
-  console.error(`[tournament] ${id}  civs=${parsed.map((c) => c.regime).join(",")}  out=${outDir}${noSkill ? "  (no-skill: A3 ablation)" : ""}${useWorkDir ? `  (T3 deterministic: ${taskSpec.id})` : ""}`);
+  console.error(`[tournament] ${id}  civs=${parsed.map((c) => c.regime).join(",")}  out=${outDir}${noSkill ? "  (no-skill: A3 ablation)" : ""}${enforceDispatch ? "  (dispatch enforcement enabled)" : ""}${useWorkDir ? `  (T3 deterministic: ${taskSpec.id})` : ""}`);
 
   // Tournament-level trace: judge_score events live in their own event stream
   // keyed by the tournament id, so the whole evaluation is auditable.
@@ -395,17 +435,72 @@ export async function runTournament({ civs, task, noSkill = false, taskSpec = nu
     civs: parsed.map((c) => c.regime),
     tournament: true,
     ...(noSkill ? { noSkill: true } : {}),
+    ...(enforceDispatch ? { enforceDispatch: true } : {}),
     ...(useWorkDir ? { taskSpecId: taskSpec.id } : {}),
   });
 
   const results = await Promise.all(parsed.map((c) => runCiv(c, task, id, outDir, {
     noSkill,
     useWorkDir,
+    enforceDispatch,
     // T3 requires real file writes; non-interactive sessions never see write
     // approvals, so deterministic tasks run with permissions bypassed (each
     // civ is still confined to its own isolated HOME + private workdir).
     permissionMode: useWorkDir ? (taskSpec.permissionMode ?? "bypassPermissions") : null,
   })));
+
+  // Read the per-arm instrumentation before judging so a missing topology run
+  // is visible during execution, not discovered only in post-hoc analysis.
+  for (const result of results) {
+    let meta = {};
+    try {
+      meta = JSON.parse(fs.readFileSync(metaPath(result.matchId), "utf8"));
+    } catch {
+      /* child may have failed before creating meta.json */
+    }
+    result.dispatchPlan = meta.dispatchPlan ?? {
+      status: "parse_failed",
+      dispatches: null,
+      error: "match did not record a dispatch plan",
+    };
+    result.dispatchEnforcement = meta.dispatchEnforcement ?? {
+      status: enforceDispatch ? "enforcement_failed" : "not_requested",
+      requiredOffices: [],
+      dispatchedOffices: [],
+      missingOffices: [],
+      attempts: enforceDispatch ? 1 : 0,
+      error: enforceDispatch ? "match did not record enforcement compliance" : undefined,
+      basis: "declared_topology_nodes_with_incoming_edges",
+    };
+    result.topologyParticipation = meta.topologyParticipation ??
+      classifyTopologyParticipation();
+    result.aEligible =
+      result.topologyParticipation.status === "participation_observed" &&
+      result.dispatchEnforcement.status === "enforcement_passed";
+    writeMeta(result.matchId, {
+      dispatchPlan: result.dispatchPlan,
+      dispatchEnforcement: result.dispatchEnforcement,
+      topologyParticipation: result.topologyParticipation,
+    });
+    const participation = result.topologyParticipation;
+    if (participation.status === "participation_observed") {
+      console.error(
+        `[tournament] ${result.regime}: office participation observed ` +
+        `(dispatches=${participation.dispatchCount}, offices=${participation.officeCount})`,
+      );
+    } else {
+      console.error(
+        `[tournament] ⚠ ${result.regime}: office participation ${participation.status}; ` +
+        `this arm is not eligible for enforced-topology analysis A`,
+      );
+    }
+    if (enforceDispatch && result.dispatchEnforcement.status !== "enforcement_passed") {
+      console.error(
+        `[tournament] ⚠ ${result.regime}: ${result.dispatchEnforcement.status}; ` +
+        `missing=${result.dispatchEnforcement.missingOffices.join(",") || "(unavailable)"}; no retry`,
+      );
+    }
+  }
 
   const verdict = await judge(task, results, { eventLog: trace, judgesN, anonymize: anonCivs });
 
@@ -441,6 +536,10 @@ export async function runTournament({ civs, task, noSkill = false, taskSpec = nu
       matchId: r.matchId,
       exitCode: r.code,
       events: eventsPath(r.matchId),
+      dispatchPlan: r.dispatchPlan,
+      dispatchEnforcement: r.dispatchEnforcement,
+      topologyParticipation: r.topologyParticipation,
+      aEligible: r.aEligible,
       ...(r.workDir ? { workDir: r.workDir } : {}),
     })),
     judge: {
@@ -529,6 +628,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   let id = null;
   let judgesN = 1;
   let anonCivs = false;
+  let enforceDispatch = false;
   const rest = [];
   for (let i = 0; i < args.length; i++) {
     if (args[i] === "--civs" && args[i + 1]) {
@@ -547,6 +647,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       judgesN = Math.max(1, parseInt(args[++i], 10) || 1);
     } else if (args[i] === "--anon-civs") {
       anonCivs = true;
+    } else if (args[i] === "--enforce-dispatch") {
+      enforceDispatch = true;
     } else {
       rest.push(args[i]);
     }
@@ -568,7 +670,17 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       }
     }
   }
-  runTournament({ civs, task, noSkill, taskSpec, detWeight, id, judgesN, anonCivs }).catch((e) => {
+  runTournament({
+    civs,
+    task,
+    noSkill,
+    taskSpec,
+    detWeight,
+    id,
+    judgesN,
+    anonCivs,
+    enforceDispatch,
+  }).catch((e) => {
     console.error(e);
     process.exit(1);
   });

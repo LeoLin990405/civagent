@@ -8,11 +8,13 @@ if (!HTMLElement.prototype.scrollIntoView) {
 
 class MockEventSource {
   static instances: MockEventSource[] = [];
+  readonly url: string;
   onopen: (() => void) | null = null;
   onmessage: ((event: { data: string }) => void) | null = null;
   onerror: (() => void) | null = null;
 
-  constructor(readonly url: string) {
+  constructor(url: string) {
+    this.url = url;
     MockEventSource.instances.push(this);
   }
 

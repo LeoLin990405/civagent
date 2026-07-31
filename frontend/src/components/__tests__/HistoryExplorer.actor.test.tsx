@@ -7,7 +7,7 @@ const match: MatchSummary = {
   id: 'm-1',
   format: 'structured',
   mtime: 1,
-  meta: { matchId: 'm-1', regime: 'china/tang' },
+  meta: { matchId: 'm-1', regime: 'china/tang', backend: 'native' },
 };
 
 function turn(actor: string, seq: number): MatchEvent {
