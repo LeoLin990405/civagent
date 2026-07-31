@@ -363,6 +363,25 @@ test("R11 run-v5 wiring records plan before enforcement, resumes one session, an
     assert.match(planCall, /--tools\n\n/);
     assert.match(planCall, /--session-id/);
     assert.doesNotMatch(planCall, /EXPERIMENTAL DISPATCH REQUIREMENT/);
+
+    // The plan prompt's content is B's entire measurement, so it has to be
+    // pinned where it is actually SENT, not only where it is built. Replacing
+    // planPrompt with a literal string left all 472 tests green: buildPlanPrompt's
+    // wording was asserted in isolation while nothing checked that the wording
+    // reached the model. Under that hole the coordinator could be asked nothing
+    // at all — or asked a leading question — and E2 would still collect
+    // "voluntary adoption" numbers generated from it.
+    assert.match(planCall, /which available offices, if any, you would choose to call/,
+      "the plan call must actually ask the adoption question");
+    assert.match(planCall, /Choosing zero offices is valid/,
+      "the non-inducement wording must reach the model, not just the builder's unit test");
+    assert.match(planCall, /Do not add offices merely to fill the plan/);
+    assert.match(planCall, /- zhongshu/, "the office roster must be present in the sent prompt");
+    // A leading instruction would silently contaminate B; there is no test that
+    // can catch every phrasing, but the one failure mode worth naming is an
+    // explicit demand to use them all.
+    assert.doesNotMatch(planCall, /must (call|use) (all|every)/i,
+      "the plan question must not demand full participation");
     assert.match(executionCall, /--resume/);
     assert.match(executionCall, /EXPERIMENTAL DISPATCH REQUIREMENT/);
 
