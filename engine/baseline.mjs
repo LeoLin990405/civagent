@@ -523,13 +523,46 @@ export function generateBaseline(regimeId, type, {
   const agentCount = metadata.agentCount;
 
   // destDir lets a caller stage a control at a runnable location such as
-  // regimes/baseline/tang-random; without it every control lands three levels
+  // regimes/_baseline/tang-random; without it every control lands three levels
   // deep, where the validator's regime/directory cross-check never fires and a
   // wrong regime field would ship unnoticed.
+  //
+  // It is also the most dangerous input this module takes. Every generator
+  // unconditionally overwrites IDENTITY.md, SOUL.md, metadata.json and
+  // topology.json at the destination, so an unchecked --dest turns a control
+  // generator into an arbitrary-file overwriter:
+  //   civagent baseline china/tang --type solo --dest regimes/china/tang
+  // destroyed the real Tang regime (IDENTITY.md 1465 -> 526 bytes) in one
+  // command, and `--dest ../../anywhere` escaped the repository entirely.
+  // The guards below are ordered so the most destructive case fails first.
   const baseOut = outRoot || path.join(projectRoot, "regimes", "_baseline");
   const destDir = destDirOverride
     ? path.resolve(projectRoot, destDirOverride)
     : path.join(baseOut, type, regimeId);
+
+  if (destDirOverride) {
+    const controlRoot = path.resolve(projectRoot, "regimes", "_baseline");
+    const rel = path.relative(controlRoot, destDir);
+    if (rel === "" || rel.startsWith("..") || path.isAbsolute(rel)) {
+      throw new Error(
+        `--dest must be inside regimes/_baseline/ (got ${destDir}); ` +
+        "controls never overwrite source regimes or paths outside the repository",
+      );
+    }
+    // Belt and braces: even inside the control root, refuse to write over a
+    // directory that already holds a regime this run did not create.
+    if (fs.existsSync(destDir)) {
+      const existing = fs.readdirSync(destDir);
+      const meta = path.join(destDir, "metadata.json");
+      const isOwnControl = fs.existsSync(meta) &&
+        Boolean(readJson(meta)?._baseline);
+      if (existing.length > 0 && !isOwnControl) {
+        throw new Error(
+          `--dest ${destDir} is a non-empty directory that is not a generated control; refusing to overwrite`,
+        );
+      }
+    }
+  }
 
   // Ensure seed is a 32-bit integer for the PRNG.
   const seed32 = (typeof seed === "number" ? seed : String(seed).split("").reduce((a, c) => ((a << 5) - a + c.charCodeAt(0)) | 0, 0)) | 0;

@@ -657,3 +657,59 @@ test("the control's decision flow explicitly overrides the historical prose", ()
     rmrf(outRoot);
   }
 });
+
+// ── --dest is the most dangerous input this module takes ────────────────────
+//
+// Codex pre-merge review, P1. Every generator unconditionally overwrites
+// IDENTITY.md, SOUL.md, metadata.json and topology.json at the destination, and
+// --dest was passed straight through. Reproduced against the real corpus:
+//   civagent baseline china/tang --type solo --dest regimes/china/tang
+// destroyed the Tang regime in one command (IDENTITY.md 1465 -> 526 bytes).
+// The existing "real regime files are never touched" test only ever exercised a
+// temp outRoot, never the CLI's destDir, so it could not see this.
+test("--dest cannot overwrite a source regime", () => {
+  const identity = path.join(PROJECT_ROOT, "regimes", "china/tang", "IDENTITY.md");
+  const before = fs.readFileSync(identity, "utf8");
+  assert.throws(
+    () => generateBaseline("china/tang", "solo", { destDir: "regimes/china/tang", seed: 1 }),
+    /must be inside regimes\/_baseline/,
+  );
+  assert.equal(fs.readFileSync(identity, "utf8"), before, "the source regime must be byte-identical");
+});
+
+test("--dest cannot escape the repository", () => {
+  for (const escape of ["../../escape", "/etc", "regimes/../../outside"]) {
+    assert.throws(
+      () => generateBaseline("china/tang", "solo", { destDir: escape, seed: 1 }),
+      /must be inside regimes\/_baseline/,
+      `${escape} must be rejected`,
+    );
+  }
+});
+
+test("--dest refuses a non-empty directory that is not a generated control", () => {
+  const dir = path.join(PROJECT_ROOT, "regimes", "_baseline", "not-a-control-fixture");
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, "IDENTITY.md"), "someone else's work\n");
+  try {
+    assert.throws(
+      () => generateBaseline("china/tang", "solo", { destDir: "regimes/_baseline/not-a-control-fixture", seed: 1 }),
+      /not a generated control/,
+    );
+    assert.equal(fs.readFileSync(path.join(dir, "IDENTITY.md"), "utf8"), "someone else's work\n");
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test("--dest still regenerates a control this generator itself produced", () => {
+  const rel = "regimes/_baseline/regen-fixture";
+  const dir = path.join(PROJECT_ROOT, rel);
+  try {
+    generateBaseline("china/tang", "solo", { destDir: rel, seed: 1 });
+    assert.doesNotThrow(() => generateBaseline("china/tang", "solo", { destDir: rel, seed: 1 }),
+      "re-running the same control must stay idempotent, not become an error");
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
