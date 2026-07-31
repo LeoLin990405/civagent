@@ -143,7 +143,9 @@ export function readMatchText(matchId, maxChars = Infinity) {
     if (!line) continue;
     try {
       const ev = JSON.parse(line);
-      if (ev.type === "turn" && typeof ev.text === "string") out.push(ev.text);
+      if (ev.type === "turn" &&
+          ev.phase !== "dispatch_plan" &&
+          typeof ev.text === "string") out.push(ev.text);
     } catch {
       /* tolerate a torn final line */
     }
@@ -178,7 +180,9 @@ function readTurnEvents(matchId) {
     if (!line) continue;
     try {
       const ev = JSON.parse(line);
-      if (ev.type === "turn" && typeof ev.text === "string") {
+      if (ev.type === "turn" &&
+          ev.phase !== "dispatch_plan" &&
+          typeof ev.text === "string") {
         turns.push({
           index: turns.length,
           seq: Number.isInteger(ev.seq) ? ev.seq : lineIndex,

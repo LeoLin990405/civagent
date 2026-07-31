@@ -107,7 +107,9 @@ export function cleanTranscript(raw) {
     if (!line) continue;
     try {
       const obj = JSON.parse(line);
-      if (obj.type === "turn" && typeof obj.text === "string") chunks.push(obj.text);
+      if (obj.type === "turn" &&
+          obj.phase !== "dispatch_plan" &&
+          typeof obj.text === "string") chunks.push(obj.text);
       else if (typeof obj.chunk === "string") chunks.push(obj.chunk);
     } catch {
       chunks.push(line);

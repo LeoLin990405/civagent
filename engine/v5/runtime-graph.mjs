@@ -15,9 +15,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { ROOT as CIVAGENT_ROOT } from "./events.mjs";
+import { extractDispatchPlan, compareDispatchPlanToTopology } from "./plan-diff.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "..", "..");
+export const DISPATCH_OBSERVABILITY = "stream_json_verbose_dispatch_v1";
 
 // ── Actor parsing ────────────────────────────────────────────────────────────
 //
@@ -79,6 +81,10 @@ export function extractDispatches(events) {
   for (const { ev } of indexed) {
     if (!ev || typeof ev !== "object") continue;
     if (ev.type != null && ev.type !== "turn") continue;
+    // A pre-execution plan may mention strings that resemble dispatch tokens.
+    // It is intent, not an observed tool call, so it must never enter runtime
+    // dispatch evidence or enforcement compliance.
+    if (ev.phase === "dispatch_plan") continue;
     if (typeof ev.text !== "string" || ev.text.length === 0) continue;
     const coordinator = typeof ev.actor === "string" && ev.actor ? ev.actor : "unknown";
     DISPATCH_TOKEN_RE.lastIndex = 0;
@@ -117,12 +123,83 @@ function isTurn(ev) {
   return false;
 }
 
+export function classifyTopologyParticipation({
+  dispatchCount = 0,
+  officeTurnCount = 0,
+  officesInvoked = [],
+  captureCapability = null,
+  matchComplete = false,
+} = {}) {
+  const offices = [...new Set(
+    Array.isArray(officesInvoked)
+      ? officesInvoked.filter((office) => typeof office === "string" && office)
+      : [],
+  )];
+  if (dispatchCount > 0 || officeTurnCount > 0) {
+    return {
+      status: "participation_observed",
+      dispatchCount,
+      officeTurnCount,
+      officesInvoked: offices,
+      officeCount: offices.length,
+      captureCapability,
+      matchComplete,
+      reason: dispatchCount > 0
+        ? "at least one coordinator-to-office dispatch token was observed"
+        : "at least one office-attributed turn was observed",
+    };
+  }
+  if (captureCapability === DISPATCH_OBSERVABILITY && matchComplete) {
+    return {
+      status: "not_observed",
+      dispatchCount: 0,
+      officeTurnCount: 0,
+      officesInvoked: [],
+      officeCount: 0,
+      captureCapability,
+      matchComplete: true,
+      reason: "instrumented match completed without an office dispatch or office-attributed turn",
+    };
+  }
+  return {
+    status: "unknown",
+    dispatchCount: 0,
+    officeTurnCount: 0,
+    officesInvoked: [],
+    officeCount: 0,
+    captureCapability,
+    matchComplete,
+    reason: "negative participation cannot be inferred from an incomplete or pre-instrumentation stream",
+  };
+}
+
+function participationFromEvents(events, observed) {
+  const dispatches = observed.dispatch_sequence || [];
+  const turnCounts = observed.office_turn_counts || {};
+  const invoked = [];
+  for (const dispatch of dispatches) {
+    if (!invoked.includes(dispatch.office)) invoked.push(dispatch.office);
+  }
+  for (const office of Object.keys(turnCounts)) {
+    if (!invoked.includes(office)) invoked.push(office);
+  }
+  const start = events.find((event) => event?.type === "match_start");
+  return classifyTopologyParticipation({
+    dispatchCount: dispatches.length,
+    officeTurnCount: Object.values(turnCounts).reduce((sum, count) => sum + count, 0),
+    officesInvoked: invoked,
+    captureCapability: start?.dispatch_observability ?? null,
+    matchComplete: events.some((event) => event?.type === "match_end"),
+  });
+}
+
 export function reconstructRuntimeGraph(events) {
   if (!Array.isArray(events) || events.length === 0) {
     return {
       nodes: [], edges: [],
       measurement: { edge_observability: "coordinator_to_office_only" },
       observed: { office_turn_counts: {}, dispatch_sequence: [], dispatch_counts: {}, office_nodes: [] },
+      topology_participation: classifyTopologyParticipation(),
       inferred: { topology_edges: [], note: INFERRED_NOTE },
       orphan_spans: [], duplicate_spans: [],
       event_count: 0,
@@ -192,6 +269,15 @@ export function reconstructRuntimeGraph(events) {
     dispatchCounts[d.office] = (dispatchCounts[d.office] || 0) + 1;
   }
 
+  const observed = {
+    office_turn_counts: officeTurnCounts,
+    dispatch_sequence: dispatchSequence,
+    dispatch_counts: dispatchCounts,
+    office_nodes: [...officeEventCounts.entries()]
+      .map(([id, eventCount]) => ({ id, eventCount }))
+      .sort((a, b) => a.id.localeCompare(b.id)),
+  };
+
   return {
     nodes: [...nodes.values()].sort((a, b) => a.id.localeCompare(b.id)),
     edges: [...edges.values()].sort((a, b) => {
@@ -202,14 +288,8 @@ export function reconstructRuntimeGraph(events) {
       return a.kind.localeCompare(b.kind);
     }),
     measurement: { edge_observability: "coordinator_to_office_only" },
-    observed: {
-      office_turn_counts: officeTurnCounts,
-      dispatch_sequence: dispatchSequence,
-      dispatch_counts: dispatchCounts,
-      office_nodes: [...officeEventCounts.entries()]
-        .map(([id, eventCount]) => ({ id, eventCount }))
-        .sort((a, b) => a.id.localeCompare(b.id)),
-    },
+    observed,
+    topology_participation: participationFromEvents(events, observed),
     inferred: { topology_edges: [], note: INFERRED_NOTE },
     orphan_spans: orphanSpans,
     duplicate_spans: duplicateSpans,
@@ -423,6 +503,11 @@ function printGraph(g, opts) {
   const meas = g.measurement || {};
   console.log("Runtime graph — " + g.event_count + " events, " + g.nodes.length + " actors, " +
     g.edges.length + " edge types (edge_observability: " + (meas.edge_observability || "legacy") + ")");
+  const participation = g.topology_participation || classifyTopologyParticipation();
+  console.log("Office participation: " + participation.status +
+    " (dispatches=" + participation.dispatchCount +
+    ", office turns=" + participation.officeTurnCount +
+    ", offices=" + (participation.officesInvoked.join(", ") || "none") + ")");
   console.log("");
   console.log("Nodes:");
   for (const n of g.nodes) console.log("  " + n.id + " (" + n.eventCount + " events)");
@@ -461,6 +546,27 @@ function printGraph(g, opts) {
   if (inf.note) console.log("  Note: " + inf.note);
   if (g.orphan_spans && g.orphan_spans.length) console.log("\n⚠  " + g.orphan_spans.length + " orphan span(s)");
   if (g.duplicate_spans && g.duplicate_spans.length) console.log("\n⚠  " + g.duplicate_spans.length + " duplicate span_id(s)");
+}
+
+function printPlanDiff(planDiff) {
+  console.log("\n── Pre-enforcement plan vs declared topology ──");
+  console.log("Plan status:     " + planDiff.plan_status);
+  console.log("Comparable:      " + planDiff.comparison_available);
+  if (!planDiff.comparison_available) {
+    console.log("Reason:          " + planDiff.reason);
+    return;
+  }
+  console.log("Planned order:   " + (planDiff.planned_sequence.join(" → ") || "(empty plan)"));
+  console.log("Declared planned:" +
+    (planDiff.declared_planned_offices.length
+      ? " " + planDiff.declared_planned_offices.join(", ")
+      : " (none)"));
+  console.log("Declared omitted:" +
+    (planDiff.declared_not_planned_offices.length
+      ? " " + planDiff.declared_not_planned_offices.join(", ")
+      : " (none)"));
+  console.log("Undeclared:      " + (planDiff.undeclared_planned_offices.join(", ") || "(none)"));
+  console.log("Typed edges:     not comparable to a coordinator roster; no deviation score emitted");
 }
 
 function printDiff(diff, opts) {
@@ -516,8 +622,9 @@ if (process.argv[1] && process.argv[1].endsWith("runtime-graph.mjs")) {
         try {
           const topo = loadDeclaredTopology(meta.regime);
           const diff = diffTopology(topo, g);
-          if (args.json) console.log(JSON.stringify({ runtime_graph: g, diff }, null, 2));
-          else { printGraph(g, args); printDiff(diff, args); }
+          const planDiff = compareDispatchPlanToTopology(extractDispatchPlan(events), topo);
+          if (args.json) console.log(JSON.stringify({ runtime_graph: g, diff, plan_diff: planDiff }, null, 2));
+          else { printGraph(g, args); printDiff(diff, args); printPlanDiff(planDiff); }
         } catch (e) {
           console.error("\n⚠  Cannot load topology: " + e.message);
           if (args.json) console.log(JSON.stringify({ runtime_graph: g, diff: null, error: e.message }, null, 2));

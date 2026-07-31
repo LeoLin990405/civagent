@@ -1,12 +1,63 @@
 # 📜 Changelog
 
+## v6.3.0 (unreleased) — Measurement Instruments (R11)
+
+R11 follows the negative E1-control result: the dominant uncontrolled variable
+was whether a regime delegated at all. This release adds instruments that
+separate voluntary planning from an optional, topology-derived dispatch-roster
+requirement while retaining the runtime graph's observability limits. The
+changes are currently uncommitted in the `r7/validity` working tree.
+
+### Added
+
+- **Office-participation state:** completed, instrumented streams are classified
+  as `participation_observed` or `not_observed`; incomplete and legacy-negative
+  streams remain `unknown`. Counts and office IDs are surfaced in match metadata,
+  tournament manifests, the runtime-graph CLI, and History Explorer. This is a
+  categorical participation observation, not a topology execution rate.
+- **Pre-enforcement dispatch plan:** the coordinator first records a structured
+  plan with tools disabled, then execution resumes the same coordinator session.
+  The neutral prompt explicitly permits zero or fewer offices.
+  `parsed_nonempty`, `parsed_empty`, and `parse_failed` remain distinct. The plan
+  event is stored in `events.jsonl` but excluded from judge and skill transcripts.
+- **Symmetric roster enforcement:** `--enforce-dispatch` is default-off and
+  requires each office with an incoming edge in that arm's own topology to
+  receive an execution-phase subagent dispatch. The same function handles
+  historical and rewired controls. Compliance is checked once and recorded as
+  `not_requested`, `enforcement_passed`, or `enforcement_failed`; failures are
+  not retried, dropped, or converted into a different process exit code.
+- **Plan-versus-topology facts:** `runtime-graph --diff` now reports the planned
+  office sequence, declared planned/omitted offices, undeclared offices, and
+  duplicates. It emits no coverage ratio or composite deviation score. Directed
+  edge alignment, edge kind, multiedge coverage, and edge exercise are explicit
+  unsupported dimensions.
+- **E2 pre-registration:** `docs/experiments/E2-preregistration.md` and a
+  dry-run-by-default launcher freeze three scenarios, five repeats per cell,
+  ten arms per tournament (15 jobs / 150 arms), the E1 source/control pairs,
+  anonymization, no-skill mode, and engine-level dispatch enforcement.
+  No E2 model experiment was run.
+
+### Measurement limits retained
+
+- Claude Code subagents do not call one another. Runtime events directly expose
+  coordinator→office dispatches and office-attributed turns, not typed
+  office→office `command` / `review` / `info` / `veto` edges.
+- A passed enforcement check proves only that the topology-derived office roster
+  was dispatched. It does not prove declared wiring executed.
+- Because source and seed-42 control topologies preserve office IDs, node-set
+  plan comparisons may be unable to distinguish adoption of historical versus
+  rewired edge structure.
+
+---
+
 ## v6.2.0 (unreleased) — Measurement Validity and Control Arms
 
 Development status as of 2026-07-31: R7–R9 are on `r7/validity` in open PR
-#32. The R10 items below are uncommitted changes in that branch's working tree.
-PR #31 (`r6/integration`) remains a separate open branch and is not an ancestor
-of `r7/validity`; its write API/editor work is therefore not listed as shipped
-here.
+#32. R10 and the E1-control result are committed through `1c94e12`. E1-control
+ran on 2026-07-30: historical wiring won no resolved pair, one pair went to the
+control, and 13/30 arms never delegated. PR #31 (`r6/integration`) remains a
+separate open branch and is not an ancestor of `r7/validity`; its write
+API/editor work is therefore not listed as shipped here.
 
 ### Added
 
@@ -25,10 +76,11 @@ here.
 - **E1 validity experiment**: a pre-registration and pilot report document that
   the original run was invalidated by missing subagent transcripts. The report
   retains the negative result instead of interpreting unsupported rankings.
-- **E1 control preparation (R10)**: seed-42 random-wiring controls for Qin,
-  Tang, Athens, Zhou and Ming, plus a dry-run-by-default experiment launcher
-  with resumable batches and an explicitly estimated AFP window. No control
-  experiment has been run.
+- **E1 control arm (R10)**: seed-42 random-wiring controls for Qin, Tang,
+  Athens, Zhou and Ming, plus a dry-run-by-default experiment launcher with
+  resumable batches and an explicitly estimated AFP window. The arm ran on
+  2026-07-30; C1 was not supported and scenario-driven non-delegation became
+  the principal measurement finding.
 - **Actor-stratified judge transcript selection (R10)**: long event streams are
   sampled by each observed actor's first/middle/last turn, explicit dispatch
   turns and the final turn, under the same 6,000-character budget for every
