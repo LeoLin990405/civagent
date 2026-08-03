@@ -35,6 +35,8 @@ ${BOLD}Usage:${NC}
   civagent match-log                    Recent match transcripts
   civagent tournament --civs a,b,c,d "task"
                                         Parallel match across civilizations + judge ranking
+  civagent tournament --enforce-dispatch --civs a,b "task"
+                                        Require each arm's in-edge target offices once (no retries)
   civagent tournament --civs a,b --task-file tasks/my-scenario.md
                                         Run tournament using a markdown scenario file
   civagent tournament --civs a,b --task-file resources/tasks/t3-todo-cli/task.json [--det-weight 0.5]
@@ -46,8 +48,13 @@ ${BOLD}Usage:${NC}
   civagent ablate <regime> --type persona|checks [--out dir]
                                         Generate an ablation variant into regimes/_ablated/
                                         (A3 skill ablation: run/tournament --no-skill)
+  civagent baseline <regime> --type solo|random|flat [--seed N] [--out dir] [--dest dir]
+                                        Generate a baseline control variant into regimes/_baseline/
+                                        (--dest stages it at an exact runnable path, e.g. regimes/baseline/tang-random)
   civagent hillclimb <analyze|propose|validate|apply|rollback>
                                         L4 loop: diagnose → diff proposals → paired validation → revertible apply
+  civagent runtime-graph <matchId> [--diff] [--json]
+                                        Reconstruct runtime graph from match events; --diff compares to declared topology
   civagent agents                       Show generated CC agents for active regime
   civagent modes                        List 6 orchestration modes
   civagent setup                        Check tool availability (CC, Codex, opencode, cn-cc)
@@ -405,9 +412,22 @@ cmd_ablate() {
   exec node "$ENGINE_DIR/ablate.mjs" "$@"
 }
 
+# Baseline control variants (engine/baseline.mjs): solo / random-N / flat-N.
+cmd_baseline() {
+  exec node "$ENGINE_DIR/baseline.mjs" "$@"
+}
+
 # L4 hill-climbing loop (engine/v5/hillclimb.mjs): analyze → propose → validate → apply/rollback.
 cmd_hillclimb() {
   exec node "$ENGINE_DIR/v5/hillclimb.mjs" "$@"
+}
+
+# Runtime graph reconstruction + declared-vs-runtime diff (R8-2).
+cmd_runtime_graph() {
+  local match_id="${1:-}"
+  [[ -n "$match_id" ]] || die "Usage: civagent runtime-graph <matchId> [--diff] [--json]"
+  shift
+  exec node "$ENGINE_DIR/v5/runtime-graph.mjs" "$match_id" "$@"
 }
 
 # Verify the cn-cc-workflow launchers the cn:* backends depend on (engine/cn-cc.mjs).
@@ -466,7 +486,9 @@ case "${1:-}" in
   tournament) shift; cmd_tournament "$@" ;;
   stats)     shift; cmd_stats "$@" ;;
   ablate)    shift; cmd_ablate "$@" ;;
+  baseline)  shift; cmd_baseline "$@" ;;
   hillclimb) shift; cmd_hillclimb "$@" ;;
+  runtime-graph) shift; cmd_runtime_graph "$@" ;;
   help|--help|-h|"") usage ;;
   *)         echo "Unknown command: $1"; usage; exit 1 ;;
 esac

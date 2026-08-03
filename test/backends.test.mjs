@@ -40,17 +40,34 @@ test("isKnownBackend reflects resolveBackend", () => {
 
 test("buildBackendArgs: with prompt returns full args array", () => {
   const result = buildBackendArgs({ agentsJson: '{"agents":[]}', prompt: "do something" });
-  assert.deepEqual(result, ["--agents", '{"agents":[]}', "-p", "do something"]);
+  assert.deepEqual(result, [
+    "--agents", '{"agents":[]}',
+    "--output-format", "stream-json", "--verbose",
+    "-p", "do something",
+  ]);
+});
+
+// stream-json is the default and must stay the default. Under the previous
+// default (`text`) `-p` prints only the coordinator's final assistant message,
+// so every office's deliberation is discarded: three of fifteen E1 transcripts
+// contained no policy at all, and each scored last in its scenario.
+test("buildBackendArgs: stream-json is on by default and opt-out is explicit", () => {
+  const on = buildBackendArgs({ agentsJson: "{}", prompt: "x" });
+  assert.ok(on.includes("--output-format") && on[on.indexOf("--output-format") + 1] === "stream-json");
+  assert.ok(on.includes("--verbose"), "stream-json requires --verbose to emit subagent events");
+
+  const off = buildBackendArgs({ agentsJson: "{}", prompt: "x", streamJson: false });
+  assert.deepEqual(off, ["--agents", "{}", "-p", "x"], "opt-out restores the old shape exactly");
 });
 
 test("buildBackendArgs: empty-string prompt omits -p", () => {
   const result = buildBackendArgs({ agentsJson: '{"agents":[]}', prompt: "" });
-  assert.deepEqual(result, ["--agents", '{"agents":[]}']);
+  assert.ok(!result.includes("-p"), "no prompt flag when the prompt is empty");
 });
 
 test("buildBackendArgs: undefined prompt omits -p", () => {
   const result = buildBackendArgs({ agentsJson: '{"agents":[]}', prompt: undefined });
-  assert.deepEqual(result, ["--agents", '{"agents":[]}']);
+  assert.ok(!result.includes("-p"), "no prompt flag when the prompt is absent");
 });
 
 test("buildBackendArgs: agentsJson is passed through verbatim", () => {

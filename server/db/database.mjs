@@ -37,7 +37,9 @@ export function getWritableDb() {
     writableDb = new Database(dbPath, { timeout: 15_000 });
     writableDb.pragma('busy_timeout = 15000');
     try { writableDb.pragma('journal_mode = WAL'); } catch { /* best-effort */ }
-    // Ensure the schema exists even if the engine hasn't run yet.
+    // Ensure the schema exists even if the engine hasn't run yet. The indexes
+    // below must match engine/v5/history-db.mjs so a row inserted by one handle
+    // is observed as a duplicate by the other, and vice versa.
     writableDb.exec(`
       CREATE TABLE IF NOT EXISTS episodic_memory (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,6 +50,38 @@ export function getWritableDb() {
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
       );
     `);
+    // Migration for pre-existing DBs created before this constraint existed —
+    // CREATE TABLE IF NOT EXISTS does not add a UNIQUE clause to a table that
+    // already has the column without it. The unique index is idempotent and
+    // matches what engine/v5/history-db.mjs adds to its handle.
+    // Same migration the engine handle performs, and it must stay in sync: an
+    // intermediate build put a table-wide unique index on
+    // (match_id, regime, event_type), which makes a plain INSERT of a match's
+    // second veto_triggered event fail. Drop it, collapse any pre-existing
+    // match_end duplicates, then create the partial index.
+    try {
+      writableDb.exec(`DROP INDEX IF EXISTS ux_episodic_memory_mre`);
+    } catch (err) {
+      console.warn('[database] could not drop superseded episodic_memory index:', err.message);
+    }
+    const createIdx = `CREATE UNIQUE INDEX IF NOT EXISTS ux_episodic_memory_match_end ON episodic_memory(match_id, regime) WHERE event_type = 'match_end'`;
+    try {
+      writableDb.exec(createIdx);
+    } catch {
+      try {
+        const removed = writableDb.prepare(
+          `DELETE FROM episodic_memory WHERE event_type = 'match_end' AND id NOT IN (
+             SELECT MIN(id) FROM episodic_memory WHERE event_type = 'match_end' GROUP BY match_id, regime
+           )`
+        ).run().changes;
+        writableDb.exec(createIdx);
+        if (removed > 0) {
+          console.warn(`[database] collapsed ${removed} pre-existing duplicate match_end row(s)`);
+        }
+      } catch (err2) {
+        console.error('[database] episodic_memory uniqueness NOT enforced:', err2.message);
+      }
+    }
     return writableDb;
   } catch (err) {
     console.error('Could not open history DB for writing:', err);

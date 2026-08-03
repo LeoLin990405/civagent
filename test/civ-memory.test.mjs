@@ -16,7 +16,19 @@ test("validateRegime accepts valid ids", () => {
   assert.equal(validateRegime("global/rome-republic"), "global/rome-republic");
 });
 
+test("validateRegime accepts underscore-prefixed variant regions", () => {
+  // Controls and ablations live under regimes/_baseline/ and regimes/_ablated/
+  // so the API's regime lister skips them. If validateRegime rejected the
+  // leading underscore, a control could be generated and validated but never
+  // run as a civ — the experiment would silently lose its control arm.
+  assert.equal(validateRegime("_baseline/tang-random"), "_baseline/tang-random");
+  assert.equal(validateRegime("_ablated/tang-persona"), "_ablated/tang-persona");
+});
+
 test("validateRegime rejects path traversal", () => {
+  assert.throws(() => validateRegime("_baseline/../../etc"));
+  assert.throws(() => validateRegime("__doubled/x"));
+  assert.throws(() => validateRegime("_/x"));
   assert.throws(() => validateRegime("../../etc"));
   assert.throws(() => validateRegime("china/../secrets"));
   assert.throws(() => validateRegime("/etc/passwd"));

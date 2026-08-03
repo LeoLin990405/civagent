@@ -1,5 +1,127 @@
 # 📜 Changelog
 
+## v6.3.0 (unreleased) — Measurement Instruments (R11)
+
+R11 follows the negative E1-control result: the dominant uncontrolled variable
+was whether a regime delegated at all. This release adds instruments that
+separate voluntary planning from an optional, topology-derived dispatch-roster
+requirement while retaining the runtime graph's observability limits. The
+changes are currently uncommitted in the `r7/validity` working tree.
+
+### Added
+
+- **Office-participation state:** completed, instrumented streams are classified
+  as `participation_observed` or `not_observed`; incomplete and legacy-negative
+  streams remain `unknown`. Counts and office IDs are surfaced in match metadata,
+  tournament manifests, the runtime-graph CLI, and History Explorer. This is a
+  categorical participation observation, not a topology execution rate.
+- **Pre-enforcement dispatch plan:** the coordinator first records a structured
+  plan with tools disabled, then execution resumes the same coordinator session.
+  The neutral prompt explicitly permits zero or fewer offices.
+  `parsed_nonempty`, `parsed_empty`, and `parse_failed` remain distinct. The plan
+  event is stored in `events.jsonl` but excluded from judge and skill transcripts.
+- **Symmetric roster enforcement:** `--enforce-dispatch` is default-off and
+  requires each office with an incoming edge in that arm's own topology to
+  receive an execution-phase subagent dispatch. The same function handles
+  historical and rewired controls. Compliance is checked once and recorded as
+  `not_requested`, `enforcement_passed`, or `enforcement_failed`; failures are
+  not retried, dropped, or converted into a different process exit code.
+- **Plan-versus-topology facts:** `runtime-graph --diff` now reports the planned
+  office sequence, declared planned/omitted offices, undeclared offices, and
+  duplicates. It emits no coverage ratio or composite deviation score. Directed
+  edge alignment, edge kind, multiedge coverage, and edge exercise are explicit
+  unsupported dimensions.
+- **E2 pre-registration:** `docs/experiments/E2-preregistration.md` and a
+  dry-run-by-default launcher freeze three scenarios, five repeats per cell,
+  ten arms per tournament (15 jobs / 150 arms), the E1 source/control pairs,
+  anonymization, no-skill mode, and engine-level dispatch enforcement.
+  No E2 model experiment was run.
+
+### Measurement limits retained
+
+- Claude Code subagents do not call one another. Runtime events directly expose
+  coordinator→office dispatches and office-attributed turns, not typed
+  office→office `command` / `review` / `info` / `veto` edges.
+- A passed enforcement check proves only that the topology-derived office roster
+  was dispatched. It does not prove declared wiring executed.
+- Because source and seed-42 control topologies preserve office IDs, node-set
+  plan comparisons may be unable to distinguish adoption of historical versus
+  rewired edge structure.
+
+---
+
+## v6.2.0 (unreleased) — Measurement Validity and Control Arms
+
+Development status as of 2026-07-31: R7–R9 are on `r7/validity` in open PR
+#32. R10 and the E1-control result are committed through `1c94e12`. E1-control
+ran on 2026-07-30: historical wiring won no resolved pair, one pair went to the
+control, and 13/30 arms never delegated. PR #31 (`r6/integration`) remains a
+separate open branch and is not an ancestor of `r7/validity`; its write
+API/editor work is therefore not listed as shipped here.
+
+### Added
+
+- **Experimental nulls**: reproducible `solo`, `flat-N` and seeded `random-N`
+  topology controls under `regimes/_baseline/`. Controls preserve source
+  offices and persona while changing the coordination flow.
+- **Judge calibration telemetry**: multi-pass provider statistics,
+  same-family/cross-family gap, presentation-order effect and honest
+  per-transcript verbosity logs are persisted with tournament results.
+- **Governance-graph typing**: topology nodes can describe agent, gate,
+  checkpoint and router roles; metrics and validation understand the expanded
+  node model.
+- **Runtime graph CLI**: `civagent runtime-graph <matchId> [--diff] [--json]`
+  reconstructs actor/span activity. Office-attributed events now expose office
+  turn counts plus coordinator dispatch order/counts.
+- **E1 validity experiment**: a pre-registration and pilot report document that
+  the original run was invalidated by missing subagent transcripts. The report
+  retains the negative result instead of interpreting unsupported rankings.
+- **E1 control arm (R10)**: seed-42 random-wiring controls for Qin, Tang,
+  Athens, Zhou and Ming, plus a dry-run-by-default experiment launcher with
+  resumable batches and an explicitly estimated AFP window. The arm ran on
+  2026-07-30; C1 was not supported and scenario-driven non-delegation became
+  the principal measurement finding.
+- **Actor-stratified judge transcript selection (R10)**: long event streams are
+  sampled by each observed actor's first/middle/last turn, explicit dispatch
+  turns and the final turn, under the same 6,000-character budget for every
+  civ. Selection strategy, original/selected lengths, turns and actors are
+  retained in the manifest.
+- **Office-aware match UI (R10)**: History Explorer and Live Court split
+  `<regime>#<office>` actors at the first `#`, display the office as the role
+  badge and preserve the regime as context. Legacy actors remain unchanged.
+
+### Changed
+
+- **Full subagent transcript capture**: Claude Code runs with verbose
+  stream-JSON output, so office deliberation enters `events.jsonl` instead of
+  only the coordinator's closing message.
+- **Constitutional markers are explicit**: veto, edict and impeachment
+  mechanisms require bracketed protocol markers; ordinary historical prose no
+  longer triggers a mechanism or grants veto immunity.
+- **History and skill feedback**: episodic retrieval ranks across the full
+  practical history with stable tie-breaking and filtered keywords; tournament
+  outcomes are stamped onto newly sedimented skills after judging.
+- **CI and persistence hardening**: Node 20/22 backend jobs, a blocking frontend
+  suite, regime validation and smoke checks run in CI; repeated tournament
+  recording is idempotent without dropping legitimate repeated events.
+
+### Measurement limits retained deliberately
+
+- Coordinator fan-out proves office participation and dispatch, not a typed
+  office-to-office edge. `unexercised_ratio` therefore remains `null` under
+  `coordinator_to_office_only` observability even when office ids overlap.
+- `caused_by_span_id` alone cannot supply source office, target office, edge
+  kind, artifact identity or proof that capture was complete. R10 did not add
+  this field or promote the runtime diff to direct-edge comparability.
+- The runtime graph was not added to the HTTP API: the useful participation
+  view is already derivable from match events, while the declared-edge diff is
+  still incomparable.
+- The production four-level rubric is unchanged. A separately versioned shadow
+  calibration is proposed for the S3 ceiling effect; old and new score series
+  must not be spliced or converted.
+
+---
+
 ## v6.1.0 (unreleased) — Reconciliation, Write API, R2 Revival 🔀
 
 The v6 hardening line rejoined main (PRs #19–#28) — see PR #29.

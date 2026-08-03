@@ -1,0 +1,33 @@
+{
+  "id": "tang-random",
+  "name": {
+    "zh": "唐朝 (Random-9)",
+    "en": "Tang Dynasty (Random-9)"
+  },
+  "era": {
+    "zh": "618年-907年",
+    "en": "618-907 AD"
+  },
+  "region": "china",
+  "system": {
+    "zh": "随机基线对照 (9 agents, seed=42)",
+    "en": "Random Baseline Control (9 agents, seed=42)"
+  },
+  "description": {
+    "zh": "基线对照变体（random-9）：9 个 agent，边数 ≈ 原政体，边的种类按原分布随机采样，seed=42 保证可复现。",
+    "en": "Baseline control variant (random-9): 9 agents, edge count ≈ original, edge kinds randomly sampled from original distribution, seed=42 for reproducibility."
+  },
+  "agentCount": 9,
+  "tags": [
+    "baseline",
+    "random",
+    "control"
+  ],
+  "orchestrationPattern": "centralized",
+  "_baseline": {
+    "type": "random",
+    "source": "china/tang",
+    "agentCount": 9,
+    "seed": 42
+  }
+}

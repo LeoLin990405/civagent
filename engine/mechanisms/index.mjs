@@ -30,23 +30,83 @@ export class MechanismEngine {
   }
 
   /**
-   * Process a text chunk from agent output.
-   * Returns an object describing which mechanisms fired, if any.
+   * Process a text chunk from agent output (legacy API — no provenance gating).
+   * Kept backward-compatible for existing tests and callers that don't pass
+   * structured provenance. Production code in run-v5.mjs uses processStructured().
    */
   process(chunk) {
     const fired = { veto: false, impeach: false, edict: false };
+    const chunkText = typeof chunk === "string" ? chunk : String(chunk ?? "");
 
-    if (this.allowed.has('EDICT') && checkEdict(chunk, this.context)) {
+    if (this.allowed.has('EDICT') && checkEdict(chunkText, this.context)) {
       fired.edict = true;
       this._stats.edicts++;
     }
 
-    if (this.allowed.has('IMPEACH') && checkImpeach(chunk, this.context)) {
+    if (this.allowed.has('IMPEACH') && checkImpeach(chunkText, this.context)) {
       fired.impeach = true;
       this._stats.impeachments++;
     }
 
-    if (this.allowed.has('VETO') && checkVeto(chunk, this.context)) {
+    if (this.allowed.has('VETO') && checkVeto(chunkText, this.context)) {
+      fired.veto = true;
+      this._stats.vetoes++;
+    }
+
+    return fired;
+  }
+
+  /**
+   * Process a text chunk WITH provenance information. This is the primary API
+   * called by run-v5.mjs.
+   *
+   * Provenance gates:
+   *   1. `actor` must be non-null. Null actors (unparseable lines, system
+   *      messages without attribution) are REJECTED.
+   *   2. `messageRole`, when present, must be "assistant". User-role messages
+   *      are REJECTED. A null messageRole (legacy plain-text backend without
+   *      stream-json) is ALLOWED for backward compatibility.
+   *   3. `contentItems` must not contain any `tool_result` items. Tool results
+   *      carry untrusted external content that can contain marker injection.
+   *
+   * @param {{ text: string, actor: string|null, messageRole: string|null,
+   *          contentItems: Array<{type: string}> }} chunk
+   * @returns {{ veto: boolean, impeach: boolean, edict: boolean }}
+   */
+  processStructured({ text, actor, messageRole, contentItems }) {
+    const fired = { veto: false, impeach: false, edict: false };
+
+    // Gate 1: must have an actor (null = unknown origin → reject).
+    if (typeof actor !== "string" || actor.length === 0) {
+      return fired;
+    }
+
+    // Gate 2: if messageRole is present, it must be "assistant".
+    // null messageRole = legacy plain-text backend → allowed.
+    if (messageRole !== null && messageRole !== undefined && messageRole !== "assistant") {
+      return fired;
+    }
+
+    // Gate 3: must not contain tool_result content items.
+    const items = Array.isArray(contentItems) ? contentItems : [];
+    const hasToolResult = items.some((item) => item?.type === "tool_result");
+    if (hasToolResult) {
+      return fired;
+    }
+
+    const chunkText = typeof text === "string" ? text : String(text ?? "");
+
+    if (this.allowed.has("EDICT") && checkEdict(chunkText, this.context)) {
+      fired.edict = true;
+      this._stats.edicts++;
+    }
+
+    if (this.allowed.has("IMPEACH") && checkImpeach(chunkText, this.context)) {
+      fired.impeach = true;
+      this._stats.impeachments++;
+    }
+
+    if (this.allowed.has("VETO") && checkVeto(chunkText, this.context)) {
       fired.veto = true;
       this._stats.vetoes++;
     }

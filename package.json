@@ -7,13 +7,14 @@
   },
   "scripts": {
     "test": "node --test test/*.test.mjs",
-    "lint:syntax": "node -c engine/v5/civ-memory.mjs && node -c engine/v5/skill-sediment.mjs && node -c engine/v5/skill-scan.mjs && node -c engine/v5/skill-quality.mjs && node -c engine/v5/replay.mjs && node -c engine/v5/run-v5.mjs && node -c engine/v5/backends.mjs && node -c engine/v5/judge.mjs && node -c engine/v5/events.mjs && node -c engine/v5/tournament.mjs && node -c engine/v5/judge-rubric.mjs && node -c engine/v5/deterministic-grading.mjs && node -c engine/v5/stats.mjs && node -c engine/v5/hillclimb.mjs && node -c engine/regime-to-cc.mjs && node -c engine/topology/validate.mjs && node -c engine/topology/metrics.mjs && node -c engine/ablate.mjs && node -c server/index.mjs && node -c server/utils.mjs && node -c server/db/database.mjs && node -c server/routes/regimes.mjs && node -c server/routes/tournaments.mjs && node -c server/routes/matches.mjs && node -c server/routes/history.mjs && node -c server/routes/analytics.mjs && node -c server/routes/stats.mjs && node -c server/http.mjs && node -c server/services/regimes.mjs && node -c server/services/regime-write.mjs && node -c server/routes/skills.mjs && node -c server/services/skills.mjs && bash -n bin/civagent && bash -n bin/lib/common.sh",
+    "lint:syntax": "node -c engine/v5/civ-memory.mjs && node -c engine/v5/skill-sediment.mjs && node -c engine/v5/skill-scan.mjs && node -c engine/v5/skill-quality.mjs && node -c engine/v5/skill-outcome.mjs && node -c engine/v5/history-db.mjs && node -c engine/v5/history-retriever.mjs && node -c engine/v5/replay.mjs && node -c engine/v5/run-v5.mjs && node -c engine/v5/backends.mjs && node -c engine/v5/judge.mjs && node -c engine/v5/events.mjs && node -c engine/v5/tournament.mjs && node -c engine/v5/judge-rubric.mjs && node -c engine/v5/deterministic-grading.mjs && node -c engine/v5/stats.mjs && node -c engine/v5/hillclimb.mjs && node -c engine/regime-to-cc.mjs && node -c engine/topology/validate.mjs && node -c engine/topology/metrics.mjs && node -c engine/ablate.mjs && node -c server/index.mjs && node -c server/utils.mjs && node -c server/db/database.mjs && node -c server/routes/regimes.mjs && node -c server/routes/tournaments.mjs && node -c server/routes/matches.mjs && node -c server/routes/history.mjs && node -c server/routes/analytics.mjs && node -c server/routes/stats.mjs && node -c server/http.mjs && node -c server/services/regimes.mjs && node -c server/services/regime-write.mjs && node -c server/routes/skills.mjs && node -c server/services/skills.mjs && bash -n bin/civagent && bash -n bin/lib/common.sh",
     "validate:regimes": "node test/regime-validator.mjs",
+    "smoke": "node examples/smoke.mjs",
     "lint:backend": "eslint .",
     "typecheck:frontend": "cd frontend && tsc -b",
     "build:frontend": "cd frontend && npm run build",
     "lint:frontend": "cd frontend && npm run lint",
-    "ci": "npm run lint:syntax && npm run lint:backend && npm test && npm run validate:regimes && npm run test:frontend",
+    "ci": "npm run lint:syntax && npm run lint:backend && npm test && npm run validate:regimes && npm run smoke && npm run test:frontend",
     "start:server": "node server/index.mjs",
     "start:frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run start:server\" \"npm run start:frontend\"",
@@ -21,7 +22,7 @@
   },
   "type": "module",
   "engines": {
-    "node": ">=18"
+    "node": ">=20.0.0"
   },
   "repository": {
     "type": "git",
