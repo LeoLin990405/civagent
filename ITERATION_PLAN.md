@@ -1,144 +1,124 @@
-# CivAgent Iteration Plan (Tripartite Collaboration)
+# CivAgent Iteration Plan
 
-> Updated: 2026-07-30 · Current line: PR #30 (`refactor/r5-modularization` → `refactor/backend-arg-contract`), stacked on PR #29 (`refactor/backend-arg-contract` → `main`)
-> Division of labor: **Backend / merges / fixes = Claude Code** · **Frontend = Antigravity** · **Review = Codex** · **Content / long reasoning = Trae (MiMo)**
-> Prohibition rule: invoking Gemini is strictly forbidden in any scenario (including judge, sediment, and agent backend).
+> Updated: 2026-07-31
+> Hard rule: Gemini is forbidden in every execution, judge and audit path.
 
----
+## Current repository state
 
-## Current Status (2026-07-30)
-
-| Area | State |
-|---|---|
-| **Mainline** | Unchanged since the last update: main carries P1–P6 (#19–#28): topology graphs, BT stats pipeline, skill supply-chain gate, ablation variants, hill-climbing loop, T3 deterministic scoring, anchored blind-judge rubric. No R5 work has merged to main yet — it all lives on the two open PRs below. |
-| **PR #29 (open)** | The v6 hardening line: constitutional mechanism engine, Express API server (read + write), history-db episodic memory, 14-regime historical audit, English-only engineering surface. Codex review concluded REQUEST_CHANGES with 3 P1 findings (blind-judge role-name leak, write-API unknown backends, replay lineage path escape); all three fixed on the branch (`1080428`) with regression tests. CI green per integration layer; awaiting Codex re-review, then merge. |
-| **PR #30 (open, stacked on #29)** | R5 Batch 1 + Batch 2 (see below), plus the PR #30 review P1 (regime cache staleness) fixed in `9426a8c`. Local gate green at `42889fe`: **287 backend tests**, `lint:backend` clean, 57 regimes validated. CI green per integration layer; awaiting Codex re-review. |
-| **R5 Batch 3 (in progress)** | Frontend test infrastructure (branch `r5b3/fe3`) and episodic-memory-layer test coverage (branch `r5b3/hist3`) are being built by parallel workers. Nothing from Batch 3 has landed on `refactor/r5-modularization` yet. |
-
-### What landed since the last plan update (`b70e4ee..42889fe`)
-
-**Batch 1 — engineering refactor (PR #30):**
-- Server: route files rewritten as factories with injectable deps, unified error/status helpers in `server/http.mjs`, shared cached regime catalog service in `server/services/regimes.mjs`; hermetic route tests added (`test/routes-regimes.test.mjs`, `test/routes-matches.test.mjs`, `test/routes-history.test.mjs`).
-- Engine: `engine/v5/tournament.mjs` cut 710 → 462 lines; blind-judge rubric extracted to `engine/v5/judge-rubric.mjs`, T3 deterministic grading to `engine/v5/deterministic-grading.mjs` (symbols re-exported — export surface unchanged).
-- Frontend: four orphan components retired (`CodexBrowser`, `JudgeLeaderboard`, `RegimeBrowser`, `TerminalPanel`, −1226 lines); match history revived as the `MatchArchive.tsx` tab.
-- CLI: shared helpers extracted to `bin/lib/common.sh`; `civagent list` spawns one `python3` per regime instead of four (228 → 57 processes, ~4.1s → ~1.2s).
-
-**Batch 2 — feature expansion:**
-- `GET /api/skills/:region/:id/stats` (`server/routes/skills.mjs` + `server/services/skills.mjs`, tests in `test/routes-skills.test.mjs`).
-- Governance scenario library expanded 10 → 40 (`engine/prompts/governance-scenarios.json`).
-- Frontend Tournament Launcher + Skill Library tabs (`TournamentLauncher.tsx`, `SkillLibrary.tsx`).
-
-**Codex review follow-up:** the 3 P1s on PR #29 and the 1 P1 on PR #30 are fixed with regression tests (`test/judge-anon-multi.test.mjs`, `test/replay.test.mjs`, `test/tournaments-write-api.test.mjs` extensions, `test/services-regimes-cache.test.mjs`). Backend suite 252 → 287. The two P2 items from `tasks/REVIEW-r5-codex.md` (scan-before-dedup telemetry, summary-mode cold-cache I/O) are deferred to a later round.
-
-### Superseded documents
-
-- `tasks/TASK-r4-*.md` and `tasks/REVIEW-r4-codex.md` are historical (note: the
-  R4 Antigravity task cites port 4242 — the server listens on **3001**).
-- `tasks/TASK-r5-*.md` are now historical too — all three are marked DONE; their
-  review output lives in `tasks/REVIEW-r5-codex.md`. Active work is tracked in
-  `tasks/TASK-r6-*.md`.
-
----
-
-## Round 5 — final status
-
-**Overall goal (achieved on the integration branch, merges pending)**: PR #29
-reviewed; the UI can launch and watch a real tournament end-to-end; the
-scenario library reached 40 entries.
-
-| Task | File | Outcome |
+| Line | State | What is actually there |
 |---|---|---|
-| ① Codex review of PR #29 / #30 | `tasks/TASK-r5-codex.md` → `tasks/REVIEW-r5-codex.md` | ✅ Done. REQUEST_CHANGES: 3 P1s (#29) + 1 P1 (#30) + 2 deferred P2s. |
-| ② Fix findings, keep branches green | — | ✅ Done by Claude Code directly (`1080428`, `9426a8c`) with regression tests (252 → 287). |
-| ③ Launcher + SkillLibrary + orphan cleanup | `tasks/TASK-r5-antigravity.md` | ✅ Landed (`e1b2175`, `4e99a40`). |
-| ④ Scenarios 10 → 40 | `tasks/TASK-r5-trae.md` | ✅ Landed (`adbccfa`); file verified to contain exactly 40 entries. |
-| ⑤ Integration / merge | — | ⏳ Open: both PRs await Codex re-review, then merge to main (owned by the integration layer). |
+| `main` | `bdcca25` | PRs #29 and #30 are merged: v6 hardening plus R5 modularization, frontend tests, skill stats and the 40-scenario library. |
+| PR #31, `r6/integration → main` | open | Regime write API/editor and historical revision. This branch is separate from `r7/validity` and is not in the current R10/R11 working tree. |
+| PR #32, `r7/validity → main` | open, GitHub checks green | R7 experimental controls/judge calibration, R8 graph/CI/persistence hardening, E1, full transcript capture and R9 office-level runtime reconstruction. |
+| `r7/validity` | `1c94e12` + uncommitted R11 work | R10, five E1 random controls, and the 2026-07-30 E1-control results are committed through `1c94e12`. R11 measurement instruments are integrated in this working tree for review, without commit or push. |
 
----
+PR #31 and PR #32 diverge from `main`; neither should be described as merged.
+Their integration order and conflict resolution remain a maintainer decision.
 
-## Round 6 — "Online Regime Editing · Skill Management · Fact-Check Loop"
+## Completed on `r7/validity` before R10
 
-**Overall goal**: regimes become editable through the UI with server-side
-mechanical validation; staged skills can be approved/rejected from the UI; the
-top 20 regimes pass a historical-fact revision pass. Completion marker: a full
-management console — edit → validate → review → ship, all from the UI.
+### R7 — test whether a ranking is a measurement
 
-### Capabilities R6 builds on (already in the tree)
+- Added solo, flat-N and seeded random-N topology controls.
+- Preserved persona and office identities in controls so the intervention is
+  wiring rather than "historical agent versus blank agent".
+- Added judge provider, position, same-family and verbosity telemetry.
+- Repaired episodic retrieval and stamped downstream tournament outcomes onto
+  newly learned skills.
 
-- **Write-API blueprint**: `POST /api/tournaments` — validate → `202 {id}` → detached background run, logs in `~/.civagent/server-logs/` (`server/routes/tournaments.mjs`).
-- **Mechanical validators**: `test/regime-validator.mjs` (behind `npm run validate:regimes`), `parseIdentityTable` in `engine/regime-to-cc.mjs` (AGENTS.md rule 2: the IDENTITY.md role table is the source of truth — prose rewrites parse to 0 agents), `agentCount` sync invariant (rule 3), `engine/topology/validate.mjs` (schema + IDENTITY cross-check).
-- **Skill pipeline**: per-regime `skills/staging/` dirs, `civagent skills pending|approve` (CLI-only today), stats service `server/services/skills.mjs`, injection scanning in `engine/v5/skill-sediment.mjs`.
-- **Judge provider chain** (structurally Gemini-free): `engine/v5/judge.mjs` — reusable as the historical-fact reviewer.
+### R8 — harden graph and persistence contracts
 
-### Per-party tasks (details in `tasks/TASK-r6-<party>.md`)
+- Typed governance-graph nodes and extended topology validation/metrics.
+- Added runtime graph reconstruction and declared/runtime diff CLI.
+- Made history writes idempotent without deleting legitimate repeated events.
+- Added Node 20/22 backend CI, frontend CI, regime validation and smoke.
+- Closed PR #32 review findings with regression tests.
 
-**R6-1 — Claude Code: regime-editing write API**
-- Scope: `PUT /api/regimes/:region/:id` updating `metadata.json`, `IDENTITY.md`, `SOUL.md` under `regimes/<region>/<id>/`. Pre-commit validation chain: regime-id whitelist (same shape as `bin/lib/common.sh::validate_regime`), `safeResolve`-style path construction (`server/utils.mjs`), `parseIdentityTable` must yield ≥ 1 agent, `agentCount` auto-resynced to the compiled count, `engine/topology/validate.mjs` must pass when `topology.json` exists. Writes via temp file + atomic rename.
-- Out of scope: the editor UI (R6-3), judge-backed fact checks (R6-2), regime creation/deletion (deliberately deferred — edits only).
-- Acceptance: `npm run ci` green; new hermetic `test/routes-regimes-write.test.mjs` (temp regimes root, no writes to the real tree); `npm run validate:regimes` green after an edit round-trip.
+### E1 and R9 — follow the negative result
 
-**R6-2 — Claude Code: historical-fact review loop**
-- Scope: `POST /api/regimes/:region/:id/review`. Synchronous part: the R6-1 mechanical chain, returning structured findings. Optional judge-backed part: a fact-check pass over `metadata.json` + `SOUL.md` historical claims via `engine/v5/judge.mjs` (codex → opencode → cc-glm, never Gemini), async tournament-style (`202` + result file) since judge calls are slow.
-- Acceptance: tests cover mechanical pass/fail and a fake-judge async round-trip; `npm run ci` green.
+- Pre-registered and ran the original E1 pilot.
+- Reported that transcript capture, transcript length and judge noise prevented
+  a topology claim; did not reinterpret invalid S3 rankings.
+- Captured full Claude Code stream-JSON office deliberation.
+- Restricted constitutional mechanisms to bracketed protocol markers.
+- Reconstructed office participation and coordinator dispatches in
+  `runtime-graph`.
+- Kept typed office-to-office `unexercised_ratio` at `null`: coordinator fan-out
+  is not evidence of a declared directed edge.
 
-**R6-3 — Antigravity: online regime editor**
-- Scope: new "Editor" tab — metadata form, an IDENTITY.md agent-table editor that emits exactly the markdown table format `parseIdentityTable` accepts (never freeform prose), a SOUL.md textarea; save calls the R6-1 API; server validation errors rendered per field; post-save preview of compiled agents via the existing regime endpoint.
-- Depends on: R6-1 on the integration branch.
-- Acceptance: `npm run build:frontend` passes and `npm run lint:frontend` has 0 errors; edit round-trip demonstrated against the dev server; no new `any`.
+## R10 acceptance state
 
-**R6-4 — Claude Code (API) + Antigravity (UI): skill management**
-- Backend scope: `GET /api/skills/staged` (staging list across regimes) and `POST /api/skills/:region/:id/approve` mirroring `civagent skills approve` semantics (bare-basename guard, staging → active move), with the `engine/v5/skill-sediment.mjs` injection scan run *before* promotion.
-- Frontend scope: SkillLibrary gains a "Staged" section with approve/reject actions.
-- Acceptance: hermetic route tests; `npm run ci` and frontend build/lint green.
+| Item | Decision / implementation | Remaining gate |
+|---|---|---|
+| R10-1 transcript sampling | Actor-stratified first/middle/last turns, explicit dispatches and final turn under one 6,000-character cap; manifest records the cut. | Full CI and rollback evidence. |
+| R10-2 causality | Design completed but not implemented. `caused_by_span_id` alone is insufficient, and partial handoff capture cannot make the whole graph comparable. | Design an explicit handoff event and a completeness/capability contract before coding. |
+| R10-3 E1 control arm | Ran on 2026-07-30 with five seed-42 random controls, anonymized/order-swapped judging, and `cn:doubao`. C1 was not supported: historical wiring won 0 resolved pairs; one pair went to the control. The dominant uncontrolled variable was whether an arm delegated (13/30 did not). | n=1 per cell, one seed, and the rubric ceiling remain unresolved. |
+| R10-4 office actor UI | History Explorer and Live Court display the office badge and retain regime context; legacy actors are unchanged. | Full CI and rollback evidence. |
+| R10-5 API | No endpoint now. Existing events already support participation UI; the typed topology diff is still incomparable. | Revisit only after direct-edge events exist. |
+| R10-6 docs | CHANGELOG and this plan describe branch/PR state and measurement limits. README intentionally untouched. | Final integration report. |
 
-**R6-5 — Trae (MiMo): top-20 historical-fact revision**
-- Scope: 20 regimes (10 Chinese + 10 global, prioritizing tournament staples); fact-check `metadata.json` era/system/description and IDENTITY role titles (Hucker official-title standard, AGENTS.md rule 8) with long reasoning; per-regime revision notes under `tasks/r6-revisions/` plus edits on a content branch. The bilingual `name.zh`/`name.en` convention stays.
-- Acceptance: `npm run validate:regimes` green; Codex review pass over the content diff.
+## R11 acceptance state
 
-**R6-6 — Codex: adversarial review of the R6 PRs**
-- Pre-seeded risk list: path traversal in regime writes; IDENTITY prose-rewrite → 0 agents; `agentCount` drift; concurrent edit vs. a running tournament (regime files/skills mutating mid-match); skill-approve scan ordering (R5 P2: scan before dedup); TOCTOU between review and apply; atomicity of multi-file regime edits.
+R11 builds instruments rather than selecting a winning topology.
 
-### Execution order (dependency chain)
+| Item | Integrated behavior | Honest boundary |
+|---|---|---|
+| R11-1 participation state | `topologyParticipation` / `topology_participation` carries `participation_observed`, `not_observed`, or `unknown`, plus dispatch/turn counts and invoked office IDs. It appears in match metadata, tournament manifests, CLI output, and History Explorer. | A single dispatch proves participation only. Negative evidence requires the new capture-capability marker and a complete match. There is no continuous execution ratio. |
+| R11-2 voluntary plan | A tools-disabled call records a structured plan before enforcement; execution resumes the same coordinator session. Parse failure is not an empty plan, and plan events are excluded from judge/skill inputs. | Provider-wrapper same-session behavior is contract-tested with a fake backend but was not smoke-tested against a real CN provider in this round. |
+| R11-3 roster enforcement | Default-off `--enforce-dispatch` derives required offices only from each arm's incoming-edge targets, appends the requirement after the plan, checks real execution dispatch tokens once, and records pass/failure without retry. | This equalizes a topology-derived roster, not typed edge execution. Failed arms remain in raw results and make the pair ineligible for A's per-protocol view. |
+| R11-4 plan comparison | Reports planned order as description, node membership/omission, undeclared offices, and duplicates. | No coverage ratio, composite score, directed-edge match, edge-kind match, multiedge coverage, or execution claim. |
+| R11-5 E2 preregistration | Three E1 scenarios × five repeats × ten arms = 150 arms; same source/control pairs, anonymization, no-skill mode, and explicit engine enforcement. Launcher defaults to dry-run. | Pilot variance estimation, not a powered confirmation. No E2 model experiment ran. |
+| R11-6 frontend | History Explorer renders observed / not observed / data-insufficient badges from the exact backend field. | Legacy and malformed data become unknown, never a false negative and never “topology invalid.” |
 
-```
-① R6-1 regime write API (Claude Code)
-        ↓
-② R6-2 review loop (Claude Code)
-③ R6-3 editor UI (Antigravity, needs ①)                     ─┐ parallel
-④ R6-4 skill management (backend then UI, needs only the     │
-   Batch-2 skills service)                                    ─┘
-⑤ R6-5 content revision (Trae) — parallel with everything (touches regimes/** only)
-⑥ Codex reviews each backend PR (R6-6); integration layer merges, watches CI
-```
+### What R11 still cannot claim
 
----
+- Typed office→office edges are still not directly observable; coordinator
+  dispatch order is not an edge path.
+- A passed enforcement check is not evidence that `command`, `review`, `info`,
+  or `veto` wiring fired.
+- Since the control keeps the same office IDs, B's node-set facts may not
+  distinguish adoption of historical from rewired edge structure.
+- E2 n=5 is not a power claim, and the production rubric ceiling remains.
 
-## Technical constraints (all rounds)
+## Next measurement work
 
-| Rule | Description |
-|---|---|
-| No Gemini | Any scenario, any provider chain (enforced structurally in `engine/v5/judge.mjs` and `engine/v5/backends.mjs`). |
-| Git workflow | `git fetch` + rebase/merge before push; watch CI to green after every push. |
-| Test threshold | `npm run ci` green before merging — baseline **287** backend tests, may only grow; new modules ship with tests; `npm run validate:regimes` must stay green for all 57 regimes. |
-| Path safety | All user-input path segments go through `safeResolve` (`server/utils.mjs`); regime ids are whitelist-validated (CLI: `bin/lib/common.sh::validate_regime`). |
-| IDENTITY + agentCount | The IDENTITY.md role-mapping table is the source of truth for agents; `metadata.json.agentCount` must equal the compiled count (AGENTS.md rules 2–3). |
-| Frontend typing | TypeScript strict, no new `any`; `npm run build:frontend` and frontend lint errors are blocking. |
-| Write API shape | Long-running work answers with the id immediately and runs detached; fast validated file writes (R6 regime edits) may be synchronous but must be atomic (temp file + rename). |
-| English surface | Engineering surface in English; `regimes/**` and historical terms stay intentionally bilingual (AGENTS.md rule 8). |
-| Review order | Merging requires a Codex APPROVE; Claude Code patches findings directly (no bounce-back to the original implementer). |
+### 1. Define an observable logical handoff
 
----
+A future event must distinguish the physical coordinator call from the logical
+governance relation. A viable contract needs, at minimum:
 
-## Milestones
+- `source_office` and `target_office`;
+- `edge_kind` separate from the event envelope's `kind`;
+- `artifact_id` or an equivalent immutable payload identity;
+- causal linkage to the source production span;
+- outcome/status for review or veto;
+- an explicit capture-capability declaration that says which edge kinds and
+  time range were completely observed.
 
-| Round | Backend | Frontend | Content | Completion marker |
-|---|---|---|---|---|
-| **R4** ✅ | Express API server (read) + engine hardening | v6 shell with real data | — | Landed across main P1–P6 + PR #29 |
-| **R5** ✅ (PRs open) | Batch 1 modularization + Batch 2 skill stats + 4 review fixes | Launcher + Skill Library tabs; orphans retired | 40 scenarios | All work on PR #29/#30 (CI green, Codex re-review pending); Batch 3 (frontend test infra, episodic-memory tests) in progress |
-| **R6** ← current | Regime-editing write API + fact-review loop + skill-management API | Online regime editor + skill staging UI | Top-20 regime fact revision | Full management console |
+One observed handoff must not make absent edges count as unexercised. Numeric
+coverage is legal only inside a declared complete observation scope. Old and
+partial streams remain incomparable.
 
----
+### 2. E1 control arm result and next use
 
-_Single source of truth for the tripartite collaboration. Each party reads this
-file before starting and leaves its review conclusion or output path in
-`tasks/` upon completion._
+The E1 control arm ran on 2026-07-30
+(`docs/experiments/E1-control-results.md`). It did not support C1 and revealed
+scenario-driven non-delegation as the main uncontrolled variable. R11 therefore
+records a pre-force plan and optionally enforces each arm's own topology-derived
+dispatch roster before any larger rerun. Future executions still require an
+operator AFP estimate; CivAgent does not measure provider usage.
+
+### 3. Calibrate, do not silently replace, the rubric
+
+Keep the current rubric as the confirmatory E1 series. Test more granular
+anchors and forced pairwise judgments only as a separately versioned shadow
+instrument on the same transcripts. Compare saturation, ties, order
+sensitivity and repeat agreement under criteria registered before viewing
+shadow scores. Never numerically convert or splice the old and new series.
+
+### 4. Integrate open branches deliberately
+
+Resolve PR #31/#32 ancestry and conflicts before either is called mainline.
+After R10 review, commit and push only with maintainer approval, then rerun the
+GitHub matrix. This working session intentionally leaves all changes
+uncommitted and unpushed.

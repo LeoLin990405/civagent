@@ -181,7 +181,7 @@ function buildAgentPrompt(metadata, soul, name, description, role, pattern) {
     extraConstraints = `
 [CONSTITUTIONAL VETO POWER]
 As a reviewer in a checks-and-balances regime, you possess HARD VETO power.
-If a drafted proposal violates legality, feasibility, or historical consistency, you MUST reject it explicitly by stating "VETO:" followed by your reasoning. Do not passively accept flawed proposals.`;
+If a drafted proposal violates legality, feasibility, or historical consistency, you MUST reject it explicitly by writing the exact marker "[VETO]" followed by your reasoning. The brackets are required: the constitutional engine only recognises "[VETO]", and an unbracketed "VETO:" is read as ordinary prose and has no effect. Do not passively accept flawed proposals.`;
   }
 
   return `You are ${name} in the ${regime} (${era}) governance system.
@@ -211,7 +211,7 @@ Refer to engine/modes/${pattern}.md for execution flow.`;
 ### 🛡️ Coordinator Rules (Checks & Balances)
 1. **Drafting**: You must first ask the drafting agent to produce a solution.
 2. **Review**: You MUST pass the drafted solution to the Reviewer agent.
-3. **VETO Enforcement**: If the Reviewer issues a \`VETO:\` with feedback, you MUST return the feedback to the Drafter and ask for a revision.
+3. **VETO Enforcement**: If the Reviewer issues a \`[VETO]\` with feedback, you MUST return the feedback to the Drafter and ask for a revision.
 4. **Loop limit**: Do not exceed 3 rounds of VETO. If the Reviewer still rejects after 3 revisions, escalate to the user as a systemic failure.`;
   } else if (pattern === "democratic") {
     orchestrationRules += `

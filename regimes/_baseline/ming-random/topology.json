@@ -1,0 +1,119 @@
+{
+  "schema_version": "1.0",
+  "regime": "baseline-random/china-ming",
+  "mode": "centralized",
+  "nodes": [
+    {
+      "id": "shoufu",
+      "label": "内阁首辅",
+      "functional_role": "coordinator"
+    },
+    {
+      "id": "silijian",
+      "label": "司礼监掌印太监",
+      "functional_role": "review"
+    },
+    {
+      "id": "libu",
+      "label": "吏部尚书",
+      "functional_role": "management"
+    },
+    {
+      "id": "hubu",
+      "label": "户部尚书",
+      "functional_role": "data"
+    },
+    {
+      "id": "bingbu",
+      "label": "兵部尚书",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "xingbu",
+      "label": "刑部尚书",
+      "functional_role": "legal"
+    },
+    {
+      "id": "libu-ritual",
+      "label": "礼部尚书",
+      "functional_role": "content"
+    },
+    {
+      "id": "gongbu",
+      "label": "工部尚书",
+      "functional_role": "devops"
+    }
+  ],
+  "edges": [
+    {
+      "from": "gongbu",
+      "to": "libu",
+      "kind": "command"
+    },
+    {
+      "from": "gongbu",
+      "to": "silijian",
+      "kind": "command"
+    },
+    {
+      "from": "shoufu",
+      "to": "silijian",
+      "kind": "command"
+    },
+    {
+      "from": "shoufu",
+      "to": "libu-ritual",
+      "kind": "command"
+    },
+    {
+      "from": "xingbu",
+      "to": "libu-ritual",
+      "kind": "command"
+    },
+    {
+      "from": "hubu",
+      "to": "xingbu",
+      "kind": "command"
+    },
+    {
+      "from": "hubu",
+      "to": "bingbu",
+      "kind": "command"
+    },
+    {
+      "from": "shoufu",
+      "to": "bingbu",
+      "kind": "command"
+    },
+    {
+      "from": "libu",
+      "to": "shoufu",
+      "kind": "command"
+    },
+    {
+      "from": "libu-ritual",
+      "to": "bingbu",
+      "kind": "command"
+    },
+    {
+      "from": "silijian",
+      "to": "libu-ritual",
+      "kind": "command"
+    },
+    {
+      "from": "libu-ritual",
+      "to": "libu",
+      "kind": "command"
+    },
+    {
+      "from": "bingbu",
+      "to": "silijian",
+      "kind": "command"
+    },
+    {
+      "from": "silijian",
+      "to": "libu",
+      "kind": "command"
+    }
+  ]
+}

@@ -539,6 +539,18 @@ test(
       // ── deterministic judge assertions (fake codex outputs a fixed table) ──
       // Fake codex outputs tang=9.0, qin=7.0 — so provider must be "codex"
       // and scores must parse correctly.
+      // The bias report is the calibrated judge's output beyond the scores:
+      // per-provider spread, same-family vs cross-family gap, and the position
+      // effect between the two passes. judge() computed it and the manifest
+      // dropped it, so every completed tournament recorded a ranking with no way
+      // to ask whether the gaps exceeded the judge's own pass-to-pass noise.
+      // Found by trying to use it on a real run, not by a test.
+      assert.ok(j.biasReport, "judge.biasReport must be persisted into the manifest");
+      assert.ok(j.biasReport.positionEffect,
+        "biasReport.positionEffect is the number a score gap has to beat");
+      assert.ok(Array.isArray(j.biasReport.providerStats),
+        "biasReport.providerStats must record per-provider spread");
+
       assert.equal(j.provider, "codex",
         `expected provider=codex (fake bin), got ${j.provider}`);
       assert.equal(j.scores.length, 2,
@@ -561,8 +573,17 @@ test(
 
       // The tournament-level trace holds one judge_score event per pass.
       assert.equal(typeof j.events, "string", "judge.events must point at the audit event stream");
-      const judgeEvents = readJsonl(j.events).filter((e) => e.type === "judge");
+      const allJudge = readJsonl(j.events).filter((e) => e.type === "judge");
+      // The judging span is opened by its own event so the span tree is not
+      // orphaned; scoring events are the ones that carry a pass.
+      const opener = allJudge.filter((e) => e.phase === "judging_start");
+      assert.equal(opener.length, 1, "exactly one judging-span opener");
+      const judgeEvents = allJudge.filter((e) => e.phase !== "judging_start");
       assert.equal(judgeEvents.length, 2, "one judge_score event per pass");
+      assert.ok(
+        judgeEvents.every((e) => e.parent_span_id === opener[0].span_id),
+        "every scoring pass hangs off the opened judging span, end to end",
+      );
       assert.equal(judgeEvents[0].kind, "judge_score");
       assert.equal(judgeEvents[0].swapped, false, "pass 1 keeps original order");
       assert.equal(judgeEvents[1].swapped, true, "pass 2 swaps presentation order");

@@ -63,6 +63,26 @@ h1, h2, h3, h4, h5, h6 {
   letter-spacing: -0.02em;
 }
 
+/* Office badge — visually distinct from the regime role badge so users can
+   see that an event came from a specific office inside a regime, not a
+   different regime id. */
+.office-badge {
+  background: rgba(245, 158, 11, 0.10);
+  color: var(--accent-gold);
+  border: 1px solid rgba(245, 158, 11, 0.30);
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  letter-spacing: 0.04em;
+}
+
+.actor-regime-context {
+  color: var(--text-muted);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 10px;
+}
+
 code, pre {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.9em;
