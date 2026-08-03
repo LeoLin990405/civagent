@@ -26,6 +26,12 @@ export function createHistoryRouter({ rootDir = path.join(os.homedir(), '.civage
       const clearMatch = db.prepare(
         `DELETE FROM episodic_memory WHERE match_id = ? AND event_type IN (${SYNCED_EVENT_TYPES.map(() => '?').join(',')})`
       );
+      // Plain INSERT, deliberately. Re-sync idempotency comes from clearMatch
+      // above, which deletes this match's synced rows before reinserting them;
+      // adding OR IGNORE on top would additionally swallow the second
+      // veto_triggered or skill event of a single match, which are distinct
+      // facts rather than duplicates. See the partial index in
+      // engine/v5/history-db.mjs for why uniqueness here is scoped to match_end.
       const insertEvent = db.prepare(`
         INSERT INTO episodic_memory (regime, event_type, content, match_id, timestamp)
         VALUES (?, ?, ?, ?, ?)
@@ -52,12 +58,15 @@ export function createHistoryRouter({ rootDir = path.join(os.homedir(), '.civage
                 try {
                   const ev = JSON.parse(line);
                   if (SYNCED_EVENT_TYPES.includes(ev.type)) {
-                    insertEvent.run(
+                    // Count what was actually written. Incrementing on attempt
+                    // makes the API report a number larger than the rows a
+                    // client can then read back.
+                    const w = insertEvent.run(
                       regime, ev.type,
                       ev.reason || JSON.stringify(ev),
                       dir, ev.ts || Date.now()
                     );
-                    imported++;
+                    imported += w.changes;
                   }
                 } catch { /* skip bad line */ }
               }

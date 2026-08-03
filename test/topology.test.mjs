@@ -18,6 +18,7 @@ import {
   FUNCTIONAL_ROLES,
   EDGE_KINDS,
   MODES,
+  NODE_KINDS,
 } from "../engine/topology/validate.mjs";
 import { computeMetrics, commandDepth, checksCycles } from "../engine/topology/metrics.mjs";
 
@@ -281,6 +282,203 @@ test("real regime metrics: tang hub, ming dual-track veto cycle, shang flat", ()
   const shang = computeMetrics(validateRegimeTopology(path.join(PROJECT_ROOT, "regimes/china/shang")).topology);
   assert.equal(shang.checks_cycles, 0, "theocratic regime has no checks");
   assert.deepEqual(shang.top_in_degree, [{ id: "da-wang", inDegree: 2 }]);
+});
+
+// ── node typing (R8-1): node.kind ────────────────────────────────────────────
+
+test("NODE_KINDS vocabulary is agent/gate/checkpoint/router", () => {
+  assert.equal(NODE_KINDS.length, 4);
+  for (const k of ["agent", "gate", "checkpoint", "router"]) {
+    assert.ok(NODE_KINDS.includes(k), `missing kind ${k}`);
+  }
+});
+
+test("kind is optional: a topology with no kind field validates (baseline preserved)", () => {
+  // validTopology() has no kind on any node — this must stay green so the 57
+  // pre-typing regimes are not broken.
+  assert.deepEqual(validateTopologyData(validTopology()), []);
+});
+
+test("kind defaults to agent: explicit 'agent' and omitted are equivalent for metrics", () => {
+  const noKind = validTopology();
+  const withAgent = validTopology();
+  withAgent.nodes[0].kind = "agent";
+  assert.deepEqual(validateTopologyData(noKind), []);
+  assert.deepEqual(validateTopologyData(withAgent), []);
+  assert.equal(computeMetrics(noKind).gate_count, 0);
+  assert.equal(computeMetrics(withAgent).gate_count, 0);
+});
+
+test("rejects an unknown kind value (typo must not silently become agent)", () => {
+  const t = validTopology();
+  t.nodes[0].kind = "gat";
+  const errs = validateTopologyData(t);
+  assert.ok(errs.some((e) => e.includes("kind") && e.includes("gat")), `got: ${errs.join("; ")}`);
+});
+
+// ── constraint: non-agent kind cannot pair with a content-producing role ──
+
+test("rejects gate/checkpoint/router paired with a content-producing functional_role", () => {
+  for (const kind of ["gate", "checkpoint", "router"]) {
+    for (const role of ["engineering", "research", "data", "devops", "content"]) {
+      const t = validTopology();
+      t.nodes[0].functional_role = role;
+      t.nodes[0].kind = kind;
+      const errs = validateTopologyData(t);
+      assert.ok(
+        errs.some((e) => e.includes(kind) && e.includes(role) && e.includes("content")),
+        `${kind}+${role} must be rejected: ${errs.join("; ")}`,
+      );
+    }
+  }
+});
+
+test("accepts gate/checkpoint/router paired with a non-content role (coordinator/review/legal/management)", () => {
+  for (const kind of ["gate", "checkpoint", "router"]) {
+    for (const role of ["coordinator", "review", "legal", "management"]) {
+      const t = validTopology();
+      // node b is the inbound target so gate/checkpoint have an inbound edge.
+      t.nodes[1].functional_role = role;
+      t.nodes[1].kind = kind;
+      const errs = validateTopologyData(t);
+      assert.ok(
+        !errs.some((e) => e.includes("content-producing")),
+        `${kind}+${role} must be accepted: ${errs.join("; ")}`,
+      );
+    }
+  }
+});
+
+// ── constraint: a router may only emit command/info edges ──
+
+test("rejects a router emitting review or veto (judgment edges)", () => {
+  for (const badKind of ["review", "veto"]) {
+    const t = validTopology();
+    t.nodes[0].kind = "router";
+    t.nodes[0].functional_role = "coordinator";
+    t.edges[0].kind = badKind; // a -> b
+    const errs = validateTopologyData(t);
+    assert.ok(
+      errs.some((e) => e.includes("router") && e.includes(badKind)),
+      `router emitting ${badKind} must be rejected: ${errs.join("; ")}`,
+    );
+  }
+});
+
+test("accepts a router emitting command/info", () => {
+  for (const okKind of ["command", "info"]) {
+    const t = validTopology();
+    t.nodes[0].kind = "router";
+    t.nodes[0].functional_role = "coordinator";
+    t.edges[0].kind = okKind;
+    const errs = validateTopologyData(t);
+    assert.ok(!errs.some((e) => e.includes("router")), `router emitting ${okKind} must be accepted: ${errs.join("; ")}`);
+  }
+});
+
+// ── constraint: a gate/checkpoint with no inbound edge is a dead node ──
+
+test("rejects a gate/checkpoint with no inbound edge (dead gate)", () => {
+  for (const kind of ["gate", "checkpoint"]) {
+    const t = validTopology();
+    // Make node 'a' the gate and give it NO inbound edge: edge a->b only.
+    t.nodes[0].kind = kind;
+    t.nodes[0].functional_role = "review";
+    const errs = validateTopologyData(t);
+    assert.ok(
+      errs.some((e) => e.includes("node a") && e.includes(kind) && e.includes("no inbound")),
+      `${kind} with no inbound must be rejected: ${errs.join("; ")}`,
+    );
+  }
+});
+
+test("accepts a gate that has an inbound edge", () => {
+  const t = validTopology();
+  // node b has inbound from a.
+  t.nodes[1].kind = "gate";
+  t.nodes[1].functional_role = "review";
+  const errs = validateTopologyData(t);
+  assert.ok(!errs.some((e) => e.includes("no inbound")), `gate with inbound must be accepted: ${errs.join("; ")}`);
+});
+
+// ── metrics: gate_count / checkpoint_count ──
+
+test("gate_count and checkpoint_count count typed non-agent nodes", () => {
+  const t = {
+    schema_version: "1.0",
+    regime: "test/kinds",
+    mode: "checks-and-balances",
+    nodes: [
+      { id: "src", label: "Src", functional_role: "coordinator" },
+      { id: "g", label: "Gate", functional_role: "review", kind: "gate" },
+      { id: "cp", label: "Checkpoint", functional_role: "management", kind: "checkpoint" },
+      { id: "r", label: "Router", functional_role: "coordinator", kind: "router" },
+      { id: "sink", label: "Sink", functional_role: "engineering" },
+    ],
+    edges: [
+      { from: "src", to: "g", kind: "command" },
+      { from: "g", to: "cp", kind: "veto" },     // gate emits veto (allowed: not a router)
+      { from: "cp", to: "r", kind: "command" },   // checkpoint emits command (allowed)
+      { from: "r", to: "sink", kind: "command" }, // router emits command (allowed)
+    ],
+  };
+  assert.deepEqual(validateTopologyData(t), []);
+  const m = computeMetrics(t);
+  assert.equal(m.gate_count, 1);
+  assert.equal(m.checkpoint_count, 1);
+  // router is not counted in either gate or checkpoint.
+  assert.equal(m.nodes - m.gate_count - m.checkpoint_count, 3);
+});
+
+test("gate_count/checkpoint_count are 0 for an untyped topology (orthogonal to checks_cycles)", () => {
+  // SMALL has no kind on any node and one review-edge cycle.
+  const m = computeMetrics(SMALL);
+  assert.equal(m.gate_count, 0);
+  assert.equal(m.checkpoint_count, 0);
+  assert.equal(m.checks_cycles, 2, "precondition: SMALL has checks cycles but no gates");
+});
+
+// No real regime declares a deterministic gate, and that is the correct state,
+// not a gap waiting to be filled. `gate` means "no model discretion, a rule
+// decides pass/block". The Tang Chancellery and the Ming Directorate of
+// Ceremonial are LLM reviewers exercising judgment; labelling them gates would
+// make gate_count report a hard mechanical veto where the regime has a
+// discretionary one. The genuinely deterministic part — the [VETO] sniffer — is
+// a runtime mechanism in engine/mechanisms/veto.mjs attached to an agent node,
+// not a node in the graph. If a future regime models a real rule-driven gate,
+// this test is where the count changes.
+test("real regimes declare no deterministic gates or checkpoints", () => {
+  for (const r of ["china/tang", "china/ming", "china/qin", "china/zhou", "china/shang", "global/athens"]) {
+    const m = computeMetrics(validateRegimeTopology(path.join(PROJECT_ROOT, "regimes", r)).topology);
+    assert.equal(m.gate_count, 0, `${r}: LLM reviewers are agents, not gates`);
+    assert.equal(m.checkpoint_count, 0, `${r} has no human checkpoint node`);
+  }
+});
+
+test("gate_count and checks_cycles are independent measures", () => {
+  // Tang has a checks cycle (menxia can veto zhongshu) but no gate node. A
+  // reader who conflated the two would think "has checks" implies "has a hard
+  // gate"; these are different claims and the metrics must not merge them.
+  const tang = computeMetrics(validateRegimeTopology(path.join(PROJECT_ROOT, "regimes/china/tang")).topology);
+  assert.equal(tang.checks_cycles, 1, "tang has a review/veto cycle");
+  assert.equal(tang.gate_count, 0, "…and still no deterministic gate");
+});
+
+// No real regime carries a kind annotation at all, and that is the honest state.
+// shangshu was briefly marked "router" on the strength of its SOUL text, but
+// engine/regime-to-cc.mjs still compiles it into a model-backed subagent with a
+// prompt — while the schema defines router as a node that makes no model call
+// and produces no content. Until the runtime has a genuine non-LLM dispatch
+// node, the annotation would be the graph asserting something the runtime does
+// not implement. The typing mechanism stays; the unearned labels do not.
+test("no real regime claims a node kind the runtime does not implement", () => {
+  for (const r of ["china/tang", "china/ming", "china/qin", "global/athens"]) {
+    const { topology } = validateRegimeTopology(path.join(PROJECT_ROOT, "regimes", r));
+    for (const n of topology.nodes) {
+      assert.ok(n.kind === undefined || n.kind === "agent",
+        `${r}/${n.id}: every node is model-backed today, so kind must be agent or unset (got ${n.kind})`);
+    }
+  }
 });
 
 // ── CLI smoke ────────────────────────────────────────────────────────────────

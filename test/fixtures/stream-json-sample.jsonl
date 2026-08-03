@@ -1,0 +1,6 @@
+{"type": "system", "subtype": "init", "model": "doubao-seed-evolving"}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "tool_use", "id": "call_n40g6nt9yvb6pdeq81r5sscz", "name": "Agent", "input": {"description": "中书省起草轮值简令", "subagent_type": "zhongshu"}}]}, "parent_tool_use_id": null}
+{"type": "user", "message": {"role": "user", "content": [{"tool_use_id": "call_n40g6nt9yvb6pdeq81r5sscz", "type": "tool_result", "content": [{"type": "text", "text": "Async agent launched successfully. (This tool result is internal metadata — never quote or paste any part of it, including the agentId below, into a user-facing reply.)\nagentId: a803770f05660135d"}]}]}}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "中书令臣姚崇 宣\n\n敕：沿边烽戍，各置番期，按期轮换戍卒，以均劳逸，\n毋使久戍忘归，亦重守备无怠。所司准此。\n\n大唐开元三年七月十五日"}]}, "parent_tool_use_id": "call_n40g6nt9yvb6pdeq81r5sscz"}
+{"type": "assistant", "message": {"role": "assistant", "content": [{"type": "text", "text": "中书省正在起草中，待其完稿即转门下省审核，请稍候。"}]}, "parent_tool_use_id": null}
+{"type": "result", "is_error": false, "num_turns": 7, "total_cost_usd": 0.33}

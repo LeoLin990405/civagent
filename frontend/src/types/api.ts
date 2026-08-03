@@ -94,6 +94,16 @@ export interface MatchMeta {
     auditedBy?: string;
   };
   prompt?: string;
+  topologyParticipation?: {
+    status: 'participation_observed' | 'not_observed' | 'unknown';
+    dispatchCount: number;
+    officeTurnCount: number;
+    officesInvoked: string[];
+    officeCount: number;
+    captureCapability?: string | null;
+    matchComplete?: boolean;
+    reason?: string;
+  };
   [key: string]: unknown;
 }
 
@@ -110,6 +120,7 @@ export interface TournamentCiv {
   matchId: string;
   exitCode: number | null;
   events: string; // absolute path to events.jsonl
+  topologyParticipation?: MatchMeta['topologyParticipation'];
 }
 
 export interface TournamentManifest {

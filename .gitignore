@@ -29,3 +29,6 @@ SECURITY-AUDIT.md
 regimes/**/*.rejected
 regimes/**/*.v4.bak
 regimes/**/*.new
+
+# CCB project-local runtime (agent panes, worktrees, sockets) — never commit
+.ccb/

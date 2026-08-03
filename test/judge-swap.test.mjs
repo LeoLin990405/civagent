@@ -129,7 +129,7 @@ test("swap mode calls the judge twice with reversed presentation order", async (
   assert.ok(t2 > q2, "pass 2 (swapped) presents qin before tang");
 
   // Audit events: two judge_score events with correct swap flags + prompt hashes.
-  const judgeEvents = log.events.filter((e) => e.type === "judge");
+  const judgeEvents = log.events.filter((e) => e.type === "judge" && e.phase !== "judging_start");
   assert.equal(judgeEvents.length, 2);
   assert.equal(judgeEvents[0].kind, "judge_score");
   assert.equal(judgeEvents[0].actor, "judge");
@@ -178,7 +178,7 @@ test("swap disabled (CIVAGENT_JUDGE_SWAP=0 semantics) calls the judge once", asy
   assert.equal(calls, 1, "single pass when swap is off");
   assert.equal(v.passes, 1);
   assert.equal(v.swap, false);
-  const judgeEvents = log.events.filter((e) => e.type === "judge");
+  const judgeEvents = log.events.filter((e) => e.type === "judge" && e.phase !== "judging_start");
   assert.equal(judgeEvents.length, 1);
   assert.equal(judgeEvents[0].swapped, false);
 });
@@ -203,7 +203,35 @@ test("judge unavailable → provider null, empty scores, error event recorded", 
   assert.equal(v.provider, null);
   assert.deepEqual(v.scores, []);
   assert.ok(v.md.includes("judge unavailable"));
-  const judgeEvents = log.events.filter((e) => e.type === "judge");
+  const judgeEvents = log.events.filter((e) => e.type === "judge" && e.phase !== "judging_start");
   assert.equal(judgeEvents.length, 1, "stops after the first failed pass");
   assert.match(judgeEvents[0].error, /all judge providers failed/);
+});
+
+// The judge span must be opened by an event that carries it as its own span_id.
+// Without one, every judge_score event points at a parent that was never
+// written, and engine/v5/runtime-graph.mjs reconstructs the whole judging step
+// as orphan spans hanging off <orphan> rather than off the tournament.
+test("the judge span is opened by an event carrying that span_id", async () => {
+  const log = mockLog();
+  await judge("task-x", CIVS, {
+    swap: true,
+    eventLog: log,
+    _runJudge: () => ({
+      provider: "codex",
+      output: jsonOutput({ legality: 4, feasibility: 4, resilience: 4 }, { legality: 2, feasibility: 2, resilience: 2 }),
+    }),
+  });
+
+  const judgeEvents = log.events.filter((e) => e.type === "judge");
+  const scoring = judgeEvents.filter((e) => e.phase !== "judging_start");
+  assert.ok(scoring.length > 0, "precondition: scoring events exist");
+
+  const parents = new Set(scoring.map((e) => e.parent_span_id));
+  assert.equal(parents.size, 1, "all scoring passes hang off one judging span");
+  const [parent] = parents;
+
+  const emittedSpanIds = new Set(judgeEvents.map((e) => e.span_id));
+  assert.ok(emittedSpanIds.has(parent),
+    "the parent span id must itself have been emitted, or the span tree is broken");
 });

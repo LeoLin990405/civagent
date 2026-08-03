@@ -1,5 +1,11 @@
 [Original Project](https://github.com/wanikua/danghuangshang) | [CREDITS](./CREDITS.md) | [CHANGELOG](./CHANGELOG.md) | [V5 Design](./docs/V5-DESIGN.md) | [AUDIT](./regimes/AUDIT.md) | [IDENTITY Template](./docs/IDENTITY-TEMPLATE.md)
 
+<div align="center">
+
+[![English](https://img.shields.io/badge/Language-English-2ea44f?style=for-the-badge)](README.md) &nbsp; [![中文](https://img.shields.io/badge/语言-中文-555555?style=for-the-badge)](README.zh-CN.md)
+
+</div>
+
 <p align="center">
   <img src="./images/civagent-v4-banner.svg" alt="CivAgent Banner" width="100%" />
 </p>
@@ -12,9 +18,9 @@
   <img src="https://img.shields.io/badge/Version-v6.0.0-gold?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Regimes-57-crimson?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Patterns-6-purple?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/Backends-10-blue?style=for-the-badge" />
+  <img src="https://img.shields.io/badge/Backends-11-blue?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Learning%20Loop-Hermes--inspired-blueviolet?style=for-the-badge" />
-  <img src="https://img.shields.io/badge/CI-passing-brightgreen?style=for-the-badge" />
+  <a href="https://github.com/LeoLin990405/civagent/actions/workflows/ci.yml"><img src="https://img.shields.io/github/actions/workflow/status/LeoLin990405/civagent/ci.yml?branch=main&style=for-the-badge&label=CI" /></a>
   <img src="https://img.shields.io/badge/License-MIT-yellowgreen?style=for-the-badge" />
 </p>
 
@@ -79,6 +85,17 @@ This maps directly onto Claude Code's `--agents` JSON:
 - engineering = zhongshu-sheren (drafter)
 - review = menxia-shiyushi (Attending Censor of the Chancellery)
 - management = shangshu-ling (Director of the Department of State Affairs) + Six Ministries
+
+#### 2.1.1 Relation to "Graph Engineering"
+
+The term **graph engineering** — designing the multi-agent *organization* as a programmable structure (which nodes exist, which transitions are permitted, how runtime work graphs form and mutate) rather than tuning one agent's behavioral loop — spread through the agent-development community in mid-2026. CivAgent is an instance of that discipline, and predates the label: every regime ships a `topology.json` that is a typed directed multigraph, and `engine/topology/metrics.mjs` turns it into numbers (density, command-chain depth, in-degree centrality, count of checks-and-balances cycles).
+
+What CivAgent contributes to that discipline is the part it is currently missing: **priors and evidence**. Practitioners hand-draw agent graphs with no principled basis for "should there be a reviewer node here?" — the same *scarcity of orchestration patterns* named in §1.1. This project supplies 57 topologies that were stress-tested against reality for decades to millennia, plus a harness (`civagent tournament` + Bradley-Terry ranking + generated controls) that can say whether one wiring actually beats another.
+
+Two honest caveats, stated up front because they bound every claim below:
+
+1. **The rankings are over *declared* topologies.** Whether a declared edge was actually traversed during a match is not yet verified — a regime that declares a veto edge and never exercises it is behaviorally a flat topology, but is currently scored as a checked one.
+2. **Controls isolate topology only if persona is held constant.** An earlier control generator stripped both, which made one smoke run measure persona presence rather than wiring. `engine/baseline.mjs` now copies `SOUL.md` verbatim and rewrites only the decision flow; `test/baseline.test.mjs` guards this.
 
 ### 2.2 The Six Canonical Orchestration Patterns
 
@@ -192,6 +209,28 @@ In the major refactor of the **v6.0 release**, CivAgent completed its leap from 
    The monolithic, bloated Server was thoroughly discarded, decomposed into a `server/routes/` routing architecture, and `server/db/database.mjs` (based on `better-sqlite3`) was introduced as a high-speed time-series database foundation. It fully adheres to the principle of "zero external runtime dependencies" (depending only on Node.js and SQLite).
 3. **Premium Large-Screen Frontend (Glassmorphism Dashboard)**:
    The frontend architecture was rebuilt as a React SPA, removing redundant libraries. It adopts the highly contemporary **Glassmorphism** visual paradigm, native Vanilla CSS, and a built-in SVG rendering engine. It provides **Empire-Wide Monitoring (Overview)**, the **Power-Topology Dashboard (Analytics)**, and the **Time-Series Memory Browser (Memory)**, elevating dull AI match logs into a visually striking epic scroll.
+
+### 3.5 The Experimental-Validity Layer (post-v6 iterations R5–R7)
+
+v6 made the platform runnable. The iterations after it were aimed at a narrower question: **are the numbers this platform produces worth anything?** A ranking of governance topologies is only as good as the harness that produced it, so this layer is deliberately unglamorous.
+
+1. **Write path and scenario library.** `POST /api/tournaments` (`server/routes/tournaments.mjs`) lets the dashboard start a real contest instead of only reading finished ones; `engine/prompts/governance-scenarios.json` holds 40 governance scenarios so a match is drawn from a fixed corpus rather than an ad-hoc prompt.
+
+2. **Blind, calibrated, multi-judge scoring** (`engine/v5/judge.mjs`, `judge-rubric.mjs`, `judge-calibration.mjs`). Transcripts are anonymized — regime ids, topology node labels and IDENTITY agent ids are all rewritten to `Civ-A-Rn` slots, since leaving a single office name in place tells the judge exactly which dynasty it is reading. Scoring uses an anchored 4-point rubric per dimension, two passes with the presentation order swapped, and up to three providers (`codex`, `opencode-reviewer`, `cn-glm`). The result carries a `biasReport`: per-provider mean and variance, same-model-family versus cross-family score gap, and the per-pass position effect. Transcripts are truncated to a shared verbosity budget, because otherwise the ranking partly measures which civilization wrote more.
+
+3. **Generated controls** (`engine/baseline.mjs`). Three variants per regime — `solo` (one office), `flat-N` (same offices, zero edges), `random-N` (same offices and edge-kind distribution, seeded scrambled wiring). Controls copy `SOUL.md` verbatim and keep every office id, label and duty; only the decision-flow prose and the mermaid diagram are rewritten. Varying persona and topology together is the failure mode this design exists to prevent (see §2.1.1).
+
+4. **Episodic memory retrieval** (`engine/v5/history-db.mjs`, `history-retriever.mjs`). Past matches are queried by keyword with stopword filtering, ordered newest-first with a deterministic tie-break — `CURRENT_TIMESTAMP` is second-granular, so matches recorded in the same second would otherwise come back in arbitrary order.
+
+5. **Transcript capture** (`engine/v5/stream-json.mjs`). A regime's offices are Claude Code subagents; under the default `text` output format their deliberation never reached the transcript, and the judge scored whatever the coordinator happened to restate. The backend now streams structured events, rendered back to plain text with per-office attribution. Constitutional signals are matched as bracketed markers only — `[VETO]`, `[EDICT]`, `[IMPEACH: x]` — because the bare words *驳回*, *诏书* and *圣旨* appear as ordinary vocabulary in 33 of the 57 regime files, and a regime describing its own constitution must not be read as exercising it.
+
+6. **Transcript selection for judging** (`engine/v5/events.mjs`). The judge used to read `text.slice(-6000)` — a blind tail. Harmless when transcripts were kilobytes; after capture was fixed a Tang match runs to 72,830 characters, and the tail contained *none* of the Secretariat's, Chancellery's or Department of State Affairs' segments. Selection is now actor-stratified, and the per-civ record states what never reached the judge (67,867 characters on that match) rather than reporting only what was kept.
+
+7. **Dispatch plan and enforcement** (`engine/v5/dispatch-plan.mjs`, `plan-diff.mjs`). The coordinator first states, with tools disabled, which offices it would call; enforcement then requires the offices that are targets of incoming edges in that arm's *own* topology — identically for a historical regime and for its scrambled control. The pre-enforcement plan measures voluntary adoption; only post-enforcement output is eligible for a quality comparison. Participation is recorded as `observed` / `not_observed` / `unknown`, never as an execution rate.
+
+8. **Graph metrics and topology validation** (`engine/topology/`). Every regime's `topology.json` is schema-checked and cross-checked against its IDENTITY role table, then reduced to density, command-chain depth, in-degree centrality and checks-and-balances cycle count.
+
+9. **Replay and skill accounting** (`engine/v5/replay.mjs`, `skill-outcome.mjs`, `skill-quality.mjs`). A past match can be re-run with the same regime, backend and task; learned skills are deduplicated by content hash and stamped with the tournament outcome they participated in, since the extractor itself is structurally blind to whether the match was won or lost.
 
 ---
 
@@ -360,7 +399,7 @@ Each agent's system prompt automatically inherits the civilization's `SOUL.md` b
 
 ---
 
-## 6. Ten-Model Orchestration Matrix
+## 6. Multi-Backend Orchestration Matrix
 
 v5 does not depend on a single AI backend. Each role selects the optimal backend according to the characteristics of the task:
 
@@ -391,7 +430,13 @@ Through the [cn-cc](https://github.com/LeoLin990405/cn-cc) Claude Code plugin, 7
 | `cc-minimax` / `/cn:minimax` | MiniMax M3 | **1M** | MSA-architecture ultra-fast inference, Computer Use |
 | `cc-stepfun` / `/cn:stepfun` | Step 3.7 Flash | 256K | MoE architecture, high-freedom reasoning tiers |
 
-Combination: Claude Opus + Sonnet + Codex + 7 CN = **9 backends** (Gemini is fully disabled). Dispatched in parallel with a single `civagent tournament` command.
+`engine/v5/backends.mjs` exposes **11 backend ids**, dispatched in parallel by a single `civagent tournament` command (Gemini is disabled project-wide):
+
+- `native`, `claude` — the Claude Code CLI as installed
+- `cc-opus`, `cc-sonnet` — model-pinned variants of the same runtime
+- `cn:doubao`, `cn:qwen`, `cn:kimi`, `cn:glm`, `cn:stepfun`, `cn:minimax`, `cn:mimo` — the seven Chinese avatars
+
+A civ picks its backend with the `#` suffix (`china/tang#cn:doubao`); omitting it means `native`. `civagent doctor` verifies that the `cn:*` commands are actually installed and reachable before a tournament wastes an hour discovering they are not.
 
 ---
 
@@ -445,7 +490,7 @@ Full metadata is in each `regimes/*/*/metadata.json`; the mechanical validation 
 ### 8.1 Installation
 
 **Prerequisites**:
-- Node.js ≥ 18
+- Node.js ≥ 20 (CI runs 20 and 22)
 - Claude Code CLI (`claude`) — [Anthropic Docs](https://docs.anthropic.com/claude/docs/claude-code)
 - `bash`, `python3` (for CLI scripts)
 
@@ -465,6 +510,17 @@ civagent setup                        # verify all tools are available
 civagent list                         # list the 57 regimes
 ```
 
+**Without any model backend or API key**, the governance-graph half of the project still runs — validation, metrics and control generation are pure data plus pure functions:
+
+```bash
+civagent topology validate china/tang
+civagent topology metrics china/tang
+civagent baseline china/tang --type random --seed 42 --dest regimes/_baseline/tang-random
+civagent topology metrics _baseline/tang-random   # compare the numbers against the source
+```
+
+Running an actual match or tournament does require a backend (`claude`, or one of the seven `cn:*` avatars with the corresponding credentials).
+
 ### 8.2 Full CLI Reference
 
 ```bash
@@ -482,14 +538,38 @@ civagent run --mode democratic "…"    # override the pattern
 # v5 learning mode
 civagent run --v5 "task"              # isolated HOME + automatic skill accretion
 civagent skills <regime>              # view accumulated learned skills
+civagent skills <regime> --stats      # dedup / quality statistics as JSON
+civagent skills pending [regime]      # staged skills awaiting human approval
+civagent skills approve <regime> <f>  # promote a staged skill into the active dir
 civagent match-log                    # historical transcripts
+civagent replay <matchId>             # re-run a past match, same regime/backend/task
 
 # Tournament
 civagent tournament --civs a,b,c,d "task"
+civagent tournament --civs a,b --task-file tasks/my-scenario.md
+civagent tournament --civs 'china/tang#cn:doubao,_baseline/tang-random#cn:doubao' "task"
+civagent stats [--boot N] [--json]    # cross-tournament Bradley-Terry + bootstrap CI
+
+# Governance graph
+civagent topology validate <regime>   # schema + IDENTITY cross-check
+civagent topology metrics <regime>    # density, depth, centrality, checks cycles, gates
+civagent runtime-graph <matchId> [--diff] [--json]
+                                      # rebuild what actually ran; diff against the declaration
+
+# Experiments
+civagent baseline <regime> --type solo|random|flat [--seed N] [--dest dir]
+civagent ablate <regime> --type persona|checks
+civagent hillclimb <analyze|propose|validate|apply|rollback>
 
 # Environment
 civagent setup
+civagent doctor                       # verify the cn:* backends are installed
 ```
+
+A civ token is `region/regime-id` with an optional `#backend` suffix; without the suffix a civ
+runs on `native`. Generated controls live under `regimes/_baseline/` and are addressed the same
+way (`_baseline/tang-random`) — the leading underscore keeps them out of the 57-regime catalog
+the API serves, while still letting them run as a control arm.
 
 ### 8.3 Workflow
 
@@ -548,24 +628,25 @@ Because the second-to-fourth-month spring-plowing season was prone to raids, the
 ### 8.4 Testing & Continuous Integration
 
 ```bash
-npm test                              # 9 unit tests (node:test)
-npm run validate:regimes              # structural validation (all 57 regimes)
+npm run ci                            # everything below, in order
 npm run lint:syntax                   # node -c + bash -n
+npm run lint:backend                  # ESLint over engine + server + tests
+npm test                              # 472 backend tests (node:test)
+npm run validate:regimes              # structural validation (all 57 regimes)
+npm run smoke                         # end-to-end, no API key: validate → metrics → control → validate
+npm run test:frontend                 # 19 frontend tests (vitest)
 ```
 
-GitHub Actions `.github/workflows/ci.yml` runs all three automatically on every PR.
+GitHub Actions `.github/workflows/ci.yml` runs the same sequence on every PR and every push to `main`; the CI badge at the top of this file reflects that workflow's real status.
 
-**Unit-test coverage**:
-- Path-traversal protection in `validateRegime()`
-- Region/ID encoding in `envDirFor()`
-- Directory creation in `transcriptPath()`
-- The mtime-based re-seed logic of `ensureCivHome()`
-- ANSI stripping + JSONL unpacking in `cleanTranscript()`
-- True-positive / true-negative samples of the injection-guard regex
+**Backend coverage** (472 tests) spans path-traversal protection and regime-id validation, the IDENTITY role-table parser (a prose table compiles to zero agents and would otherwise fail silently), the event contract, topology schema and cross-check, graph metrics, baseline control generation, judge anonymization / swap / bias reporting, episodic memory retrieval, replay path safety, Bradley-Terry statistics, and every server route.
 
-**Quality loop**:
-- Every major change undergoes three rounds of cross-review by Codex → opencode → Kimi (or DeepSeek) (Gemini is fully disabled)
-- Review records are in the corresponding version entry of the CHANGELOG
+**Testing discipline.** Two rules, both learned from tests that passed for the wrong reason:
+
+- **Every regression test must be revert-verified.** Undo the fix, watch the test go red, restore it. Several tests in this repo passed *after* the fix was reverted — one asserted the buggy cache behaviour as correct and locked the defect in permanently; another compared two timestamps generated in the same millisecond.
+- **A control must be checked against what it is supposed to hold constant, not only against what it varies.** `test/baseline.test.mjs` asserts persona parity (SOUL copied verbatim, office ids and labels preserved, diagram matching the control's own edges) precisely because varying two things at once produced a confident, meaningless result.
+
+**Quality loop**: every major change is cross-reviewed by Codex and an independent reviewer before merge (Gemini is disabled project-wide). Review records live in the corresponding CHANGELOG entry.
 
 ---
 
@@ -603,11 +684,41 @@ See [regimes/REVIEW-FINDINGS-v5.md](./regimes/REVIEW-FINDINGS-v5.md) for details
 
 Empirical finding: `cc-kimi` returned `API Error: 400 "high risk"` directly for all 6 of its assigned historical-regime prompts (including neutral historical descriptions discussing the Ming Grand Secretariat and the Joseon dynasty). The other CN backends (deepseek / glm / qwen / doubao) processed the same content normally. This discrepancy reflects different vendors' content-safety policies and is a useful reference for projects using Chinese models at scale.
 
-### 9.5 Single Judge in Tournament
+### 9.5 Residual Judging Bias
 
-The current judge invokes a single provider via `engine/v5/judge.mjs` (Codex preferred, opencode reviewer as fallback; Gemini is fully disabled), and may still introduce systematic bias. v5.1 (R2) plans to introduce multi-judge blind scoring (cross-scoring aggregation of Codex + opencode + DeepSeek) to eliminate the contamination of judgment by a single judge's learned preferences.
+Multi-judge blind scoring now exists (§3.5): anonymized transcripts, an anchored 4-point rubric, order-swapped passes, up to three providers, a shared verbosity budget, and a `biasReport` covering per-provider variance, same-family versus cross-family score gaps, and position effects. That hedges the three biases the literature names — position, verbosity, self-preference — but **hedging is not elimination**, and the report exists so the residue stays visible rather than getting averaged away.
+
+Known residue:
+
+- **The judge pool is small and correlated.** Three providers, all instruction-tuned frontier models; agreement between them is weaker evidence than it looks.
+- **Rubric anchoring is itself a prior.** "Legality / feasibility / resilience" encodes a view of what good governance output is. A regime optimized for a dimension the rubric omits scores badly for reasons that have nothing to do with its topology.
+- **Length control is blunt.** Truncating to a shared budget removes the crudest verbosity advantage, but a civilization that answers in a dense summary and one that answers in full prose are still not being compared like for like.
+
+### 9.6 Declared vs. Exercised Topology
+
+Every ranking in this project is over a *declared* graph. `civagent runtime-graph <matchId> --diff` now reconstructs what actually happened from the event stream's span tree and compares it against the declared topology — and the first thing it establishes is that **the comparison cannot yet be made at office level**.
+
+Until recently the comparison could not be made at all: the backend was spawned with `-p` and the default `text` output format, which prints only the coordinator's final assistant message, so every office's deliberation was discarded before it reached the event stream. Turns were tagged with the regime id because that was the only identity available.
+
+That is fixed. The backend now runs with `--output-format stream-json --verbose`, and `engine/v5/stream-json.mjs` renders the stream back to plain text while keeping the dispatch mapping — a delegation carries `input.subagent_type`, the reply carries `parent_tool_use_id` — so turns are attributed as `china/tang#menxia`. On one verification run the same regime and scenario went from 579 captured characters to 72,828, with all three departments visible and the Chancellery's three rounds of *fengbo* review in the transcript.
+
+**The remaining gap is narrower, and now precisely located.** `civagent runtime-graph --diff` reconstructs at office level and reports what is genuinely observable: which offices spoke, how often, and the coordinator's dispatch sequence. What it still cannot observe is the thing the declared topology actually specifies — a *typed, directed* edge between two offices. Claude Code subagents do not call each other; the coordinator relays every hand-off, so a `menxia → zhongshu [veto]` edge is physically indistinguishable from `coordinator → menxia` followed by `coordinator → zhongshu`. Closing this needs the event stream to record the logical producer of each hand-off, not just the physical one.
+
+So `unexercised_ratio` stays `null`, and — importantly — so do `total_unexercised` and `edge_exercise_counts`. "Unexercised" is a claim about behaviour, and in the verification match the Chancellery demonstrably *did* review the Secretariat's draft three times: those edges were exercised and merely invisible. Reporting them as unexercised would be false, so the same list is published as `unobservable_edges` instead. Treat topology-level conclusions as claims about declarations rather than about behaviour.
 
 Full audit report: [regimes/AUDIT.md](./regimes/AUDIT.md)
+
+---
+
+### 9.7 What the Experiments Have Actually Shown
+
+Two pilots have been run and both are recorded in `docs/experiments/`, including the outcomes that count against this project's own proposition.
+
+**E1** (5 regimes × 3 scenarios, no control arm) could not be interpreted: score tracked transcript length with Spearman ρ = +1.00 on the one scenario whose spread exceeded the judge's noise, and the three lowest-scoring cells were the three whose transcripts were missing most of the work. That run is superseded — it predates the capture fix.
+
+**E1-control** (5 source/control pairs × 3 scenarios) was scored against pre-registered rules: historical wiring won **0** resolved pairs, the seeded random rewiring won 1, 5 were inside the judge's own noise, and 9 were excluded. The exclusions are the finding: **in 14 of 30 arms the regime never called a single office**, so neither topology was exercised. Delegation turned out to be driven by the scenario (plague 10/10 delegated, militarization 2/10) rather than by the constitution, and source and control arms failed to delegate at exactly the same rate — 7/15 each.
+
+So the honest status is: **no claim that governance topology affects multi-agent performance is supported yet, and neither is the opposite.** The obstacle moved from "the harness discards the deliberation" (fixed) to "the regimes frequently do not deliberate", which §3.5's dispatch plan and enforcement exist to separate. E2 is designed and pre-registered at `docs/experiments/E2-preregistration.md`; it has not been run.
 
 ---
 
@@ -637,6 +748,9 @@ Full audit report: [regimes/AUDIT.md](./regimes/AUDIT.md)
 
 | Version | Date | Key Changes | PR |
 |---|---|---|---|
+| **v6.0.0** | 2026-05 | Constitutional mechanism engine (`[VETO]` / `[IMPEACH]` / `[EDICT]`); Express route architecture + better-sqlite3; React SPA dashboard with live SSE court | — |
+| *post-v6 (R5–R7)* | 2026-07 | Experimental-validity layer: tournament write API, 40-scenario library, anonymized multi-judge scoring with bias report, persona-preserving topology controls, episodic memory retrieval, topology validation + graph metrics, replay. Backend tests 9 → 369 | [#29](https://github.com/LeoLin990405/civagent/pull/29), [#30](https://github.com/LeoLin990405/civagent/pull/30) |
+| *post-v6 (R8–R11)* | 2026-07-30 | Governance-graph node typing; runtime-graph reconstruction and declared-vs-exercised diff; CI with a runnable example and an end-to-end smoke; idempotent tournament recording; **stream-json transcript capture** (a Tang match went from 579 to 72,830 captured characters); actor-stratified transcript selection for judging; dispatch plan + equal-roster enforcement. Backend tests 369 → 472 | [#32](https://github.com/LeoLin990405/civagent/pull/32) |
 | **v5.0.1** | 2026-04-14 | Engine data-source fix: the IDENTITY.md canonical table becomes the primary source; the 57-regime rewrite truly takes effect; README rewritten in an academic register | [#7](https://github.com/LeoLin990405/civagent/pull/7), [#8](https://github.com/LeoLin990405/civagent/pull/8) |
 | **v5.0.0** | 2026-04-14 | Hermes-inspired learning loop; cc-deepseek as the 7th Chinese backend; canonical rewrite of the 57 regimes; tests + CI + tournament mode | [#3](https://github.com/LeoLin990405/civagent/pull/3), [#4](https://github.com/LeoLin990405/civagent/pull/4), [#5](https://github.com/LeoLin990405/civagent/pull/5), [#6](https://github.com/LeoLin990405/civagent/pull/6) |
 | **v4.x** | 2026-03 | Complete rewrite on top of the Claude Code runtime; first version of 57 regimes + 6 modes + 10 models | — |
@@ -653,13 +767,17 @@ Full record: [CHANGELOG.md](./CHANGELOG.md)
 ```bash
 cp -r regimes/_template regimes/<region>/<your-id>
 # Fill in metadata.json + IDENTITY.md + SOUL.md per docs/IDENTITY-TEMPLATE.md
+# Then draw the governance graph in topology.json
+civagent topology validate <region>/<your-id>
 npm run validate:regimes              # validate locally
 # Open a PR
 ```
 
 Requirements:
-- The `IDENTITY.md` role-mapping table must have at least 5 rows; Agent IDs must be kebab-case; AI responsibilities must map to one of the 9 canonical roles
-- The `orchestrationPattern` in `metadata.json` must be one of the 6 canonical values or a registered alias
+- The `IDENTITY.md` role-mapping table must be a **markdown table**, with at least 5 rows; Agent IDs must be kebab-case; AI responsibilities must map to one of the 9 canonical roles.
+  A prose IDENTITY compiles to **zero agents and passes silently** — this is the single most damaging way to break a regime, so `civagent agents` after adding one is worth the ten seconds.
+- `topology.json` node ids must exactly equal the Agent ID set in the role table, and its `regime` field must match the directory it lives in. Edge kinds are `command` / `review` / `info` / `veto`.
+- The `orchestrationPattern` in `metadata.json` must be one of the 6 canonical values or a registered alias, and must agree with `topology.json`'s `mode`
 - At least 3 historical-source citations
 
 ### 12.2 Adding a New AI Backend

@@ -8,15 +8,32 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import crypto from "node:crypto";
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { StringDecoder } from "node:string_decoder";
+import { StreamRenderer } from "./stream-json.mjs";
 import { ensureCivHome, validateRegime } from "./civ-memory.mjs";
 import { sediment } from "./skill-sediment.mjs";
 import { resolveBackend, buildBackendArgs } from "./backends.mjs";
 import { EventLog, writeMeta, eventsPath } from "./events.mjs";
 import { retrieveHistoricalContext } from "./history-retriever.mjs";
 import { MechanismEngine } from "../mechanisms/index.mjs";
+import {
+  buildPlanPrompt,
+  buildPlanArgs,
+  parsePlanOutput,
+  runPlanCall,
+  listAgentOffices,
+  loadRequiredOffices,
+  buildEnforcementInstruction,
+  evaluateEnforcement,
+  PLAN_STATES,
+} from "./dispatch-plan.mjs";
+import {
+  classifyTopologyParticipation,
+  DISPATCH_OBSERVABILITY,
+} from "./runtime-graph.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROJECT_ROOT = path.resolve(__dirname, "..", "..");
@@ -34,18 +51,21 @@ function newMatchId() {
 export function parseArgs(argv, env = process.env) {
   let backend = env.CIVAGENT_BACKEND || "native";
   let noSkill = false;
+  let enforceDispatch = env.CIVAGENT_ENFORCE_DISPATCH === "1";
   const rest = [];
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--backend" && argv[i + 1] != null) {
       backend = argv[++i];
     } else if (argv[i] === "--no-skill") {
       noSkill = true;
+    } else if (argv[i] === "--enforce-dispatch") {
+      enforceDispatch = true;
     } else {
       rest.push(argv[i]);
     }
   }
   const [regimeRaw, ...promptParts] = rest;
-  return { backend, regimeRaw, prompt: promptParts.join(" ").trim(), noSkill };
+  return { backend, regimeRaw, prompt: promptParts.join(" ").trim(), noSkill, enforceDispatch };
 }
 
 // Is the skill learning loop active? --no-skill or CIVAGENT_SKILL_LEARN=off
@@ -86,9 +106,10 @@ export function withPermissionMode(ccArgs, env = process.env) {
 }
 
 async function main() {
-  const { backend, regimeRaw, prompt, noSkill } = parseArgs(process.argv.slice(2));
+  const { backend, regimeRaw, prompt, noSkill, enforceDispatch } =
+    parseArgs(process.argv.slice(2));
   if (!regimeRaw) {
-    console.error("usage: run-v5.mjs [--backend <id>] [--no-skill] <region/regime-id> [prompt...]");
+    console.error("usage: run-v5.mjs [--backend <id>] [--no-skill] [--enforce-dispatch] <region/regime-id> [prompt...]");
     process.exit(1);
   }
   const regime = validateRegime(regimeRaw);
@@ -120,8 +141,23 @@ async function main() {
   console.error(`[v5] HOME=${home}`);
   console.error(`[v5] events=${eventsPath(matchId)}`);
 
-  writeMeta(matchId, { regime, backend, command, task: prompt, startedAt, status: "running" });
-  log.emit("match_start", { regime, backend, command, task: prompt, actor: regime });
+  writeMeta(matchId, {
+    regime,
+    backend,
+    command,
+    task: prompt,
+    startedAt,
+    status: "running",
+    dispatchObservability: DISPATCH_OBSERVABILITY,
+  });
+  log.emit("match_start", {
+    regime,
+    backend,
+    command,
+    task: prompt,
+    actor: regime,
+    dispatch_observability: DISPATCH_OBSERVABILITY,
+  });
 
   // Generate agent definitions via v4's converter, piped to CC's --agents.
   const agentsJson = await new Promise((resolve, reject) => {
@@ -151,8 +187,49 @@ async function main() {
 
   const ragContext = retrieveHistoricalContext(regimeDir, prompt);
   const finalPrompt = prompt + ragContext;
-  
-  const ccArgs = buildBackendArgs({ agentsJson, prompt: finalPrompt });
+
+  // R11-B: elicit the voluntary plan before any enforcement text exists. The
+  // first call has tools disabled; execution resumes the same coordinator
+  // session so this is one coordinator's intent followed by its own work.
+  const availableOffices = listAgentOffices(agentsJson);
+  const coordinatorSessionId = crypto.randomUUID();
+  const planPrompt = buildPlanPrompt({ task: finalPrompt, offices: availableOffices });
+  const planCall = await runPlanCall({
+    command,
+    args: buildPlanArgs({ agentsJson, prompt: planPrompt, sessionId: coordinatorSessionId }),
+    env,
+  });
+  const dispatchPlan = planCall.error
+    ? {
+        status: PLAN_STATES.PARSE_FAILED,
+        dispatches: null,
+        error: planCall.error,
+      }
+    : parsePlanOutput(planCall.stdout, availableOffices);
+  const planText = dispatchPlan.status === PLAN_STATES.PARSE_FAILED
+    ? `Dispatch plan parse failed: ${dispatchPlan.error}\n`
+    : `Dispatch plan recorded (${dispatchPlan.status}, ${dispatchPlan.dispatches.length} step(s)).\n`;
+  log.emit("turn", {
+    actor: regime,
+    phase: "dispatch_plan",
+    text: planText,
+    dispatch_plan_status: dispatchPlan.status,
+    dispatch_plan: dispatchPlan.dispatches,
+    dispatch_plan_error: dispatchPlan.error,
+  });
+  writeMeta(matchId, { dispatchPlan });
+
+  const enforcementSetup = enforceDispatch
+    ? loadRequiredOffices(regimeDir)
+    : { ok: true, requiredOffices: [], error: null };
+  const executionPrompt = enforceDispatch && enforcementSetup.ok
+    ? finalPrompt + buildEnforcementInstruction(enforcementSetup.requiredOffices)
+    : finalPrompt;
+  const ccArgs = buildBackendArgs({ agentsJson, prompt: executionPrompt });
+  // A successful plan call created this session. On a plan process failure,
+  // fall back to a fresh execution call rather than making --resume a second
+  // hidden failure mode; the plan remains explicitly parse_failed.
+  if (planCall.code === 0) ccArgs.unshift("--resume", coordinatorSessionId);
 
   // Respect the regime's declared constitutional mechanisms (metadata.json);
   // a regime that doesn't grant VETO should never have a veto fire against it.
@@ -171,25 +248,71 @@ async function main() {
   // raw "data" chunk can split mid-marker or mid-UTF8-codepoint, silently dropping
   // a real veto. Decode bytes safely and detect on complete lines instead.
   const decoder = new StringDecoder("utf8");
+  const renderer = new StreamRenderer();
   let lineBuf = "";
+  const executionDispatches = [];
+  const officeTurns = new Map();
+
+  // One stream-json line renders to zero or more lines of readable transcript.
+  // Emitting the rendered text (not the raw envelope) keeps three consumers
+  // working unchanged: the judge reads these turn events, cleanTranscript()
+  // unwraps them for the skill extractor, and the dashboard streams them.
+  //
+  // R12: structured provenance is now carried alongside text. Every turn event
+  // receives additive fields (message_role, content_items, tool_uses) so
+  // downstream consumers — mechanism engine, enforcement, runtime-graph — can
+  // read structured evidence instead of regex-guessing from rendered text.
+  const handleLine = (line) => {
+    const rendered = renderer.render(line);
+    if (!rendered) return;
+    // actor is the office when the line came from a subagent, and the regime
+    // otherwise — the first time an office's own output is attributable.
+    const actor = rendered.actor ? `${regime}#${rendered.actor}` : regime;
+    const text = rendered.text.endsWith("\n") ? rendered.text : `${rendered.text}\n`;
+    if (rendered.actor) {
+      officeTurns.set(rendered.actor, (officeTurns.get(rendered.actor) || 0) + 1);
+    }
+    // R12: collect structured dispatch evidence from tool_use content items
+    // (not from scanning rendered text for [→ office] tokens).
+    const toolUses = (rendered.contentItems || [])
+      .filter((item) => item.type === "tool_use" && item.office);
+    for (const tu of toolUses) {
+      executionDispatches.push(tu.office);
+    }
+    // R12: emit turn event with additive structured fields.
+    log.emit("turn", {
+      text,
+      actor,
+      ...(rendered.messageRole ? { message_role: rendered.messageRole } : {}),
+      ...(rendered.contentItems.length ? { content_items: rendered.contentItems } : {}),
+      ...(toolUses.length ? { tool_uses: toolUses.map((tu) => ({ id: tu.id, office: tu.office, ...(tu.description ? { description: tu.description } : {}) })) } : {}),
+    });
+    process.stdout.write(text);   // the human-readable log, not the envelope
+    // R12: pass structured provenance to the mechanism engine so it can gate
+    // on authorized actor, message role, and content type.
+    mechEngine.processStructured({
+      text,
+      actor,
+      messageRole: rendered.messageRole ?? null,
+      contentItems: rendered.contentItems || [],
+    });
+  };
+
   const feed = (textChunk, flush = false) => {
     lineBuf += textChunk;
     let nl;
     while ((nl = lineBuf.indexOf("\n")) >= 0) {
-      const line = lineBuf.slice(0, nl + 1);
+      const line = lineBuf.slice(0, nl);
       lineBuf = lineBuf.slice(nl + 1);
-      log.emit("turn", { text: line, actor: regime });
-      mechEngine.process(line);
+      handleLine(line);
     }
     if (flush && lineBuf) {
-      log.emit("turn", { text: lineBuf, actor: regime });
-      mechEngine.process(lineBuf);
+      handleLine(lineBuf);
       lineBuf = "";
     }
   };
 
   cc.stdout.on("data", (chunk) => {
-    process.stdout.write(chunk);     // raw passthrough preserves exact bytes
     feed(decoder.write(chunk));
   });
   cc.stdout.on("end", () => feed(decoder.end(), true));
@@ -204,9 +327,35 @@ async function main() {
   } catch (err) {
     // Binary not found or failed to spawn (e.g. ENOENT).
     console.error(`[v5] backend spawn failed: ${err.message}`);
-    log.emit("match_end", { exitCode: null, error: err.message });
+    const dispatchEnforcement = evaluateEnforcement({
+      requested: enforceDispatch,
+      topologyLoaded: enforcementSetup.ok,
+      topologyError: enforcementSetup.error,
+      requiredOffices: enforcementSetup.requiredOffices,
+      dispatchedOffices: executionDispatches,
+    });
+    const topologyParticipation = classifyTopologyParticipation({
+      dispatchCount: executionDispatches.length,
+      officeTurnCount: [...officeTurns.values()].reduce((sum, count) => sum + count, 0),
+      officesInvoked: [...executionDispatches, ...officeTurns.keys()],
+      captureCapability: DISPATCH_OBSERVABILITY,
+      matchComplete: false,
+    });
+    log.emit("match_end", {
+      exitCode: null,
+      error: err.message,
+      dispatch_enforcement: dispatchEnforcement,
+      topology_participation: topologyParticipation,
+    });
     await log.close();
-    writeMeta(matchId, { endedAt: Date.now(), exitCode: null, status: "failed", error: err.message });
+    writeMeta(matchId, {
+      endedAt: Date.now(),
+      exitCode: null,
+      status: "failed",
+      error: err.message,
+      dispatchEnforcement,
+      topologyParticipation,
+    });
     process.exit(2);
   }
   // Run sedimentation BEFORE closing the log so we can emit the skill event
@@ -245,8 +394,29 @@ async function main() {
   const mechStats = mechEngine.getStats();
   const vetoed = mechStats.vetoes > 0;
   const status = vetoed ? "vetoed" : "done";
+  const dispatchEnforcement = evaluateEnforcement({
+    requested: enforceDispatch,
+    topologyLoaded: enforcementSetup.ok,
+    topologyError: enforcementSetup.error,
+    requiredOffices: enforcementSetup.requiredOffices,
+    dispatchedOffices: executionDispatches,
+  });
+  const topologyParticipation = classifyTopologyParticipation({
+    dispatchCount: executionDispatches.length,
+    officeTurnCount: [...officeTurns.values()].reduce((sum, count) => sum + count, 0),
+    officesInvoked: [...executionDispatches, ...officeTurns.keys()],
+    captureCapability: DISPATCH_OBSERVABILITY,
+    matchComplete: true,
+  });
 
-  log.emit("match_end", { exitCode, signal: exitSignal, status, mechanisms: mechStats });
+  log.emit("match_end", {
+    exitCode,
+    signal: exitSignal,
+    status,
+    mechanisms: mechStats,
+    dispatch_enforcement: dispatchEnforcement,
+    topology_participation: topologyParticipation,
+  });
   await log.close();
 
   writeMeta(matchId, {
@@ -257,6 +427,8 @@ async function main() {
     mechanisms: mechStats,
     impeachments: mechEngine.getImpeachments(),
     sediment: sedimentResult,
+    dispatchEnforcement,
+    topologyParticipation,
   });
   process.exit(vetoed ? 0 : (exitCode ?? 0));
 }

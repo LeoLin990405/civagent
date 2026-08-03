@@ -1,6 +1,39 @@
 import React, { useState } from 'react';
-import { History, Calendar, ShieldCheck, FileText, ChevronRight, Terminal, Search } from 'lucide-react';
+import { History, Calendar, ShieldCheck, FileText, ChevronRight, Terminal, Search, Users } from 'lucide-react';
 import type { MatchSummary, MatchEvent, MatchMeta } from '../types/api';
+import { splitActor } from '../utils/actorName';
+import {
+  readParticipation,
+  labelParticipation,
+  type TopologyParticipation,
+  type ParticipationLabel,
+} from '../utils/participation';
+
+function participationStyle(label: ParticipationLabel): string {
+  if (label.tone === 'observed') {
+    return 'bg-[rgba(16,185,129,0.10)] text-[var(--accent-emerald)] border border-[rgba(16,185,129,0.30)]';
+  }
+  if (label.tone === 'not_observed') {
+    return 'bg-[rgba(245,158,11,0.10)] text-[var(--accent-gold)] border border-[rgba(245,158,11,0.30)]';
+  }
+  return 'bg-[rgba(255,255,255,0.04)] text-[var(--text-muted)] border border-[rgba(255,255,255,0.08)]';
+}
+
+function ParticipationBadge({ report }: { report: TopologyParticipation }) {
+  const label = labelParticipation(report);
+  return (
+    <span
+      className={`role-badge px-2 py-1 ${participationStyle(label)}`}
+      data-testid={label.testId}
+      data-participation-state={label.tone}
+      title={label.detail || label.text}
+    >
+      <Users size={10} className="inline-block align-middle mr-1" />
+      <span className="align-middle">{label.text}</span>
+      {label.detail && <span className="align-middle ml-1 opacity-80">· {label.detail}</span>}
+    </span>
+  );
+}
 
 function formatSediment(sediment: MatchMeta['sediment']): { label: string, status: 'saved' | 'rejected' | 'skipped' | 'error' | 'none', text: string } {
   if (!sediment) {
@@ -193,6 +226,7 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
               const isActive = activeMatchId === m.id;
               const date = new Date(m.mtime);
               const label = m.meta?.regime || 'legacy';
+              const participation = readParticipation(m.meta?.topologyParticipation);
 
               return (
                 <div
@@ -208,13 +242,14 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
                   <div className="space-y-2 max-w-[80%] pl-1">
                     
                     {/* Title Regime */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 flex-wrap">
                       <span className="text-sm font-bold text-[var(--text-primary)]">
                         {label}
                       </span>
                       <span className={`role-badge ${getFormatBadgeStyle(m.format)}`}>
                         {m.format}
                       </span>
+                      <ParticipationBadge report={participation} />
                     </div>
 
                     {/* Meta match stamp */}
@@ -254,10 +289,15 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
                   ID: <span className="text-[var(--accent-cyan)]">{activeMatchId}</span>
                 </h3>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 flex-wrap">
                 <span className={`role-badge px-3 py-1.5 ${getExitCodeBadgeStyle(matches.find(m => m.id === activeMatchId)?.meta?.exitCode)}`}>
                   Exit Code: {matches.find(m => m.id === activeMatchId)?.meta?.exitCode ?? '0 (OK)'}
                 </span>
+                <ParticipationBadge
+                  report={readParticipation(
+                    matches.find(m => m.id === activeMatchId)?.meta?.topologyParticipation,
+                  )}
+                />
               </div>
             </div>
 
@@ -285,12 +325,22 @@ export const HistoryExplorer: React.FC<HistoryExplorerProps> = ({
                           return <span key={idx} className="block whitespace-pre-wrap text-[var(--text-secondary)]">{e.text}</span>;
                         }
                         if (e.type === 'turn') {
+                          const { regime: actorRegime, office: actorOffice } = splitActor(e.actor);
+                          const actorLabel = actorOffice || actorRegime || 'agent';
                           return (
                             <div key={idx} className="bg-[var(--bg-glass-light)] p-4 rounded-lg border border-[var(--border-subtle)] hover:bg-[var(--bg-glass-hover)] transition-colors">
                               <div className="flex items-center gap-2 mb-2 pb-2 border-b border-[var(--border-subtle)]">
-                                <span className={`role-badge ${getRoleStyleClass(e.actor || 'agent')}`}>
-                                  {e.actor || 'agent'}
+                                <span
+                                  className={`role-badge ${actorOffice ? 'office-badge' : getRoleStyleClass(actorLabel)}`}
+                                  data-testid="actor-role"
+                                >
+                                  {actorLabel}
                                 </span>
+                                {actorOffice && actorRegime && (
+                                  <span className="actor-regime-context" data-testid="actor-regime">
+                                    {actorRegime}
+                                  </span>
+                                )}
                               </div>
                               <p className="text-[12px] text-[var(--text-primary)] whitespace-pre-wrap break-words">{e.text}</p>
                             </div>

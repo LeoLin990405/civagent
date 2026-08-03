@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "regime": "baseline-random/global-athens",
+  "mode": "centralized",
+  "nodes": [
+    {
+      "id": "ekklesia",
+      "label": "公民大会",
+      "functional_role": "coordinator"
+    },
+    {
+      "id": "boule",
+      "label": "五百人议事会",
+      "functional_role": "management"
+    },
+    {
+      "id": "strategos",
+      "label": "十将军",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "dikasterion",
+      "label": "陪审法庭",
+      "functional_role": "review"
+    },
+    {
+      "id": "archon",
+      "label": "执政官",
+      "functional_role": "devops"
+    },
+    {
+      "id": "rhetor",
+      "label": "演说家",
+      "functional_role": "content"
+    }
+  ],
+  "edges": [
+    {
+      "from": "ekklesia",
+      "to": "boule",
+      "kind": "command"
+    },
+    {
+      "from": "archon",
+      "to": "ekklesia",
+      "kind": "review"
+    },
+    {
+      "from": "archon",
+      "to": "rhetor",
+      "kind": "command"
+    },
+    {
+      "from": "strategos",
+      "to": "rhetor",
+      "kind": "review"
+    },
+    {
+      "from": "strategos",
+      "to": "dikasterion",
+      "kind": "command"
+    },
+    {
+      "from": "dikasterion",
+      "to": "archon",
+      "kind": "info"
+    },
+    {
+      "from": "ekklesia",
+      "to": "strategos",
+      "kind": "review"
+    },
+    {
+      "from": "ekklesia",
+      "to": "dikasterion",
+      "kind": "command"
+    },
+    {
+      "from": "boule",
+      "to": "ekklesia",
+      "kind": "command"
+    },
+    {
+      "from": "archon",
+      "to": "dikasterion",
+      "kind": "command"
+    }
+  ]
+}
