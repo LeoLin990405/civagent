@@ -277,3 +277,40 @@ test("judge() returns transcriptSelection with per-civ selection metadata", asyn
     assert.equal(entry.fallback, true, "missing structured events are explicitly marked as raw-log fallback");
   }
 });
+
+// ── position effect must not drop every provider after the first ─────────────
+//
+// Codex pre-merge review, P2. forward/reversed were keyed by regime alone and
+// kept the first entry, so with two judges only the first one's movement
+// survived. Reproduced: codex scores both arms 7 in both passes while a second
+// judge swings 8 points on the same civ — meanAbsDelta came back 0. That number
+// is the noise floor a paired score gap has to clear in the E1/E2 analysis, so
+// under-reporting it marks order-sensitive results as resolved.
+test("position effect pairs passes within each provider, not across them", () => {
+  const passes = [
+    { swapped: false, provider: "codex", order: ["china/tang", "china/qin"], perRegime: { "china/tang": { score10: 7 }, "china/qin": { score10: 7 } } },
+    { swapped: true, provider: "codex", order: ["china/qin", "china/tang"], perRegime: { "china/tang": { score10: 7 }, "china/qin": { score10: 7 } } },
+    { swapped: false, provider: "cn-glm", order: ["china/tang", "china/qin"], perRegime: { "china/tang": { score10: 10 }, "china/qin": { score10: 2 } } },
+    { swapped: true, provider: "cn-glm", order: ["china/qin", "china/tang"], perRegime: { "china/tang": { score10: 2 }, "china/qin": { score10: 10 } } },
+  ];
+  const report = computeBiasReport({
+    passes,
+    civRegimes: ["china/tang", "china/qin"],
+    civBackends: { "china/tang": "native", "china/qin": "native" },
+    verbosityLog: [],
+  });
+  const pe = report.positionEffect;
+
+  assert.equal(pe.comparable, 4, "two providers x two civs, not two");
+  const providers = new Set(pe.deltas.map((d) => d.provider));
+  assert.deepEqual([...providers].sort(), ["cn-glm", "codex"], "both judges must appear");
+
+  // The second judge moved 8 points on each civ; that must reach the summary.
+  assert.equal(pe.maxAbsDelta, 8, "the worst judge's movement is the noise floor");
+  assert.ok(pe.meanAbsDelta > 0, "a judge that swung 8 points cannot summarise to zero movement");
+
+  const glm = pe.perProvider.find((p) => p.provider === "cn-glm");
+  const codex = pe.perProvider.find((p) => p.provider === "codex");
+  assert.equal(codex.maxAbsDelta, 0, "codex was order-insensitive here");
+  assert.equal(glm.maxAbsDelta, 8, "cn-glm was not, and that must not be averaged away");
+});

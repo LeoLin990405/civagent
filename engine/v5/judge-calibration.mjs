@@ -157,24 +157,59 @@ export function computeBiasReport({
   // ── Position effect ───────────────────────────────────────────────────────
   // Same regime's score in the forward (swapped=false) pass vs the swapped pass.
   // A systematic sign means presentation order moved scores → position bias.
-  const forward = new Map(); // regime -> score (first non-swapped pass that scored it)
-  const reversed = new Map();
+  // Pair forward and swapped WITHIN a provider. Keying by regime alone and
+  // keeping the first entry silently discarded every provider after the first:
+  // with codex reporting no movement and a second judge swinging 8 points on the
+  // same civ, meanAbsDelta came back 0. That number is the noise floor a paired
+  // score gap must clear, so under-reporting it marks order-sensitive results as
+  // resolved — the opposite of what the position check exists for.
+  const passesByProvider = new Map(); // provider -> { forward: Map, reversed: Map }
   for (const s of allScores) {
-    if (s.swapped) { if (!reversed.has(s.regime)) reversed.set(s.regime, s.score); }
-    else { if (!forward.has(s.regime)) forward.set(s.regime, s.score); }
+    const provider = s.provider ?? "(unknown)";
+    if (!passesByProvider.has(provider)) {
+      passesByProvider.set(provider, { forward: new Map(), reversed: new Map() });
+    }
+    const slot = passesByProvider.get(provider);
+    const side = s.swapped ? slot.reversed : slot.forward;
+    if (!side.has(s.regime)) side.set(s.regime, s.score);
   }
+
   const positionEffects = [];
-  for (const regime of civRegimes) {
-    if (forward.has(regime) && reversed.has(regime)) {
-      positionEffects.push({ regime, forward: round(forward.get(regime)), swapped: round(reversed.get(regime)), delta: round(forward.get(regime) - reversed.get(regime)) });
+  for (const [provider, { forward, reversed }] of passesByProvider) {
+    for (const regime of civRegimes) {
+      if (forward.has(regime) && reversed.has(regime)) {
+        positionEffects.push({
+          provider,
+          regime,
+          forward: round(forward.get(regime)),
+          swapped: round(reversed.get(regime)),
+          delta: round(forward.get(regime) - reversed.get(regime)),
+        });
+      }
     }
   }
+  // Per-provider magnitude, so one order-sensitive judge stays visible instead of
+  // being diluted by calmer ones in the overall mean.
+  const positionPerProvider = [...passesByProvider.keys()].map((provider) => {
+    const rows = positionEffects.filter((e) => e.provider === provider);
+    return {
+      provider,
+      comparable: rows.length,
+      meanDelta: rows.length ? round(mean(rows.map((e) => e.delta))) : null,
+      meanAbsDelta: rows.length ? round(mean(rows.map((e) => Math.abs(e.delta)))) : null,
+      maxAbsDelta: rows.length ? round(Math.max(...rows.map((e) => Math.abs(e.delta)))) : null,
+    };
+  });
   const positionEffect = {
     comparable: positionEffects.length,
     deltas: positionEffects,
+    perProvider: positionPerProvider,
     meanDelta: positionEffects.length ? round(mean(positionEffects.map((e) => e.delta))) : null,
     // Mean of absolute deltas — magnitude of order sensitivity regardless of sign.
     meanAbsDelta: positionEffects.length ? round(mean(positionEffects.map((e) => Math.abs(e.delta)))) : null,
+    // The floor a paired gap must clear is the worst judge's movement, not the
+    // average across judges.
+    maxAbsDelta: positionEffects.length ? round(Math.max(...positionEffects.map((e) => Math.abs(e.delta)))) : null,
   };
 
   // ── Verbosity summary ─────────────────────────────────────────────────────
