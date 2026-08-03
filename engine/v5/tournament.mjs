@@ -458,6 +458,7 @@ export async function runTournament({
     } catch {
       /* child may have failed before creating meta.json */
     }
+    result.planDiff = meta.planDiff ?? null;
     result.dispatchPlan = meta.dispatchPlan ?? {
       status: "parse_failed",
       dispatches: null,
@@ -479,6 +480,7 @@ export async function runTournament({
       result.dispatchEnforcement.status === "enforcement_passed";
     writeMeta(result.matchId, {
       dispatchPlan: result.dispatchPlan,
+      ...(result.planDiff ? { planDiff: result.planDiff } : {}),
       dispatchEnforcement: result.dispatchEnforcement,
       topologyParticipation: result.topologyParticipation,
     });

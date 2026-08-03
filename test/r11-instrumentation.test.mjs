@@ -481,3 +481,37 @@ test("R11 plan events remain observable but cannot contaminate judge or skill tr
   const runtime = reconstructRuntimeGraph([plan, execution]);
   assert.equal(runtime.observed.dispatch_sequence.length, 0);
 });
+
+// ── B's dependent variable has to be written down, not merely computable ─────
+//
+// plan-diff.mjs was built with two exported functions and zero callers: the
+// comparison between the voluntary plan and the declared topology was never
+// computed and never persisted. An E2 calibration cell came back with
+// dispatchPlan recorded for all ten arms and planDiff absent from every one —
+// a run that measures A and silently collects nothing for B. This is the same
+// shape as biasReport, which judge() computed and the manifest dropped.
+test("R11 run-v5 persists the plan-vs-topology comparison next to the plan", async () => {
+  const home = fs.mkdtempSync(path.join(os.tmpdir(), "civagent-r11-plandiff-"));
+  const fake = makeFakeEnvironment(home);
+  const matchId = "r11-plandiff";
+  try {
+    const result = await spawnCollect(process.execPath, [
+      path.join(ROOT, "engine/v5/run-v5.mjs"),
+      "--backend", "native", "--no-skill", "china/tang", "test task",
+    ], { ...fake.env, CIVAGENT_MATCH_ID: matchId });
+    assert.equal(result.code, 0, result.stderr);
+
+    const meta = JSON.parse(
+      fs.readFileSync(path.join(home, ".civagent", "matches", matchId, "meta.json"), "utf8"),
+    );
+    assert.ok(meta.dispatchPlan, "precondition: the plan is recorded");
+    assert.ok(meta.planDiff, "the comparison must be recorded too, not left computable");
+    assert.equal(meta.planDiff.plan_status, meta.dispatchPlan.status,
+      "the comparison must describe the plan actually recorded");
+    assert.ok(meta.planDiff.unsupported_dimensions,
+      "and must keep naming what it cannot compare, rather than implying full coverage");
+  } finally {
+    fs.rmSync(fake.bin, { recursive: true, force: true });
+    fs.rmSync(home, { recursive: true, force: true });
+  }
+});
