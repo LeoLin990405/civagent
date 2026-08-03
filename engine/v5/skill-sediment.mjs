@@ -39,12 +39,39 @@ One line referencing the transcript.
 
 If no reusable pattern emerged, output exactly: NO_PATTERN`;
 
-const AUDIT_PROMPT = `You audit the SHAPE and QUALITY of a proposed governance skill.
-You do NOT have the transcript — assume examples given are faithful quotes.
-Reject ONLY if: (a) valid frontmatter missing, (b) Pattern section has fewer
-than 2 concrete bullets, (c) the skill is so generic it could apply to any
-regime (e.g. "communicate clearly", "plan ahead"). Otherwise approve.
-Your very last line must be exactly "APPROVE" or "REJECT: <one-line reason>".`;
+// A plain "does this read like a sensible skill?" auditor is close to useless:
+// measured against downstream task outcomes, text-plausibility judging scores
+// ~46% — indistinguishable from chance — and the gap widens on the pairs that
+// matter most. What separates a skill that helps from one that causes negative
+// transfer is not prose quality but three concrete properties, so the auditor
+// is asked about those instead of about how the skill reads.
+const AUDIT_PROMPT = `You audit whether a proposed governance skill is likely to
+HELP a future match, not whether it reads well. You do NOT have the transcript —
+assume quoted examples are faithful.
+
+Score the skill on three dimensions, then decide.
+
+1. FAILURE MECHANISM — does it name what specifically went wrong or right, and
+   why? "The chancellery rejected the draft because it omitted the granary
+   reserve figure" qualifies. "Coordination was important" does not. A skill
+   that cannot say what caused the outcome cannot transfer.
+
+2. STEP-LEVEL SPECIFICITY — is the pattern actionable at the level of a concrete
+   step (who does what, in what order, gated on what)? Advice that only states a
+   goal or a virtue is not actionable.
+
+3. HAZARDOUS-ACTION SAFETY — does it encourage anything that should never be
+   generalized: bypassing a review or veto step, suppressing dissent to reach
+   consensus faster, fabricating figures or precedent, or presenting a
+   regime-specific privilege as a universal tactic?
+
+REJECT if: valid frontmatter is missing; OR dimension 1 or 2 is absent (the
+skill is generic enough to apply to any regime — "communicate clearly", "plan
+ahead"); OR dimension 3 finds a hazardous generalization.
+
+Otherwise APPROVE. Before your verdict, write one line per dimension in the form
+"1. <pass|fail>: <reason>". Your very last line must be exactly "APPROVE" or
+"REJECT: <one-line reason>".`;
 
 // Audit chain: prefer a reviewer that is NOT the extractor (codex), so we get an
 // independent second opinion; fall back to codex / glm if opencode is absent.
@@ -80,7 +107,9 @@ export function cleanTranscript(raw) {
     if (!line) continue;
     try {
       const obj = JSON.parse(line);
-      if (obj.type === "turn" && typeof obj.text === "string") chunks.push(obj.text);
+      if (obj.type === "turn" &&
+          obj.phase !== "dispatch_plan" &&
+          typeof obj.text === "string") chunks.push(obj.text);
       else if (typeof obj.chunk === "string") chunks.push(obj.chunk);
     } catch {
       chunks.push(line);

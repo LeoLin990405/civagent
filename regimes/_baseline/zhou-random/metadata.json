@@ -1,0 +1,33 @@
+{
+  "id": "zhou-random",
+  "name": {
+    "zh": "周朝 (Random-8)",
+    "en": "Zhou Dynasty (Random-8)"
+  },
+  "era": {
+    "zh": "约公元前1046年-前256年",
+    "en": "c. 1046-256 BC"
+  },
+  "region": "china",
+  "system": {
+    "zh": "随机基线对照 (8 agents, seed=42)",
+    "en": "Random Baseline Control (8 agents, seed=42)"
+  },
+  "description": {
+    "zh": "基线对照变体（random-8）：8 个 agent，边数 ≈ 原政体，边的种类按原分布随机采样，seed=42 保证可复现。",
+    "en": "Baseline control variant (random-8): 8 agents, edge count ≈ original, edge kinds randomly sampled from original distribution, seed=42 for reproducibility."
+  },
+  "agentCount": 8,
+  "tags": [
+    "baseline",
+    "random",
+    "control"
+  ],
+  "orchestrationPattern": "centralized",
+  "_baseline": {
+    "type": "random",
+    "source": "china/zhou",
+    "agentCount": 8,
+    "seed": 42
+  }
+}

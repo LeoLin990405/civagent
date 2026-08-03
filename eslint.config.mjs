@@ -4,7 +4,11 @@ import js from '@eslint/js';
 import globals from 'globals';
 
 export default [
-  { ignores: ['frontend/**', 'node_modules/**', 'dist/**'] },
+  // .ccb/ is the CCB agent runtime: git worktrees, provider caches and vendored
+  // agent code checked out inside the repo. It is gitignored, but ESLint does
+  // not read .gitignore, so without this it lints thousands of third-party
+  // files and reports their errors as this project's.
+  { ignores: ['frontend/**', 'node_modules/**', 'dist/**', '.ccb/**'] },
   js.configs.recommended,
   {
     files: ['**/*.mjs'],

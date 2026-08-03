@@ -3,29 +3,132 @@
   "regime": "china/ming",
   "mode": "dual-track",
   "nodes": [
-    { "id": "shoufu", "label": "内阁首辅", "functional_role": "coordinator" },
-    { "id": "silijian", "label": "司礼监掌印太监", "functional_role": "review" },
-    { "id": "libu", "label": "吏部尚书", "functional_role": "management" },
-    { "id": "hubu", "label": "户部尚书", "functional_role": "data" },
-    { "id": "bingbu", "label": "兵部尚书", "functional_role": "engineering" },
-    { "id": "xingbu", "label": "刑部尚书", "functional_role": "legal" },
-    { "id": "libu-ritual", "label": "礼部尚书", "functional_role": "content" },
-    { "id": "gongbu", "label": "工部尚书", "functional_role": "devops" }
+    {
+      "id": "shoufu",
+      "label": "内阁首辅",
+      "functional_role": "coordinator"
+    },
+    {
+      "id": "silijian",
+      "label": "司礼监掌印太监",
+      "functional_role": "review",
+      "note": "LLM 审核者，非确定性门：批红是模型判断，不是规则判定。双轨确认的强制性来自流程，不来自节点实现。"
+    },
+    {
+      "id": "libu",
+      "label": "吏部尚书",
+      "functional_role": "management"
+    },
+    {
+      "id": "hubu",
+      "label": "户部尚书",
+      "functional_role": "data"
+    },
+    {
+      "id": "bingbu",
+      "label": "兵部尚书",
+      "functional_role": "engineering"
+    },
+    {
+      "id": "xingbu",
+      "label": "刑部尚书",
+      "functional_role": "legal"
+    },
+    {
+      "id": "libu-ritual",
+      "label": "礼部尚书",
+      "functional_role": "content"
+    },
+    {
+      "id": "gongbu",
+      "label": "工部尚书",
+      "functional_role": "devops"
+    }
   ],
   "edges": [
-    { "from": "shoufu", "to": "silijian", "kind": "command", "note": "shoufu 起草票拟，呈司礼监审批（决策流程 2-3）" },
-    { "from": "silijian", "to": "shoufu", "kind": "veto", "note": "司礼监驳回票拟、发还重拟；批红则放行（决策流程 3，相互制约）" },
-    { "from": "shoufu", "to": "libu", "kind": "command", "note": "批准后将票拟分发至相关部（决策流程 4）" },
-    { "from": "shoufu", "to": "hubu", "kind": "command", "note": "同上" },
-    { "from": "shoufu", "to": "bingbu", "kind": "command", "note": "同上" },
-    { "from": "shoufu", "to": "xingbu", "kind": "command", "note": "同上" },
-    { "from": "shoufu", "to": "libu-ritual", "kind": "command", "note": "同上" },
-    { "from": "shoufu", "to": "gongbu", "kind": "command", "note": "同上" },
-    { "from": "libu", "to": "shoufu", "kind": "command", "note": "各部执行结果回报 shoufu 汇总（决策流程 6）" },
-    { "from": "hubu", "to": "shoufu", "kind": "command", "note": "同上" },
-    { "from": "bingbu", "to": "shoufu", "kind": "command", "note": "同上" },
-    { "from": "xingbu", "to": "shoufu", "kind": "command", "note": "同上" },
-    { "from": "libu-ritual", "to": "shoufu", "kind": "command", "note": "同上" },
-    { "from": "gongbu", "to": "shoufu", "kind": "command", "note": "同上" }
+    {
+      "from": "shoufu",
+      "to": "silijian",
+      "kind": "command",
+      "note": "shoufu 起草票拟，呈司礼监审批（决策流程 2-3）"
+    },
+    {
+      "from": "silijian",
+      "to": "shoufu",
+      "kind": "veto",
+      "note": "司礼监驳回票拟、发还重拟；批红则放行（决策流程 3，相互制约）"
+    },
+    {
+      "from": "shoufu",
+      "to": "libu",
+      "kind": "command",
+      "note": "批准后将票拟分发至相关部（决策流程 4）"
+    },
+    {
+      "from": "shoufu",
+      "to": "hubu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "shoufu",
+      "to": "bingbu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "shoufu",
+      "to": "xingbu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "shoufu",
+      "to": "libu-ritual",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "shoufu",
+      "to": "gongbu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "libu",
+      "to": "shoufu",
+      "kind": "command",
+      "note": "各部执行结果回报 shoufu 汇总（决策流程 6）"
+    },
+    {
+      "from": "hubu",
+      "to": "shoufu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "bingbu",
+      "to": "shoufu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "xingbu",
+      "to": "shoufu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "libu-ritual",
+      "to": "shoufu",
+      "kind": "command",
+      "note": "同上"
+    },
+    {
+      "from": "gongbu",
+      "to": "shoufu",
+      "kind": "command",
+      "note": "同上"
+    }
   ]
 }

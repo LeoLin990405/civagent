@@ -63,9 +63,14 @@ export function ensureCivHome(regime, regimeDir, { skills = true } = {}) {
   return home;
 }
 
-// Strict regime-id validation to block path traversal like "../../etc"
+// Strict regime-id validation to block path traversal like "../../etc".
+// The region segment may start with a single underscore: experimental variants
+// live under regimes/_baseline/ and regimes/_ablated/, which the API's regime
+// lister deliberately skips so controls never enter the historical catalog.
+// Without this, a control can be generated and validated but never run as a
+// civ — which is how a topology experiment ends up with no control arm.
 export function validateRegime(regime) {
-  if (!/^[a-z0-9][a-z0-9_-]*\/[a-z0-9][a-z0-9_-]*$/i.test(regime)) {
+  if (!/^_?[a-z0-9][a-z0-9_-]*\/[a-z0-9][a-z0-9_-]*$/i.test(regime)) {
     throw new Error(`invalid regime id: ${regime}`);
   }
   return regime;

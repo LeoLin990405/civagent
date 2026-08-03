@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Radio, Users, Activity, ShieldAlert, AlertTriangle } from 'lucide-react';
+import { splitActor } from '../utils/actorName';
 
 interface MatchMeta {
   id: string;
@@ -14,6 +15,7 @@ interface EventPayload {
   target?: string;
   reason?: string;
   ts?: number;
+  actor?: string;
 }
 
 interface LiveCourtProps {
@@ -78,16 +80,26 @@ export const LiveCourt: React.FC<LiveCourtProps> = ({ initialMatchId }) => {
 
   const renderEvent = (ev: EventPayload, idx: number) => {
     if (ev.type === 'turn' && ev.text) {
+      const { regime: actorRegime, office: actorOffice } = splitActor(ev.actor);
+      const actorLabel = actorOffice || actorRegime || 'agent';
       return (
         <div key={idx} className="glass-card" style={{ padding: '16px', marginBottom: '12px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
             <Users size={16} style={{ color: 'var(--accent-blue)' }} />
             <span style={{ fontSize: '12px', color: 'var(--text-muted)', fontFamily: 'var(--font-mono)' }}>AGENT RESPONSE</span>
+            <span className={`role-badge ${actorOffice ? 'office-badge' : ''}`} data-testid="live-actor-role">
+              {actorLabel}
+            </span>
+            {actorOffice && actorRegime && (
+              <span className="actor-regime-context" data-testid="live-actor-regime">
+                {actorRegime}
+              </span>
+            )}
           </div>
-          <div style={{ 
-            fontFamily: 'var(--font-mono)', 
-            fontSize: '14px', 
-            whiteSpace: 'pre-wrap', 
+          <div style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '14px',
+            whiteSpace: 'pre-wrap',
             lineHeight: 1.6,
             color: 'var(--text-main)'
           }}>
