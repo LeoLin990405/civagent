@@ -694,8 +694,8 @@ test("extractDispatches: [→ office] tokens → seq-stable records with require
   assert.equal(d[1].seq, 2);
   assert.equal(d[1].office, "menxia");
   assert.equal(d[1].sequence, 2);
-  // record contract: exactly these five fields
-  assert.deepEqual(Object.keys(d[0]).sort(), ["coordinator", "office", "seq", "sequence", "text"]);
+  // record contract: these fields (source added R12 for provenance tracking)
+  assert.deepEqual(Object.keys(d[0]).sort(), ["coordinator", "office", "seq", "sequence", "source", "text"]);
 
   // multiple [→ office] tokens in a single turn are all captured, and
   // observed.dispatch_counts accumulates per office.

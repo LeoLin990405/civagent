@@ -54,13 +54,23 @@ export function bareOfficeId(actorId) {
 
 // ── Dispatch extraction ──────────────────────────────────────────────────────
 //
-// A dispatch is a coordinator→office delegation, observed as a literal
-// "[→ office]" token in a turn's rendered text (stream-json.mjs emits these for
-// tool_use delegations). This is an explicit, textual measurement — no event
-// `kind` is interpreted. Records carry { sequence, seq, coordinator, office,
-// text } and are sorted stably by the event seq.
+// R12: dispatches are now read from structured `tool_uses` on turn events
+// (set by run-v5.mjs from stream-json tool_use items). This is the primary
+// evidence source because it reflects an actual subagent dispatch, not a text
+// token that any actor could print.
+//
+// Legacy events without `tool_uses` fall back to the old text-based
+// `[→ office]` token extraction (DISPATCH_TOKEN_RE). This fallback exists
+// only for pre-R12 event streams and is identified by `source: "text_token"`.
 
 const DISPATCH_TOKEN_RE = /\[→ ([A-Za-z0-9_.-]+(?:#[A-Za-z0-9_.-]+)*)\]/g;
+
+function toolUseOffices(toolUses) {
+  if (!Array.isArray(toolUses)) return [];
+  return toolUses
+    .filter((tu) => tu && typeof tu.office === "string" && tu.office.length > 0)
+    .map((tu) => tu.office);
+}
 
 export function extractDispatches(events) {
   if (!Array.isArray(events) || events.length === 0) return [];
@@ -87,6 +97,27 @@ export function extractDispatches(events) {
     if (ev.phase === "dispatch_plan") continue;
     if (typeof ev.text !== "string" || ev.text.length === 0) continue;
     const coordinator = typeof ev.actor === "string" && ev.actor ? ev.actor : "unknown";
+
+    // R12: prefer structured tool_uses over text token scanning.
+    // When tool_uses is present (even as an empty array), the event was
+    // produced by an instrumented run-v5 and text tokens are NOT evidence.
+    const hasToolUses = Array.isArray(ev.tool_uses);
+    if (hasToolUses) {
+      for (const office of toolUseOffices(ev.tool_uses)) {
+        out.push({
+          sequence: 0,
+          seq: typeof ev.seq === "number" ? ev.seq : null,
+          coordinator,
+          office,
+          text: ev.text,
+          source: "tool_use",
+        });
+      }
+      continue; // instrumented event — structured data is the only evidence
+    }
+
+    // Legacy fallback: scan text for [→ office] tokens.
+    // Only used for pre-R12 events that lack the tool_uses field entirely.
     DISPATCH_TOKEN_RE.lastIndex = 0;
     let m;
     while ((m = DISPATCH_TOKEN_RE.exec(ev.text)) !== null) {
@@ -98,6 +129,7 @@ export function extractDispatches(events) {
         coordinator,
         office,
         text: ev.text,
+        source: "text_token",
       });
     }
   }
