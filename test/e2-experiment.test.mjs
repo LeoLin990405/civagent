@@ -49,3 +49,29 @@ test("E2 launcher is a fixed five-repeat, three-scenario dry-run with engine enf
   assert.equal(output.jobs.length, 3);
   assert.equal(output.arms, 30);
 });
+
+// ── the backend must namespace the job id and the state file ────────────────
+//
+// E3 treats the backend as a blocking factor: five strata run the same
+// scenario x repeat grid. The id used to be `e2-<scenario>-r<NN>` with a single
+// shared state file, so every stratum would have written to the same tournament
+// directory and the same state key — and resume would skip a cell because a
+// *different* model had already run it. Five strata collapsing into one, with
+// no error and a full-looking result set.
+test("job ids and state paths are namespaced per backend", async () => {
+  // No `if (!build) return` escape hatch here: the first draft of this test
+  // guessed the export name, found nothing, returned early and passed green
+  // without asserting anything. A test that skips itself when its subject is
+  // missing is indistinguishable from a passing test.
+  const { buildE2Plan } = await import("../scripts/e2-experiment.mjs");
+  assert.equal(typeof buildE2Plan, "function", "the plan builder must be exported to be testable");
+  const build = buildE2Plan;
+
+  const scenarios = [{ id: "plague-response-01", prompt: "x" }];
+  const a = build({ scenarios, repeats: 1, backend: "cn:doubao" });
+  const b = build({ scenarios, repeats: 1, backend: "cn:glm" });
+  assert.notEqual(a.jobs[0].id, b.jobs[0].id,
+    "two backends running the same cell must not share a job id");
+  assert.match(a.jobs[0].id, /doubao/);
+  assert.match(b.jobs[0].id, /glm/);
+});
