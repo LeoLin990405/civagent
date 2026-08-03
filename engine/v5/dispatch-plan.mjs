@@ -19,7 +19,6 @@ export const PLAN_STATES = Object.freeze({
 });
 
 const OFFICE_ID_RE = /^[A-Za-z0-9_.-]+$/;
-const DISPATCH_TOKEN_RE = /\[→ ([A-Za-z0-9_.-]+)\]/g;
 
 export function listAgentOffices(agentsJson) {
   try {
@@ -249,14 +248,15 @@ This requirement applies to this arm's own declared topology. Complete the task
 after those dispatches. Do not merely say that an office was called.`;
 }
 
-export function dispatchOfficesFromText(text) {
-  if (typeof text !== "string") return [];
-  const offices = [];
-  DISPATCH_TOKEN_RE.lastIndex = 0;
-  let match;
-  while ((match = DISPATCH_TOKEN_RE.exec(text)) !== null) offices.push(match[1]);
-  return offices;
-}
+// REMOVED as an evidence source. This used to scan rendered text for
+// "[→ office]" tokens and was the basis for both enforcement and participation.
+// A model that never called a subagent could print those two strings in ordinary
+// prose and obtain enforcement_passed plus participation_observed with
+// officeTurnCount 0 — i.e. manufacture the very precondition E2 uses to decide
+// which arms are eligible for the quality comparison. Dispatch evidence now
+// comes only from tool_use content items carrying a real subagent_type
+// (see engine/v5/run-v5.mjs executionDispatches). The renderer still writes
+// "[→ office]" lines for humans; they carry no evidential weight.
 
 export function evaluateEnforcement({
   requested,

@@ -27,7 +27,6 @@ import {
   listAgentOffices,
   loadRequiredOffices,
   buildEnforcementInstruction,
-  dispatchOfficesFromText,
   evaluateEnforcement,
   PLAN_STATES,
 } from "./dispatch-plan.mjs";
@@ -258,8 +257,11 @@ async function main() {
   // Emitting the rendered text (not the raw envelope) keeps three consumers
   // working unchanged: the judge reads these turn events, cleanTranscript()
   // unwraps them for the skill extractor, and the dashboard streams them.
-  // It also keeps the mechanism engine scanning prose: a `[VETO]` marker buried
-  // in a JSON string escape would not match the same way.
+  //
+  // R12: structured provenance is now carried alongside text. Every turn event
+  // receives additive fields (message_role, content_items, tool_uses) so
+  // downstream consumers — mechanism engine, enforcement, runtime-graph — can
+  // read structured evidence instead of regex-guessing from rendered text.
   const handleLine = (line) => {
     const rendered = renderer.render(line);
     if (!rendered) return;
@@ -270,10 +272,30 @@ async function main() {
     if (rendered.actor) {
       officeTurns.set(rendered.actor, (officeTurns.get(rendered.actor) || 0) + 1);
     }
-    executionDispatches.push(...dispatchOfficesFromText(text));
-    log.emit("turn", { text, actor });
+    // R12: collect structured dispatch evidence from tool_use content items
+    // (not from scanning rendered text for [→ office] tokens).
+    const toolUses = (rendered.contentItems || [])
+      .filter((item) => item.type === "tool_use" && item.office);
+    for (const tu of toolUses) {
+      executionDispatches.push(tu.office);
+    }
+    // R12: emit turn event with additive structured fields.
+    log.emit("turn", {
+      text,
+      actor,
+      ...(rendered.messageRole ? { message_role: rendered.messageRole } : {}),
+      ...(rendered.contentItems.length ? { content_items: rendered.contentItems } : {}),
+      ...(toolUses.length ? { tool_uses: toolUses.map((tu) => ({ id: tu.id, office: tu.office, ...(tu.description ? { description: tu.description } : {}) })) } : {}),
+    });
     process.stdout.write(text);   // the human-readable log, not the envelope
-    mechEngine.process(text);
+    // R12: pass structured provenance to the mechanism engine so it can gate
+    // on authorized actor, message role, and content type.
+    mechEngine.processStructured({
+      text,
+      actor,
+      messageRole: rendered.messageRole ?? null,
+      contentItems: rendered.contentItems || [],
+    });
   };
 
   const feed = (textChunk, flush = false) => {

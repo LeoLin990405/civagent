@@ -56,8 +56,17 @@ function textOfToolResultContent(content) {
     .join("\n");
 }
 
-// Render one line. Returns { text, actor } or null when the line carries no
-// deliberation (system init, result accounting, internal metadata).
+// Render one line. Returns { text, actor, messageRole, contentItems } or null
+// when the line carries no deliberation (system init, result accounting,
+// internal metadata).
+//
+// `text` and `actor` are the legacy fields — unchanged semantics.
+// `messageRole` is 'assistant' | 'user' | null (non-message lines).
+// `contentItems` is an array of structured item descriptors, ADDITIVE (new):
+//   { type: 'text', text }              — plain text segment
+//   { type: 'tool_use', id, office, description? } — a subagent dispatch
+//   { type: 'tool_result', tool_use_id, is_internal } — a tool result
+//
 // `resolveOffice` maps a parent_tool_use_id back to the office it was sent to;
 // callers without that state (single-line use) get null attribution.
 export function renderStreamLine(line, resolveOffice = () => null) {
@@ -68,18 +77,14 @@ export function renderStreamLine(line, resolveOffice = () => null) {
   try {
     ev = JSON.parse(raw);
   } catch {
-    return { text: raw, actor: null }; // not JSON — a plain-text backend or a harness status line
+    return { text: raw, actor: null, messageRole: null, contentItems: [] };
   }
-  if (!ev || typeof ev !== "object") return { text: raw, actor: null };
+  if (!ev || typeof ev !== "object") return { text: raw, actor: null, messageRole: null, contentItems: [] };
 
   switch (ev.type) {
     case "system":
-      // The init blob carries the whole tool list and model config: kilobytes
-      // of noise that would crowd real content out of the judge's char budget.
       return null;
     case "result":
-      // Cost/turn accounting. The final assistant message already carried the
-      // content, so emitting this too would duplicate it.
       return null;
     case "assistant":
     case "user":
@@ -88,33 +93,50 @@ export function renderStreamLine(line, resolveOffice = () => null) {
       return null;
   }
 
+  const messageRole = ev.type; // 'assistant' | 'user'
   const content = ev.message?.content;
   if (typeof content === "string") {
-    return content.trim() ? { text: content, actor: resolveOffice(ev.parent_tool_use_id) } : null;
+    return content.trim()
+      ? { text: content, actor: resolveOffice(ev.parent_tool_use_id), messageRole, contentItems: [] }
+      : null;
   }
   if (!Array.isArray(content)) return null;
 
   const office = resolveOffice(ev.parent_tool_use_id);
   const out = [];
+  const contentItems = [];
   for (const item of content) {
     if (!item || typeof item !== "object") continue;
     if (item.type === "text" && typeof item.text === "string" && item.text.trim()) {
       out.push(item.text);
+      contentItems.push({ type: "text", text: item.text });
     } else if (item.type === "tool_use") {
       const to = item.input?.subagent_type;
       const what = item.input?.description;
-      // Naming the receiving office is the point: it is what makes a delegation
-      // visible in the transcript instead of a silent gap.
-      if (to) out.push(`[→ ${to}]${what ? ` ${what}` : ""}`);
+      if (to) {
+        out.push(`[→ ${to}]${what ? ` ${what}` : ""}`);
+        contentItems.push({
+          type: "tool_use",
+          id: item.id ?? null,
+          office: to,
+          ...(what ? { description: what } : {}),
+        });
+      }
     } else if (item.type === "tool_result") {
       const t = textOfToolResultContent(item.content);
       if (!t.trim()) continue;
-      if (INTERNAL_RESULT_MARKERS.some((m) => t.includes(m))) continue;
+      const isInternal = INTERNAL_RESULT_MARKERS.some((m) => t.includes(m));
+      if (isInternal) continue;
       out.push(t);
+      contentItems.push({
+        type: "tool_result",
+        tool_use_id: item.tool_use_id ?? null,
+        is_internal: false,
+      });
     }
   }
   if (!out.length) return null;
-  return { text: out.join("\n"), actor: office };
+  return { text: out.join("\n"), actor: office, messageRole, contentItems };
 }
 
 // Stateful wrapper that remembers which office each dispatch went to, so an
