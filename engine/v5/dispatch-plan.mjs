@@ -241,11 +241,16 @@ export function buildEnforcementInstruction(requiredOffices) {
   return `\n\nEXPERIMENTAL DISPATCH REQUIREMENT:
 After the unforced plan above was recorded, this arm entered the enforced
 condition. During execution you MUST use the subagent dispatch tool to call
-each office below at least once:
-${requiredOffices.map((office) => `- ${office}`).join("\n")}
+each office below at least once, passing the id EXACTLY as written as the
+tool's subagent_type argument:
+${requiredOffices.map((office) => `- subagent_type: "${office}"`).join("\n")}
 
-This requirement applies to this arm's own declared topology. Complete the task
-after those dispatches. Do not merely say that an office was called.`;
+These ids come from this arm's own declared topology and are defined in the
+agent set this session was started with. Do NOT substitute a built-in agent
+such as "general-purpose" or "Explore" and describe the office in the task text
+instead: a dispatch to a built-in agent is not a dispatch to that office, and
+the run is recorded as having exercised no topology. Complete the task after
+those dispatches. Do not merely say that an office was called.`;
 }
 
 // REMOVED as an evidence source. This used to scan rendered text for

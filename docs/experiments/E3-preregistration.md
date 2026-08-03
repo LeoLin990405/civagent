@@ -24,8 +24,8 @@ That distinction is not cosmetic for this project. The proposition in README
 effect visible only on one model is not a reusable pattern; it is a property of
 that model. E2 could not tell those apart. E3 can.
 
-A practical consequence, stated so it is not mistaken for the motive: the five
-providers hold five independent quotas, so the run parallelises and is no longer
+A practical consequence, stated so it is not mistaken for the motive: the
+providers hold independent quotas, so the run parallelises and is no longer
 bound by one account's rate window. The E2 run stalled for 84 minutes on a
 self-imposed AFP throttle. That is a real benefit and it is not the reason for
 the redesign — the replication question is.
@@ -55,10 +55,35 @@ Five backends, each verified live by an actual request before registration
 | `cn:qwen` | qwen3.8-max-preview |
 
 `cn:kimi` and `cn:stepfun` are excluded. Kimi's credentials return 401; a
-launcher that exists is not a backend that answers. Excluding them is registered
-here rather than decided after seeing results.
+launcher that exists is not a backend that answers.
 
-Design: 5 backends × 3 scenarios × 5 repeats = **75 ten-arm tournaments, 750
+**Amended 2026-08-04, before the frozen re-run: `cn:mimo` is also excluded.**
+Two probes and one aborted stratum agree on the failure mode, and it is not one
+prompt wording can fix:
+
+- The dispatch plan never arrives — `plan backend timed out after 120000ms`, so
+  B's dependent variable is missing at the plan stage.
+- During execution mimo behaves as a repository coding assistant rather than a
+  regime coordinator: it reads `AGENTS.md`, lists `engine/` and `regimes/`, and
+  dispatches to the built-in `general-purpose` and `Explore` subagents while
+  writing the office name only in the task description. 220 of one cell's turns
+  contain repository filenames.
+- Strengthening the enforcement text to demand the office id be passed verbatim
+  as `subagent_type`, and to forbid built-in substitutes, did not change this —
+  mimo never reaches the dispatch step.
+
+Recorded as **registered but environmentally unusable**, not as a result. No
+paired outcome from any mimo cell was inspected before this exclusion; the only
+mimo figures looked at were instrument-compliance rates.
+
+Four backends therefore carry E3: `cn:doubao`, `cn:glm`, `cn:minimax`,
+`cn:qwen`. **D1's replication bar moves with the denominator, not with the
+outcome: the effect must appear in at least three of the four.** The fraction
+required is unchanged (a clear majority of strata); only the number of strata
+that survived setup has changed, and it changed for reasons visible before any
+paired result was read.
+
+Design: 4 backends × 3 scenarios × 5 repeats = **60 ten-arm tournaments, 600
 arms**. The four doubao cells already completed under E2's identical
 configuration are retained as part of the doubao stratum; the remaining eleven
 doubao cells and all cells for the other four backends are new.
@@ -67,7 +92,9 @@ doubao cells and all cells for the other four backends are new.
 
 - **D1 (primary).** Within each backend, scored over resolved pairs only, the
   historical wiring wins a clear majority. **The effect must appear in at least
-  four of the five backends to count as replicated.** If it appears in one or
+  three of the four surviving backends to count as replicated** (see the
+  amendment above; the required fraction is unchanged, the denominator shrank
+  for setup reasons registered before any paired result was read). If it appears in one or
   two, the honest reading is that it is a property of those models, not of the
   topology, and that must be reported as plainly as a positive result.
 - **D2.** Pairs whose gap does not exceed that backend's own judge position
@@ -84,7 +111,7 @@ doubao cells and all cells for the other four backends are new.
 
 ## What E3 cannot answer
 
-- **Absolute scores are not comparable across backends.** The five models differ
+- **Absolute scores are not comparable across backends.** The models differ
   in capability and verbosity; only the direction of the within-backend paired
   contrast may be read across strata. Any table that ranks backends against each
   other is a misreading of this design.
@@ -109,3 +136,27 @@ was inspected for its paired outcome before this registration was written, so
 the change is not a response to seeing which way the numbers fell. The E2
 calibration cell that *was* inspected (4 source wins, 1 unresolved, plague only)
 was deleted before the full run and is not part of E3's data.
+
+
+## The aborted first run (2026-08-03), and why its data is discarded
+
+A first attempt ran doubao, glm and minimax to 15/15 each. **That data is not
+used.** At 22:44, mid-run, I edited `buildEnforcementInstruction` to demand the
+office id be passed verbatim as `subagent_type` — an attempt to fix mimo. The
+enforcement text is shared by every backend, so each stratum split across two
+different interventions:
+
+| Stratum | cells under the old text | under the new text |
+|---|---|---|
+| doubao | 7 | 8 |
+| glm | 5 | 10 |
+| minimax | 6 | 9 |
+
+And the change had a measurable effect on compliance, in inconsistent
+directions: doubao 85.7% → 70.0%, glm 86.0% → 88.0%, minimax 93.3% → 98.9%.
+Pooling halves collected under different instruments would be reporting one
+number for two experiments; analysing only one half drops the registered repeat
+count. Both are worse than paying for a clean re-run.
+
+The instrument is frozen before the re-run begins. Only instrument-compliance
+rates from the aborted run were inspected; no paired outcome was.
