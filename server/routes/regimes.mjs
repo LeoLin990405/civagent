@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { safeResolve } from '../utils.mjs';
 import { sendError } from '../http.mjs';
 import { listRegimes, listRegimeSummaries } from '../services/regimes.mjs';
+import { updateRegimeFiles } from '../services/regime-write.mjs';
 import { validateRegimeTopology } from '../../engine/topology/validate.mjs';
 import { computeMetrics } from '../../engine/topology/metrics.mjs';
 
@@ -30,6 +31,20 @@ export function createRegimesRouter({ projectRoot = DEFAULT_PROJECT_ROOT } = {})
     } catch (err) {
       sendError(res, 500, err.message);
     }
+  });
+
+  // PUT /api/regimes/:region/:id — edit metadata.json / IDENTITY.md / SOUL.md.
+  // Edits only (no create/delete). The full pre-commit validation chain runs in
+  // the service against the proposed content; on any failure nothing is written
+  // and a structured findings list comes back. 200 returns the re-compiled
+  // summary; 400 = validation failure; 404 = regime not found.
+  router.put('/:region/:id', (req, res) => {
+    const { region, id } = req.params;
+    const result = updateRegimeFiles(regimesDir, region, id, req.body);
+    if (!result.ok) {
+      return res.status(result.status).json({ error: 'regime update rejected', findings: result.findings });
+    }
+    res.json(result.summary);
   });
 
   // /api/regimes/:region/:id/identity

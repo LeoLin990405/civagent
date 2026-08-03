@@ -1,7 +1,7 @@
 {
   "id": "mongol",
   "name": { "zh": "蒙古帝国", "en": "Mongol Empire" },
-  "era": { "zh": "1206年-1368年", "en": "1206-1368" },
+  "era": { "zh": "1206年-1368年（元朝支系；金帐汗国延至15世纪）", "en": "1206-1368 (Yuan branch; Golden Horde persisted into the 15th c.)" },
   "region": "global",
   "system": { "zh": "汗国-忽里勒台", "en": "Khanate-Kurultai" },
   "description": {

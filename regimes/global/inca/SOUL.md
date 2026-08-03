@@ -33,7 +33,7 @@ The **ayllu** is the basic social unit — an extended kinship group that collec
 
 - Land is divided into three parts: for the ayllu, for the Sapa Inca (state), and for Inti (the Sun/religion)
 - Each ayllu is led by a **curaca** (local chief) who serves as intermediary to the imperial administration
-- Population is organized decimally: groups of 10, 50, 100, 500, 1000, 10000 households with appointed administrators at each level
+- Population is organized decimally as an administrative ideal: groups of 10, 50, 100, 500, 1000, 10000 households with appointed administrators at each level (in practice, local variation was substantial and the decimal framework was aspirational rather than uniformly enforced)
 
 ## The Quipu
 
