@@ -541,21 +541,34 @@ export function generateBaseline(regimeId, type, {
     : path.join(baseOut, type, regimeId);
 
   if (destDirOverride) {
-    const controlRoot = path.resolve(projectRoot, "regimes", "_baseline");
-    const rel = path.relative(controlRoot, destDir);
-    if (rel === "" || rel.startsWith("..") || path.isAbsolute(rel)) {
+    // The property that matters is not "lives under _baseline" — examples/smoke.mjs
+    // legitimately stages a control beside an example regime inside a disposable
+    // sandbox. It is: never leave the project's regimes tree, and never write
+    // over a source regime. An earlier version required _baseline and broke the
+    // smoke, which is how a guard that is too strict shows up: as a green local
+    // unit suite and a red end-to-end run.
+    const regimesRoot = path.resolve(projectRoot, "regimes");
+    const relToRegimes = path.relative(regimesRoot, destDir);
+    if (relToRegimes === "" || relToRegimes.startsWith("..") || path.isAbsolute(relToRegimes)) {
       throw new Error(
-        `--dest must be inside regimes/_baseline/ (got ${destDir}); ` +
-        "controls never overwrite source regimes or paths outside the repository",
+        `--dest must be inside ${regimesRoot} (got ${destDir}); ` +
+        "controls never write outside the regimes tree",
       );
     }
-    // Belt and braces: even inside the control root, refuse to write over a
-    // directory that already holds a regime this run did not create.
+    // Never the source regime itself, and never a parent of it.
+    const relToSource = path.relative(destDir, path.resolve(srcDir));
+    if (relToSource === "" || !relToSource.startsWith("..")) {
+      throw new Error(
+        `--dest ${destDir} is the source regime ${srcDir} or contains it; ` +
+        "generating a control there would overwrite the regime it is derived from",
+      );
+    }
+    // Inside the tree, still refuse to clobber a directory holding someone
+    // else's regime; re-generating a control this generator made is fine.
     if (fs.existsSync(destDir)) {
       const existing = fs.readdirSync(destDir);
       const meta = path.join(destDir, "metadata.json");
-      const isOwnControl = fs.existsSync(meta) &&
-        Boolean(readJson(meta)?._baseline);
+      const isOwnControl = fs.existsSync(meta) && Boolean(readJson(meta)?._baseline);
       if (existing.length > 0 && !isOwnControl) {
         throw new Error(
           `--dest ${destDir} is a non-empty directory that is not a generated control; refusing to overwrite`,
@@ -563,6 +576,7 @@ export function generateBaseline(regimeId, type, {
       }
     }
   }
+
 
   // Ensure seed is a 32-bit integer for the PRNG.
   const seed32 = (typeof seed === "number" ? seed : String(seed).split("").reduce((a, c) => ((a << 5) - a + c.charCodeAt(0)) | 0, 0)) | 0;

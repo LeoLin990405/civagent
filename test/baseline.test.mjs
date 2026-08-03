@@ -672,7 +672,7 @@ test("--dest cannot overwrite a source regime", () => {
   const before = fs.readFileSync(identity, "utf8");
   assert.throws(
     () => generateBaseline("china/tang", "solo", { destDir: "regimes/china/tang", seed: 1 }),
-    /must be inside regimes\/_baseline/,
+    /is the source regime .* or contains it/,
   );
   assert.equal(fs.readFileSync(identity, "utf8"), before, "the source regime must be byte-identical");
 });
@@ -681,7 +681,7 @@ test("--dest cannot escape the repository", () => {
   for (const escape of ["../../escape", "/etc", "regimes/../../outside"]) {
     assert.throws(
       () => generateBaseline("china/tang", "solo", { destDir: escape, seed: 1 }),
-      /must be inside regimes\/_baseline/,
+      /must be inside .*regimes/,
       `${escape} must be rejected`,
     );
   }
