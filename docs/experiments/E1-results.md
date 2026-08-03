@@ -150,12 +150,19 @@ Chancellery *fengbo* review (5,262 + 4,247 + 3,004 characters), including
 substantive historical criticism of the draft. The deliberation was happening
 all along.
 
+All character counts in this document and in the READMEs are what the code
+reports — JavaScript `String.length`, i.e. UTF-16 code units. An earlier draft
+said 72,828 for this transcript because it was hand-counted in Python, which
+counts code points; the two differ by exactly the two astral characters (🔄) the
+transcript contains. Both numbers are correct under their own definition, and
+mixing them in one document is not.
+
 **Effect.**
 
 | | E1 (as run) | after the fix |
 |---|---|---|
 | turn events | 3 | 60 |
-| captured characters | 579 | 72,828 |
+| captured characters | 579 | 72,830 |
 | actors | `china/tang` | `china/tang` + `#zhongshu` `#menxia` `#shangshu` |
 
 **A second defect, exposed by the first fix.** With office prose finally
