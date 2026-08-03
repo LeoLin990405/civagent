@@ -507,7 +507,17 @@ GitHub Actions `.github/workflows/ci.yml` 在每个 PR 和每次推送到 `main`
 
 ### 9.3 AI 生成的内容
 
-57 份 IDENTITY.md 由 9 条 AI 流水线并行改写，其史实准确性未经领域专家逐条核验。v5.0.1 通过 3 轮抽样评审发现了 5 处真实错误，详见 [regimes/REVIEW-FINDINGS-v5.md](./regimes/REVIEW-FINDINGS-v5.md)。
+57 份 IDENTITY.md 由 9 条 AI 流水线并行改写，其史实准确性**未经领域专家逐条核验**。v5.0.1 通过 3 轮抽样评审发现了 5 处真实错误，其中 **4 处至今未修**：
+
+| 政体 | 问题 | 状态 |
+|---|---|---|
+| tang | `司礼监` 是明清宦官机构，唐代并无此官 | ✅ v5.0.1 已改为 `中书舍人` |
+| byzantine | `theokrator` 不是标准头衔；牧首对巴西琉斯的伦理否决权被夸大 | ⚠️ 待修（v5.1） |
+| roman-republic | ASCII 图过于线性；公民大会应置于执政官之上 | ⚠️ 待修（v5.1） |
+| prussia | 1701–1918 全期被压缩进一张图；`Ober-Kriegsrat` 可能是虚构的 | ⚠️ 待修（v5.1） |
+| ottoman | `Nişancı` 被误译为"大法官"（应为图格拉花押认证官） | ⚠️ 待修（v5.1） |
+
+详见 [regimes/REVIEW-FINDINGS-v5.md](./regimes/REVIEW-FINDINGS-v5.md)。
 
 ### 9.4 国产模型的内容过滤
 
