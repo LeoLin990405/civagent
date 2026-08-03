@@ -30,6 +30,7 @@ import {
   evaluateEnforcement,
   PLAN_STATES,
 } from "./dispatch-plan.mjs";
+import { compareDispatchPlanToTopology } from "./plan-diff.mjs";
 import {
   classifyTopologyParticipation,
   DISPATCH_OBSERVABILITY,
@@ -217,7 +218,27 @@ async function main() {
     dispatch_plan: dispatchPlan.dispatches,
     dispatch_plan_error: dispatchPlan.error,
   });
-  writeMeta(matchId, { dispatchPlan });
+  // B's dependent variable is the deviation between the voluntary plan and the
+  // declared topology. plan-diff.mjs computed it, nothing ever called it, and
+  // nothing wrote it down — the same shape as biasReport, which judge() produced
+  // and the manifest dropped. An E2 calibration cell came back with the plan
+  // recorded and the comparison absent, which is a run that measures A and
+  // silently collects nothing for B.
+  let planDiff;
+  try {
+    const topo = JSON.parse(fs.readFileSync(path.join(regimeDir, "topology.json"), "utf8"));
+    planDiff = compareDispatchPlanToTopology(dispatchPlan, topo);
+  } catch (err) {
+    // A regime without topology.json cannot be compared; say so rather than
+    // omitting the field, so an absent comparison is distinguishable from one
+    // that was never attempted.
+    planDiff = {
+      plan_status: dispatchPlan.status,
+      comparison_available: false,
+      reason: `topology unavailable: ${err.message}`,
+    };
+  }
+  writeMeta(matchId, { dispatchPlan, planDiff });
 
   const enforcementSetup = enforceDispatch
     ? loadRequiredOffices(regimeDir)
