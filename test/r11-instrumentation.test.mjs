@@ -444,6 +444,11 @@ test("R11 tournament CLI propagates enforcement into real child specs and manife
       assert.equal(civ.topologyParticipation.status, "participation_observed");
       assert.equal(typeof civ.aEligible, "boolean");
       assert.ok(civ.dispatchPlan);
+      // The manifest must carry planDiff, not just the per-match meta: E3's D4
+      // is scored from the manifest, and the projection above once omitted it
+      // while every other field went through.
+      assert.ok(civ.planDiff, "manifest civ must carry planDiff");
+      assert.equal(typeof civ.planDiff.comparison_available, "boolean");
     }
   } finally {
     fs.rmSync(fake.bin, { recursive: true, force: true });

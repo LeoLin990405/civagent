@@ -539,6 +539,11 @@ export async function runTournament({
       exitCode: r.code,
       events: eventsPath(r.matchId),
       dispatchPlan: r.dispatchPlan,
+      // planDiff is D4's dependent variable in the E3 registration. It was
+      // computed, written to the match meta, and then dropped here — so the
+      // manifest, which is the artifact analysis reads, silently lacked the
+      // one field the prediction names. Asserted in r11-instrumentation.
+      ...(r.planDiff ? { planDiff: r.planDiff } : {}),
       dispatchEnforcement: r.dispatchEnforcement,
       topologyParticipation: r.topologyParticipation,
       aEligible: r.aEligible,
