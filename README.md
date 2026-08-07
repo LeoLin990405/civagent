@@ -718,7 +718,15 @@ Two pilots have been run and both are recorded in `docs/experiments/`, including
 
 **E1-control** (5 source/control pairs × 3 scenarios) was scored against pre-registered rules: historical wiring won **0** resolved pairs, the seeded random rewiring won 1, 5 were inside the judge's own noise, and 9 were excluded. The exclusions are the finding: **in 14 of 30 arms the regime never called a single office**, so neither topology was exercised. Delegation turned out to be driven by the scenario (plague 10/10 delegated, militarization 2/10) rather than by the constitution, and source and control arms failed to delegate at exactly the same rate — 7/15 each.
 
-So the honest status is: **no claim that governance topology affects multi-agent performance is supported yet, and neither is the opposite.** The obstacle moved from "the harness discards the deliberation" (fixed) to "the regimes frequently do not deliberate", which §3.5's dispatch plan and enforcement exist to separate. E2 is designed and pre-registered at `docs/experiments/E2-preregistration.md`; it has not been run.
+**E3** (4 backends × 5 pairs × 3 scenarios × 5 repeats = **60 tournaments, 600 arms**, delegation enforced on every arm) is the first run to produce a positive result, and it replicates: the historical wiring takes **25/26, 28/32, 16/20 and 19/22** of the resolved pairs on doubao, glm, minimax and qwen. Mean Δ is positive in all twenty backend×regime and all twelve backend×scenario combinations. E1's verbosity confound is ruled out by measurement rather than argument — source arms produce 1.4–2.5× more raw transcript, but ~100% of arms on *both* sides saturate the 6,000-character budget, so the judge reads the same volume from each.
+
+Three qualifiers travel with that result and are not footnotes:
+
+1. **D2's threshold was ambiguous and the reading matters.** Under the stricter pooled-per-backend noise floor, minimax's effect disappears entirely (0 source, 1 control) and qwen's rests on two pairs. "4 of 4" is the per-tournament reading; the conservative reading gives 3 of 4.
+2. **Topology is not separated from prose quality.** The control rewires the decision flow, but a rewired flow is also a machine-written one. The judge may be rewarding the coherence of the original documents rather than the structure they encode. Nothing in E3 distinguishes these, and a prose-controlled rewiring is the next experiment.
+3. **The effect requires enforcement.** Every E3 arm ran with `--enforce-dispatch`; E1-control, without it, produced zero source wins. And D4 shows the wiring is *not* spontaneously adopted: no model ever invents an undeclared office, but every model omits declared ones — 0.84 to 2.11 per plan — and only 13% (doubao) to 57% (qwen) of plans reproduce the declared roster.
+
+So the honest status is: **historical wiring outperforms scrambled wiring when it is imposed, on four independent model families — and models mostly do not impose it on themselves.** That is narrower than §1.2's "reusable orchestration patterns", which requires adoption as well as effect. Full results: `docs/experiments/E3-results.md`.
 
 ---
 

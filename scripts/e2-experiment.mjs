@@ -45,7 +45,13 @@ export function buildE2Plan({
   for (let repeat = 1; repeat <= repeats; repeat += 1) {
     const regimes = rotate(baseRegimes, repeat - 1);
     for (const scenario of scenarios) {
-      const id = `e2-${scenario.id}-r${String(repeat).padStart(2, "0")}`;
+      // The backend has to be in the id. E3 treats it as a blocking factor, so
+      // five strata run the same scenario/repeat grid; without it every stratum
+      // would write to the same tournament directory and the same state key,
+      // and resume would skip a cell because a *different* model had already
+      // run it — five strata silently collapsing into one.
+      const backendTag = backend.replace(/[^A-Za-z0-9]+/g, "-");
+      const id = `e3-${backendTag}-${scenario.id}-r${String(repeat).padStart(2, "0")}`;
       const civs = regimes.map((regime) => `${regime}#${backend}`);
       jobs.push({
         id,
@@ -89,7 +95,9 @@ export function parseE2Args(argv) {
     cooldownMs: 0,
     afpLimit: 10_000,
     windowMs: 5 * 60 * 60 * 1000,
-    statePath: path.join(os.homedir(), ".civagent", "experiments", "e2-state.json"),
+    // Per-backend state file for the same reason; a shared one would let one
+    // stratum's progress mask another's.
+    statePath: null,
     execute: false,
     json: false,
   };
@@ -115,6 +123,10 @@ export function parseE2Args(argv) {
     else if (arg === "--window-ms") options.windowMs = positiveInteger(value(), "window-ms");
     else if (arg === "--state") options.statePath = path.resolve(value());
     else throw new Error(`unknown argument: ${arg}`);
+  }
+  if (!options.statePath) {
+    const tag = String(options.backend || "unknown").replace(/[^A-Za-z0-9]+/g, "-");
+    options.statePath = path.join(os.homedir(), ".civagent", "experiments", `e3-${tag}-state.json`);
   }
   return options;
 }
