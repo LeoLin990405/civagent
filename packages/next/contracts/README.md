@@ -86,8 +86,9 @@ an event can reference an artifact only after its CAS publication is durable
 |---|---|
 | Canonical event | `civ.event/1` |
 | Frozen corpus ledger | `corpus-v1` |
-| Runtime manifest | `runtime-manifest/1` (future; plan §11.2) |
-| RegimeIR | `regime-ir/1` (future; plan §8.1) |
+| Runtime manifest | `runtime-manifest/1` (plan §11.2) |
+| RegimeIR | `regime-ir/1` (plan §8.1) |
+| Feed protocol (P5) | `civ.feed/1`, `civ.describe/1` (plan §14.2) |
 
 ## 6. Contract freeze (P3 gate)
 
