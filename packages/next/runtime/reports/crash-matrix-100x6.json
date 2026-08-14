@@ -1,0 +1,69 @@
+{
+  "schema": "crash-matrix/1",
+  "instrumentVersion": "native-next-v1-crash",
+  "trialsPerBoundary": 100,
+  "boundaries": [
+    "before_start_intent",
+    "after_start_intent",
+    "mid_receipt",
+    "after_receipt",
+    "mid_terminal",
+    "after_terminal"
+  ],
+  "totals": {
+    "trialsRun": 600,
+    "failures": 0,
+    "pass": 600,
+    "passRate": 1
+  },
+  "results": {
+    "before_start_intent": {
+      "trials": 100,
+      "ok": 100,
+      "violations": [],
+      "classifications": {
+        "NOT_STARTED": 100
+      }
+    },
+    "after_start_intent": {
+      "trials": 100,
+      "ok": 100,
+      "violations": [],
+      "classifications": {
+        "START_OUTCOME_UNKNOWN": 100
+      }
+    },
+    "mid_receipt": {
+      "trials": 100,
+      "ok": 100,
+      "violations": [],
+      "classifications": {
+        "START_OUTCOME_UNKNOWN": 100
+      }
+    },
+    "after_receipt": {
+      "trials": 100,
+      "ok": 100,
+      "violations": [],
+      "classifications": {
+        "EFFECT_OUTCOME_UNKNOWN": 100
+      }
+    },
+    "mid_terminal": {
+      "trials": 100,
+      "ok": 100,
+      "violations": [],
+      "classifications": {
+        "EFFECT_OUTCOME_UNKNOWN": 100
+      }
+    },
+    "after_terminal": {
+      "trials": 100,
+      "ok": 100,
+      "violations": [],
+      "classifications": {
+        "COMPLETED": 100
+      }
+    }
+  }
+}

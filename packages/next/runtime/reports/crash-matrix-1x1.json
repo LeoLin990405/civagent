@@ -1,0 +1,31 @@
+{
+  "schema": "crash-matrix/1",
+  "instrumentVersion": "native-next-v1-crash",
+  "trialsPerBoundary": 1,
+  "boundaries": [
+    "after_terminal"
+  ],
+  "totals": {
+    "trialsRun": 1,
+    "failures": 1,
+    "pass": 0,
+    "passRate": 0
+  },
+  "results": {
+    "after_terminal": {
+      "trials": 1,
+      "ok": 0,
+      "violations": [
+        {
+          "trial": 0,
+          "violations": [
+            "classification EFFECT_OUTCOME_UNKNOWN != expected COMPLETED"
+          ]
+        }
+      ],
+      "classifications": {
+        "EFFECT_OUTCOME_UNKNOWN": 1
+      }
+    }
+  }
+}

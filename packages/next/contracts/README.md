@@ -89,8 +89,15 @@ an event can reference an artifact only after its CAS publication is durable
 | Runtime manifest | `runtime-manifest/1` (future; plan §11.2) |
 | RegimeIR | `regime-ir/1` (future; plan §8.1) |
 
-## 6. Executable tests
+## 6. Contract freeze (P3 gate)
+
+After the P3 SIGKILL fault matrix (600/600 trials), the versions in §5 are
+**frozen**: any schema change is a compatibility project and a new
+`instrumentVersion` semantic class (plan §2 invariant 9). The crash matrix
+report schema is `crash-matrix/1`.
+
+## 7. Executable tests
 
 ```bash
-npm run test:next          # node --test packages/next/contracts/test/
+npm run test:next          # contracts + domain + runtime L0 suites
 ```

@@ -15,7 +15,7 @@ export const CANONICAL_TYPES = [
   "match.admitted", "turn.observed", "operation.observed", "judge.observed",
   "skill.event", "mechanism.triggered", "match.terminal", "legacy.unmapped",
   // native runtime surface
-  "turn.claimed", "model.start_intent", "model.raw_chunk", "model.response",
+  "turn.claimed", "model.start_intent", "model.receipt", "model.raw_chunk", "model.response",
   "model.error", "model.cancelled", "surface.revision", "operation.outcome",
   "recovery.completed",
   // native durable inbox (P2)
