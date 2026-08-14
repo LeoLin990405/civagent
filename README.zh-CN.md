@@ -495,6 +495,50 @@ GitHub Actions `.github/workflows/ci.yml` 在每个 PR 和每次推送到 `main`
 
 ---
 
+## Native Next 运行时 —— DeepSeek Harness 采纳计划的落地实现（`packages/next`）
+
+> **状态：P0–P5、harness-adapter 边界、研究 GUI 与 P6 试点机制已全部交付 —— `npm run test:next` 108/108 通过、lint 全净，位于分支 `docs/harness-next-plan`。实况通道仅剩提供方凭证这一个外部依赖。**
+
+CivAgent Next 正在按
+[docs/DEEPSEEK-HARNESS-ADOPTION-RESEARCH-PLAN.md](docs/DEEPSEEK-HARNESS-ADOPTION-RESEARCH-PLAN.md)
+构建为**不依赖 Claude Code 的原生智能体运行时**（legacy 基线钉在
+`1460441`，Harness pin `47f9438`）。现有 Claude Code 仪器冻结为
+`legacy-cc-v5` epoch；新运行时是独立的 `native-next-v1` epoch —— 二者永不混池、
+永不并列排名、绝不被描述为纵向改进。
+
+`packages/next/` 下的交付物：
+
+| 领域 | 交付物 |
+|---|---|
+| 契约 | `civ.event/1` + `civ.id/1` schema、epoch 无混池规则、schema 版本冻结 |
+| 语料 | 105 条冻结 legacy trace + 3 场锦标赛（SHA-256 覆盖台账），事件/字段 100% 映射 |
+| 证据 | 不可变 CAS、单写者 segment、SegmentSeal 崩溃恢复 —— **SIGKILL 矩阵 600/600** |
+| 域 | RegimeIR 编译器（含 flat/solo 真实 regime）、类型化 handoff、图/策略引擎、3 种编排模式、自有锦标赛、配对盲审、技能溯源 |
+| 运行时 | 垂直切片（manifest→CAS→segment→操作→surface→重放）、持久 inbox、fork/resume、崩溃恢复、24-cell 因子试点 + legacy 臂、功效计算器 |
+| Provider | 行为脚本、fake 适配器、**直连 HTTP 适配器**（DeepSeek/ARK origin，SecretBroker 凭证强制） |
+| 边界 | `harness-adapter` —— 唯一 `@deepseek-ai/*` 导入点；exports-only 导入 lint |
+| 控制平面 | `civ.describe`、作用域化 `civ.events`（Unix socket + RFC 6455 WebSocket）、CLI、**研究 GUI**（`ui/index.html`，opencli 实测真实浏览器 L4） |
+
+**运行方式：**
+
+```bash
+npm run test:next            # 108 项测试（contracts/domain/runtime/host/adapter）
+npm run lint:next-imports    # 适配器导入闸门（计划 §4.2）
+node packages/next/host/serve.mjs --match m1 --store <segment-dir> --ws-port 8899
+# 浏览器打开 http://127.0.0.1:8899/ 查看研究 GUI
+```
+
+证据索引：`packages/next/` 下 `P0-EVIDENCE.md` … `P6-EVIDENCE.md`、
+`ADAPTER-EVIDENCE.md`、`GUI-EVIDENCE.md`、`LIVE-LANE-EVIDENCE.md`、
+`BROWSER-TRACE-EVIDENCE.md`、`IMPLEMENTATION-STATUS.md`、
+`PREREGISTRATION-CHECKLIST.md`、`P6-PREREGISTRATION.md`。
+
+**剩余：** 预算化实况 provider 调用（真实 API key 是唯一外部依赖 ——
+网络出口已验证、适配器就绪）、基于实况试点方差的确认性功效、以及 GA 评分
+（§20.2，按设计在确认性 GA 时评估）。
+
+---
+
 ## 9. 局限
 
 ### 9.1 制度压缩

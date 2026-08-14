@@ -650,6 +650,52 @@ GitHub Actions `.github/workflows/ci.yml` runs the same sequence on every PR and
 
 ---
 
+## Native Next Runtime — DeepSeek Harness adoption implementation (`packages/next`)
+
+> **Status: P0–P5, the harness-adapter boundary, the research GUI, and the P6 pilot machinery are delivered — 108/108 tests (`npm run test:next`), lints clean, on branch `docs/harness-next-plan`. The live lane awaits provider credentials (the only external dependency).**
+
+CivAgent Next is being built as a **native agent runtime with no Claude Code
+dependency**, following
+[docs/DEEPSEEK-HARNESS-ADOPTION-RESEARCH-PLAN.md](docs/DEEPSEEK-HARNESS-ADOPTION-RESEARCH-PLAN.md)
+(legacy baseline pinned `1460441`, Harness pin `47f9438`). The current
+Claude-Code instrument is frozen as the `legacy-cc-v5` epoch; the new runtime
+is the separate `native-next-v1` epoch — the two are never pooled, ranked
+together, or described as longitudinal improvement.
+
+What exists under `packages/next/`:
+
+| Area | Deliverables |
+|---|---|
+| Contracts | `civ.event/1` + `civ.id/1` schemas, epoch/no-pooling rules, frozen schema versions |
+| Corpus | 105 frozen legacy traces + 3 tournaments (SHA-256 coverage ledger), 100% event/field mapping |
+| Evidence | Immutable CAS, single-writer segments, SegmentSeal crash recovery — **SIGKILL matrix 600/600** |
+| Domain | RegimeIR compiler (real regimes incl. flat/solo), typed handoffs, graph/policy engine, 3 orchestration modes, owned tournaments, paired blind judging, skill provenance |
+| Runtime | Vertical slice (manifest→CAS→segment→operation→surface→replay), durable inbox, fork/resume, crash recovery, 24-cell factorial pilot + legacy arm, power calculator |
+| Providers | Behavior scripts, fake adapter, **direct HTTP adapters** (DeepSeek/ARK origins, SecretBroker credential enforcement) |
+| Boundary | `harness-adapter` — the only `@deepseek-ai/*` import point; exports-only import lint |
+| Control plane | `civ.describe`, scoped `civ.events` (Unix socket + RFC 6455 WebSocket), CLI client, **research GUI** (`ui/index.html`, real-browser L4 verified via opencli) |
+
+**Run it:**
+
+```bash
+npm run test:next            # 108 tests across contracts/domain/runtime/host/adapter
+npm run lint:next-imports    # adapter import gate (plan §4.2)
+node packages/next/host/serve.mjs --match m1 --store <segment-dir> --ws-port 8899
+# open http://127.0.0.1:8899/ in a browser for the research GUI
+```
+
+Evidence index: `packages/next/` — `P0-EVIDENCE.md` … `P6-EVIDENCE.md`,
+`ADAPTER-EVIDENCE.md`, `GUI-EVIDENCE.md`, `LIVE-LANE-EVIDENCE.md`,
+`BROWSER-TRACE-EVIDENCE.md`, `IMPLEMENTATION-STATUS.md`,
+`PREREGISTRATION-CHECKLIST.md`, `P6-PREREGISTRATION.md`.
+
+**Remaining:** budgeted live provider calls (a real API key is the only
+external dependency — network egress verified, adapters ready), confirmatory
+power from live pilot variance, and the GA score (§20.2, evaluated by design
+at confirmatory GA).
+
+---
+
 ## 9. Limitations
 
 ### 9.1 Institutional Compression
