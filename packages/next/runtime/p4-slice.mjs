@@ -51,7 +51,7 @@ export function judgeScript(armA, armB, swap) {
  * One owned match: single planner turn producing the model-visible surface
  * text + evidence digests (request/response/chunks in CAS).
  */
-function runMatch({ matchId, cas, store, text }) {
+async function runMatch({ matchId, cas, store, text }) {
   const session = new AgentSession({ sessionId: `sess-${matchId}`, matchId }).markReady();
   const turn = new Turn({ turnId: newId("turn"), sessionId: session.sessionId, activationId: newId("act") });
   session.enqueue(turn);
@@ -59,7 +59,7 @@ function runMatch({ matchId, cas, store, text }) {
   turn.state = transition("turn", turn.state, "RUNNING", TURN_TRANSITIONS);
   const op = new Operation({ operationId: newId("op"), matchId, sessionId: session.sessionId, turnId: turn.turnId, purpose: "planner" });
   const gateway = new ModelGateway({ cas, eventStore: store, provider: new FakeProvider(turnScript("planner", text)), instrumentVersion: P4_INSTRUMENT });
-  const outcome = gateway.request({ operation: op, model: "fake-model", systemPrompt: "你是本朝谋臣。", messages: [{ role: "user", content: "治理任务" }], tools: [] });
+  const outcome = await gateway.request({ operation: op, model: "fake-model", systemPrompt: "你是本朝谋臣。", messages: [{ role: "user", content: "治理任务" }], tools: [] });
   const surfaceEvent = {
     schema: "civ.event/1", epoch: "native-next-v1", instrumentVersion: P4_INSTRUMENT,
     generation: store.generation, eventId: newId("surf"), ts: Date.now(), matchId,
@@ -73,11 +73,11 @@ function runMatch({ matchId, cas, store, text }) {
 }
 
 /** One blind judge pass (purpose "judge", correlated, scripted). */
-function judgePass({ cas, store, armA, armB, swap, passId }) {
+async function judgePass({ cas, store, armA, armB, swap, passId }) {
   const presentation = blindPresentation(armA, armB, { swap });
   const op = new Operation({ operationId: newId("op"), matchId: `judge-${passId}`, sessionId: null, turnId: null, purpose: "judge" });
   const gateway = new ModelGateway({ cas, eventStore: store, provider: new FakeProvider(judgeScript(armA, armB, swap)), instrumentVersion: P4_INSTRUMENT });
-  const outcome = gateway.request({
+  const outcome = await gateway.request({
     operation: op, model: "fake-model", systemPrompt: presentation.prompt,
     messages: [{ role: "user", content: `Score Civ A and Civ B. Presentation: A=${presentation.labelA}, B=${presentation.labelB}` }], tools: [],
   });
@@ -94,7 +94,7 @@ function judgePass({ cas, store, armA, armB, swap, passId }) {
 }
 
 /** Full P4 slice. Returns the evidence object. */
-export function runP4Slice({ dir } = {}) {
+export async function runP4Slice({ dir } = {}) {
   const dirOut = dir ?? fs.mkdtempSync(path.join(os.tmpdir(), "civ-p4-"));
   const cas = new Cas(path.join(dirOut, "evidence"));
   const store = new EventStore(path.join(dirOut, "segments"), { generation: 1, segmentId: "p4-g1", writer: "p4-slice", instrumentVersion: P4_INSTRUMENT });
@@ -148,8 +148,8 @@ export function runP4Slice({ dir } = {}) {
   for (const m of tournament.matches.filter((x) => x.state === "ADMITTED" && x.matchId.startsWith("p4-m-"))) {
     tournament.startMatch(m.matchId);
   }
-  const armA = runMatch({ matchId: "p4-m-tang", cas, store, text: "臣谨奏：先固边墙，再议漕运，以省府库。" });
-  const armB = runMatch({ matchId: "p4-m-qin", cas, store, text: "臣谨奏：商鞅之法，赏罚分明，边军自足。" });
+  const armA = await runMatch({ matchId: "p4-m-tang", cas, store, text: "臣谨奏：先固边墙，再议漕运，以省府库。" });
+  const armB = await runMatch({ matchId: "p4-m-qin", cas, store, text: "臣谨奏：商鞅之法，赏罚分明，边军自足。" });
   for (const m of tournament.matches.filter((x) => x.matchId.startsWith("p4-m-"))) tournament.terminalMatch(m.matchId);
 
   // ── paired blind judging with swap balance ──────────────────────────────
@@ -159,8 +159,8 @@ export function runP4Slice({ dir } = {}) {
   };
   const eligibility = judgeEligible({ armA: arms.A, armB: arms.B, evidenceDigests: [arms.A.evidenceDigest, arms.B.evidenceDigest] });
   const passes = [
-    judgePass({ cas, store, armA: arms.A, armB: arms.B, swap: false, passId: "p1" }),
-    judgePass({ cas, store, armA: arms.A, armB: arms.B, swap: true, passId: "p2" }),
+    await judgePass({ cas, store, armA: arms.A, armB: arms.B, swap: false, passId: "p1" }),
+    await judgePass({ cas, store, armA: arms.A, armB: arms.B, swap: true, passId: "p2" }),
   ];
   const aggregate = aggregateScores(passes);
   tournament.terminalMatch("p4-m-tang", { score: aggregate.total.A });
@@ -223,8 +223,8 @@ export function runP4Slice({ dir } = {}) {
   return evidence;
 }
 
-function main() {
-  const evidence = runP4Slice();
+async function main() {
+  const evidence = await runP4Slice();
   console.log(JSON.stringify({
     tournament: evidence.tournament.tournamentId,
     matches: evidence.rawEvidence.ownedMatches,

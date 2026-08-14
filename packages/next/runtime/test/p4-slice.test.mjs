@@ -16,7 +16,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 test("P4 slice: eligibility denials, swap-balanced blind judge, skills, raw evidence survives", async () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "civ-p4test-"));
-  const ev = runP4Slice({ dir });
+  const ev = await runP4Slice({ dir });
   // denials
   const labels = new Map(ev.denialEvidence.map((d) => [d.label, d.denied]));
   assert.equal(labels.get("one-sided pair"), true);

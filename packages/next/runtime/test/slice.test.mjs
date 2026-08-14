@@ -20,7 +20,7 @@ function tmpDir() {
 
 test("vertical slice: all ten evidence items pass", async () => {
   const dir = tmpDir();
-  const ev = runVerticalSlice({ dir });
+  const ev = await runVerticalSlice({ dir });
   // 1. manifest bytes and digest
   assert.ok(ev.manifest.digest.length === 64);
   assert.ok(ev.manifest.bytes > 0);
@@ -65,7 +65,7 @@ test("vertical slice: all ten evidence items pass", async () => {
   assert.ok(cas.exists(ev.response.artifactDigest));
 });
 
-test("assertConsumed catches unused scripted behavior (hidden-call protection)", () => {
+test("assertConsumed catches unused scripted behavior (hidden-call protection)", async () => {
   const dir = tmpDir();
   const script = new BehaviorScript([
     { expect: { purpose: "planner" }, behave: { kind: "chunks", data: { chunks: ["a"], usage: { inputTokens: 1, outputTokens: 1 } } } },
@@ -73,7 +73,7 @@ test("assertConsumed catches unused scripted behavior (hidden-call protection)",
   ]);
   // the slice runs its own teardown gate; an unconsumed scripted behavior
   // fails the run closed instead of producing evidence
-  assert.throws(() => runVerticalSlice({ dir, script }), /unconsumed scripted behaviors/);
+  await assert.rejects(() => runVerticalSlice({ dir, script }), /unconsumed scripted behaviors/);
   assert.equal(script.steps.length, 1);
 });
 
@@ -87,7 +87,7 @@ test("unexpected outbound request fails loudly (empty script)", async () => {
   const store = new EventStore(path.join(dir, "seg"), { generation: 1, segmentId: "x", writer: "x", instrumentVersion: "iv" });
   const op = new Operation({ operationId: "op", matchId: "m", sessionId: "s", turnId: "t", purpose: "planner" });
   const gateway = new ModelGateway({ cas, eventStore: store, provider: new FakeProvider(script), instrumentVersion: "iv" });
-  assert.throws(() => gateway.request({ operation: op, model: "m", systemPrompt: "p", messages: [], tools: [] }), /UNEXPECTED REQUEST/);
+  await assert.rejects(() => gateway.request({ operation: op, model: "m", systemPrompt: "p", messages: [], tools: [] }), /UNEXPECTED REQUEST/);
 });
 
 test("behavior scripts: rate limit, eof early, malformed, overflow, cancellation", async () => {
@@ -109,7 +109,7 @@ test("behavior scripts: rate limit, eof early, malformed, overflow, cancellation
     const script = new BehaviorScript([{ expect: { purpose: "planner" }, behave: { kind: c.kind, data: { message: "x", retryAfterMs: 1000, frames: ["{bad"], chunks: ["partial"] } } }]);
     const op = new Operation({ operationId: "op", matchId: "m", sessionId: "s", turnId: "t", purpose: "planner" });
     const gateway = new ModelGateway({ cas, eventStore: store, provider: new FakeProvider(script), instrumentVersion: "iv" });
-    const result = gateway.request({ operation: op, model: "m", systemPrompt: "p", messages: [], tools: [] });
+    const result = await gateway.request({ operation: op, model: "m", systemPrompt: "p", messages: [], tools: [] });
     assert.ok(c.expect(result), `${c.kind} outcome mismatch: ${JSON.stringify(result)}`);
     assert.equal(script.steps.length, 0, "script fully consumed");
     assert.ok(["OP_SETTLED", "OP_FLUSHED", "START_OUTCOME_UNKNOWN", "FAILED_BEFORE_START", "EFFECT_OUTCOME_UNKNOWN"].includes(op.state), `${c.kind} op state ${op.state}`);

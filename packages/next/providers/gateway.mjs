@@ -68,7 +68,7 @@ export class ModelGateway {
    *   {status:"hang", requestDigest}                    — no receipt after start intent
    *   {status:"cancelled", requestDigest, phase}
    */
-  request({ operation, model, systemPrompt, messages, tools = [] }) {
+  async request({ operation, model, systemPrompt, messages, tools = [] }) {
     if (operation.state !== "ACCEPTED") throw new Error(`operation must be ACCEPTED, got ${operation.state}`);
 
     // 1. canonical request artifact, durable before anything leaves
@@ -91,8 +91,8 @@ export class ModelGateway {
     operation.startIntentDurable();
     this._emit(operation, "model.start_intent", { model, requestDigest, requestBytes: requestBytes.length }, [requestDigest]);
 
-    // 3. transport (scripted fake provider; a real adapter streams HTTP here)
-    const outcome = this.provider.send(request);
+    // 3. transport (scripted fake provider or the direct HTTP adapter)
+    const outcome = await this.provider.send(request);
 
     switch (outcome.kind) {
       case "stream": {

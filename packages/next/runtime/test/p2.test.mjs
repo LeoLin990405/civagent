@@ -23,7 +23,7 @@ const TANG = path.join(REGIMES, "china/tang");
 test("P2 flow: all three modes exercise all 9 offices, roster complete, 15 declared edges", async () => {
   const { ir, digest } = new RegimeCompiler().compile(TANG);
   for (const mode of ["observational", "roster_enforced", "graph_enforced"]) {
-    const r = executeRegimeFlow({ ir, mode, regimeDigest: digest });
+    const r = await executeRegimeFlow({ ir, mode, regimeDigest: digest });
     assert.equal(Object.keys(r.participation.offices).length, 9, `${mode}: all offices participate`);
     assert.equal(r.roster.complete, true, `${mode}: roster complete`);
     assert.equal(r.topology.exercisedDeclaredCount, 15, `${mode}: all declared edges exercised`);
@@ -40,9 +40,9 @@ test("P2 flow: all three modes exercise all 9 offices, roster complete, 15 decla
   }
 });
 
-test("graph_enforced rejects invalid handoffs before enqueue; markers never grant", () => {
+test("graph_enforced rejects invalid handoffs before enqueue; markers never grant", async () => {
   const { ir, digest } = new RegimeCompiler().compile(TANG);
-  const r = executeRegimeFlow({ ir, mode: "graph_enforced", regimeDigest: digest, modeEvidence: buildRejectionEvidence });
+  const r = await executeRegimeFlow({ ir, mode: "graph_enforced", regimeDigest: digest, modeEvidence: buildRejectionEvidence });
   assert.equal(r.modeEvidence.unknownEdge.accepted, false);
   assert.match(r.modeEvidence.unknownEdge.rejectReason, /not declared/);
   assert.equal(r.modeEvidence.wrongKind.accepted, false);
@@ -50,12 +50,12 @@ test("graph_enforced rejects invalid handoffs before enqueue; markers never gran
   assert.equal(r.modeEvidence.markerText.granted, false);
 });
 
-test("observational records undeclared edges; graph_enforced does not pool with it", () => {
+test("observational records undeclared edges; graph_enforced does not pool with it", async () => {
   const { ir, digest } = new RegimeCompiler().compile(TANG);
-  const obs = executeRegimeFlow({ ir, mode: "observational", regimeDigest: digest, modeEvidence: buildObservationalEvidence });
+  const obs = await executeRegimeFlow({ ir, mode: "observational", regimeDigest: digest, modeEvidence: buildObservationalEvidence });
   assert.equal(obs.modeEvidence.undeclaredEdgeAcceptedAndRecorded, true);
   assert.equal(obs.modeEvidence.topologyAfterUndeclared.unknownObservedCount, 1);
-  const g = executeRegimeFlow({ ir, mode: "graph_enforced", regimeDigest: digest });
+  const g = await executeRegimeFlow({ ir, mode: "graph_enforced", regimeDigest: digest });
   assert.equal(g.topology.unknownObservedCount, 0);
   assert.notEqual(obs.participation.mode, g.participation.mode, "modes never pool");
 });
@@ -129,7 +129,7 @@ test("fork: deterministic forkHash over the balanced completed prefix", () => {
 
 test("P2 evidence report: modes tagged, never pooled, report committed", async () => {
   const reportFile = path.join(P2_REPORT_DIR, "p2-slice-evidence.json");
-  const evidence = runAllModes({ regimeDir: TANG, reportFile });
+  const evidence = await runAllModes({ regimeDir: TANG, reportFile });
   assert.ok(fs.existsSync(reportFile));
   assert.equal(evidence.regime, "china/tang");
   const modes = Object.keys(evidence.modes);

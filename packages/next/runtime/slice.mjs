@@ -100,7 +100,7 @@ function emit(store, instrumentVersion, opts) {
  * Run the vertical slice once. Returns the evidence object.
  * @param {object} opts {dir, matchId?, sessionId?, script?}
  */
-export function runVerticalSlice(opts = {}) {
+export async function runVerticalSlice(opts = {}) {
   // scratch runs go to the OS temp dir; only the final evidence JSON is kept
   // under reports/ (never commit per-run artifact trees)
   const dir = opts.dir ?? fs.mkdtempSync(path.join(os.tmpdir(), "civ-slice-"));
@@ -142,7 +142,7 @@ export function runVerticalSlice(opts = {}) {
   });
   const provider = new FakeProvider(opts.script ?? SLICE_SCRIPT);
   const gateway = new ModelGateway({ cas, eventStore: store, provider, instrumentVersion });
-  const outcome = gateway.request({
+  const outcome = await gateway.request({
     operation: op,
     model: "fake-model",
     systemPrompt: "你是本朝首席谋臣。",
@@ -178,7 +178,7 @@ export function runVerticalSlice(opts = {}) {
   const replayEqual = replayedHash === sHash;
 
   // ── 8. crash classifications (fresh mini-stores) ─────────────────────────
-  const crash = crashClassifications(path.join(dir, "crash"), instrumentVersion, cas);
+  const crash = await crashClassifications(path.join(dir, "crash"), instrumentVersion);
 
   // ── 9. zero hidden outbound requests ─────────────────────────────────────
   provider.assertConsumed();
@@ -224,7 +224,7 @@ export function runVerticalSlice(opts = {}) {
 }
 
 /** §16 item 8: classification at each durability boundary (plan §9.3). */
-export function crashClassifications(baseDir, instrumentVersion) {
+export async function crashClassifications(baseDir, instrumentVersion) {
   const out = {};
 
   // (a) crash between start-intent commit and transport receipt
@@ -235,7 +235,7 @@ export function crashClassifications(baseDir, instrumentVersion) {
     const op = new Operation({ operationId: "crash-a-op", matchId: "crash-a", sessionId: null, turnId: null, purpose: "planner" });
     const provider = new FakeProvider(requireScript("hang"));
     const gateway = new ModelGateway({ cas, eventStore: store, provider, instrumentVersion });
-    gateway.request({ operation: op, model: "fake-model", systemPrompt: "p", messages: [], tools: [] });
+    await gateway.request({ operation: op, model: "fake-model", systemPrompt: "p", messages: [], tools: [] });
     store.close("crash");
     const pathA = op.history.map((h) => h.to);
     out.a = {
@@ -291,8 +291,8 @@ function countOpenFds() {
   }
 }
 
-function main() {
-  const evidence = runVerticalSlice();
+async function main() {
+  const evidence = await runVerticalSlice();
   fs.mkdirSync(SLICE_REPORT_DIR, { recursive: true });
   const reportFile = path.join(SLICE_REPORT_DIR, "vertical-slice-evidence.json");
   fs.writeFileSync(reportFile, JSON.stringify(evidence, null, 2) + "\n");

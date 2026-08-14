@@ -47,7 +47,7 @@ export function officeScript(officeId, text = `臣（${officeId}）谨奏。`) {
  * Execute the declared graph of one RegimeIR in one mode.
  * @param {object} opts {ir, mode, dir, emitExtra?}
  */
-export function executeRegimeFlow(opts) {
+export async function executeRegimeFlow(opts) {
   const { ir, mode } = opts;
   const dir = opts.dir ?? fs.mkdtempSync(path.join(os.tmpdir(), "civ-p2-"));
   const cas = new Cas(path.join(dir, "evidence"));
@@ -85,7 +85,7 @@ export function executeRegimeFlow(opts) {
   };
 
   /** One office turn through the ModelGateway with a scripted provider. */
-  function executeTurn(officeId) {
+  async function executeTurn(officeId) {
     const session = sessionOf(officeId);
     const activationId = newId("act");
     session.startActivation(activationId);
@@ -96,7 +96,7 @@ export function executeRegimeFlow(opts) {
     emit(session, "turn.claimed", { officeId, turnId: turn.turnId });
     const op = new Operation({ operationId: newId("op"), matchId, sessionId: session.sessionId, turnId: turn.turnId, purpose: `office-${officeId}` });
     const gateway = new ModelGateway({ cas, eventStore: store, provider: new FakeProvider(officeScript(officeId)), instrumentVersion: P2_INSTRUMENT });
-    const outcome = gateway.request({
+    const outcome = await gateway.request({
       operation: op, model: "fake-model",
       systemPrompt: `你是${officeId}。`, messages: [{ role: "user", content: `执行任务（${officeId}）` }], tools: [],
     });
@@ -113,7 +113,7 @@ export function executeRegimeFlow(opts) {
    * compound records -> target claim/turn/contribution -> settlement.
    * Returns {accepted, handoff, rejectReason?}.
    */
-  function handoff({ from, to, edge, kind, executeTargetTurn = true, extra = {} }) {
+  async function handoff({ from, to, edge, kind, executeTargetTurn = true, extra = {} }) {
     const source = sessionOf(from);
     const target = sessionOf(to);
     const req = {
@@ -179,7 +179,7 @@ export function executeRegimeFlow(opts) {
     const terminal = { classification: "completed", outcomeRefs: [] };
     if (executeTargetTurn) {
       h.running();
-      const { outcome } = executeTurn(to);
+      const { outcome } = await executeTurn(to);
       const contributionRefs = outcome.chunkDigests ?? [];
       h.contributed(contributionRefs);
       run.recordContributed(to);
@@ -208,21 +208,21 @@ export function executeRegimeFlow(opts) {
   const entry = ir.graph.nodes.find((n) => !ir.graph.edges.some((e) => e.target === n.officeId))?.officeId
     ?? ir.agents[0].officeId;
   const visited = new Set();
-  const walk = (officeId) => {
+  const walk = async (officeId) => {
     if (visited.has(officeId)) return;
     visited.add(officeId);
     // only the entry office runs its own turn here; every other office's turn
     // executes inside the handoff that invoked it
-    if (officeId === entry) executeTurn(officeId);
+    if (officeId === entry) await executeTurn(officeId);
     for (const edge of ir.graph.edges.filter((e) => e.source === officeId)) {
-      const r = handoff({ from: officeId, to: edge.target, edge, kind: edge.kind, executeTargetTurn: edge.kind !== "information" });
-      if (r.accepted) walk(edge.target);
+      const r = await handoff({ from: officeId, to: edge.target, edge, kind: edge.kind, executeTargetTurn: edge.kind !== "information" });
+      if (r.accepted) await walk(edge.target);
     }
   };
-  walk(entry);
+  await walk(entry);
 
   // ── mode-specific evidence ───────────────────────────────────────────────
-  const modeEvidence = opts.modeEvidence ? opts.modeEvidence({ handoff, dispatcher, policy, entry }) : {};
+  const modeEvidence = opts.modeEvidence ? await opts.modeEvidence({ handoff, dispatcher, policy, entry }) : {};
 
   store.close("clean");
   const committed = store.readCommitted();
@@ -244,8 +244,8 @@ export function executeRegimeFlow(opts) {
 }
 
 /** Evidence (observational): an undeclared edge is recorded, not rejected. */
-export function buildObservationalEvidence({ handoff, dispatcher, entry }) {
-  const r = handoff({
+export async function buildObservationalEvidence({ handoff, dispatcher, entry }) {
+  const r = await handoff({
     from: entry, to: "xingbu", edge: null, kind: "vote",
     extra: { edgeId: "e99-undeclared" }, executeTargetTurn: false,
   });
@@ -256,14 +256,14 @@ export function buildObservationalEvidence({ handoff, dispatcher, entry }) {
 }
 
 /** Evidence: invalid handoffs and marker text must fail before enqueue. */
-export function buildRejectionEvidence({ handoff, policy, entry }) {
+export async function buildRejectionEvidence({ handoff, policy, entry }) {
   const results = {};
   const office = (e) => (e ?? { source: entry, target: "menxia" });
   // unknown edge (not declared) — graph_enforced rejects
-  results.unknownEdge = handoff({ from: office().source, to: "menxia", edge: null, kind: "command", extra: { edgeId: "e99-unknown" } });
+  results.unknownEdge = await handoff({ from: office().source, to: "menxia", edge: null, kind: "command", extra: { edgeId: "e99-unknown" } });
   // wrong edge kind for a declared edge
   const declared = { edgeId: "e1-zhongshu-menxia", source: "zhongshu", target: "menxia", kind: "command" };
-  results.wrongKind = handoff({ from: "zhongshu", to: "menxia", edge: declared, kind: "vote", executeTargetTurn: false });
+  results.wrongKind = await handoff({ from: "zhongshu", to: "menxia", edge: declared, kind: "vote", executeTargetTurn: false });
   // schema-invalid request (missing causalParentId)
   results.schemaInvalid = (() => {
     const check = validateHandoffRequest({ handoffId: "x", sourceOfficeId: "zhongshu", sourceSessionId: "s", targetOfficeId: "menxia", targetSessionId: "t", edgeId: "e1", edgeKind: "command", causalParentId: "", mode: "one-shot", context: "fresh", joinPolicy: "await", idempotencyKey: "" });
@@ -275,11 +275,12 @@ export function buildRejectionEvidence({ handoff, policy, entry }) {
 }
 
 /** Run all three modes for one regime; never pool results. */
-export function runAllModes({ regimeDir, reportFile }) {
+export async function runAllModes({ regimeDir, reportFile }) {
   const compiler = new RegimeCompiler();
   const { ir, digest } = compiler.compile(regimeDir);
   const modes = ["observational", "roster_enforced", "graph_enforced"];
-  const runs = modes.map((mode) => executeRegimeFlow({
+  const runs = [];
+  for (const mode of modes) runs.push(await executeRegimeFlow({
     ir, mode, regimeDigest: digest,
     modeEvidence:
       mode === "graph_enforced" ? buildRejectionEvidence
@@ -299,10 +300,10 @@ export function runAllModes({ regimeDir, reportFile }) {
   return evidence;
 }
 
-function main() {
+async function main() {
   const regimeDir = process.argv[2] ?? path.resolve(__dirname, "../../../regimes/china/tang");
   const reportFile = process.argv[3] ?? path.join(P2_REPORT_DIR, "p2-slice-evidence.json");
-  const evidence = runAllModes({ regimeDir, reportFile });
+  const evidence = await runAllModes({ regimeDir, reportFile });
   const summary = {};
   for (const [mode, r] of Object.entries(evidence.modes)) {
     summary[mode] = {

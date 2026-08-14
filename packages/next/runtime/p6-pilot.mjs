@@ -65,7 +65,7 @@ export function seededPermutation(n, seed) {
 }
 
 /** One cell: compile the regime, run one owned turn through the gateway. */
-export function runCell({ stratum, topology, task, seed, budget = DEFAULT_CELL_BUDGET, dir }) {
+export async function runCell({ stratum, topology, task, seed, budget = DEFAULT_CELL_BUDGET, dir }) {
   const regimeDir = REGIME_BY_TOPOLOGY[topology];
   const { ir, digest: regimeDigest } = new RegimeCompiler().compile(regimeDir);
   const cellId = `p6-${stratum}-${topology}-${task}-s${seed}`;
@@ -101,7 +101,7 @@ export function runCell({ stratum, topology, task, seed, budget = DEFAULT_CELL_B
     stratum,
   });
   const gateway = new ModelGateway({ cas, eventStore: store, provider: new FakeProvider(script), instrumentVersion: P6_INSTRUMENT });
-  const outcome = gateway.request({
+  const outcome = await gateway.request({
     operation: op, model: MODEL_BY_STRATUM[stratum],
     systemPrompt: "你是本朝谋臣。", messages: [{ role: "user", content: `治理任务：${task}` }], tools: [],
   });
@@ -123,7 +123,7 @@ export function runCell({ stratum, topology, task, seed, budget = DEFAULT_CELL_B
 }
 
 /** One blind judge pass over a (historical, random) pair for one stratum. */
-export function judgePair({ cas, store, pairId, armA, armB, swap }) {
+export async function judgePair({ cas, store, pairId, armA, armB, swap }) {
   const presentation = blindPresentation(armA, armB, { swap });
   const scores = { A: { legality: 3, feasibility: 3, resilience: 2 }, B: { legality: 2, feasibility: 3, resilience: 3 } };
   const script = new BehaviorScript([
@@ -131,7 +131,7 @@ export function judgePair({ cas, store, pairId, armA, armB, swap }) {
   ]);
   const op = new Operation({ operationId: `op-judge-${pairId}-${swap ? "s" : "n"}`, matchId: `judge-${pairId}`, sessionId: null, turnId: null, purpose: "judge" });
   const gateway = new ModelGateway({ cas, eventStore: store, provider: new FakeProvider(script), instrumentVersion: P6_INSTRUMENT });
-  const outcome = gateway.request({
+  const outcome = await gateway.request({
     operation: op, model: "judge-model", systemPrompt: presentation.prompt,
     messages: [{ role: "user", content: "blind scoring" }], tools: [],
   });
@@ -139,7 +139,7 @@ export function judgePair({ cas, store, pairId, armA, armB, swap }) {
 }
 
 /** Run the full pilot: cells, judging, analysis, digest-pinned evidence. */
-export function runP6Pilot({ seed = 1, budget = DEFAULT_CELL_BUDGET, dir } = {}) {
+export async function runP6Pilot({ seed = 1, budget = DEFAULT_CELL_BUDGET, dir } = {}) {
   const dirOut = dir ?? fs.mkdtempSync(path.join(os.tmpdir(), "civ-p6-"));
   fs.mkdirSync(dirOut, { recursive: true });
 
@@ -172,7 +172,7 @@ export function runP6Pilot({ seed = 1, budget = DEFAULT_CELL_BUDGET, dir } = {})
     });
     for (const idx of order) {
       const arm = blockArms[idx];
-      const cell = runCell({ ...arm, budget, dir: path.join(dirOut, "cells", arm.stratum) });
+      const cell = await runCell({ ...arm, budget, dir: path.join(dirOut, "cells", arm.stratum) });
       cells.push(cell);
     }
     store.close("clean");
@@ -190,8 +190,8 @@ export function runP6Pilot({ seed = 1, budget = DEFAULT_CELL_BUDGET, dir } = {})
       const store = new EventStore(path.join(dirOut, "segments-judge"), {
         generation: 1, segmentId: `judge-${pairId}`, writer: "p6-judge", instrumentVersion: P6_INSTRUMENT,
       });
-      const pass1 = judgePair({ cas, store, pairId, armA: { surfaceText: hist.surfaceText }, armB: { surfaceText: rand.surfaceText }, swap: false });
-      const pass2 = judgePair({ cas, store, pairId, armA: { surfaceText: hist.surfaceText }, armB: { surfaceText: rand.surfaceText }, swap: true });
+      const pass1 = await judgePair({ cas, store, pairId, armA: { surfaceText: hist.surfaceText }, armB: { surfaceText: rand.surfaceText }, swap: false });
+      const pass2 = await judgePair({ cas, store, pairId, armA: { surfaceText: hist.surfaceText }, armB: { surfaceText: rand.surfaceText }, swap: true });
       store.close("clean");
       const agg = aggregateScores([pass1, pass2]);
       judging.push({
@@ -258,10 +258,10 @@ export function analyzePilot(cells, judging) {
   };
 }
 
-function main() {
+async function main() {
   const argv = process.argv.slice(2);
   const budget = Number(argv[argv.indexOf("--budget") + 1] ?? DEFAULT_CELL_BUDGET);
-  const evidence = runP6Pilot({ budget });
+  const evidence = await runP6Pilot({ budget });
   console.log(JSON.stringify({
     instrumentVersion: evidence.instrumentVersion,
     assignmentsDigest: evidence.assignmentsDigest.slice(0, 16),

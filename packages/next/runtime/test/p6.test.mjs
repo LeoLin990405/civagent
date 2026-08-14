@@ -15,16 +15,16 @@ function tmpDir() {
   return fs.mkdtempSync(path.join(os.tmpdir(), "civ-p6test-"));
 }
 
-test("pilot is fully deterministic: same inputs -> same assignments and analysis digest", () => {
-  const a = runP6Pilot({ dir: tmpDir() });
-  const b = runP6Pilot({ dir: tmpDir() });
+test("pilot is fully deterministic: same inputs -> same assignments and analysis digest", async () => {
+  const a = await runP6Pilot({ dir: tmpDir() });
+  const b = await runP6Pilot({ dir: tmpDir() });
   assert.equal(a.assignmentsDigest, b.assignmentsDigest, "assignments digest identical");
   assert.equal(a.analysis.digest, b.analysis.digest, "analysis digest identical");
   assert.deepEqual(a.cells.map((c) => c.evidenceDigest), b.cells.map((c) => c.evidenceDigest), "per-cell evidence identical");
 });
 
-test("design matrix is complete and reproducible: 24 cells, 12 pairs, 4 strata blocks", () => {
-  const ev = runP6Pilot({ dir: tmpDir() });
+test("design matrix is complete and reproducible: 24 cells, 12 pairs, 4 strata blocks", async () => {
+  const ev = await runP6Pilot({ dir: tmpDir() });
   assert.equal(ev.cells.length, 24, "4 strata x 2 topologies x 3 tasks x 1 seed");
   assert.equal(ev.judging.length, 12, "4 strata x 3 tasks pairs");
   const strataUsed = new Set(ev.cells.map((c) => c.stratum));
@@ -35,9 +35,9 @@ test("design matrix is complete and reproducible: 24 cells, 12 pairs, 4 strata b
   assert.deepEqual([...tasksUsed].sort(), [...PILOT_TASKS].sort());
 });
 
-test("budget caps fail cells closed: recorded in missingness, never silently dropped", () => {
+test("budget caps fail cells closed: recorded in missingness, never silently dropped", async () => {
   // cell usage is 35 tokens; a budget of 30 must fail every cell closed
-  const ev = runP6Pilot({ dir: tmpDir(), budget: 30 });
+  const ev = await runP6Pilot({ dir: tmpDir(), budget: 30 });
   assert.equal(ev.cells.every((c) => c.status === "budget_overflow"), true);
   assert.equal(ev.missingness.budgetOverflow.length, 24, "every overflow recorded");
   assert.equal(ev.missingness.failedCellsInDenominator, 24, "failed cells stay in the denominator");
@@ -45,8 +45,8 @@ test("budget caps fail cells closed: recorded in missingness, never silently dro
   assert.equal(ev.judging.length, 0);
 });
 
-test("strata never pool: analysis is per-stratum and runtime-labelled", () => {
-  const ev = runP6Pilot({ dir: tmpDir() });
+test("strata never pool: analysis is per-stratum and runtime-labelled", async () => {
+  const ev = await runP6Pilot({ dir: tmpDir() });
   assert.equal(ev.analysis.runtime, P6_INSTRUMENT);
   for (const s of PILOT_STRATA) {
     assert.ok(ev.analysis.byStratum[s], `stratum ${s} has its own row`);
@@ -65,8 +65,8 @@ test("seeded permutation is deterministic and seed-sensitive", () => {
   assert.deepEqual([...a].sort(), [0, 1, 2, 3, 4, 5, 6, 7], "permutation covers all arms");
 });
 
-test("analysis is a pure function of cells + judging (recomputable)", () => {
-  const ev = runP6Pilot({ dir: tmpDir() });
+test("analysis is a pure function of cells + judging (recomputable)", async () => {
+  const ev = await runP6Pilot({ dir: tmpDir() });
   const recomputed = analyzePilot(ev.cells, ev.judging);
   assert.deepEqual(recomputed, ev.analysis, "analysis recomputes identically from pinned evidence");
 });
