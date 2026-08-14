@@ -1,0 +1,3071 @@
+{
+  "reportSchema": "mapping-report/1",
+  "manifestDigest": "88da968f0a006039d8be495938178c0d11eca9161e439b4acc53d496f28df7a8",
+  "corpusRoot": "/Users/leo/Projects/civagent/packages/next/legacy-importer/corpus",
+  "frozenAt": "2026-08-14T08:07:04.620Z",
+  "instrument": "legacy-cc-v5",
+  "totals": {
+    "matches": 105,
+    "total": 4263,
+    "mappedEvents": 4263,
+    "unknownTypes": 0,
+    "mappedFields": 64901,
+    "unknownFields": 0
+  },
+  "rates": {
+    "eventRate": 1,
+    "fieldRate": 1
+  },
+  "gates": {
+    "eventRateGE99": true,
+    "fieldRateGE99": true,
+    "zeroUnknownTypes": true
+  },
+  "perMatch": [
+    {
+      "matchId": "2026-06-25T16-18-02-281-dy8i__global-roman-republic",
+      "events": 1,
+      "mappedEvents": 1,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-06-25T16-19-16-062-ffoi__global-athens",
+      "events": 1,
+      "mappedEvents": 1,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-06-25T16-19-16-062-ffoi__global-roman-republic",
+      "events": 1,
+      "mappedEvents": 1,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-22T15-27-17-161-bajn__china-qin",
+      "events": 1,
+      "mappedEvents": 1,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-22T15-27-17-161-bajn__china-tang",
+      "events": 2,
+      "mappedEvents": 2,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 1,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-22T15-30-38-869-yc7l__china-qin",
+      "events": 1,
+      "mappedEvents": 1,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-29T13-22-40-609-a03t__china-tang",
+      "events": 12,
+      "mappedEvents": 12,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 9,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-30T05-35-44-827-oog6__baseline-tang-random",
+      "events": 3,
+      "mappedEvents": 3,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-30T05-35-44-827-oog6__china-tang",
+      "events": 4,
+      "mappedEvents": 4,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 1,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-30T05-38-38-888-z8a4__baseline-tang-random",
+      "events": 3,
+      "mappedEvents": 3,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-30T05-38-38-888-z8a4__china-tang",
+      "events": 4,
+      "mappedEvents": 4,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 1,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-30T05-40-15-274-aplf__baseline-tang-random",
+      "events": 3,
+      "mappedEvents": 3,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-30T05-40-15-274-aplf__china-tang",
+      "events": 4,
+      "mappedEvents": 4,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 1,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-30T09-20-18-212-10tm__china-qin",
+      "events": 106,
+      "mappedEvents": 106,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 102,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-30T09-20-18-212-10tm__china-tang",
+      "events": 6,
+      "mappedEvents": 6,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 3,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-30T09-20-18-212-10tm__china-zhou",
+      "events": 20,
+      "mappedEvents": 20,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 17,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-30T09-42-02-492-9d86__china-ming",
+      "events": 152,
+      "mappedEvents": 152,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 148,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-30T09-42-02-492-9d86__china-qin",
+      "events": 14,
+      "mappedEvents": 14,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 10,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-07-30T10-21-07-wwer",
+      "events": 12,
+      "mappedEvents": 12,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 8,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "2026-08-03T14-42-11-6c92",
+      "events": 5,
+      "mappedEvents": 5,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 2,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e1c-border-city-autonomy-01-r01___baseline-ming-random",
+      "events": 5,
+      "mappedEvents": 5,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 2,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e1c-border-city-autonomy-01-r01__china-zhou",
+      "events": 5,
+      "mappedEvents": 5,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 2,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e1c-plague-response-01-r01___baseline-qin-random",
+      "events": 40,
+      "mappedEvents": 40,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 36,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e1c-regional-militarization-01-r01___baseline-athens-random",
+      "events": 5,
+      "mappedEvents": 5,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 2,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e1c-regional-militarization-01-r01___baseline-ming-random",
+      "events": 5,
+      "mappedEvents": 5,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 2,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e1c-regional-militarization-01-r01___baseline-qin-random",
+      "events": 4,
+      "mappedEvents": 4,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 1,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-doubao-plague-response-01-r04__china-tang",
+      "events": 37,
+      "mappedEvents": 37,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 29,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-doubao-regional-militarization-01-r05__china-ming",
+      "events": 10,
+      "mappedEvents": 10,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 4,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-doubao-regional-militarization-01-r05__china-qin",
+      "events": 10,
+      "mappedEvents": 10,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 4,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-doubao-regional-militarization-01-r05__china-tang",
+      "events": 10,
+      "mappedEvents": 10,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 4,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-doubao-regional-militarization-01-r05__china-zhou",
+      "events": 10,
+      "mappedEvents": 10,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 4,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-doubao-regional-militarization-01-r05__global-athens",
+      "events": 10,
+      "mappedEvents": 10,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 4,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r01___baseline-zhou-random",
+      "events": 38,
+      "mappedEvents": 38,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 32,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r01__china-tang",
+      "events": 44,
+      "mappedEvents": 44,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 37,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r01__china-zhou",
+      "events": 10,
+      "mappedEvents": 10,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 4,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r02__china-tang",
+      "events": 75,
+      "mappedEvents": 75,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 68,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r03___baseline-tang-random",
+      "events": 10,
+      "mappedEvents": 10,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 4,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r04__china-tang",
+      "events": 29,
+      "mappedEvents": 29,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 23,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r04__global-athens",
+      "events": 29,
+      "mappedEvents": 29,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 23,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r01___baseline-qin-random",
+      "events": 54,
+      "mappedEvents": 54,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 48,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r01___baseline-zhou-random",
+      "events": 52,
+      "mappedEvents": 52,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 46,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r02___baseline-athens-random",
+      "events": 51,
+      "mappedEvents": 51,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 45,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r03___baseline-ming-random",
+      "events": 48,
+      "mappedEvents": 48,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 42,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r03___baseline-qin-random",
+      "events": 59,
+      "mappedEvents": 59,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 53,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r03__china-tang",
+      "events": 81,
+      "mappedEvents": 81,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 74,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r04___baseline-athens-random",
+      "events": 53,
+      "mappedEvents": 53,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 47,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r04___baseline-zhou-random",
+      "events": 52,
+      "mappedEvents": 52,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 46,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r05___baseline-ming-random",
+      "events": 55,
+      "mappedEvents": 55,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 49,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r01___baseline-qin-random",
+      "events": 35,
+      "mappedEvents": 35,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 29,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r02___baseline-qin-random",
+      "events": 53,
+      "mappedEvents": 53,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 47,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r02__china-qin",
+      "events": 118,
+      "mappedEvents": 118,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 111,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r03__china-tang",
+      "events": 83,
+      "mappedEvents": 83,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 76,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r04___baseline-zhou-random",
+      "events": 49,
+      "mappedEvents": 49,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 43,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r04__china-zhou",
+      "events": 134,
+      "mappedEvents": 134,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 126,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r05___baseline-zhou-random",
+      "events": 28,
+      "mappedEvents": 28,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 22,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-mimo-plague-response-01-r01___baseline-athens-random",
+      "events": 166,
+      "mappedEvents": 166,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 161,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-mimo-plague-response-01-r01__china-tang",
+      "events": 148,
+      "mappedEvents": 148,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 143,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-mimo-regional-militarization-01-r01___baseline-ming-random",
+      "events": 97,
+      "mappedEvents": 97,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 92,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-border-city-autonomy-01-r01___baseline-athens-random",
+      "events": 38,
+      "mappedEvents": 38,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 32,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-border-city-autonomy-01-r01___baseline-zhou-random",
+      "events": 48,
+      "mappedEvents": 48,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 42,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-border-city-autonomy-01-r01__global-athens",
+      "events": 37,
+      "mappedEvents": 37,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 31,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r01___baseline-qin-random",
+      "events": 52,
+      "mappedEvents": 52,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 46,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r01___baseline-zhou-random",
+      "events": 65,
+      "mappedEvents": 65,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 59,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r01__china-tang",
+      "events": 100,
+      "mappedEvents": 100,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 93,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r02___baseline-ming-random",
+      "events": 47,
+      "mappedEvents": 47,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 41,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r02___baseline-qin-random",
+      "events": 53,
+      "mappedEvents": 53,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 47,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r02___baseline-tang-random",
+      "events": 75,
+      "mappedEvents": 75,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 69,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r02__china-tang",
+      "events": 91,
+      "mappedEvents": 91,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 84,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r03___baseline-qin-random",
+      "events": 53,
+      "mappedEvents": 53,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 47,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r03__china-tang",
+      "events": 59,
+      "mappedEvents": 59,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 52,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r03__global-athens",
+      "events": 92,
+      "mappedEvents": 92,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 86,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r04___baseline-qin-random",
+      "events": 54,
+      "mappedEvents": 54,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 48,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r04___baseline-tang-random",
+      "events": 70,
+      "mappedEvents": 70,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 64,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r04___baseline-zhou-random",
+      "events": 49,
+      "mappedEvents": 49,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 43,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r05___baseline-athens-random",
+      "events": 47,
+      "mappedEvents": 47,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 41,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r05___baseline-ming-random",
+      "events": 47,
+      "mappedEvents": 47,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 41,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r05__china-ming",
+      "events": 32,
+      "mappedEvents": 32,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 26,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r05__china-tang",
+      "events": 68,
+      "mappedEvents": 68,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 61,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-regional-militarization-01-r01___baseline-qin-random",
+      "events": 54,
+      "mappedEvents": 54,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 47,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-regional-militarization-01-r01___baseline-tang-random",
+      "events": 74,
+      "mappedEvents": 74,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 68,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-regional-militarization-01-r03__china-tang",
+      "events": 51,
+      "mappedEvents": 51,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 44,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-regional-militarization-01-r04___baseline-ming-random",
+      "events": 42,
+      "mappedEvents": 42,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 36,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r01__china-tang",
+      "events": 11,
+      "mappedEvents": 11,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 5,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r02___baseline-ming-random",
+      "events": 36,
+      "mappedEvents": 36,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 30,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r02___baseline-qin-random",
+      "events": 35,
+      "mappedEvents": 35,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 29,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r02___baseline-zhou-random",
+      "events": 29,
+      "mappedEvents": 29,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 23,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r02__china-tang",
+      "events": 28,
+      "mappedEvents": 28,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 22,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r03___baseline-tang-random",
+      "events": 16,
+      "mappedEvents": 16,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 10,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r04___baseline-ming-random",
+      "events": 31,
+      "mappedEvents": 31,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 25,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r05___baseline-zhou-random",
+      "events": 26,
+      "mappedEvents": 26,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 20,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r01___baseline-ming-random",
+      "events": 36,
+      "mappedEvents": 36,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 30,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r01___baseline-qin-random",
+      "events": 32,
+      "mappedEvents": 32,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 26,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r02___baseline-ming-random",
+      "events": 35,
+      "mappedEvents": 35,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 29,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r02___baseline-zhou-random",
+      "events": 33,
+      "mappedEvents": 33,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 27,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r03___baseline-athens-random",
+      "events": 27,
+      "mappedEvents": 27,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 21,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r03___baseline-tang-random",
+      "events": 38,
+      "mappedEvents": 38,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 32,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r03___baseline-zhou-random",
+      "events": 34,
+      "mappedEvents": 34,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 28,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r05___baseline-ming-random",
+      "events": 29,
+      "mappedEvents": 29,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 23,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r05___baseline-qin-random",
+      "events": 30,
+      "mappedEvents": 30,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 24,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r05___baseline-zhou-random",
+      "events": 33,
+      "mappedEvents": 33,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 27,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-regional-militarization-01-r01___baseline-ming-random",
+      "events": 46,
+      "mappedEvents": 46,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 40,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-regional-militarization-01-r02___baseline-qin-random",
+      "events": 33,
+      "mappedEvents": 33,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 27,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-regional-militarization-01-r04___baseline-zhou-random",
+      "events": 34,
+      "mappedEvents": 34,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 28,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-regional-militarization-01-r04__china-tang",
+      "events": 26,
+      "mappedEvents": 26,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 20,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-regional-militarization-01-r05___baseline-zhou-random",
+      "events": 30,
+      "mappedEvents": 30,
+      "unknownFields": 0,
+      "edges": {
+        "handoffs": {
+          "available": false,
+          "count": 0,
+          "reason": "no typed handoff records exist in the legacy instrument; never inferred"
+        },
+        "sessionIdentity": {
+          "available": false,
+          "count": 24,
+          "reason": "legacy actor is regime-level only; office/session identity unobservable"
+        },
+        "subagentType": {
+          "available": false,
+          "count": 0,
+          "reason": "legacy subagent_type inference is forbidden by plan §3"
+        },
+        "planDispatch": {
+          "available": true,
+          "observed": true,
+          "authority": false,
+          "reason": "dispatch_plan carried as observed projection (payload.dispatch.observedOnly)"
+        }
+      }
+    }
+  ]
+}

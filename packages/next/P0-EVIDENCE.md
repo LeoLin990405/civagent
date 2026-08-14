@@ -133,12 +133,54 @@ All 12 seam `package.json` files at the pin were fetched and inspected:
 | Judging | **PASS** — 3 tournament result sets frozen |
 | Skill lifecycle | **PASS** — 99 traces with `skill_commit` events |
 | Harness imports resolve from public exports at `47f9438` | **PASS (structural)** — exports verified for 12 seams; build-from-source required (recorded) |
-| Epoch separation / no-pooling executable schema tests | **NEXT** — contracts package not yet started |
-| Legacy field mapping >=99% within frozen corpus | **NEXT** — legacy-importer mapping step not yet started |
-| Handoff oracle fixtures | **NEXT** — defined against synthetic fixtures in contracts |
+| Epoch separation / no-pooling executable schema tests | **PASS** — 10 node:test tests (`npm run test:next`), mixed-epoch stream rejected, ID discipline enforced |
+| Legacy field mapping >=99% within frozen corpus | **PASS** — 4,263/4,263 events (100%), 0 unknown fields, report committed |
+| Handoff oracle fixtures | **PARTIAL** — oracle rule defined (unavailable on legacy import, never counted); synthetic typed fixtures to be authored for P2 |
 | Preregistration completeness checklist | **NEXT** — to be authored in contracts/domain |
 
-## 4. Immediate next steps (next round)
+## 4. Round 2 — contracts, epoch rules, and the legacy mapping pass
+
+### 4.1 contracts package (`packages/next/contracts/`)
+
+- `README.md` — epochs/instruments, ID discipline table (plan §7), canonical
+  event types (`civ.event/1`), mapping contract, schema version registry.
+- `schemas/event.schema.json` — canonical envelope: `epoch`, `instrumentVersion`,
+  `generation`, `seq`, `eventId`, `type`, `artifactRefs` (`sha256:<64hex>`),
+  `payloadDigest` (SHA-256 of canonical payload bytes).
+- `schemas/id.schema.json` — nine ID kinds never overloaded; retries always get a
+  new `operationId`.
+- `epoch-rules.mjs` — dependency-free enforcement: `validateCanonicalEvent`,
+  `assertEpochSeparation` (mixed-epoch stream throws), `assertIdDiscipline`.
+- `test/epoch.test.mjs` — 10 executable tests (`npm run test:next`), all green.
+
+### 4.2 Legacy mapping pass (`packages/next/legacy-importer/map.mjs`)
+
+Maps the whole frozen corpus (105 matches, 4,263 events) onto canonical events:
+
+| Metric | Value | Gate |
+|---|---:|---|
+| Mapped events / total | **4,263 / 4,263 = 100%** | >=99% PASS |
+| Unknown legacy types | 0 | 0 required PASS |
+| Unknown fields (outside known set) | 0 | fieldRate >=99% PASS |
+| Unobservable session turns | 4,263 (all) | labelled `unavailable`, never inferred |
+| Observable handoff edges | 0 | labelled `unavailable`, never counted |
+
+Report: `packages/next/legacy-importer/reports/mapping-report.json` (digest-pinned
+to the corpus MANIFEST).
+
+**Key finding — legacy `seq` resets:** 76/105 frozen matches restart `seq` at 0
+mid-stream (the legacy writer renumbers per dispatch section; the schema's
+"monotonic per-match" claim does not hold). The importer therefore orders
+canonical events by **file order** (the only durable observable order) and
+preserves the legacy seq as `payload.legacy.legacySeq`. This is recorded as a
+declared legacy artifact, not silently repaired.
+
+**Declared non-mappings (per plan §17 P0):** per-turn session identity, office
+handoffs, and subagent type are `unavailable` on import; `dispatch_plan` is
+carried as an observed projection (`payload.dispatch.observedOnly: true`), never
+as dispatch authority.
+
+## 5. Status against P0 acceptance (updated)
 
 1. `packages/next/contracts` — Next ID/event/schema spec (JSON Schema), epoch rules
    and no-pooling executable tests, handoff oracle fixture definitions.

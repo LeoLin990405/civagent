@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "civ.id/1",
+  "title": "CivAgent Next ID discipline",
+  "description": "IDs are never overloaded (plan §7). Each ID kind is a separate property; a retry of an effect always receives a new operationId.",
+  "type": "object",
+  "required": ["rpcId", "operationId", "tournamentId", "matchId", "sessionId", "activationId", "turnId", "handoffId", "artifactDigest"],
+  "additionalProperties": false,
+  "properties": {
+    "rpcId": { "type": "string", "minLength": 1, "description": "Transport request/response correlation; never a domain ID." },
+    "operationId": { "type": "string", "minLength": 1, "description": "One external effect attempt. Retry always receives a NEW id." },
+    "tournamentId": { "type": "string", "minLength": 1 },
+    "matchId": { "type": "string", "minLength": 1 },
+    "sessionId": { "type": "string", "minLength": 1 },
+    "activationId": { "type": "string", "minLength": 1 },
+    "turnId": { "type": "string", "minLength": 1 },
+    "handoffId": { "type": "string", "minLength": 1 },
+    "artifactDigest": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" }
+  }
+}

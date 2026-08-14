@@ -1,0 +1,36 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "civ.event/1",
+  "title": "CivAgent Next canonical event",
+  "description": "One canonical scientific fact in the Next event store (plan §11). One event per line, ordered by (matchId, generation, seq).",
+  "type": "object",
+  "required": ["schema", "epoch", "instrumentVersion", "generation", "seq", "eventId", "ts", "matchId", "type", "payloadDigest"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": { "const": "civ.event/1" },
+    "epoch": { "enum": ["legacy-cc-v5", "native-next-v1"] },
+    "instrumentVersion": { "type": "string", "minLength": 1, "description": "Semantic instrument class; legacy sentinel is legacy-cc-v5-<baseline short hash>." },
+    "generation": { "type": "integer", "minimum": 1, "description": "Immutable segment generation this event belongs to." },
+    "seq": { "type": "integer", "minimum": 0, "description": "Monotonic per-match sequence number." },
+    "eventId": { "type": "string", "minLength": 1, "description": "One canonical event (UUID on native; preserved legacy event_id on import)." },
+    "ts": { "type": "integer", "description": "Unix epoch milliseconds." },
+    "matchId": { "type": "string", "minLength": 1 },
+    "sessionId": { "type": ["string", "null"], "description": "Durable agent session. null on legacy import (unobservable)." },
+    "activationId": { "type": ["string", "null"] },
+    "turnId": { "type": ["string", "null"] },
+    "operationId": { "type": ["string", "null"] },
+    "type": {
+      "enum": ["match.admitted", "turn.observed", "operation.observed", "judge.observed", "skill.event", "mechanism.triggered", "match.terminal", "legacy.unmapped"]
+    },
+    "actor": { "type": "string", "description": "Producer identity: regime id, judge, skill-learner, system, or an office/session id in the native epoch." },
+    "spanId": { "type": "string", "description": "Observability span (16-hex on legacy import)." },
+    "parentSpanId": { "type": ["string", "null"] },
+    "artifactRefs": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^sha256:[0-9a-f]{64}$" },
+      "description": "Content addresses of durable raw bytes referenced by this event. Empty on legacy import (raw capture not preserved)."
+    },
+    "payload": { "type": "object" },
+    "payloadDigest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "SHA-256 of the canonical payload bytes." }
+  }
+}
