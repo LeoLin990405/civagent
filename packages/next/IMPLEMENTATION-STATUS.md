@@ -73,8 +73,9 @@ runtime. All work lives on `docs/harness-next-plan`, pushed to
    pilot runner + power calculator.
 2. **Confirmatory power** — requires live-lane pilot variance (the calculator
    and Monte-Carlo validation are delivered and tested).
-3. **Real-browser trace (L4)** — the GUI + oracle are delivered and tested
-   headlessly; a real-browser trace run is a verification step.
+3. **Real-browser trace (L4)** — ✅ verified via an opencli-driven real Chrome
+   session against the live GUI: state LIVE, applied 8/8, zero dup/gap,
+   timeline rows equal the event-ID oracle event-for-event (`BROWSER-TRACE-EVIDENCE.md`, `ui/gui-evidence.png`).
 4. **GA score** — plan §20.2 evaluated at confirmatory GA by design.
 
 ## Artifact map (packages/next/)
