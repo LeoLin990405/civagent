@@ -1,0 +1,175 @@
+{
+  "matchId": "e3-cn-minimax-plague-response-01-r05__china-tang",
+  "regime": "china/tang",
+  "backend": "cn:minimax",
+  "command": "cc-minimax",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785787290244,
+  "status": "vetoed",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "zhongshu",
+        "order": 1,
+        "responsibility": "Draft the imperial epidemic emergency edict (《平疫诏》): declare a state of calamity across all circuits, formally activate emergency powers, define mortality thresholds triggering automatic local lockdowns, and order every prefecture to file 3-day situation reports via the post road to the palace."
+      },
+      {
+        "office": "menxia",
+        "order": 2,
+        "responsibility": "Review and seal the edict for legal force; publish the accompanying 律令 amendment codifying quarantine ordinances, price controls on grain and medicine, anti-profiteering penalties, and the protocol for overriding normal procedures during a 5–10% monthly mortality event."
+      },
+      {
+        "office": "shangshu",
+        "order": 3,
+        "responsibility": "Receive the sealed edict and coordinate the Six Ministries in unified execution; convene a standing 尚书省 疫情使 (Plague Commissioner) office with daily joint audience to reconcile ministry actions and escalate unresolved disputes to the throne within 24 hours."
+      },
+      {
+        "office": "hubu",
+        "order": 4,
+        "responsibility": "Open the 常平仓 emergency reserves; suspend land tax (租) and corvée (庸调) in affected circuits for the duration of the outbreak; release emergency silver to procure grain, medicine, and coffins; establish relief granaries in every prefecture and a price ceiling on staples; keep a public ledger of every disbursement."
+      },
+      {
+        "office": "libu_personnel",
+        "order": 5,
+        "responsibility": "Surge-staff 太医署 medical officers into epidemic prefectures with double pay and hazard rank; appoint dedicated 疫区县令 (plague county magistrates) bypassing normal rotation; commission local physicians and monastery infirmaries as auxiliary responders; suspend examination calendars to redirect talent into relief service."
+      },
+      {
+        "office": "gongbu",
+        "order": 6,
+        "responsibility": "Construct 隔离院 isolation wards in every prefecture seat and major market town within 15 days; repair wells, drains, and waterways; requisition temples and inns as quarantine stations; manufacture coffins and lime at state workshops; oversee cremation pits where burial capacity is exceeded."
+      },
+      {
+        "office": "xingbu",
+        "order": 7,
+        "responsibility": "Enforce the new quarantine ordinances: cordon infected wards, punish concealment of deaths, prosecute grain and medicine profiteers, audit every relief disbursement from 户部 and prosecute embezzlement, and operate a sealed-box 诉事 appeals channel for affected households to report local magistrate misconduct directly to the palace."
+      },
+      {
+        "office": "bingbu",
+        "order": 8,
+        "responsibility": "Provide military logistical support: station 府兵 at cordons around infected cities, escort grain and medicine convoys along the post roads, requisition barges on the Grand Canal for rapid supply transport to afflicted prefectures, and station field medical squads at major garrisons as a strategic reserve."
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "hubu",
+      "libu_personnel",
+      "gongbu",
+      "xingbu",
+      "bingbu"
+    ],
+    "planned_unique_offices": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "hubu",
+      "libu_personnel",
+      "gongbu",
+      "xingbu",
+      "bingbu"
+    ],
+    "declared_planned_offices": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "bingbu",
+      "hubu",
+      "gongbu",
+      "xingbu",
+      "libu_personnel"
+    ],
+    "declared_not_planned_offices": [
+      "libu_ritual"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 8,
+      "unique_planned_offices": 8,
+      "declared_planned_offices": 8,
+      "declared_not_planned_offices": 1,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785787446648,
+  "exitCode": null,
+  "signal": "SIGKILL",
+  "mechanisms": {
+    "vetoes": 1,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "menxia",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "dispatchedOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "menxia",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 9,
+    "officeTurnCount": 3,
+    "officesInvoked": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "hubu",
+      "gongbu",
+      "bingbu",
+      "libu_personnel",
+      "libu_ritual",
+      "xingbu"
+    ],
+    "officeCount": 9,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

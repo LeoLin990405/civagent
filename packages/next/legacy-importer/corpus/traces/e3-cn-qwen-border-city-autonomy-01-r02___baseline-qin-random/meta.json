@@ -1,0 +1,153 @@
+{
+  "matchId": "e3-cn-qwen-border-city-autonomy-01-r02___baseline-qin-random",
+  "regime": "_baseline/qin-random",
+  "backend": "cn:qwen",
+  "command": "cc-qwen",
+  "task": "A strategically located border city that serves as the primary gateway for trade between two rival powers has petitioned for expanded self-governance. The city's merchant council argues that its unique position requires flexibility in tariffs, legal codes, and diplomatic representation that a distant central government cannot provide. Granting autonomy would likely increase trade revenue and reduce administrative burden, but it would also create a precedent that other prosperous cities might follow, potentially eroding central authority. The rival power has signalled that it would view the city's autonomy as an opportunity to expand its own influence there. Design a governance framework for the border city that grants sufficient flexibility to maximise its economic function while preserving its political loyalty and preventing foreign co-option.",
+  "startedAt": 1785796557916,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "chengxiang",
+        "order": 1,
+        "responsibility": "Lead framework design: delineate devolved versus reserved powers (tariffs, law, diplomacy), define administrative reporting lines, and structure the grant as a revocable, case-specific charter to limit precedent risk"
+      },
+      {
+        "office": "zhisu-finance",
+        "order": 2,
+        "responsibility": "Design the tariff-flexibility regime, revenue-sharing formula between city and center, customs controls, and fiscal audit requirements"
+      },
+      {
+        "office": "tingwei-justice",
+        "order": 3,
+        "responsibility": "Define the bounds of local legal-code adaptation, criminal/diplomatic matters reserved to the center, and appellate pathways preserving ultimate central judicial authority"
+      },
+      {
+        "office": "taiwei",
+        "order": 4,
+        "responsibility": "Specify garrison and border-security arrangements, command authority over city militia, and counter-intelligence measures against the rival power's co-option attempts"
+      },
+      {
+        "office": "yushi-censor",
+        "order": 5,
+        "responsibility": "Establish oversight mechanisms: resident censor, periodic loyalty verification of the merchant council, anti-corruption and foreign-influence audits, and trigger conditions for intervention"
+      },
+      {
+        "office": "emperor",
+        "order": 6,
+        "responsibility": "Final ratification of the autonomy charter: affirm sovereignty, set the loyalty oath and revocation clauses, and signal that the grant is conditional privilege, not sovereign transfer"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "chengxiang",
+      "zhisu-finance",
+      "tingwei-justice",
+      "taiwei",
+      "yushi-censor",
+      "emperor"
+    ],
+    "planned_unique_offices": [
+      "chengxiang",
+      "zhisu-finance",
+      "tingwei-justice",
+      "taiwei",
+      "yushi-censor",
+      "emperor"
+    ],
+    "declared_planned_offices": [
+      "emperor",
+      "chengxiang",
+      "taiwei",
+      "yushi-censor",
+      "tingwei-justice",
+      "zhisu-finance"
+    ],
+    "declared_not_planned_offices": [
+      "shaofu-works"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 6,
+      "unique_planned_offices": 6,
+      "declared_planned_offices": 6,
+      "declared_not_planned_offices": 1,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785796846842,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "dispatchedOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 7,
+    "officeTurnCount": 7,
+    "officesInvoked": [
+      "chengxiang",
+      "zhisu-finance",
+      "tingwei-justice",
+      "taiwei",
+      "yushi-censor",
+      "shaofu-works",
+      "emperor"
+    ],
+    "officeCount": 7,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

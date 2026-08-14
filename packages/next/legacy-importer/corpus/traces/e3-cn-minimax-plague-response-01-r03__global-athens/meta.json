@@ -1,0 +1,145 @@
+{
+  "matchId": "e3-cn-minimax-plague-response-01-r03__global-athens",
+  "regime": "global/athens",
+  "backend": "cn:minimax",
+  "command": "cc-minimax",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785783839362,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "boule",
+        "order": 1,
+        "responsibility": "Convene an emergency prytany session within 24 hours; draft the probouleuma framing the epidemic response, set the agenda for the Ekklesia (quarantine mandate, special funding, extraordinary powers), and coordinate daily liaison between the Strategos, Archons, Rhetor, and Dikasterion so that proposals reach the Assembly in legally clean form."
+      },
+      {
+        "office": "ekklesia",
+        "order": 2,
+        "responsibility": "Hold an emergency assembly to vote on the epidemic decree: (a) authorize city-wide quarantine of affected deme and phyle districts, (b) release emergency treasury funds and requisition private granaries/warehouses, (c) grant the Strategos operational command for the duration of the crisis, (d) mandate citizen compliance with public-health measures, (e) record the decree in stone for later Dikasterion review."
+      },
+      {
+        "office": "strategos",
+        "order": 3,
+        "responsibility": "Design and command the operational response with weighted technical authority: establish quarantine cordons, requisition and convert public buildings into isolation wards (lerneion-style), secure the medical supply chain (herbs, bandages, water, lime for burial), direct hoplite and ephebe logistics for transport of sick and supplies, set triage protocols, and publish a daily operational bulletin through the Rhetor."
+      },
+      {
+        "office": "archon",
+        "order": 4,
+        "responsibility": "Run daily civil administration under the archon eponymos and the polemarch: maintain a registry of the sick and deceased by deme, distribute grain and water rations, enforce sanitation and latrine regulations, oversee lawful burial of the dead, suppress profiteering and price-gouging in the agora, and keep marriage/ inheritance records current for post-epidemic recovery."
+      },
+      {
+        "office": "rhetor",
+        "order": 5,
+        "responsibility": "Address the citizenry from the Pnyx and in the agora each morning: report case counts and quarantine boundaries plainly, transmit physician and Strategos instructions in terms the populace will follow, allay panic through calm reasoned speech, expose charlatans and rumor-mongers, and rally volunteers (metics, women, metoikoi included as auxiliaries) for nursing and burial duties."
+      },
+      {
+        "office": "dikasterion",
+        "order": 6,
+        "responsibility": "Convene in parallel a standing review panel to audit each major decision of the Boule, Strategos, and Archons while the crisis is live, and to prosecute afterward any officeholder whose measures caused unnecessary harm, profiteered, falsified records, or violated the Ekklesia's decree — securing resilience, anti-corruption, and an appeal path for wrongly punished citizens."
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "boule",
+      "ekklesia",
+      "strategos",
+      "archon",
+      "rhetor",
+      "dikasterion"
+    ],
+    "planned_unique_offices": [
+      "boule",
+      "ekklesia",
+      "strategos",
+      "archon",
+      "rhetor",
+      "dikasterion"
+    ],
+    "declared_planned_offices": [
+      "ekklesia",
+      "boule",
+      "strategos",
+      "dikasterion",
+      "archon",
+      "rhetor"
+    ],
+    "declared_not_planned_offices": [],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 6,
+      "unique_planned_offices": 6,
+      "declared_planned_offices": 6,
+      "declared_not_planned_offices": 0,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785783873833,
+  "exitCode": 143,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_failed",
+    "requiredOffices": [
+      "archon",
+      "boule",
+      "dikasterion",
+      "ekklesia",
+      "rhetor",
+      "strategos"
+    ],
+    "dispatchedOffices": [
+      "boule",
+      "ekklesia"
+    ],
+    "missingOffices": [
+      "archon",
+      "dikasterion",
+      "rhetor",
+      "strategos"
+    ],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 2,
+    "officeTurnCount": 1,
+    "officesInvoked": [
+      "boule",
+      "ekklesia"
+    ],
+    "officeCount": 2,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

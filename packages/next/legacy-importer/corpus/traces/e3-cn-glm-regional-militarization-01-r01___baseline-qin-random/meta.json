@@ -1,0 +1,153 @@
+{
+  "matchId": "e3-cn-glm-regional-militarization-01-r01___baseline-qin-random",
+  "regime": "_baseline/qin-random",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "Several regional governors have raised private armies under the pretext of local defence, and their forces now collectively outnumber the standing national army. The central government's tax collectors and judicial officers are being turned away at provincial borders. One governor has begun minting coins bearing his own insignia, and another has negotiated a separate truce with a neighbouring power without central authorisation. The state risks permanent fragmentation if this trend continues unchecked. Design a strategy to restore central military authority that combines political incentives, targeted enforcement, and institutional reforms, while avoiding a multi-front civil war that the centre cannot currently win.",
+  "startedAt": 1785781868685,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "yushi-censor",
+        "order": 1,
+        "responsibility": "先行密查各州郡私军、阻截朝使、私铸钱币、擅结外邦诸款的实证，按罪行轻重与可离间程度排出名单，锁定唯一最易定罪且最难号召同盟者（极可能是私铸钱币者）作为执法靶标，为后续行动提供合法性凭据"
+      },
+      {
+        "office": "chengxiang",
+        "order": 2,
+        "responsibility": "总揽全局方略：划分安抚对象与孤立对象，设计分而治之的次序，统筹各衙署节奏，并起草官僚体制与地方军政分离的长效改革方案，确保不触发多线内战"
+      },
+      {
+        "office": "emperor",
+        "order": 3,
+        "responsibility": "颁诏施恩：对除指定靶标外的所有州郡刺史加封爵位、赐金、联姻、赦免既往，以政治利益拆散其同盟，使靶标陷于孤立而无由举兵勤王"
+      },
+      {
+        "office": "taiwei",
+        "order": 4,
+        "responsibility": "暗中整训中央禁军、广布斥候以掌握各州郡兵力虚实，于靶标邻州布防形成威慑，确保一旦单独用兵可速胜且他人不敢轻动，但严禁主动挑衅其余州郡"
+      },
+      {
+        "office": "tingwei-justice",
+        "order": 5,
+        "responsibility": "在御史证据齐备后，对指定靶标正式起诉审理，将执法定性为正当司法而非朝廷征伐，使讨伐具合法性，剥夺其号召清君侧之名分"
+      },
+      {
+        "office": "zhisu-finance",
+        "order": 6,
+        "responsibility": "收回郡国铸币权与盐铁专营，切断私军钱粮来源，统一赋税征解渠道，从制度上杜绝地方再以财力豢养私军，巩固中央财权以支应长久军政开支"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "yushi-censor",
+      "chengxiang",
+      "emperor",
+      "taiwei",
+      "tingwei-justice",
+      "zhisu-finance"
+    ],
+    "planned_unique_offices": [
+      "yushi-censor",
+      "chengxiang",
+      "emperor",
+      "taiwei",
+      "tingwei-justice",
+      "zhisu-finance"
+    ],
+    "declared_planned_offices": [
+      "emperor",
+      "chengxiang",
+      "taiwei",
+      "yushi-censor",
+      "tingwei-justice",
+      "zhisu-finance"
+    ],
+    "declared_not_planned_offices": [
+      "shaofu-works"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 6,
+      "unique_planned_offices": 6,
+      "declared_planned_offices": 6,
+      "declared_not_planned_offices": 1,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785782257973,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "dispatchedOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 8,
+    "officeTurnCount": 8,
+    "officesInvoked": [
+      "yushi-censor",
+      "chengxiang",
+      "emperor",
+      "taiwei",
+      "tingwei-justice",
+      "zhisu-finance",
+      "shaofu-works"
+    ],
+    "officeCount": 7,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

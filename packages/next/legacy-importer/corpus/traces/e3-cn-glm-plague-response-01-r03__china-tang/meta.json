@@ -1,0 +1,181 @@
+{
+  "matchId": "e3-cn-glm-plague-response-01-r03__china-tang",
+  "regime": "china/tang",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785786197436,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "zhongshu",
+        "order": 1,
+        "responsibility": "即日起草《拯疫诏》，宣布疫区州府戒严、开仓、设隔离坊的合法依据，援引唐律《医疾令》与《杂令》中疫灾条款，明示经费、人事、军力的非常授权范围与回收时限"
+      },
+      {
+        "office": "menxia",
+        "order": 2,
+        "responsibility": "对拯疫诏及后续各部实施细则行使封驳审覆：核其合法性、比例性与对州县百姓的伤损，驳回越权或过当条款，确保皇权与相权在灾变中仍受制度约束"
+      },
+      {
+        "office": "shangshu",
+        "order": 3,
+        "responsibility": "总摄六部执行，于尚书都省设「拯疫房」，定日奏、五日一议之报闻节度，统一协调使唤、避免政出多门，并向中书/门下汇总进奏"
+      },
+      {
+        "office": "hubu",
+        "order": 4,
+        "responsibility": "启太府、司农、仓部之储备，向疫区拨钱粮布帛；蠲免疫州本年租庸调与地税；按户等赈济死亡户、孤老、流移之民；设专账备审"
+      },
+      {
+        "office": "libu_ritual",
+        "order": 5,
+        "responsibility": "统太医署：征发医博士、针师、按摩师入疫区，分坊巡诊；颁行验方与禁方，煎煮汤药普散；统录死亡、染病、痊愈之数以奏；兼掌祷祀与亡者敛瘗之礼，安人心"
+      },
+      {
+        "office": "gongbu",
+        "order": 6,
+        "responsibility": "征丁匠于疫区及近畿急造「疠人坊」隔离病坊、安济坊、义冢与药局，规划水源、沟渠、焚尸场之布置，确保隔绝与卫生并重"
+      },
+      {
+        "office": "xingbu",
+        "order": 7,
+        "responsibility": "依诏颁《疫期禁令》：禁出入疫坊、禁囤积药饵米粟、禁弃病亲；按唐律治违令、隐蔽疫情、贪墨赈物之罪，督州县法曹执行，并设申诉驿道以防滥刑"
+      },
+      {
+        "office": "bingbu",
+        "order": 8,
+        "responsibility": "调府兵或神策军于疫州要冲设关卡封锁，禁流民四散致疫；护送医队、粮队、药队通行；兼掌病亡军人处置与军营内防疫，防军中哗变与营疫"
+      },
+      {
+        "office": "libu_personnel",
+        "order": 9,
+        "responsibility": "罢免匿疫、怠政之州县官，拔擢勘疫有功之吏；以「危难任使」铨选擢医官、疫区刺史、巡按御史，定考课「拯疫」专条，以赏罚驱吏尽力"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "hubu",
+      "libu_ritual",
+      "gongbu",
+      "xingbu",
+      "bingbu",
+      "libu_personnel"
+    ],
+    "planned_unique_offices": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "hubu",
+      "libu_ritual",
+      "gongbu",
+      "xingbu",
+      "bingbu",
+      "libu_personnel"
+    ],
+    "declared_planned_offices": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "bingbu",
+      "hubu",
+      "libu_ritual",
+      "gongbu",
+      "xingbu",
+      "libu_personnel"
+    ],
+    "declared_not_planned_offices": [],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 9,
+      "unique_planned_offices": 9,
+      "declared_planned_offices": 9,
+      "declared_not_planned_offices": 0,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785787061685,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "menxia",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "dispatchedOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "menxia",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 9,
+    "officeTurnCount": 13,
+    "officesInvoked": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "hubu",
+      "libu_ritual",
+      "gongbu",
+      "xingbu",
+      "bingbu",
+      "libu_personnel"
+    ],
+    "officeCount": 9,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

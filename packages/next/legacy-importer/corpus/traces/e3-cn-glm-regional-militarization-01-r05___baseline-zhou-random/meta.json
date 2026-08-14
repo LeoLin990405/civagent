@@ -1,0 +1,137 @@
+{
+  "matchId": "e3-cn-glm-regional-militarization-01-r05___baseline-zhou-random",
+  "regime": "_baseline/zhou-random",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "Several regional governors have raised private armies under the pretext of local defence, and their forces now collectively outnumber the standing national army. The central government's tax collectors and judicial officers are being turned away at provincial borders. One governor has begun minting coins bearing his own insignia, and another has negotiated a separate truce with a neighbouring power without central authorisation. The state risks permanent fragmentation if this trend continues unchecked. Design a strategy to restore central military authority that combines political incentives, targeted enforcement, and institutional reforms, while avoiding a multi-front civil war that the centre cannot currently win.",
+  "startedAt": 1785792986871,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "taizai",
+        "order": 1,
+        "responsibility": "Design and coordinate the comprehensive restoration strategy: sequence the carrots and sticks, draft institutional reforms (centralize minting, rotate regional military commands, reinvigorate judicial circuits), and ensure each branch acts in concert so that no governor faces all pressures at once"
+      },
+      {
+        "office": "xingren",
+        "order": 2,
+        "responsibility": "Conduct diplomatic reconnaissance to distinguish reconcilable governors from irreconcilable ones, negotiate terms and assurances with the former, manage the diplomatic fallout of the unauthorized foreign truce, and assemble a loyalist coalition before any enforcement action becomes public"
+      },
+      {
+        "office": "sikou",
+        "order": 3,
+        "responsibility": "Build airtight legal cases against the most flagrant violations—unauthorized coinage, obstruction of tax collectors and judicial officers, and the unratified foreign treaty—and prosecute selectively and sequentially so that each enforcement action is unimpeachable in law and visible as targeted rather than general"
+      },
+      {
+        "office": "zhuhou",
+        "order": 4,
+        "responsibility": "Convene the loyal and wavering lords to formally confirm hereditary rights, confer titles and privileges on those who comply, and extract a collective commitment that isolates the worst offenders, thereby reframing compliance as honor and defiance as isolation"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "taizai",
+      "xingren",
+      "sikou",
+      "zhuhou"
+    ],
+    "planned_unique_offices": [
+      "taizai",
+      "xingren",
+      "sikou",
+      "zhuhou"
+    ],
+    "declared_planned_offices": [
+      "taizai",
+      "zhuhou",
+      "sikou",
+      "xingren"
+    ],
+    "declared_not_planned_offices": [
+      "tianzi",
+      "taishi",
+      "taibao",
+      "qingdafu"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 4,
+      "unique_planned_offices": 4,
+      "declared_planned_offices": 4,
+      "declared_not_planned_offices": 4,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785793405189,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "qingdafu",
+      "sikou",
+      "taishi",
+      "taizai",
+      "tianzi",
+      "zhuhou"
+    ],
+    "dispatchedOffices": [
+      "qingdafu",
+      "sikou",
+      "taishi",
+      "taizai",
+      "tianzi",
+      "zhuhou"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 6,
+    "officeTurnCount": 6,
+    "officesInvoked": [
+      "tianzi",
+      "taizai",
+      "taishi",
+      "qingdafu",
+      "sikou",
+      "zhuhou"
+    ],
+    "officeCount": 6,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

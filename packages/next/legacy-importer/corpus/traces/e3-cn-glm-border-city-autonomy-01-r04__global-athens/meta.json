@@ -1,0 +1,142 @@
+{
+  "matchId": "e3-cn-glm-border-city-autonomy-01-r04__global-athens",
+  "regime": "global/athens",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "A strategically located border city that serves as the primary gateway for trade between two rival powers has petitioned for expanded self-governance. The city's merchant council argues that its unique position requires flexibility in tariffs, legal codes, and diplomatic representation that a distant central government cannot provide. Granting autonomy would likely increase trade revenue and reduce administrative burden, but it would also create a precedent that other prosperous cities might follow, potentially eroding central authority. The rival power has signalled that it would view the city's autonomy as an opportunity to expand its own influence there. Design a governance framework for the border city that grants sufficient flexibility to maximise its economic function while preserving its political loyalty and preventing foreign co-option.",
+  "startedAt": 1785791522766,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "boule",
+        "order": 1,
+        "responsibility": "Architect the master charter: bounded tariff bands, layered jurisdiction, sunset clauses, and the interlocking tripwire-review cycle that ties economic autonomy inside a centrally controlled skeleton."
+      },
+      {
+        "office": "ekklesia",
+        "order": 2,
+        "responsibility": "Confer sovereign legitimacy: ratify the autonomy grant, define explicit revocation conditions, and reserve treaty/war/foreign-recognition powers to the central government."
+      },
+      {
+        "office": "archon",
+        "order": 3,
+        "responsibility": "Design the economic executive machinery: tariff schedule within central bands, customs and port authority, trade-court administration, and the revenue-sharing formula remitting to the treasury."
+      },
+      {
+        "office": "strategos",
+        "order": 4,
+        "responsibility": "Define the military loyalty layer: central garrison command chain, border-defense integration, hard caps on the city militia, and counter-co-option intelligence and vetting."
+      },
+      {
+        "office": "dikasterion",
+        "order": 5,
+        "responsibility": "Set the judicial tripwires: split local vs. central court jurisdiction, define treason/foreign-collusion triggers and automatic escalation, and adjudicate audit findings."
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "boule",
+      "ekklesia",
+      "archon",
+      "strategos",
+      "dikasterion"
+    ],
+    "planned_unique_offices": [
+      "boule",
+      "ekklesia",
+      "archon",
+      "strategos",
+      "dikasterion"
+    ],
+    "declared_planned_offices": [
+      "ekklesia",
+      "boule",
+      "strategos",
+      "dikasterion",
+      "archon"
+    ],
+    "declared_not_planned_offices": [
+      "rhetor"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 5,
+      "unique_planned_offices": 5,
+      "declared_planned_offices": 5,
+      "declared_not_planned_offices": 1,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785791765417,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "archon",
+      "boule",
+      "dikasterion",
+      "ekklesia",
+      "rhetor",
+      "strategos"
+    ],
+    "dispatchedOffices": [
+      "archon",
+      "boule",
+      "dikasterion",
+      "ekklesia",
+      "rhetor",
+      "strategos"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 6,
+    "officeTurnCount": 6,
+    "officesInvoked": [
+      "boule",
+      "ekklesia",
+      "archon",
+      "strategos",
+      "dikasterion",
+      "rhetor"
+    ],
+    "officeCount": 6,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

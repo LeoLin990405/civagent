@@ -1,0 +1,135 @@
+{
+  "matchId": "e3-cn-glm-border-city-autonomy-01-r03___baseline-tang-random",
+  "regime": "_baseline/tang-random",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "A strategically located border city that serves as the primary gateway for trade between two rival powers has petitioned for expanded self-governance. The city's merchant council argues that its unique position requires flexibility in tariffs, legal codes, and diplomatic representation that a distant central government cannot provide. Granting autonomy would likely increase trade revenue and reduce administrative burden, but it would also create a precedent that other prosperous cities might follow, potentially eroding central authority. The rival power has signalled that it would view the city's autonomy as an opportunity to expand its own influence there. Design a governance framework for the border city that grants sufficient flexibility to maximise its economic function while preserving its political loyalty and preventing foreign co-option.",
+  "startedAt": 1785788980701,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "zhongshu",
+        "order": 1,
+        "responsibility": "Draft the autonomy charter: define delegated vs reserved powers, the institutional structure of the city's self-governance, and precedent-control mechanisms so other cities cannot simply replicate the arrangement without equivalent petition and review."
+      },
+      {
+        "office": "hubu",
+        "order": 2,
+        "responsibility": "Design tariff and fiscal autonomy provisions: which trade-tax powers the city may exercise, the revenue-share split with the central treasury, and periodic fiscal audit requirements."
+      },
+      {
+        "office": "xingbu",
+        "order": 3,
+        "responsibility": "Define the legal-code boundary: which areas of law the city may adapt locally (commercial disputes, trade contracts, customs enforcement) and which must remain under central statute (treason, sedition, cross-border security offenses)."
+      },
+      {
+        "office": "libu_personnel",
+        "order": 4,
+        "responsibility": "Design loyalty safeguards via personnel: appointment and rotation of the central imperial overseer, vetting and term limits for merchant-council leaders, and an accountability ladder that detects foreign co-option early."
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "zhongshu",
+      "hubu",
+      "xingbu",
+      "libu_personnel"
+    ],
+    "planned_unique_offices": [
+      "zhongshu",
+      "hubu",
+      "xingbu",
+      "libu_personnel"
+    ],
+    "declared_planned_offices": [
+      "zhongshu",
+      "hubu",
+      "xingbu",
+      "libu_personnel"
+    ],
+    "declared_not_planned_offices": [
+      "menxia",
+      "shangshu",
+      "bingbu",
+      "libu_ritual",
+      "gongbu"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 4,
+      "unique_planned_offices": 4,
+      "declared_planned_offices": 4,
+      "declared_not_planned_offices": 5,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785789229014,
+  "exitCode": 1,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_failed",
+    "requiredOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "dispatchedOffices": [],
+    "missingOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "not_observed",
+    "dispatchCount": 0,
+    "officeTurnCount": 0,
+    "officesInvoked": [],
+    "officeCount": 0,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "instrumented match completed without an office dispatch or office-attributed turn"
+  }
+}

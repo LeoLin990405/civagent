@@ -1,0 +1,36 @@
+{
+  "id": "2026-06-25T16-19-16-062-ffoi",
+  "task": "应对持续的边境军事威胁与财政赤字",
+  "createdAt": 1782404390053,
+  "civs": [
+    {
+      "regime": "global/athens",
+      "backend": "native",
+      "matchId": "2026-06-25T16-19-16-062-ffoi__global-athens",
+      "exitCode": 1,
+      "events": "/Users/leo/.civagent/matches/2026-06-25T16-19-16-062-ffoi__global-athens/events.jsonl"
+    },
+    {
+      "regime": "global/roman-republic",
+      "backend": "native",
+      "matchId": "2026-06-25T16-19-16-062-ffoi__global-roman-republic",
+      "exitCode": 1,
+      "events": "/Users/leo/.civagent/matches/2026-06-25T16-19-16-062-ffoi__global-roman-republic/events.jsonl"
+    }
+  ],
+  "judge": {
+    "provider": "codex",
+    "resultPath": "/Users/leo/.civagent/tournaments/2026-06-25T16-19-16-062-ffoi/result.md",
+    "scores": [
+      {
+        "regime": "global/athens",
+        "score": 0
+      },
+      {
+        "regime": "global/roman-republic",
+        "score": 0
+      }
+    ],
+    "topRegime": "global/athens"
+  }
+}

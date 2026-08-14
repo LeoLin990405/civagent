@@ -1,0 +1,154 @@
+{
+  "matchId": "e3-cn-glm-regional-militarization-01-r03__china-tang",
+  "regime": "china/tang",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "Several regional governors have raised private armies under the pretext of local defence, and their forces now collectively outnumber the standing national army. The central government's tax collectors and judicial officers are being turned away at provincial borders. One governor has begun minting coins bearing his own insignia, and another has negotiated a separate truce with a neighbouring power without central authorisation. The state risks permanent fragmentation if this trend continues unchecked. Design a strategy to restore central military authority that combines political incentives, targeted enforcement, and institutional reforms, while avoiding a multi-front civil war that the centre cannot currently win.",
+  "startedAt": 1785787213323,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "zhongshu",
+        "order": 1,
+        "responsibility": "Draft the master restoration edict: a staged amnesty-and-incentive framework (pardons for compliant governors, guaranteed capital sinecures, hereditary titles, marriage ties to the imperial house) paired with a public legal case distinguishing the loyal from the seditious, plus a sequencing timeline that front-loads political co-optation before any coercive move."
+      },
+      {
+        "office": "hubu",
+        "order": 2,
+        "responsibility": "Design fiscal strangulation: redirect provincial tax remittance routes to bypass governor hands, restore a central coinage monopoly with recall of private-issue coinage, audit and cap provincial revenue extraction, and establish a central payroll pipeline so soldiers are paid by the treasury rather than their governors."
+      },
+      {
+        "office": "bingbu",
+        "order": 3,
+        "responsibility": "Plan military reorganization: impose per-province force ceilings with verified muster rolls, selectively absorb elite governor units into the central army (concentrate rather than disperse), designate a single rapid-reaction central force positioned at interior chokepoints, and define escalation triggers and rules of engagement that keep the centre off a multi-front footing."
+      },
+      {
+        "office": "xingbu",
+        "order": 4,
+        "responsibility": "Prepare targeted legal enforcement: file specific indictments against the coin-minting governor (counterfeiting/treason) and the separately-treatying governor (usurpation of imperial diplomatic prerogative), criminalize the refusal of centrally commissioned judicial and tax officers, and build an evidentiary record that isolates the worst offenders individually rather than charging all governors at once."
+      },
+      {
+        "office": "libu_personnel",
+        "order": 5,
+        "responsibility": "Institutionalize rotation and appointment reform: fixed-term governor tenures with mandatory rotation, centrally appointed vice-governors and judicial intendants drawn from the capital bureaucracy, merit-based promotion channels that reward cooperation, and a censure-and-recall mechanism tying continued office to verifiable compliance with force and fiscal ceilings."
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "zhongshu",
+      "hubu",
+      "bingbu",
+      "xingbu",
+      "libu_personnel"
+    ],
+    "planned_unique_offices": [
+      "zhongshu",
+      "hubu",
+      "bingbu",
+      "xingbu",
+      "libu_personnel"
+    ],
+    "declared_planned_offices": [
+      "zhongshu",
+      "bingbu",
+      "hubu",
+      "xingbu",
+      "libu_personnel"
+    ],
+    "declared_not_planned_offices": [
+      "menxia",
+      "shangshu",
+      "libu_ritual",
+      "gongbu"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 5,
+      "unique_planned_offices": 5,
+      "declared_planned_offices": 5,
+      "declared_not_planned_offices": 4,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785788399350,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "menxia",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "dispatchedOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "menxia",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 10,
+    "officeTurnCount": 11,
+    "officesInvoked": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "hubu",
+      "bingbu",
+      "xingbu",
+      "libu_personnel",
+      "libu_ritual",
+      "gongbu"
+    ],
+    "officeCount": 9,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

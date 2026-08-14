@@ -1,0 +1,146 @@
+{
+  "matchId": "e3-cn-glm-regional-militarization-01-r02__china-qin",
+  "regime": "china/qin",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "Several regional governors have raised private armies under the pretext of local defence, and their forces now collectively outnumber the standing national army. The central government's tax collectors and judicial officers are being turned away at provincial borders. One governor has begun minting coins bearing his own insignia, and another has negotiated a separate truce with a neighbouring power without central authorisation. The state risks permanent fragmentation if this trend continues unchecked. Design a strategy to restore central military authority that combines political incentives, targeted enforcement, and institutional reforms, while avoiding a multi-front civil war that the centre cannot currently win.",
+  "startedAt": 1785784283546,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "chengxiang",
+        "order": 1,
+        "responsibility": "Architect the overall political strategy: classify governors into compliant, wavering, and defiant camps; design the incentive ladder (amnesty, hereditary titles, court positions for those who disband); sequence confrontation so only one governor is isolated at a time; coordinate all ministerial lines of effort to prevent a multi-front civil war the centre cannot win."
+      },
+      {
+        "office": "yushi-censor",
+        "order": 2,
+        "responsibility": "Investigate and document each governor's specific violations — private troop strength, interception of tax and judicial officials, illicit coinage minting, unauthorized foreign truces — and rank targets by severity of defiance, isolability, and likelihood that exemplary action will deter rather than unite the others."
+      },
+      {
+        "office": "taiwei",
+        "order": 3,
+        "responsibility": "Concentrate all central field forces into a single mobile strike corps rather than dispersing them across provinces; plan enforcement against one designated governor at a time while maintaining static defensive containment on every other front; identify and control key chokepoints so the centre chooses where and when contact occurs."
+      },
+      {
+        "office": "zhisu-finance",
+        "order": 4,
+        "responsibility": "Interdict the fiscal lifeblood of non-compliant governors: blockade grain and specie transfers along tax-transport routes, redirect commercial circuits away from defiant provinces, and cut the pay chain of private armies — starving them of means to fight before any military engagement becomes necessary."
+      },
+      {
+        "office": "tingwei-justice",
+        "order": 5,
+        "responsibility": "Provide the legal foundation for enforcement: draft edicts criminalizing private armies, unauthorized foreign diplomacy, and illicit minting; re-establish judicial circuits first in compliant provinces to demonstrate that central law functions; ensure every enforcement action carries formal legal sanction so defiant governors cannot rally others under a banner of arbitrary royal aggression."
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "chengxiang",
+      "yushi-censor",
+      "taiwei",
+      "zhisu-finance",
+      "tingwei-justice"
+    ],
+    "planned_unique_offices": [
+      "chengxiang",
+      "yushi-censor",
+      "taiwei",
+      "zhisu-finance",
+      "tingwei-justice"
+    ],
+    "declared_planned_offices": [
+      "chengxiang",
+      "taiwei",
+      "yushi-censor",
+      "tingwei-justice",
+      "zhisu-finance"
+    ],
+    "declared_not_planned_offices": [
+      "emperor",
+      "shaofu-works"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 5,
+      "unique_planned_offices": 5,
+      "declared_planned_offices": 5,
+      "declared_not_planned_offices": 2,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785784830166,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "dispatchedOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 10,
+    "officeTurnCount": 12,
+    "officesInvoked": [
+      "chengxiang",
+      "emperor",
+      "yushi-censor",
+      "taiwei",
+      "zhisu-finance",
+      "tingwei-justice",
+      "shaofu-works"
+    ],
+    "officeCount": 7,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

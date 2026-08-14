@@ -1,0 +1,21 @@
+{
+  "matchId": "2026-07-29T13-22-40-609-a03t__china-tang",
+  "regime": "china/tang",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "x",
+  "startedAt": 1785331360677,
+  "status": "done",
+  "endedAt": 1785331424821,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "no pattern"
+  }
+}

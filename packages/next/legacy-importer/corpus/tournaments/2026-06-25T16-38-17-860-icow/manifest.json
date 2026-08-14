@@ -1,0 +1,26 @@
+{
+  "id": "2026-06-25T16-38-17-860-icow",
+  "task": "制定应对突厥铁骑南下的边防策略",
+  "createdAt": 1782405524426,
+  "civs": [
+    {
+      "regime": "china/tang",
+      "backend": "native",
+      "matchId": "2026-06-25T16-38-17-860-icow__china-tang",
+      "exitCode": 1,
+      "events": "/Users/leo/.civagent/matches/2026-06-25T16-38-17-860-icow__china-tang/events.jsonl"
+    }
+  ],
+  "judge": {
+    "provider": "codex",
+    "resultPath": "/Users/leo/.civagent/tournaments/2026-06-25T16-38-17-860-icow/result.md",
+    "scores": [
+      {
+        "regime": "china/tang",
+        "score": 0,
+        "reason": "未完成登录即中止，无边防策略、无合法决策过程、无可执行行动，也无法评估韧性。"
+      }
+    ],
+    "topRegime": "china/tang"
+  }
+}

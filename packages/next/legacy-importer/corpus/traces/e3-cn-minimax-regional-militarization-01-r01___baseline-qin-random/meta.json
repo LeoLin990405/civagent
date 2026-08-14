@@ -1,0 +1,146 @@
+{
+  "matchId": "e3-cn-minimax-regional-militarization-01-r01___baseline-qin-random",
+  "regime": "_baseline/qin-random",
+  "backend": "cn:minimax",
+  "command": "cc-minimax",
+  "task": "Several regional governors have raised private armies under the pretext of local defence, and their forces now collectively outnumber the standing national army. The central government's tax collectors and judicial officers are being turned away at provincial borders. One governor has begun minting coins bearing his own insignia, and another has negotiated a separate truce with a neighbouring power without central authorisation. The state risks permanent fragmentation if this trend continues unchecked. Design a strategy to restore central military authority that combines political incentives, targeted enforcement, and institutional reforms, while avoiding a multi-front civil war that the centre cannot currently win.",
+  "startedAt": 1785781613111,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "emperor",
+        "order": 1,
+        "responsibility": "Issue the imperial amnesty decree with a clear deadline for disbanding private armies, personally legitimize the political package, and appoint a special envoy to the neighboring power to overturn the unauthorized truce and reassert that only the central court concludes foreign treaties."
+      },
+      {
+        "office": "taiwei",
+        "order": 2,
+        "responsibility": "Design the selective military campaign: redeploy the standing army to secure the capital, grain routes, and the frontier with the neighboring power; concentrate force on one isolated ringleader first as a deterrent example rather than opening multiple fronts; prepare a contingency plan for full mobilization if the amnesty window expires without compliance."
+      },
+      {
+        "office": "chengxiang",
+        "order": 3,
+        "responsibility": "Coordinate the political package across ministries, conduct one-on-one negotiations with wavering governors to peel them away from the hardliners, and manage imperial propaganda that publicly contrasts compliant governors' restraint with the rebels' misconduct."
+      },
+      {
+        "office": "zhisu-finance",
+        "order": 4,
+        "responsibility": "Cut rebel provinces off from imperial tax farms, salt and iron monopolies, and trade-route revenues while offering amnesty-period tax remissions and grain subsidies to compliant governors; restructure central treasury receipts to fund the targeted military campaign without new levies that would alienate the populace."
+      },
+      {
+        "office": "tingwei-justice",
+        "order": 5,
+        "responsibility": "Draft and promulgate the institutional reforms: declare maintenance of private armies treason, centralize coin minting under imperial authority, formally void unauthorized provincial treaties, and prepare prosecution files against the ringleaders; design the rotating-governor and reporting reforms to prevent recurrence once the crisis is resolved."
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "emperor",
+      "taiwei",
+      "chengxiang",
+      "zhisu-finance",
+      "tingwei-justice"
+    ],
+    "planned_unique_offices": [
+      "emperor",
+      "taiwei",
+      "chengxiang",
+      "zhisu-finance",
+      "tingwei-justice"
+    ],
+    "declared_planned_offices": [
+      "emperor",
+      "chengxiang",
+      "taiwei",
+      "tingwei-justice",
+      "zhisu-finance"
+    ],
+    "declared_not_planned_offices": [
+      "yushi-censor",
+      "shaofu-works"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 5,
+      "unique_planned_offices": 5,
+      "declared_planned_offices": 5,
+      "declared_not_planned_offices": 2,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785781722770,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "dispatchedOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 7,
+    "officeTurnCount": 7,
+    "officesInvoked": [
+      "emperor",
+      "chengxiang",
+      "taiwei",
+      "yushi-censor",
+      "tingwei-justice",
+      "zhisu-finance",
+      "shaofu-works"
+    ],
+    "officeCount": 7,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "matchId": "e1c-plague-response-01-r01___baseline-qin-random",
+  "regime": "_baseline/qin-random",
+  "backend": "cn:doubao",
+  "command": "cc-doubao",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785454064278,
+  "status": "done",
+  "endedAt": 1785454494048,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 1
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  }
+}

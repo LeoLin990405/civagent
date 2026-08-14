@@ -1,0 +1,92 @@
+{
+  "matchId": "e3-cn-qwen-border-city-autonomy-01-r02___baseline-ming-random",
+  "regime": "_baseline/ming-random",
+  "backend": "cn:qwen",
+  "command": "cc-qwen",
+  "task": "A strategically located border city that serves as the primary gateway for trade between two rival powers has petitioned for expanded self-governance. The city's merchant council argues that its unique position requires flexibility in tariffs, legal codes, and diplomatic representation that a distant central government cannot provide. Granting autonomy would likely increase trade revenue and reduce administrative burden, but it would also create a precedent that other prosperous cities might follow, potentially eroding central authority. The rival power has signalled that it would view the city's autonomy as an opportunity to expand its own influence there. Design a governance framework for the border city that grants sufficient flexibility to maximise its economic function while preserving its political loyalty and preventing foreign co-option.",
+  "startedAt": 1785796557926,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parse_failed",
+    "dispatches": null,
+    "error": "expected exactly one dispatch-plan marker block"
+  },
+  "planDiff": {
+    "plan_status": "parse_failed",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": false,
+    "reason": "expected exactly one dispatch-plan marker block",
+    "planned_sequence": null,
+    "planned_unique_offices": null,
+    "declared_planned_offices": null,
+    "declared_not_planned_offices": null,
+    "undeclared_planned_offices": null,
+    "duplicate_planned_offices": null,
+    "counts": null
+  },
+  "endedAt": 1785797168606,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "bingbu",
+      "libu",
+      "libu-ritual",
+      "shoufu",
+      "silijian",
+      "xingbu"
+    ],
+    "dispatchedOffices": [
+      "bingbu",
+      "hubu",
+      "libu",
+      "libu-ritual",
+      "shoufu",
+      "silijian",
+      "xingbu"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 7,
+    "officeTurnCount": 11,
+    "officesInvoked": [
+      "hubu",
+      "libu",
+      "xingbu",
+      "libu-ritual",
+      "bingbu",
+      "silijian",
+      "shoufu"
+    ],
+    "officeCount": 7,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

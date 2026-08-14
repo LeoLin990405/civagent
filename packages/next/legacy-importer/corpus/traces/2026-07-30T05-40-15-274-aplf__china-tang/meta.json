@@ -1,0 +1,21 @@
+{
+  "matchId": "2026-07-30T05-40-15-274-aplf__china-tang",
+  "regime": "china/tang",
+  "backend": "cn:doubao",
+  "command": "cc-doubao",
+  "task": "A sudden 40% drop in tax revenue threatens the state treasury. Propose emergency fiscal measures.",
+  "startedAt": 1785390015320,
+  "status": "done",
+  "endedAt": 1785390196481,
+  "exitCode": 1,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "transcript too short"
+  }
+}

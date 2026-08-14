@@ -1,0 +1,148 @@
+{
+  "matchId": "e3-cn-qwen-plague-response-01-r02___baseline-ming-random",
+  "regime": "_baseline/ming-random",
+  "backend": "cn:qwen",
+  "command": "cc-qwen",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785789779292,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "shoufu",
+        "order": 1,
+        "responsibility": "总揽调度：发布紧急敕令，统合各部行动，核定防疫方略与问责机制"
+      },
+      {
+        "office": "libu-ritual",
+        "order": 2,
+        "responsibility": "医事统筹：调太医院医官赴各城，拟定诊疗与隔离规程，刊布防疫方药"
+      },
+      {
+        "office": "hubu",
+        "order": 3,
+        "responsibility": "钱粮保障：拨银开仓，采购药材，赈济病患与失养之家，减免疫区赋役"
+      },
+      {
+        "office": "gongbu",
+        "order": 4,
+        "responsibility": "营建防疫设施：设隔离病坊，整饬城邑水利沟渠卫生，妥善掩埋病殁者"
+      },
+      {
+        "office": "bingbu",
+        "order": 5,
+        "responsibility": "封禁与转运：在疫区要道设卡限流，维持秩序，护送医官药材粮饷"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "shoufu",
+      "libu-ritual",
+      "hubu",
+      "gongbu",
+      "bingbu"
+    ],
+    "planned_unique_offices": [
+      "shoufu",
+      "libu-ritual",
+      "hubu",
+      "gongbu",
+      "bingbu"
+    ],
+    "declared_planned_offices": [
+      "shoufu",
+      "hubu",
+      "bingbu",
+      "libu-ritual",
+      "gongbu"
+    ],
+    "declared_not_planned_offices": [
+      "silijian",
+      "libu",
+      "xingbu"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 5,
+      "unique_planned_offices": 5,
+      "declared_planned_offices": 5,
+      "declared_not_planned_offices": 3,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785790276852,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "bingbu",
+      "libu",
+      "libu-ritual",
+      "shoufu",
+      "silijian",
+      "xingbu"
+    ],
+    "dispatchedOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu",
+      "libu-ritual",
+      "shoufu",
+      "silijian",
+      "xingbu"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 8,
+    "officeTurnCount": 8,
+    "officesInvoked": [
+      "shoufu",
+      "libu-ritual",
+      "hubu",
+      "gongbu",
+      "bingbu",
+      "libu",
+      "xingbu",
+      "silijian"
+    ],
+    "officeCount": 8,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

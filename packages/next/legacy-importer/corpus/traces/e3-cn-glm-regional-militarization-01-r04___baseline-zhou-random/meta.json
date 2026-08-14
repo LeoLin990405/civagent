@@ -1,0 +1,130 @@
+{
+  "matchId": "e3-cn-glm-regional-militarization-01-r04___baseline-zhou-random",
+  "regime": "_baseline/zhou-random",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "Several regional governors have raised private armies under the pretext of local defence, and their forces now collectively outnumber the standing national army. The central government's tax collectors and judicial officers are being turned away at provincial borders. One governor has begun minting coins bearing his own insignia, and another has negotiated a separate truce with a neighbouring power without central authorisation. The state risks permanent fragmentation if this trend continues unchecked. Design a strategy to restore central military authority that combines political incentives, targeted enforcement, and institutional reforms, while avoiding a multi-front civil war that the centre cannot currently win.",
+  "startedAt": 1785790697526,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "taizai",
+        "order": 1,
+        "responsibility": "总设计师：制定整体削藩方略，统筹三策并举——政治怀柔（恩赏推恩、世子分封以分化藩国）、制度收权（财政、兵权、司法三纲渐进回收）、优先级排序（先礼后兵、孤立首恶、避免诸藩同反）。统筹全局，避免多线作战。"
+      },
+      {
+        "office": "xingren",
+        "order": 2,
+        "responsibility": "外交与政治诱因：遣使宣慰恭顺之侯以孤立桀骜者；单独处置未经中央授权与邻国媾和之事件，重夺对外交往独占权；以册封、通婚、世子入质为质换军权，瓦解诸侯同盟。"
+      },
+      {
+        "office": "sikou",
+        "order": 3,
+        "responsibility": "定向执法：对私铸钱币、阻截中央使节、擅立外约者以律令问罪，明正典刑以儆效尤；不动全军、只问首恶，给其余诸侯留出归附退路，避免逼成合纵。"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "taizai",
+      "xingren",
+      "sikou"
+    ],
+    "planned_unique_offices": [
+      "taizai",
+      "xingren",
+      "sikou"
+    ],
+    "declared_planned_offices": [
+      "taizai",
+      "sikou",
+      "xingren"
+    ],
+    "declared_not_planned_offices": [
+      "tianzi",
+      "taishi",
+      "taibao",
+      "zhuhou",
+      "qingdafu"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 3,
+      "unique_planned_offices": 3,
+      "declared_planned_offices": 3,
+      "declared_not_planned_offices": 5,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785790935214,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "qingdafu",
+      "sikou",
+      "taishi",
+      "taizai",
+      "tianzi",
+      "zhuhou"
+    ],
+    "dispatchedOffices": [
+      "qingdafu",
+      "sikou",
+      "taishi",
+      "taizai",
+      "tianzi",
+      "zhuhou"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 6,
+    "officeTurnCount": 7,
+    "officesInvoked": [
+      "tianzi",
+      "taizai",
+      "taishi",
+      "qingdafu",
+      "sikou",
+      "zhuhou"
+    ],
+    "officeCount": 6,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "matchId": "2026-07-30T09-20-18-212-10tm__china-tang",
+  "regime": "china/tang",
+  "backend": "cn:doubao",
+  "command": "cc-doubao",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785403218249,
+  "status": "done",
+  "endedAt": 1785404468559,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "rejected": "",
+    "auditedBy": "opencode-reviewer"
+  }
+}

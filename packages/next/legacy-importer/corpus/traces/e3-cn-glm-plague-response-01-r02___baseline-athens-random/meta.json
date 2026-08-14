@@ -1,0 +1,128 @@
+{
+  "matchId": "e3-cn-glm-plague-response-01-r02___baseline-athens-random",
+  "regime": "_baseline/athens-random",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785783421489,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "archon",
+        "order": 1,
+        "responsibility": "Lead the civil response: convene emergency session, appoint physicians, secure grain and water supplies, order collection and burial of the dead, and coordinate day-to-day public-health measures."
+      },
+      {
+        "office": "boule",
+        "order": 2,
+        "responsibility": "Frame and ratify emergency decrees: quarantine rules, allocation of public funds, temporary curfews or assembly limits, and empower the archon to act between sessions."
+      },
+      {
+        "office": "strategos",
+        "order": 3,
+        "responsibility": "Enforce orders and run logistics: cordon lines, supply distribution, hospital/temporary-care sites, and maintain civic order so the archon's measures can be carried out."
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "archon",
+      "boule",
+      "strategos"
+    ],
+    "planned_unique_offices": [
+      "archon",
+      "boule",
+      "strategos"
+    ],
+    "declared_planned_offices": [
+      "boule",
+      "strategos",
+      "archon"
+    ],
+    "declared_not_planned_offices": [
+      "ekklesia",
+      "dikasterion",
+      "rhetor"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 3,
+      "unique_planned_offices": 3,
+      "declared_planned_offices": 3,
+      "declared_not_planned_offices": 3,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785783667129,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "archon",
+      "boule",
+      "dikasterion",
+      "ekklesia",
+      "rhetor",
+      "strategos"
+    ],
+    "dispatchedOffices": [
+      "archon",
+      "boule",
+      "dikasterion",
+      "ekklesia",
+      "rhetor",
+      "strategos"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 6,
+    "officeTurnCount": 6,
+    "officesInvoked": [
+      "archon",
+      "boule",
+      "strategos",
+      "dikasterion",
+      "ekklesia",
+      "rhetor"
+    ],
+    "officeCount": 6,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

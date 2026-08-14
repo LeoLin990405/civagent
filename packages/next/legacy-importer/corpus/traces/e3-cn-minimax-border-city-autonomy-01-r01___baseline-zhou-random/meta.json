@@ -1,0 +1,137 @@
+{
+  "matchId": "e3-cn-minimax-border-city-autonomy-01-r01___baseline-zhou-random",
+  "regime": "_baseline/zhou-random",
+  "backend": "cn:minimax",
+  "command": "cc-minimax",
+  "task": "A strategically located border city that serves as the primary gateway for trade between two rival powers has petitioned for expanded self-governance. The city's merchant council argues that its unique position requires flexibility in tariffs, legal codes, and diplomatic representation that a distant central government cannot provide. Granting autonomy would likely increase trade revenue and reduce administrative burden, but it would also create a precedent that other prosperous cities might follow, potentially eroding central authority. The rival power has signalled that it would view the city's autonomy as an opportunity to expand its own influence there. Design a governance framework for the border city that grants sufficient flexibility to maximise its economic function while preserving its political loyalty and preventing foreign co-option.",
+  "startedAt": 1785782195740,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "qingdafu",
+        "order": 1,
+        "responsibility": "Draft the core administrative governance structure defining the city's internal autonomy boundaries, including the composition of the merchant council, term limits, oath obligations to the central authority, and the supervisory commissioner system that retains final political loyalty mechanisms"
+      },
+      {
+        "office": "sikou",
+        "order": 2,
+        "responsibility": "Design the tariff and trade infrastructure framework, specifying which tariff categories the city may set independently, which require central ratification, the revenue-sharing formula with the central treasury, and the infrastructure inspection regime that keeps trade routes physically accountable"
+      },
+      {
+        "office": "xingren",
+        "order": 3,
+        "responsibility": "Draft the diplomatic protocol governing the city's interactions with the rival power, including limits on independent treaty-making, mandatory reporting of foreign envoys, the vetting process for resident foreign merchants, and the early-warning system to detect co-option attempts"
+      },
+      {
+        "office": "zhuhou",
+        "order": 4,
+        "responsibility": "Design the precedent-containment provisions that differentiate this city's special status from general feudal autonomy, including the sunset clauses, the unique-truce justification, and the explicit subordination terms that prevent other prosperous cities from citing this arrangement as a template for independence"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "qingdafu",
+      "sikou",
+      "xingren",
+      "zhuhou"
+    ],
+    "planned_unique_offices": [
+      "qingdafu",
+      "sikou",
+      "xingren",
+      "zhuhou"
+    ],
+    "declared_planned_offices": [
+      "zhuhou",
+      "qingdafu",
+      "sikou",
+      "xingren"
+    ],
+    "declared_not_planned_offices": [
+      "tianzi",
+      "taizai",
+      "taishi",
+      "taibao"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 4,
+      "unique_planned_offices": 4,
+      "declared_planned_offices": 4,
+      "declared_not_planned_offices": 4,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785782304197,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "qingdafu",
+      "sikou",
+      "taishi",
+      "taizai",
+      "tianzi",
+      "zhuhou"
+    ],
+    "dispatchedOffices": [
+      "qingdafu",
+      "sikou",
+      "taishi",
+      "taizai",
+      "tianzi",
+      "zhuhou"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 6,
+    "officeTurnCount": 6,
+    "officesInvoked": [
+      "tianzi",
+      "taizai",
+      "zhuhou",
+      "taishi",
+      "qingdafu",
+      "sikou"
+    ],
+    "officeCount": 6,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "matchId": "e3-cn-glm-border-city-autonomy-01-r01__china-zhou",
+  "regime": "china/zhou",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "A strategically located border city that serves as the primary gateway for trade between two rival powers has petitioned for expanded self-governance. The city's merchant council argues that its unique position requires flexibility in tariffs, legal codes, and diplomatic representation that a distant central government cannot provide. Granting autonomy would likely increase trade revenue and reduce administrative burden, but it would also create a precedent that other prosperous cities might follow, potentially eroding central authority. The rival power has signalled that it would view the city's autonomy as an opportunity to expand its own influence there. Design a governance framework for the border city that grants sufficient flexibility to maximise its economic function while preserving its political loyalty and preventing foreign co-option.",
+  "startedAt": 1785782763357,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "tianzi",
+        "order": 1,
+        "responsibility": "Establish the constitutional and legal basis for the city's autonomous status — define the formal enfeoffment-style grant, its sunset duration, conditions for revocation, ritual/tribute obligations binding the city to the central polity, and the symbolic supremacy that prevents precedent erosion by other cities"
+      },
+      {
+        "office": "zhuhou",
+        "order": 2,
+        "responsibility": "Design the merchant council's bounded self-governance structure — define which powers the council exercises locally (commercial regulation, market supervision, internal administration), what fiscal and informational tribute it owes upward, and the nested autonomy model that maximises economic flexibility without creating a replicable sovereignty precedent"
+      },
+      {
+        "office": "taizai",
+        "order": 3,
+        "responsibility": "Design the administrative and fiscal machinery — tariff ceilings and floors calibrated to prevent under-cutting central revenue, tax collection and remittance ratios, commercial court procedures, infrastructure standardisation requirements, regular reporting cycles to the central bureaucracy, and independent audit mechanisms with numeric thresholds for automatic review"
+      },
+      {
+        "office": "sikou",
+        "order": 4,
+        "responsibility": "Define the legal jurisdiction split — which categories of law the city may modify (commercial contract, market regulation, guild disputes) and which remain exclusively central (criminal, constitutional, security, treason); design the appeals escalation path from city courts to central justice and the legal tripwires that trigger central intervention"
+      },
+      {
+        "office": "xingren",
+        "order": 5,
+        "responsibility": "Design the diplomatic and external engagement framework — what trade-negotiation latitude the city holds, mandatory protocols and reporting for all foreign official contact, a register of foreign merchants and diplomats, restrictions on foreign land ownership and debt instruments, and tripwires for detecting influence operations or covert penetration by the rival power"
+      },
+      {
+        "office": "taibao",
+        "order": 6,
+        "responsibility": "Design the military and security architecture — central garrison composition and command chain independent of the merchant council, city watch size and armament ceilings, intelligence collection on foreign infiltration, prohibitions on private militias, and rapid-response mechanisms for armed intervention if co-option is detected"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "tianzi",
+      "zhuhou",
+      "taizai",
+      "sikou",
+      "xingren",
+      "taibao"
+    ],
+    "planned_unique_offices": [
+      "tianzi",
+      "zhuhou",
+      "taizai",
+      "sikou",
+      "xingren",
+      "taibao"
+    ],
+    "declared_planned_offices": [
+      "tianzi",
+      "taizai",
+      "taibao",
+      "zhuhou",
+      "sikou",
+      "xingren"
+    ],
+    "declared_not_planned_offices": [
+      "taishi",
+      "qingdafu"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 6,
+      "unique_planned_offices": 6,
+      "declared_planned_offices": 6,
+      "declared_not_planned_offices": 2,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785783016485,
+  "exitCode": 1,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_failed",
+    "requiredOffices": [
+      "qingdafu",
+      "taibao",
+      "taishi",
+      "taizai",
+      "tianzi",
+      "zhuhou"
+    ],
+    "dispatchedOffices": [],
+    "missingOffices": [
+      "qingdafu",
+      "taibao",
+      "taishi",
+      "taizai",
+      "tianzi",
+      "zhuhou"
+    ],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "not_observed",
+    "dispatchCount": 0,
+    "officeTurnCount": 0,
+    "officesInvoked": [],
+    "officeCount": 0,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "instrumented match completed without an office dispatch or office-attributed turn"
+  }
+}

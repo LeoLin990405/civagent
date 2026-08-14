@@ -1,0 +1,9 @@
+{
+  "matchId": "2026-07-22T15-27-17-161-bajn__china-qin",
+  "regime": "china/qin",
+  "backend": "cn:kimi",
+  "command": "cc-kimi",
+  "task": "实现一个支持 CRUD 的命令行待办事项管理器：要求 JSON 文件持久化、支持 add/list/done/delete 子命令、附基本单元测试。用中文交流。",
+  "startedAt": 1784734037191,
+  "status": "running"
+}

@@ -1,0 +1,22 @@
+{
+  "matchId": "2026-07-30T09-42-02-492-9d86__china-ming",
+  "regime": "china/ming",
+  "backend": "cn:doubao",
+  "command": "cc-doubao",
+  "task": "Several regional governors have raised private armies under the pretext of local defence, and their forces now collectively outnumber the standing national army. The central government's tax collectors and judicial officers are being turned away at provincial borders. One governor has begun minting coins bearing his own insignia, and another has negotiated a separate truce with a neighbouring power without central authorisation. The state risks permanent fragmentation if this trend continues unchecked. Design a strategy to restore central military authority that combines political incentives, targeted enforcement, and institutional reforms, while avoiding a multi-front civil war that the centre cannot currently win.",
+  "startedAt": 1785404522532,
+  "status": "done",
+  "endedAt": 1785404745145,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 1
+  },
+  "impeachments": [],
+  "sediment": {
+    "rejected": "",
+    "auditedBy": "opencode-reviewer"
+  }
+}

@@ -1,0 +1,175 @@
+{
+  "matchId": "e3-cn-qwen-border-city-autonomy-01-r02__china-tang",
+  "regime": "china/tang",
+  "backend": "cn:qwen",
+  "command": "cc-qwen",
+  "task": "A strategically located border city that serves as the primary gateway for trade between two rival powers has petitioned for expanded self-governance. The city's merchant council argues that its unique position requires flexibility in tariffs, legal codes, and diplomatic representation that a distant central government cannot provide. Granting autonomy would likely increase trade revenue and reduce administrative burden, but it would also create a precedent that other prosperous cities might follow, potentially eroding central authority. The rival power has signalled that it would view the city's autonomy as an opportunity to expand its own influence there. Design a governance framework for the border city that grants sufficient flexibility to maximise its economic function while preserving its political loyalty and preventing foreign co-option.",
+  "startedAt": 1785796557916,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "zhongshu",
+        "order": 1,
+        "responsibility": "Draft the border-city autonomy charter as a verifiable legal grant: enumerate delegated powers (bounded tariff bands, commercial adjudication, limited envoy reception) versus reserved powers (defense, treaty-making, senior appointments, criminal code), with sunset clause, renewal terms, and explicit escalation links to the throne."
+      },
+      {
+        "office": "menxia",
+        "order": 2,
+        "responsibility": "Design the review-and-rejection (封驳) channel: standing criteria for vetting city ordinances and quasi-diplomatic acts, seal-and-reject authority against ultra vires measures, appeal paths, and automatic tripwire reviews when debt, land, or diplomatic thresholds are crossed."
+      },
+      {
+        "office": "shangshu",
+        "order": 3,
+        "responsibility": "Integrate execution across the six ministries: assign each delegated domain a responsible ministry, fix reporting lines and audit cadence, and run the periodic adjustment cycle that recalibrates tariff bands and thresholds against loyalty and revenue indicators."
+      },
+      {
+        "office": "hubu",
+        "order": 4,
+        "responsibility": "Specify the fiscal regime: bounded tariff bands and customs quotas, revenue-sharing formula with the center, independent audit schedule, and tripwires on municipal borrowing—especially loans or collateral from the rival power's merchants."
+      },
+      {
+        "office": "xingbu",
+        "order": 5,
+        "responsibility": "Define legal jurisdiction: scope of the city's commercial courts, crimes reserved to central courts, mixed-court rules for disputes involving foreign merchants, anti-corruption statutes, and extradition procedures to prevent the rival power sheltering offenders."
+      },
+      {
+        "office": "bingbu",
+        "order": 6,
+        "responsibility": "Design the security skeleton: central garrison on a command chain separate from the city watch, numeric and armament limits on the watch, ban on municipal militia-raising, beacon-and-relay reporting, and central approval for any fortification or wall works."
+      },
+      {
+        "office": "libu_personnel",
+        "order": 7,
+        "responsibility": "Secure political loyalty through personnel control: central appointment and vetting of the magistrate and senior officers, fixed rotation terms, recusal rules, performance metrics weighting revenue alongside loyalty, and prohibition on officials holding trade interests with either power."
+      },
+      {
+        "office": "libu_ritual",
+        "order": 8,
+        "responsibility": "Bound diplomatic representation via ritual protocol: permit only envoy reception and commercial negotiation, require full reporting to the center, forbid treaties, oaths, titles, or calendar-era signals that imply suzerainty to the rival power, and prescribe ceremonies that publicly affirm the city's subordinate status."
+      },
+      {
+        "office": "gongbu",
+        "order": 9,
+        "responsibility": "Standardize infrastructure to block co-option by construction or debt capture: central specifications for customs posts, roads, granaries, and beacon towers, approval requirements for major building, and controls on land alienation to foreign buyers."
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "hubu",
+      "xingbu",
+      "bingbu",
+      "libu_personnel",
+      "libu_ritual",
+      "gongbu"
+    ],
+    "planned_unique_offices": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "hubu",
+      "xingbu",
+      "bingbu",
+      "libu_personnel",
+      "libu_ritual",
+      "gongbu"
+    ],
+    "declared_planned_offices": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "bingbu",
+      "hubu",
+      "libu_ritual",
+      "gongbu",
+      "xingbu",
+      "libu_personnel"
+    ],
+    "declared_not_planned_offices": [],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 9,
+      "unique_planned_offices": 9,
+      "declared_planned_offices": 9,
+      "declared_not_planned_offices": 0,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785797894505,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_failed",
+    "requiredOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "menxia",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "dispatchedOffices": [
+      "menxia",
+      "zhongshu"
+    ],
+    "missingOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "shangshu",
+      "xingbu"
+    ],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 2,
+    "officeTurnCount": 3,
+    "officesInvoked": [
+      "zhongshu",
+      "menxia"
+    ],
+    "officeCount": 2,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

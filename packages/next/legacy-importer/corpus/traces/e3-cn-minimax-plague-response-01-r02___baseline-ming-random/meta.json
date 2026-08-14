@@ -1,0 +1,137 @@
+{
+  "matchId": "e3-cn-minimax-plague-response-01-r02___baseline-ming-random",
+  "regime": "_baseline/ming-random",
+  "backend": "cn:minimax",
+  "command": "cc-minimax",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785782587266,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "shoufu",
+        "order": 1,
+        "responsibility": "Issue imperial edict activating emergency protocols; coordinate inter-ministry response and authorize extraordinary measures (cordon sanitaire, martial-law-style curfews in affected prefectures)"
+      },
+      {
+        "office": "hubu",
+        "order": 2,
+        "responsibility": "Open emergency treasury, redirect grain reserves and silver to afflicted cities, fund physicians/herbalists/medicinal imports, and suspend tax collection in hardest-hit regions"
+      },
+      {
+        "office": "bingbu",
+        "order": 3,
+        "responsibility": "Deploy troops to enforce quarantine cordons around infected cities, secure granaries against panic-driven hoarding, run medical logistics convoys, and staff field lazarettos"
+      },
+      {
+        "office": "gongbu",
+        "order": 4,
+        "responsibility": "Rapid-construct isolation wards and pest-houses, expand water/sewage infrastructure, organize mass cremation/burial grounds, and convert temples or granaries into temporary infirmaries"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "shoufu",
+      "hubu",
+      "bingbu",
+      "gongbu"
+    ],
+    "planned_unique_offices": [
+      "shoufu",
+      "hubu",
+      "bingbu",
+      "gongbu"
+    ],
+    "declared_planned_offices": [
+      "shoufu",
+      "hubu",
+      "bingbu",
+      "gongbu"
+    ],
+    "declared_not_planned_offices": [
+      "silijian",
+      "libu",
+      "xingbu",
+      "libu-ritual"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 4,
+      "unique_planned_offices": 4,
+      "declared_planned_offices": 4,
+      "declared_not_planned_offices": 4,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785782678997,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "bingbu",
+      "libu",
+      "libu-ritual",
+      "shoufu",
+      "silijian",
+      "xingbu"
+    ],
+    "dispatchedOffices": [
+      "bingbu",
+      "libu",
+      "libu-ritual",
+      "shoufu",
+      "silijian",
+      "xingbu"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 6,
+    "officeTurnCount": 6,
+    "officesInvoked": [
+      "shoufu",
+      "bingbu",
+      "libu",
+      "libu-ritual",
+      "silijian",
+      "xingbu"
+    ],
+    "officeCount": 6,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

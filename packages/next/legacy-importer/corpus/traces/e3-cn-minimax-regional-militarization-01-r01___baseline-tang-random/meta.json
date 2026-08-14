@@ -1,0 +1,158 @@
+{
+  "matchId": "e3-cn-minimax-regional-militarization-01-r01___baseline-tang-random",
+  "regime": "_baseline/tang-random",
+  "backend": "cn:minimax",
+  "command": "cc-minimax",
+  "task": "Several regional governors have raised private armies under the pretext of local defence, and their forces now collectively outnumber the standing national army. The central government's tax collectors and judicial officers are being turned away at provincial borders. One governor has begun minting coins bearing his own insignia, and another has negotiated a separate truce with a neighbouring power without central authorisation. The state risks permanent fragmentation if this trend continues unchecked. Design a strategy to restore central military authority that combines political incentives, targeted enforcement, and institutional reforms, while avoiding a multi-front civil war that the centre cannot currently win.",
+  "startedAt": 1785781613115,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "bingbu",
+        "order": 1,
+        "responsibility": "Lead strategic intelligence: map each governor's forces, supply lines, allegiances of mid-level officers, and key fortifications; identify soft targets and which governors can be detached from the bloc rather than fought; prepare contingency redeployment plans and reserve a reliable central striking force concentrated on a single axis so the centre never fights on multiple fronts."
+      },
+      {
+        "office": "zhongshu",
+        "order": 2,
+        "responsibility": "Draft the master political plan and the imperial edicts that frame the campaign as restoration of proper order and benevolent reform rather than punitive war; produce a tiered proclamation offering amnesty, confirmation of rank, and reform participation to compliant governors, alongside the public condemnation reserved for the coin-minter and the unauthorized truce negotiator."
+      },
+      {
+        "office": "hubu",
+        "order": 3,
+        "responsibility": "Cut off the financial oxygen of the separatist bloc: audit and recall imperial treasuries, grain, and salt/licorice monopolies from the disloyal provinces; issue a reformed currency standard and recall provincial minting privileges to delegitimize the rebel coin; redirect tax circuits so compliant border circuits are rewarded and disloyal ones are choked without open hostilities."
+      },
+      {
+        "office": "libu_personnel",
+        "order": 4,
+        "responsibility": "Run the personnel operation: identify mid-ranking provincial officials, clerks, and garrison commanders whose loyalty is purchasable; design recall, promotion, and rotation programs that pry officers away from the worst governors from within; prepare appointments to fill the vacuum when the centre moves against the most flagrant offenders."
+      },
+      {
+        "office": "libu_ritual",
+        "order": 5,
+        "responsibility": "Provide legitimacy and diplomatic cover: extend honors, posthumous titles, marriage alliances, and imperial audiences as the carrot; reopen proper tributary and ritual channels to the neighbouring power to isolate the governor who negotiated an unauthorized truce and give him a face-saving path back into the imperial order."
+      },
+      {
+        "office": "xingbu",
+        "order": 6,
+        "responsibility": "Issue narrowly targeted legal actions: prepare formal charges, summons, and outlawry decrees specifically against the coin-minter and the unauthorized truce negotiator, framed in statute so the rest of the bloc can be pardoned and separated from them; this concentrates enforcement on two named individuals rather than the provinces at large, avoiding a multi-front civil war."
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "bingbu",
+      "zhongshu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "xingbu"
+    ],
+    "planned_unique_offices": [
+      "bingbu",
+      "zhongshu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "xingbu"
+    ],
+    "declared_planned_offices": [
+      "zhongshu",
+      "bingbu",
+      "hubu",
+      "libu_ritual",
+      "xingbu",
+      "libu_personnel"
+    ],
+    "declared_not_planned_offices": [
+      "menxia",
+      "shangshu",
+      "gongbu"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 6,
+      "unique_planned_offices": 6,
+      "declared_planned_offices": 6,
+      "declared_not_planned_offices": 3,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785781878506,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "dispatchedOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 8,
+    "officeTurnCount": 8,
+    "officesInvoked": [
+      "zhongshu",
+      "bingbu",
+      "hubu",
+      "gongbu",
+      "libu_personnel",
+      "libu_ritual",
+      "xingbu",
+      "shangshu"
+    ],
+    "officeCount": 8,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

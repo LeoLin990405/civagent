@@ -1,0 +1,146 @@
+{
+  "matchId": "e3-cn-qwen-plague-response-01-r05___baseline-qin-random",
+  "regime": "_baseline/qin-random",
+  "backend": "cn:qwen",
+  "command": "cc-qwen",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785819122139,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "chengxiang",
+        "order": 1,
+        "responsibility": "Lead and coordinate the empire-wide epidemic response: issue unified orders to all commanderies, set quarantine protocols, and prioritize the hardest-hit major cities."
+      },
+      {
+        "office": "zhisu-finance",
+        "order": 2,
+        "responsibility": "Release emergency funds and grain reserves to affected cities, cover treatment costs, suspend taxes in stricken regions, and secure supply lines for food and medicine."
+      },
+      {
+        "office": "shaofu-works",
+        "order": 3,
+        "responsibility": "Mobilize imperial physicians and workshops to prepare and distribute medicines, and construct quarantine wards and treatment centers in major cities."
+      },
+      {
+        "office": "tingwei-justice",
+        "order": 4,
+        "responsibility": "Enforce quarantine orders and travel restrictions, curb hoarding, price gouging, and unrest, and adjudicate violations swiftly to keep public order."
+      },
+      {
+        "office": "yushi-censor",
+        "order": 5,
+        "responsibility": "Dispatch censors to verify mortality reports and relief distribution, and prosecute concealment, neglect, or corruption by local officials."
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "chengxiang",
+      "zhisu-finance",
+      "shaofu-works",
+      "tingwei-justice",
+      "yushi-censor"
+    ],
+    "planned_unique_offices": [
+      "chengxiang",
+      "zhisu-finance",
+      "shaofu-works",
+      "tingwei-justice",
+      "yushi-censor"
+    ],
+    "declared_planned_offices": [
+      "chengxiang",
+      "yushi-censor",
+      "tingwei-justice",
+      "zhisu-finance",
+      "shaofu-works"
+    ],
+    "declared_not_planned_offices": [
+      "emperor",
+      "taiwei"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 5,
+      "unique_planned_offices": 5,
+      "declared_planned_offices": 5,
+      "declared_not_planned_offices": 2,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785819293279,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "dispatchedOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 7,
+    "officeTurnCount": 7,
+    "officesInvoked": [
+      "emperor",
+      "chengxiang",
+      "zhisu-finance",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor"
+    ],
+    "officeCount": 7,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

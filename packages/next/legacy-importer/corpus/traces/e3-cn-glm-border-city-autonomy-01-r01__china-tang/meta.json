@@ -1,0 +1,162 @@
+{
+  "matchId": "e3-cn-glm-border-city-autonomy-01-r01__china-tang",
+  "regime": "china/tang",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "A strategically located border city that serves as the primary gateway for trade between two rival powers has petitioned for expanded self-governance. The city's merchant council argues that its unique position requires flexibility in tariffs, legal codes, and diplomatic representation that a distant central government cannot provide. Granting autonomy would likely increase trade revenue and reduce administrative burden, but it would also create a precedent that other prosperous cities might follow, potentially eroding central authority. The rival power has signalled that it would view the city's autonomy as an opportunity to expand its own influence there. Design a governance framework for the border city that grants sufficient flexibility to maximise its economic function while preserving its political loyalty and preventing foreign co-option.",
+  "startedAt": 1785782763354,
+  "status": "vetoed",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "zhongshu",
+        "order": 1,
+        "responsibility": "Draft the City Charter of Autonomy: enumerate autonomous vs. reserved powers, sunset clauses, escalation/tripwire triggers, and the constitutional relationship binding the merchant council to the throne"
+      },
+      {
+        "office": "hubu",
+        "order": 2,
+        "responsibility": "Design the fiscal framework: bounded tariff authority (rate ranges, exempt categories), revenue-sharing split with the central treasury, commercial-tax powers, mandatory audit cycles, and tripwires for debt or revenue anomalies"
+      },
+      {
+        "office": "bingbu",
+        "order": 3,
+        "responsibility": "Design the security architecture: centrally commanded border garrison outside city control, hard caps on city watch size and armament, independent military supply lines, anti-infiltration vetting"
+      },
+      {
+        "office": "xingbu",
+        "order": 4,
+        "responsibility": "Define dual legal jurisdiction: commercial/civil ordinances the city may legislate vs. reserved criminal, treason, and national-security law administered by centrally appointed judges; appeal and review paths"
+      },
+      {
+        "office": "libu_ritual",
+        "order": 5,
+        "responsibility": "Regulate foreign contact: permitted commercial diplomacy vs. prohibited political diplomacy, foreign merchant registration and quartering, formal loyalty rituals, and boundaries on cultural exchange that could seed foreign influence"
+      },
+      {
+        "office": "libu_personnel",
+        "order": 6,
+        "responsibility": "Design the personnel framework: balance of merchant-council seats and centrally appointed positions, vetting and qualification for autonomous offices, and rotation requirements for sensitive posts"
+      },
+      {
+        "office": "gongbu",
+        "order": 7,
+        "responsibility": "Standardize strategic infrastructure: centrally controlled customs houses, border fortifications, and main trade routes; city-managed local infrastructure built to central specifications; tripwires against foreign-funded or debt-leveraged construction"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "zhongshu",
+      "hubu",
+      "bingbu",
+      "xingbu",
+      "libu_ritual",
+      "libu_personnel",
+      "gongbu"
+    ],
+    "planned_unique_offices": [
+      "zhongshu",
+      "hubu",
+      "bingbu",
+      "xingbu",
+      "libu_ritual",
+      "libu_personnel",
+      "gongbu"
+    ],
+    "declared_planned_offices": [
+      "zhongshu",
+      "bingbu",
+      "hubu",
+      "libu_ritual",
+      "gongbu",
+      "xingbu",
+      "libu_personnel"
+    ],
+    "declared_not_planned_offices": [
+      "menxia",
+      "shangshu"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 7,
+      "unique_planned_offices": 7,
+      "declared_planned_offices": 7,
+      "declared_not_planned_offices": 2,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785783117890,
+  "exitCode": null,
+  "signal": "SIGKILL",
+  "mechanisms": {
+    "vetoes": 1,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_failed",
+    "requiredOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "menxia",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "dispatchedOffices": [
+      "menxia",
+      "zhongshu"
+    ],
+    "missingOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "shangshu",
+      "xingbu"
+    ],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 2,
+    "officeTurnCount": 4,
+    "officesInvoked": [
+      "zhongshu",
+      "menxia"
+    ],
+    "officeCount": 2,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

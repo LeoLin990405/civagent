@@ -1,0 +1,21 @@
+{
+  "matchId": "2026-07-30T05-38-38-888-z8a4__baseline-tang-random",
+  "regime": "baseline/tang-random",
+  "backend": "cn:doubao",
+  "command": "cc-doubao",
+  "task": "A sudden 40% drop in tax revenue threatens the state treasury. Propose emergency fiscal measures.",
+  "startedAt": 1785389918928,
+  "status": "done",
+  "endedAt": 1785389919148,
+  "exitCode": 127,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "transcript too short"
+  }
+}

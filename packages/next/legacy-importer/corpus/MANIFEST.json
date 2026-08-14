@@ -1,0 +1,2683 @@
+{
+  "schemaVersion": "corpus-v1",
+  "instrument": "legacy-cc-v5",
+  "legacyBaselineCommit": "1460441528069465dca7263dba3e9ac01b18c78a",
+  "harnessBaselineCommit": "47f943859bef60e4160492346772ded9b24f765a",
+  "frozenAt": "2026-08-14T08:07:04.620Z",
+  "sourceRoot": "/Users/leo/.civagent",
+  "freezeTool": "packages/next/legacy-importer/freeze-corpus.mjs",
+  "selection": {
+    "rule": "per-stratum deterministic: mechanism runs first, abnormal runs second, smallest files third, matchId tiebreak; extra strata (kimi/native/mimo) at reduced count; 3 smallest tournaments for judging coverage",
+    "tracesPerE3Stratum": 24
+  },
+  "coverage": {
+    "native": {
+      "traces": 3,
+      "historical": 3,
+      "random": 0,
+      "abnormal": 3,
+      "mechanisms": 0,
+      "skillLifecycle": 0,
+      "tasks": [
+        "tax-revenue"
+      ]
+    },
+    "cn:kimi": {
+      "traces": 3,
+      "historical": 3,
+      "random": 0,
+      "abnormal": 3,
+      "mechanisms": 0,
+      "skillLifecycle": 0,
+      "tasks": [
+        "other"
+      ]
+    },
+    "cn:glm": {
+      "traces": 24,
+      "historical": 10,
+      "random": 14,
+      "abnormal": 1,
+      "mechanisms": 6,
+      "skillLifecycle": 24,
+      "tasks": [
+        "border-city-autonomy",
+        "other",
+        "plague-response",
+        "regional-militarization"
+      ]
+    },
+    "cn:doubao": {
+      "traces": 24,
+      "historical": 16,
+      "random": 8,
+      "abnormal": 2,
+      "mechanisms": 6,
+      "skillLifecycle": 24,
+      "tasks": [
+        "border-city-autonomy",
+        "plague-response",
+        "regional-militarization",
+        "tax-revenue"
+      ]
+    },
+    "cn:qwen": {
+      "traces": 24,
+      "historical": 4,
+      "random": 20,
+      "abnormal": 0,
+      "mechanisms": 0,
+      "skillLifecycle": 24,
+      "tasks": [
+        "border-city-autonomy",
+        "plague-response",
+        "pong",
+        "regional-militarization"
+      ]
+    },
+    "cn:mimo": {
+      "traces": 3,
+      "historical": 1,
+      "random": 2,
+      "abnormal": 0,
+      "mechanisms": 3,
+      "skillLifecycle": 3,
+      "tasks": [
+        "plague-response",
+        "regional-militarization"
+      ]
+    },
+    "cn:minimax": {
+      "traces": 24,
+      "historical": 8,
+      "random": 16,
+      "abnormal": 3,
+      "mechanisms": 6,
+      "skillLifecycle": 24,
+      "tasks": [
+        "border-city-autonomy",
+        "plague-response",
+        "regional-militarization"
+      ]
+    }
+  },
+  "declaredGaps": [
+    "topology treatments flat and solo do not exist anywhere in the legacy corpus (13 distinct regimes, all historical or *_random); they are native-epoch-only treatments",
+    "npm registry lacks @deepseek-ai/dsh-* 0.1.0-rc.5 (the version at Harness baseline 47f9438); harness-adapter must resolve seams by building from the pinned source",
+    "mimo traces exist but the E3 analysis froze the instrument without mimo (commit f2279f9); mimo entries here are non-E3 breadth samples"
+  ],
+  "totals": {
+    "traces": 105,
+    "tournaments": 3,
+    "bytes": 12763371
+  },
+  "traces": [
+    {
+      "matchId": "2026-06-25T16-18-02-281-dy8i__global-roman-republic",
+      "backend": "native",
+      "command": "claude",
+      "regime": "global/roman-republic",
+      "topology": "historical",
+      "taskHash": "c5070574e0edb64c",
+      "taskLabel": "tax-revenue",
+      "status": "running",
+      "startedAt": 1782404282347,
+      "dispatchObservability": null,
+      "eventCount": 1,
+      "mechanismEvents": [],
+      "skillEvents": [],
+      "sizeBytes": 511,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-06-25T16-18-02-281-dy8i__global-roman-republic",
+      "digests": {
+        "meta.json": "0f78837402c0124892f1aecea682987097c59916efe1614323b5d831b1ecc29b",
+        "events.jsonl": "7b854f3e7cfe138fa0c947f434c9b2aef1a014a7229f8ee99bcd1347801b29d3"
+      }
+    },
+    {
+      "matchId": "2026-06-25T16-19-16-062-ffoi__global-athens",
+      "backend": "native",
+      "command": "claude",
+      "regime": "global/athens",
+      "topology": "historical",
+      "taskHash": "c5070574e0edb64c",
+      "taskLabel": "tax-revenue",
+      "status": "running",
+      "startedAt": 1782404356111,
+      "dispatchObservability": null,
+      "eventCount": 1,
+      "mechanismEvents": [],
+      "skillEvents": [],
+      "sizeBytes": 479,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-06-25T16-19-16-062-ffoi__global-athens",
+      "digests": {
+        "meta.json": "02e447aef95e6cfc4ea646ae3794a1bb2beecfa3565d09c6de204d99f5ccb33b",
+        "events.jsonl": "3397efef605555f6eafe68df1d6314cab04340b31b75e85a54c57046b1b1e810"
+      }
+    },
+    {
+      "matchId": "2026-06-25T16-19-16-062-ffoi__global-roman-republic",
+      "backend": "native",
+      "command": "claude",
+      "regime": "global/roman-republic",
+      "topology": "historical",
+      "taskHash": "c5070574e0edb64c",
+      "taskLabel": "tax-revenue",
+      "status": "running",
+      "startedAt": 1782404356110,
+      "dispatchObservability": null,
+      "eventCount": 1,
+      "mechanismEvents": [],
+      "skillEvents": [],
+      "sizeBytes": 511,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-06-25T16-19-16-062-ffoi__global-roman-republic",
+      "digests": {
+        "meta.json": "2d2515eb66a5277d7fc6b5ecc2c18aff2b4e1378fac5a5b1ffe4a8f4d34f1012",
+        "events.jsonl": "78c328b5aaa86b44f2dd2f8724ff069d23b370ced94bc84db7ea17d3e110887a"
+      }
+    },
+    {
+      "matchId": "2026-07-22T15-27-17-161-bajn__china-qin",
+      "backend": "cn:kimi",
+      "command": "cc-kimi",
+      "regime": "china/qin",
+      "topology": "historical",
+      "taskHash": "8a4f340ef893127e",
+      "taskLabel": "other",
+      "status": "running",
+      "startedAt": 1784734037191,
+      "dispatchObservability": null,
+      "eventCount": 1,
+      "mechanismEvents": [],
+      "skillEvents": [],
+      "sizeBytes": 967,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-22T15-27-17-161-bajn__china-qin",
+      "digests": {
+        "meta.json": "7d4a5ef58e4e07ea6668b388232f22853da9e6e53a69f5903e759575a756a2d5",
+        "events.jsonl": "6ee4dd922489d1c37f217d22f4142a69de39ec3be0a6383a439ffdf624463f52"
+      }
+    },
+    {
+      "matchId": "2026-07-22T15-27-17-161-bajn__china-tang",
+      "backend": "cn:kimi",
+      "command": "cc-kimi",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "8a4f340ef893127e",
+      "taskLabel": "other",
+      "status": "running",
+      "startedAt": 1784734037191,
+      "dispatchObservability": null,
+      "eventCount": 2,
+      "mechanismEvents": [],
+      "skillEvents": [],
+      "sizeBytes": 1921,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-22T15-27-17-161-bajn__china-tang",
+      "digests": {
+        "meta.json": "7a681557d133373f23b0819177d8e9b9accf983d219f9bf29065249dc7f94af7",
+        "events.jsonl": "df08437aafe53cf38ff679c0a1eab6b67d5ad6ba384dd4f3dc42a654d95290d1"
+      }
+    },
+    {
+      "matchId": "2026-07-22T15-30-38-869-yc7l__china-qin",
+      "backend": "cn:kimi",
+      "command": "cc-kimi",
+      "regime": "china/qin",
+      "topology": "historical",
+      "taskHash": "8a4f340ef893127e",
+      "taskLabel": "other",
+      "status": "running",
+      "startedAt": 1784734238897,
+      "dispatchObservability": null,
+      "eventCount": 1,
+      "mechanismEvents": [],
+      "skillEvents": [],
+      "sizeBytes": 967,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-22T15-30-38-869-yc7l__china-qin",
+      "digests": {
+        "meta.json": "3eb659d72c95075fd2518252f7aa0675fbab38431290bb2f12d5c349790cc66f",
+        "events.jsonl": "5f828250cc2035ccdacdf88aa5ebb72750c9e15439a8091a3f1ca163f1330a3c"
+      }
+    },
+    {
+      "matchId": "2026-07-29T13-22-40-609-a03t__china-tang",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "2d711642b726b044",
+      "taskLabel": "other",
+      "status": "done",
+      "startedAt": 1785331360677,
+      "dispatchObservability": null,
+      "eventCount": 12,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 5439,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-29T13-22-40-609-a03t__china-tang",
+      "digests": {
+        "meta.json": "54cd3d53be08e99d19cfd2cb1608162e612c94a8bedc3837f6df0443d18815da",
+        "events.jsonl": "25a819a4c31fe29f21ae244a12c5bf8f9ade3e28385e0523e765aafa7ee56faf"
+      }
+    },
+    {
+      "matchId": "2026-07-30T05-35-44-827-oog6__baseline-tang-random",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "baseline/tang-random",
+      "topology": "random",
+      "taskHash": "58f295a11283f20e",
+      "taskLabel": "tax-revenue",
+      "status": "done",
+      "startedAt": 1785389744866,
+      "dispatchObservability": null,
+      "eventCount": 3,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 2035,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-30T05-35-44-827-oog6__baseline-tang-random",
+      "digests": {
+        "meta.json": "0def2b2a8986a17e0502734d3039a2aa3e48ce2a3779e6fceaae706989f376b6",
+        "events.jsonl": "a89946a88a49ae1116fc16890b2de42e247adc53355916ad3f5fd11ec80a1201"
+      }
+    },
+    {
+      "matchId": "2026-07-30T05-35-44-827-oog6__china-tang",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "58f295a11283f20e",
+      "taskLabel": "tax-revenue",
+      "status": "done",
+      "startedAt": 1785389744866,
+      "dispatchObservability": null,
+      "eventCount": 4,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 2414,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-30T05-35-44-827-oog6__china-tang",
+      "digests": {
+        "meta.json": "1d19ee891101da060b759151960e146a31b23b6d15bf100f4effae71165e6ee1",
+        "events.jsonl": "dd2bb93e072e7673f580699daf05add3d1c69844e5206faf09da5411c627e2d6"
+      }
+    },
+    {
+      "matchId": "2026-07-30T05-38-38-888-z8a4__baseline-tang-random",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "baseline/tang-random",
+      "topology": "random",
+      "taskHash": "58f295a11283f20e",
+      "taskLabel": "tax-revenue",
+      "status": "done",
+      "startedAt": 1785389918928,
+      "dispatchObservability": null,
+      "eventCount": 3,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 2035,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-30T05-38-38-888-z8a4__baseline-tang-random",
+      "digests": {
+        "meta.json": "cefda590d7c6585da83bc8dd84e266cb8034c20e359d9a563da9c94e1d93912b",
+        "events.jsonl": "c1f67e9924bb27d66ac60a838485ef29c7eab521a5ee0a3baa5d5d113b7cf82d"
+      }
+    },
+    {
+      "matchId": "2026-07-30T05-38-38-888-z8a4__china-tang",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "58f295a11283f20e",
+      "taskLabel": "tax-revenue",
+      "status": "done",
+      "startedAt": 1785389918927,
+      "dispatchObservability": null,
+      "eventCount": 4,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 2463,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-30T05-38-38-888-z8a4__china-tang",
+      "digests": {
+        "meta.json": "72420ead1ced5eed4759634779f28a8011be5ab6e24496f0cd8ad27904250f04",
+        "events.jsonl": "558b57d873071407948560d4ca614176455bdc8c5c373319f78e811216454fb4"
+      }
+    },
+    {
+      "matchId": "2026-07-30T05-40-15-274-aplf__baseline-tang-random",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "baseline/tang-random",
+      "topology": "random",
+      "taskHash": "58f295a11283f20e",
+      "taskLabel": "tax-revenue",
+      "status": "done",
+      "startedAt": 1785390015320,
+      "dispatchObservability": null,
+      "eventCount": 3,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 2035,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-30T05-40-15-274-aplf__baseline-tang-random",
+      "digests": {
+        "meta.json": "e9d37bccb62c35bcc510bc700135743ba4b6ffc84954c84c275911f647be060f",
+        "events.jsonl": "cedaecf1abacc5c9d546c912e8ab3cabb709e9fdc024882bffde04786a0e9605"
+      }
+    },
+    {
+      "matchId": "2026-07-30T05-40-15-274-aplf__china-tang",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "58f295a11283f20e",
+      "taskLabel": "tax-revenue",
+      "status": "done",
+      "startedAt": 1785390015320,
+      "dispatchObservability": null,
+      "eventCount": 4,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 2463,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-30T05-40-15-274-aplf__china-tang",
+      "digests": {
+        "meta.json": "6eb0a8e660ab2719b490b944fc8bc5a0ea90f22bb448f6394e53603e5ebe7d3d",
+        "events.jsonl": "54fe634e383c6fff13724abd45870833376fa12ca9a16645244515673f18678b"
+      }
+    },
+    {
+      "matchId": "2026-07-30T09-20-18-212-10tm__china-qin",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/qin",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785403218249,
+      "dispatchObservability": null,
+      "eventCount": 106,
+      "mechanismEvents": [
+        "edict_triggered"
+      ],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 48243,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-30T09-20-18-212-10tm__china-qin",
+      "digests": {
+        "meta.json": "a00c08c9e761c2a6290ad3bbdfd4c8a80126d2a4cd31b52bee6fb1e8c81704c0",
+        "events.jsonl": "311a5bcba52d06042a014b170ddd928530c368992ec7120f37df55743723f64a"
+      }
+    },
+    {
+      "matchId": "2026-07-30T09-20-18-212-10tm__china-tang",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785403218249,
+      "dispatchObservability": null,
+      "eventCount": 6,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 3885,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-30T09-20-18-212-10tm__china-tang",
+      "digests": {
+        "meta.json": "aba6021e3892cccfc9794cd76befe8dfa9d23acb7a83fcd4b3ef170f5c676b78",
+        "events.jsonl": "60bb56872b2b98557f4b725007306db8f67931ee9d11f8bc6c1a08dd47d36cc8"
+      }
+    },
+    {
+      "matchId": "2026-07-30T09-20-18-212-10tm__china-zhou",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/zhou",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785403218251,
+      "dispatchObservability": null,
+      "eventCount": 20,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 9573,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-30T09-20-18-212-10tm__china-zhou",
+      "digests": {
+        "meta.json": "be7ecc7bd767be038a08ae4cd087be1fa70894cae9b4c73d7db245dc648d2917",
+        "events.jsonl": "1bc84a986b5990552868d3d3f49cc59649131d7b67f743570cae64804f70837c"
+      }
+    },
+    {
+      "matchId": "2026-07-30T09-42-02-492-9d86__china-ming",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/ming",
+      "topology": "historical",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785404522532,
+      "dispatchObservability": null,
+      "eventCount": 152,
+      "mechanismEvents": [
+        "edict_triggered"
+      ],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 68586,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-30T09-42-02-492-9d86__china-ming",
+      "digests": {
+        "meta.json": "438f6a8ee2efca1d51d4cdaf3cd2e08810646ff0a17e05876bd49d8308e2d7e8",
+        "events.jsonl": "3d5c8a42c5def2a07a70a6f5cb9e18c9e82969c9fc76c56a72c7b6b63a7402a1"
+      }
+    },
+    {
+      "matchId": "2026-07-30T09-42-02-492-9d86__china-qin",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/qin",
+      "topology": "historical",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785404522530,
+      "dispatchObservability": null,
+      "eventCount": 14,
+      "mechanismEvents": [
+        "edict_triggered"
+      ],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 8568,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-30T09-42-02-492-9d86__china-qin",
+      "digests": {
+        "meta.json": "634c25986fc899d08490cb173c1dc481663988ca79a3c209ec81039acf47c1fc",
+        "events.jsonl": "67d7ecb589e0876746d1ff2444662d7d1fc4c07703df1221772ad7464be3917d"
+      }
+    },
+    {
+      "matchId": "2026-07-30T10-21-07-wwer",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "vetoed",
+      "startedAt": 1785406867364,
+      "dispatchObservability": null,
+      "eventCount": 12,
+      "mechanismEvents": [
+        "veto_triggered"
+      ],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 27771,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-07-30T10-21-07-wwer",
+      "digests": {
+        "meta.json": "f6e824dd3895a2709e7c448f305d30029a9e53ce855d428b11dce21e727f0359",
+        "events.jsonl": "393c4036a68234d5c6e7a4dc7544343503eec0ccdc08435cee3dc5cbf071062e"
+      }
+    },
+    {
+      "matchId": "2026-08-03T14-42-11-6c92",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "456f0f8337145a1b",
+      "taskLabel": "pong",
+      "status": "done",
+      "startedAt": 1785768131418,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 5,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 5199,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/2026-08-03T14-42-11-6c92",
+      "digests": {
+        "meta.json": "7cff0b8093d9961537475ce37e996669db2d61799c4cef9169900c7b8f6c9291",
+        "events.jsonl": "b15859ae28233429cc5b5b1cade082a5ac5b06a3b76164634996278fba8cd587"
+      }
+    },
+    {
+      "matchId": "e1c-border-city-autonomy-01-r01___baseline-ming-random",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785456601794,
+      "dispatchObservability": null,
+      "eventCount": 5,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 11471,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e1c-border-city-autonomy-01-r01___baseline-ming-random",
+      "digests": {
+        "meta.json": "f7a14d861c1ac09a9b137ea3fd7de1fbfbc3f29c6d6fa8f9caba596862a28c85",
+        "events.jsonl": "1c815da413325be8e377dd753e0bae6f9eedfc19161d01b91e8a3b3cbb6022a2"
+      }
+    },
+    {
+      "matchId": "e1c-border-city-autonomy-01-r01__china-zhou",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/zhou",
+      "topology": "historical",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785456601788,
+      "dispatchObservability": null,
+      "eventCount": 5,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 11581,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e1c-border-city-autonomy-01-r01__china-zhou",
+      "digests": {
+        "meta.json": "77dd7847f1b30f218c165a3910b25c061eaae461c958af8ab53acefc78d7cec3",
+        "events.jsonl": "440e3e833e9854c843e8a656d796caf5ac8cb221c9b70d0256356be496bb9b10"
+      }
+    },
+    {
+      "matchId": "e1c-plague-response-01-r01___baseline-qin-random",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785454064278,
+      "dispatchObservability": null,
+      "eventCount": 40,
+      "mechanismEvents": [
+        "edict_triggered"
+      ],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 58188,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e1c-plague-response-01-r01___baseline-qin-random",
+      "digests": {
+        "meta.json": "454c986235363de6a7cd800b73d86eb62209c42d4f7259f984d81b2ad4aabf1d",
+        "events.jsonl": "c2794933a8dd0d89ca756e93768f03ceb25ad0bdd6d401ca9b8f32f5e6ea5ac5"
+      }
+    },
+    {
+      "matchId": "e1c-regional-militarization-01-r01___baseline-athens-random",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "_baseline/athens-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785454973534,
+      "dispatchObservability": null,
+      "eventCount": 5,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 12379,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e1c-regional-militarization-01-r01___baseline-athens-random",
+      "digests": {
+        "meta.json": "e73aa267d05e3ae0f2123c3a343d780a755a86a9c28884ee9fef67423d091ac1",
+        "events.jsonl": "e59c73966ae101905b8072775dd68b81ae45d8db8253c3bfe86a306e6fa65791"
+      }
+    },
+    {
+      "matchId": "e1c-regional-militarization-01-r01___baseline-ming-random",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785454973538,
+      "dispatchObservability": null,
+      "eventCount": 5,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 10747,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e1c-regional-militarization-01-r01___baseline-ming-random",
+      "digests": {
+        "meta.json": "2e34dbba400ebf5ef1fe315bd97585ddb6d16e2ca5815a0871c62995f4d1b4d5",
+        "events.jsonl": "d80529aa2ffd63bafb0e408b8a6948dcc9f2fe268bb6c240dd4555896035c290"
+      }
+    },
+    {
+      "matchId": "e1c-regional-militarization-01-r01___baseline-qin-random",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785454973531,
+      "dispatchObservability": null,
+      "eventCount": 4,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 10030,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e1c-regional-militarization-01-r01___baseline-qin-random",
+      "digests": {
+        "meta.json": "a376b3b8b7bacbef7ea1ea0e4158bf788192e6257f9e6165b2b3db65c813e484",
+        "events.jsonl": "d8c721279aab095b3e201349a3a7a21da3a32ce29a97fca9c0649143e5be9f9f"
+      }
+    },
+    {
+      "matchId": "e3-cn-doubao-plague-response-01-r04__china-tang",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "vetoed",
+      "startedAt": 1785786465278,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 37,
+      "mechanismEvents": [
+        "veto_triggered",
+        "veto_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 64895,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-doubao-plague-response-01-r04__china-tang",
+      "digests": {
+        "meta.json": "72b70d066b79b01a29433856e074f202077be81e562c0d5489241e7adc1c78c9",
+        "events.jsonl": "027e9a9d3e3e722a3d6d1a06e93bd603c43709f6108e3ed54d3655a64b99a3f3"
+      }
+    },
+    {
+      "matchId": "e3-cn-doubao-regional-militarization-01-r05__china-ming",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/ming",
+      "topology": "historical",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785788788611,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 10,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 12258,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-doubao-regional-militarization-01-r05__china-ming",
+      "digests": {
+        "meta.json": "fa630a7638e750ba978ad35caf1897b1823714914c18a56af58e8b4c8f270ca2",
+        "events.jsonl": "b6ab2728a23cefef40348a7b1709860340e32ab916f8d375ceb78c97c71d03a1"
+      }
+    },
+    {
+      "matchId": "e3-cn-doubao-regional-militarization-01-r05__china-qin",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/qin",
+      "topology": "historical",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785788788614,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 10,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 12340,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-doubao-regional-militarization-01-r05__china-qin",
+      "digests": {
+        "meta.json": "0968669aa4b7826d1c33ad4789f5787f66af7c4e831538cdf8947ae149d00137",
+        "events.jsonl": "3875ce188d39d797a6e571ae5e7060816bcbe6ae572bf5083b0ad1972300703f"
+      }
+    },
+    {
+      "matchId": "e3-cn-doubao-regional-militarization-01-r05__china-tang",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785788788617,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 10,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 12398,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-doubao-regional-militarization-01-r05__china-tang",
+      "digests": {
+        "meta.json": "217a43dc5f77d8279beb3c550507b87c15dbae6abdfe14e63a4c368a96d4ce8d",
+        "events.jsonl": "8128f6571b7161937fbe8f347db1e395b8c5a9db5bd148520131833b66a2ac9e"
+      }
+    },
+    {
+      "matchId": "e3-cn-doubao-regional-militarization-01-r05__china-zhou",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "china/zhou",
+      "topology": "historical",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785788788609,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 10,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 12116,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-doubao-regional-militarization-01-r05__china-zhou",
+      "digests": {
+        "meta.json": "e5a204218d26b2eb86a15c135c9f2d3123826a6f066d0aa6c61d1a8eee22f535",
+        "events.jsonl": "00acc22c47194cb3f3d5b1b4c86efa1bc1212be780d70a38c3d6b0b15c4bc620"
+      }
+    },
+    {
+      "matchId": "e3-cn-doubao-regional-militarization-01-r05__global-athens",
+      "backend": "cn:doubao",
+      "command": "cc-doubao",
+      "regime": "global/athens",
+      "topology": "historical",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785788788610,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 10,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 12248,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-doubao-regional-militarization-01-r05__global-athens",
+      "digests": {
+        "meta.json": "45e65728c30f6a8d61f7c1b8366612e494f27d33158c44307f9be06d785c3e4b",
+        "events.jsonl": "9c27eff0e4cc96cb5722f6571245a683c0c7ac05486e94bfa4cf522a6c6c6c6f"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r01___baseline-zhou-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785782763361,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 38,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 102604,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-border-city-autonomy-01-r01___baseline-zhou-random",
+      "digests": {
+        "meta.json": "a0486ddf4d10602d48ed4d18be3981ad01e42a7e36f0e3035aed9f3334b8f0ae",
+        "events.jsonl": "5fe2e0ccb45897a311e06e6d51916d3a03b0735fcb2d745fb8db2b320272b6b4"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r01__china-tang",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "vetoed",
+      "startedAt": 1785782763354,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 44,
+      "mechanismEvents": [
+        "veto_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 159565,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-border-city-autonomy-01-r01__china-tang",
+      "digests": {
+        "meta.json": "f28e7c5aa7b7ec729d19fe535149fc806e78c4cdfca35d37356d913c20662255",
+        "events.jsonl": "a48dd012f963b83fcdd531d8a52795cabed241ec1ec73f95546cafe62ed7d3b3"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r01__china-zhou",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "china/zhou",
+      "topology": "historical",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785782763357,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 10,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 18392,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-border-city-autonomy-01-r01__china-zhou",
+      "digests": {
+        "meta.json": "bd7980fac1efbcd50954251d98207421bbb431cde50203ba040d9b51204428df",
+        "events.jsonl": "961d19dcc2b8f92824cc6c7454cac8f452c1df41a683f9af6ee39f91c6a5b443"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r02__china-tang",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785785228134,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 75,
+      "mechanismEvents": [
+        "veto_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 569001,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-border-city-autonomy-01-r02__china-tang",
+      "digests": {
+        "meta.json": "5054fa1902e9157323a5247fb475a12e58f693853547e43fcbd1096f7e7d24d3",
+        "events.jsonl": "8584af67fcf175862e38ccacb8e8c7a2c6e89a24c0157ad35d1ad1f92a7af95c"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r03___baseline-tang-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/tang-random",
+      "topology": "random",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785788980701,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 10,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 16218,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-border-city-autonomy-01-r03___baseline-tang-random",
+      "digests": {
+        "meta.json": "53b00a07411e0b18613c02c14bc3dee8ca715d4f59960dbcaaf5462953e56b1e",
+        "events.jsonl": "0b697bb0efe19984d63a649bb038256fbcba0d6659f966406312f5efe2c50db0"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r04__china-tang",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785791522771,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 29,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 106424,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-border-city-autonomy-01-r04__china-tang",
+      "digests": {
+        "meta.json": "aee0bc1bb6dd4c606fbcaea875df865c17298ca2e39c043d2ef3513dda61e356",
+        "events.jsonl": "2bf8816eebc01619cb120c507b66fd93c4deb40085bdeb5e4d458c39f0774fdb"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-border-city-autonomy-01-r04__global-athens",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "global/athens",
+      "topology": "historical",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785791522766,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 29,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 133347,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-border-city-autonomy-01-r04__global-athens",
+      "digests": {
+        "meta.json": "113b625c40f0bbb6ea89bc19ad024b5ee89ef53bb454e5e619c77784593877b5",
+        "events.jsonl": "2be65b42850a983d1dcf16ca068416549fd214e266b6f6df7828db40168241c4"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r01___baseline-qin-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785781197040,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 54,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 110965,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-plague-response-01-r01___baseline-qin-random",
+      "digests": {
+        "meta.json": "e6eb4e4db84bcddd5b30bfee7ea3071d4752eb9a42c5c3d7ccde6f0590f0731a",
+        "events.jsonl": "50dc16112e530f3c305a3f5e1cc42c861b63e1ebdbdfede1a7bf6ff16464d2ab"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r01___baseline-zhou-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785781197043,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 52,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 94971,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-plague-response-01-r01___baseline-zhou-random",
+      "digests": {
+        "meta.json": "d7031116af3de10c45db5c7e30eaff34f298ec64b3a64ac9e69d116f7c4cf683",
+        "events.jsonl": "a9ac208db9c978d9c58f82577ac6f9a0d515a83ca9193c883a8cd2848700dd31"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r02___baseline-athens-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/athens-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785783421489,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 51,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 128959,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-plague-response-01-r02___baseline-athens-random",
+      "digests": {
+        "meta.json": "34e67692c303e458da94f97949ce20835352a3084d6bb0400800c41e7845f27d",
+        "events.jsonl": "1edc7343eda8cce6e7e98e0600d039bf5710304a7e592cc730943df24126d35f"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r03___baseline-ming-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785786197442,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 48,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 91367,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-plague-response-01-r03___baseline-ming-random",
+      "digests": {
+        "meta.json": "c59d2c1891e5fd8450e0ab888126df15911f0528f40c899173f2fa349d55fb5e",
+        "events.jsonl": "940f63ca230b695707a364f615806839444c795c00200a514a1d380728054e10"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r03___baseline-qin-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785786197444,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 59,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 106120,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-plague-response-01-r03___baseline-qin-random",
+      "digests": {
+        "meta.json": "dc498ab6052cb969a030fa53503698a8e0d66504a3b2f6d50268a838031d27a6",
+        "events.jsonl": "bc62542d9458f36cc0d71b82ff68efe5680d6947925136d8f4fc13f3aed3e913"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r03__china-tang",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785786197436,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 81,
+      "mechanismEvents": [
+        "veto_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 562951,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-plague-response-01-r03__china-tang",
+      "digests": {
+        "meta.json": "7b1f6aee91d5f3f76278cb8d7068a369058b5d2692c624b68a0d181c38f94438",
+        "events.jsonl": "64b1b841d3c5aa73f90b3cda6b7640b563c5bfd877f01e3e56c1643a8479cedc"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r04___baseline-athens-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/athens-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785789947585,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 53,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 137685,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-plague-response-01-r04___baseline-athens-random",
+      "digests": {
+        "meta.json": "de849f9917e83e8ce079be344246e685d96338d98c4b0ae736bf3619a062d980",
+        "events.jsonl": "47ea348a74c7885e1c963f061d1a493714a15ea5135209fae9391054fdc76114"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r04___baseline-zhou-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785789947588,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 52,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 102003,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-plague-response-01-r04___baseline-zhou-random",
+      "digests": {
+        "meta.json": "ff4f186c410dd3f0f5a467a152b87c8be65db64d4c64cd4019d62409f6df7261",
+        "events.jsonl": "022f5d61fca29245232737a78b8c3471c8a4c7b6faae9e6717a03317a9a8eadc"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-plague-response-01-r05___baseline-ming-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785792234175,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 55,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 118342,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-plague-response-01-r05___baseline-ming-random",
+      "digests": {
+        "meta.json": "bbf056bcac231c8e07e8040d30a0717891d7d306513cc564b2520b713b053993",
+        "events.jsonl": "7f99a18e483164df815fba2d7fa540ecf97680b135497b2efc609ae92ad05515"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r01___baseline-qin-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785781868685,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 35,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 77891,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-regional-militarization-01-r01___baseline-qin-random",
+      "digests": {
+        "meta.json": "730a191a9e5492ab16dd16d2c943b08f0593ed3d68b8e8c4c5dc062f315ef25d",
+        "events.jsonl": "01ba20811b394f2fd7428b5ea4375523f7164eaecbc0da903f88424705b9c9fa"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r02___baseline-qin-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785784283537,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 53,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 143916,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-regional-militarization-01-r02___baseline-qin-random",
+      "digests": {
+        "meta.json": "20584232ca9812ca50b629205055978c72b9c638dbc19d4fc7dbdc3987d4ad09",
+        "events.jsonl": "35804905fb0980e64f3d52fc1365782ffd7fb7dbaab033e6b0fe33fdeafec8f0"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r02__china-qin",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "china/qin",
+      "topology": "historical",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785784283546,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 118,
+      "mechanismEvents": [
+        "veto_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 652227,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-regional-militarization-01-r02__china-qin",
+      "digests": {
+        "meta.json": "1cd70539237e9a3e40ca0dabdd9b163f0e29b6fcdd7083d5b1ce69be48c32a07",
+        "events.jsonl": "149db878a60b4513cce2d5e8eade48a99b13b33409e216596b63f0fe714eb84c"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r03__china-tang",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785787213323,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 83,
+      "mechanismEvents": [
+        "veto_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 610800,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-regional-militarization-01-r03__china-tang",
+      "digests": {
+        "meta.json": "9c993ddab2fdb0cd445f869999f99843b0ebe152bcd39ac7b3bac757c44ad9c2",
+        "events.jsonl": "3aa7f410b39efb0712aa6e8e82bc0610209b40a28de259aaaf6ec4d59ac0266a"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r04___baseline-zhou-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785790697526,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 49,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 146525,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-regional-militarization-01-r04___baseline-zhou-random",
+      "digests": {
+        "meta.json": "e9ff774420b2b4721e67e38175b7c0f037d34eb38d22b31a7df0ce0434d7e5f2",
+        "events.jsonl": "cb9e425aeebeaf82cebd8af9f564cf5504d5b86c72d5beaf49e9c24a90bee74c"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r04__china-zhou",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "china/zhou",
+      "topology": "historical",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785790697522,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 134,
+      "mechanismEvents": [
+        "edict_triggered",
+        "impeach_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 643211,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-regional-militarization-01-r04__china-zhou",
+      "digests": {
+        "meta.json": "8dac78cd09f2104e304f3415ad7ea38a9cbbc311cc79002e5cbdd3fd007cbe1f",
+        "events.jsonl": "8be2e923037e031917ddfc6a48c7d4b9a0aae4e0d9dfb4c8b270ccf75facd2a4"
+      }
+    },
+    {
+      "matchId": "e3-cn-glm-regional-militarization-01-r05___baseline-zhou-random",
+      "backend": "cn:glm",
+      "command": "cc-glm",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785792986871,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 28,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 85418,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-glm-regional-militarization-01-r05___baseline-zhou-random",
+      "digests": {
+        "meta.json": "6390313e8da6eccd704690970ebda82901e8d568f9bd0b91f1d33d8c7333cfb2",
+        "events.jsonl": "483c5b5fc71f6dc5cc2795ac21e7b8aa33e60baabee1f714a908d5d9b84e1a43"
+      }
+    },
+    {
+      "matchId": "e3-cn-mimo-plague-response-01-r01___baseline-athens-random",
+      "backend": "cn:mimo",
+      "command": "cc-mimo",
+      "regime": "_baseline/athens-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785754569367,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 166,
+      "mechanismEvents": [
+        "edict_triggered",
+        "impeach_triggered"
+      ],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 525448,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-mimo-plague-response-01-r01___baseline-athens-random",
+      "digests": {
+        "meta.json": "2e5a45344944f760f09d4eede545210faadf093140bde88ffec710a5030fcb64",
+        "events.jsonl": "e6f34bc3c9e9c1d0e12f7ee48f4ea46fa0caf6965d4eeb5cc4fc76f79cfa7bb0"
+      }
+    },
+    {
+      "matchId": "e3-cn-mimo-plague-response-01-r01__china-tang",
+      "backend": "cn:mimo",
+      "command": "cc-mimo",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785754569364,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 148,
+      "mechanismEvents": [
+        "edict_triggered",
+        "impeach_triggered"
+      ],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 591571,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-mimo-plague-response-01-r01__china-tang",
+      "digests": {
+        "meta.json": "a10e7e663ded5e3f421304efd2f540351991a256e2cfa7879ae317f8e07c79bc",
+        "events.jsonl": "a74c134be3cb98e1455f29a1258575b160fcea8aec3a487c56b1d7c83a25e5ac"
+      }
+    },
+    {
+      "matchId": "e3-cn-mimo-regional-militarization-01-r01___baseline-ming-random",
+      "backend": "cn:mimo",
+      "command": "cc-mimo",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785755206784,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 97,
+      "mechanismEvents": [
+        "edict_triggered",
+        "impeach_triggered"
+      ],
+      "skillEvents": [
+        "skill"
+      ],
+      "sizeBytes": 396726,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-mimo-regional-militarization-01-r01___baseline-ming-random",
+      "digests": {
+        "meta.json": "1ae8edb95a544a9453330ddb8268f8de342e2fa01ae89bb72d77713494d325f2",
+        "events.jsonl": "36d2cdd9989bb749a2d1e82dc8541958a01d02edcd15b77998a05d86b7275001"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-border-city-autonomy-01-r01___baseline-athens-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/athens-random",
+      "topology": "random",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785782195737,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 38,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 135223,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-border-city-autonomy-01-r01___baseline-athens-random",
+      "digests": {
+        "meta.json": "e767d711888201355757ad23966e2b6153106c9b5a106dbcfd931eed8d141276",
+        "events.jsonl": "58ee4666f7c382204fdeb4ee7fd2c8624af52e187bcb5dda067b45d84193b13b"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-border-city-autonomy-01-r01___baseline-zhou-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785782195740,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 48,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 169657,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-border-city-autonomy-01-r01___baseline-zhou-random",
+      "digests": {
+        "meta.json": "792a6fcf58fd6256485a4082b1ed74ad74cf22d3aa82bf46105d02d3d71c2b70",
+        "events.jsonl": "963de97e2243f47d23fd4f8cf753b2a3ebdf5166721059ba917df05d9af3b1ec"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-border-city-autonomy-01-r01__global-athens",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "global/athens",
+      "topology": "historical",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785782195733,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 37,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 143890,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-border-city-autonomy-01-r01__global-athens",
+      "digests": {
+        "meta.json": "70b62f33c7db5c577f3d63f3a48551e92360daabe40fbe6642ff36b185191bb5",
+        "events.jsonl": "7c88f8557850d53fd80936a94628fdde21e3791d5178bf6df4a08a07ad848fde"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r01___baseline-qin-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785781200050,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 52,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 121522,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r01___baseline-qin-random",
+      "digests": {
+        "meta.json": "039d0c3e96901a01e61d375ddf68e56220bba4283435b8b4ccaef7991902adee",
+        "events.jsonl": "ccf4971d1a6ab5130a78018cef51c2aa19a25b371e6ab69d917c793cacf66a79"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r01___baseline-zhou-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785781200057,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 65,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 191347,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r01___baseline-zhou-random",
+      "digests": {
+        "meta.json": "7c472d09c7a9f200f081980b9c2304719f75019904f59b2705ce42a71daeb055",
+        "events.jsonl": "478b56a2db4fc6497811edefde9b77880ff54f6fb0b695314e9aeb538e8be287"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r01__china-tang",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "vetoed",
+      "startedAt": 1785781200052,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 100,
+      "mechanismEvents": [
+        "veto_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 322690,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r01__china-tang",
+      "digests": {
+        "meta.json": "682f69f4dc5c0e4ae11da3157f750b0ff8a757bd70fbe74a47c4db68b005ce36",
+        "events.jsonl": "a5a34381710689bf53694ec118b56004088df42b067f1b5de3231360a45b5192"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r02___baseline-ming-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785782587266,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 47,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 124363,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r02___baseline-ming-random",
+      "digests": {
+        "meta.json": "715d56549cd45206d26677af7332ae1899047e56dea57730b12b41d04a554704",
+        "events.jsonl": "f5041665210baa0409c8687079829f397517053518b30ea8925887513033f509"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r02___baseline-qin-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785782587257,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 53,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 168249,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r02___baseline-qin-random",
+      "digests": {
+        "meta.json": "1a0fcf3d41cae745891cc44693eb778454bb42682df80426c32841afaff16e7c",
+        "events.jsonl": "92eedeed287d692b4e83f666da16b27698838a25f21644ac7aa0b3ff177b7e1d"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r02___baseline-tang-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/tang-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785782587258,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 75,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 158358,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r02___baseline-tang-random",
+      "digests": {
+        "meta.json": "17766bf73a99c380031226be83f3345f0cebe343b82ccdea800884e749e38c72",
+        "events.jsonl": "c459a47e94a575a4d06592b7360729f8af2a937e4739fc9acaec0911b1981b89"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r02__china-tang",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785782587258,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 91,
+      "mechanismEvents": [
+        "veto_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 324378,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r02__china-tang",
+      "digests": {
+        "meta.json": "d860d9815a4c4a5ba69a64fff56c5fdf1adb9c1b8c821fb0fec4a7ca22a0cb73",
+        "events.jsonl": "be67a08a21528f2ea2e1c85343bec3dfa5086a8de3c735e307c073c891413148"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r03___baseline-qin-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785783839372,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 53,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 174735,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r03___baseline-qin-random",
+      "digests": {
+        "meta.json": "03d28753a76b0ca02c859e45b18352cc59a846184d33566f15355d371d234969",
+        "events.jsonl": "33d48b3d0a0dbcc1cbce08df4386ca69240bfe684b94c7dd5b856772e46a312a"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r03__china-tang",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785783839361,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 59,
+      "mechanismEvents": [
+        "veto_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 250801,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r03__china-tang",
+      "digests": {
+        "meta.json": "74f314e520a2ba7834d18bf5095e79ee6c3fbf2c4b92bf3b7491c6c875b5fc90",
+        "events.jsonl": "99365ce73503c04ed6bdb5d848eded22af02c1e1d677cef06991a1b63e1b8393"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r03__global-athens",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "global/athens",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785783839362,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 92,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 170951,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r03__global-athens",
+      "digests": {
+        "meta.json": "2f51a79b5848edf7d5c3385bd271ec8061b2f5c82ada2a16e9e28f53e73a9812",
+        "events.jsonl": "a782fe458a9411bd79e325fb75e2670f79d16926b94332b8bd2307bdd02bb976"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r04___baseline-qin-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785785472916,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 54,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 152503,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r04___baseline-qin-random",
+      "digests": {
+        "meta.json": "3dc2ccf39c918e129d5e1f3cfbef84b0509e0155d89fbdbdd30b2a068b3bd4e7",
+        "events.jsonl": "d0f550c5646987559a4261c8045302fcf98efce02e65ac36d58ed1fa4a03e785"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r04___baseline-tang-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/tang-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785785472907,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 70,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 143678,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r04___baseline-tang-random",
+      "digests": {
+        "meta.json": "e504e0c3155d97f88c241c4d45d60ca3aa1047601dee33162d3ac2f4090ebeee",
+        "events.jsonl": "fc6488516b5eaaf512986308b5dea5edc1fef16ca9abc5c3a4e43bcc48fefb86"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r04___baseline-zhou-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785785472909,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 49,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 187618,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r04___baseline-zhou-random",
+      "digests": {
+        "meta.json": "a21d31bd12b09056caf9e102efd6886d4daf211b683d8a0b07c0763a39ef625c",
+        "events.jsonl": "8f87daa8e3cd6d9569f19c880140b3a89be6e7df1c725eeb4d070784239fd64e"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r05___baseline-athens-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/athens-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785787290234,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 47,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 147045,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r05___baseline-athens-random",
+      "digests": {
+        "meta.json": "30feb157078062eeb5657981e41b2cd01438a2e728a7cff34a4bf059cf439d05",
+        "events.jsonl": "fe9563e128dbe897a404c69623fdceb33348c2558767d21274bf845b17f60879"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r05___baseline-ming-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785787290238,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 47,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 188372,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r05___baseline-ming-random",
+      "digests": {
+        "meta.json": "91c7a071c6b6f603492c6564921b739994110a2392891f43d65aac3324e9675e",
+        "events.jsonl": "30d68fc9de9bfcc5ef7488964be561539f687f8cc65becaf07c75993d4b05e33"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r05__china-ming",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "china/ming",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785787290239,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 32,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 142990,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r05__china-ming",
+      "digests": {
+        "meta.json": "ab993a17c3ea749d333d48f700fe10e72404cfe2d3b6115171966617142b2766",
+        "events.jsonl": "c3ef87ece7f4c5a25aa12ac5a1deab6b9f559f3d80513ff00a6c9c42b9fcd920"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-plague-response-01-r05__china-tang",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "vetoed",
+      "startedAt": 1785787290244,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 68,
+      "mechanismEvents": [
+        "veto_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 188456,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-plague-response-01-r05__china-tang",
+      "digests": {
+        "meta.json": "0dc7219a3cde49709be55d4dd500fbba0171bf33736d940677f655b994ce6614",
+        "events.jsonl": "d144ca350b9686d7a10142cbc6d1c831c27b251cbd9ee4f5b5de9a78dd5131e0"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-regional-militarization-01-r01___baseline-qin-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785781613111,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 54,
+      "mechanismEvents": [
+        "edict_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 209618,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-regional-militarization-01-r01___baseline-qin-random",
+      "digests": {
+        "meta.json": "3001a785097fe0dfc8b99333a3a6eb8b9e80c5dbb603f3db96e4febffa263369",
+        "events.jsonl": "d75520ad1668eaf225bd629512725a2e7a768604ce2e68412c501c81cf728684"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-regional-militarization-01-r01___baseline-tang-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/tang-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785781613115,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 74,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 178873,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-regional-militarization-01-r01___baseline-tang-random",
+      "digests": {
+        "meta.json": "bcd4ddd372aab2a6a81445ddb61819ddc0edd7798db7f3c8530df49bd014ba4e",
+        "events.jsonl": "1005c7ccf041308bdcbfb758ccb9a7bc95e104462ec374802b3e76de66dd841c"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-regional-militarization-01-r03__china-tang",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "vetoed",
+      "startedAt": 1785784421675,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 51,
+      "mechanismEvents": [
+        "veto_triggered"
+      ],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 194653,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-regional-militarization-01-r03__china-tang",
+      "digests": {
+        "meta.json": "248b0b3a7fdaaddd2ccd5b6299b3df38e9c083b0eb1e5f852dec4c4a90123758",
+        "events.jsonl": "6d10abcb1fdcd432cb4c1b986611798327492840a3066fa6e7270a9f132344cd"
+      }
+    },
+    {
+      "matchId": "e3-cn-minimax-regional-militarization-01-r04___baseline-ming-random",
+      "backend": "cn:minimax",
+      "command": "cc-minimax",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785785791962,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 42,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 93407,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-minimax-regional-militarization-01-r04___baseline-ming-random",
+      "digests": {
+        "meta.json": "d0fe5aaeb7cc2eba852388c0928b7275b0b5a57edaf0b5455e19a8edcd0f79ad",
+        "events.jsonl": "ca400e99807d8e9061ed52e081bba166c35857c1673cc0fec9318880af909c7e"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r01__china-tang",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785787703211,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 11,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 18806,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-border-city-autonomy-01-r01__china-tang",
+      "digests": {
+        "meta.json": "85a6fb8bd4ce0feafd88d393555c55d2716c1c3a0effa2e732a7e01fb18ac6f7",
+        "events.jsonl": "eac14228a56d41cba53f6b265192e743d3f67e136ef2feec4183b522920c29d0"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r02___baseline-ming-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785796557926,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 36,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 92870,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-border-city-autonomy-01-r02___baseline-ming-random",
+      "digests": {
+        "meta.json": "fa720cb5fa3e7ab78241849d468aa93fabc7f6490182447add1e9cecf36c2405",
+        "events.jsonl": "01eb704a635c6a52015862ec9712537c68f380e404d55e49fa43eef48c543c97"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r02___baseline-qin-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785796557916,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 35,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 92557,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-border-city-autonomy-01-r02___baseline-qin-random",
+      "digests": {
+        "meta.json": "833e4fee5d4de3f9255304f653123cbd05b5fa18d2c334997c9170f6f6095729",
+        "events.jsonl": "aa3501cd95fcf8438d0b7af794e7b3ff20a45f28d6802f076fc0443b7aa48307"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r02___baseline-zhou-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785796557920,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 29,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 85810,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-border-city-autonomy-01-r02___baseline-zhou-random",
+      "digests": {
+        "meta.json": "82f4cc49d1612d040afc14bd114289d738fcaa7d576ec34988e93859c6d0d4b9",
+        "events.jsonl": "8b32982f515e9c760bb1a9da56c01d84e9dcea423b4eb7adbec31a7642daf91c"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r02__china-tang",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785796557916,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 28,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 79333,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-border-city-autonomy-01-r02__china-tang",
+      "digests": {
+        "meta.json": "65dfbbb4bbf271e58ea074d78a6816d3727069fef9cb7461465e992065b5b225",
+        "events.jsonl": "73e97f5da4a1e326103b7ed4bdf1958586789c13878491aa0392d04b551f3592"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r03___baseline-tang-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/tang-random",
+      "topology": "random",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785802485499,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 16,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 44232,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-border-city-autonomy-01-r03___baseline-tang-random",
+      "digests": {
+        "meta.json": "c826d4912a0a90e76052524de4ccc1ddfd56d0b402a552dead723f40b747fc7d",
+        "events.jsonl": "c942e3ecec7930a4d0de408f64f106aed55413d92f34ce5036faab67c0a8d1f9"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r04___baseline-ming-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785811777163,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 31,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 91681,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-border-city-autonomy-01-r04___baseline-ming-random",
+      "digests": {
+        "meta.json": "c67878cdb9c601b50e4de4c87c0971c217689d54483d4a0eddb615b4842eb7ab",
+        "events.jsonl": "5da1234ef9abe798399f44cd4aba50a4f24cb6943f312d53dc99bd60d35b46bb"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-border-city-autonomy-01-r05___baseline-zhou-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "5f3efbb4059acd13",
+      "taskLabel": "border-city-autonomy",
+      "status": "done",
+      "startedAt": 1785831765908,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 26,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 84178,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-border-city-autonomy-01-r05___baseline-zhou-random",
+      "digests": {
+        "meta.json": "2a3d1a1148a437944fe0eabd9cea0fd0717b9a5efa25d08ca97d5a0fb1d0f25a",
+        "events.jsonl": "cab16b180d371dbbfe0bba02c6262b25ba8bd4e61430013826e49c97b4fdb4d3"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r01___baseline-ming-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785781203065,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 36,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 53909,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-plague-response-01-r01___baseline-ming-random",
+      "digests": {
+        "meta.json": "46a02d6e83796eadedf4058932e97937714a3e3138e6adf763930e22e1a7e9ff",
+        "events.jsonl": "f236bcf1ff79737c1fd892bca3ba128e22ef57fbb8019eec96a0837731526e47"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r01___baseline-qin-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785781203057,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 32,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 72955,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-plague-response-01-r01___baseline-qin-random",
+      "digests": {
+        "meta.json": "fc86d99ddd194c3b178cef8c2a575075786ed3961ea63d8f66d77bab16a58df5",
+        "events.jsonl": "50a1216a3e5721c421e6b091c396f24212a9f05ffac40cf8a06bec632fbf9b24"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r02___baseline-ming-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785789779292,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 35,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 67970,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-plague-response-01-r02___baseline-ming-random",
+      "digests": {
+        "meta.json": "0681d9122be92f2ec9867162b391586cc2ae5e53415aab2b257bf3019303beef",
+        "events.jsonl": "2c6e6470d916de394f1c9da1d235aa80eee90294cf09bd5d5acbc6bce1a9683b"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r02___baseline-zhou-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785789779288,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 33,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 73315,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-plague-response-01-r02___baseline-zhou-random",
+      "digests": {
+        "meta.json": "e114795624cc15ad9fbd702a13786ad65411f8174d506c9d878b36793cc8b004",
+        "events.jsonl": "3d7cbd796a3db5b65b47fe91394385e7ead2d6e2b7974e02205fc5a7334bdbf3"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r03___baseline-athens-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/athens-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785798091110,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 27,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 51009,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-plague-response-01-r03___baseline-athens-random",
+      "digests": {
+        "meta.json": "97c93f728d4db2d45088c65482964a5452889ab1eb2b17ea5da4b0941dcc5ee8",
+        "events.jsonl": "1e6760f9606c6d34700131679fa0daf6dc672e9d09cf65f44694369bbfb1db72"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r03___baseline-tang-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/tang-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785798091111,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 38,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 79402,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-plague-response-01-r03___baseline-tang-random",
+      "digests": {
+        "meta.json": "45c6d3dff4f1c4302a39b1ad749513d999afd5fbb5b962ad3151001eb896be1a",
+        "events.jsonl": "0026f0b4791910ceea7411a4cfd682b6ed1629956dc8a09e05a3ecca6be748f8"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r03___baseline-zhou-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785798091113,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 34,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 72852,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-plague-response-01-r03___baseline-zhou-random",
+      "digests": {
+        "meta.json": "fd88edf569780fce7d784528c23a5c735805e9e212d485cb7e3b72de45b711cd",
+        "events.jsonl": "f9d3e7a112efd3f942ea1a0a1895ea9ed75cb62a09089ba5da2e04469c76d9b7"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r05___baseline-ming-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785819122137,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 29,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 48998,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-plague-response-01-r05___baseline-ming-random",
+      "digests": {
+        "meta.json": "7d113d221cc2adec5762b434ee71571857dfed93d9d1af2f94837e924b3cacca",
+        "events.jsonl": "0bafb2c1df2c8c560c92d63ff78753895d177c9022246dfb732d0dad5e2c7f70"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r05___baseline-qin-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785819122139,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 30,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 50428,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-plague-response-01-r05___baseline-qin-random",
+      "digests": {
+        "meta.json": "dfe3212f8b3113505f411eba8882f08e9f7ba7020ab1b9e0a704323b117147f7",
+        "events.jsonl": "41fa6263674b9fb32a5b2ebed9eee28119c70d1d1caf5ee675643bbddb2704a6"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-plague-response-01-r05___baseline-zhou-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "27a78509e23bc61a",
+      "taskLabel": "plague-response",
+      "status": "done",
+      "startedAt": 1785819122131,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 33,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 78544,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-plague-response-01-r05___baseline-zhou-random",
+      "digests": {
+        "meta.json": "e3e37aafb4d98f7dde3dbc3729332ff1ae0a67219a662667d10e55bdd214bffd",
+        "events.jsonl": "0a32ff0adc72c31ce05abef55fe65d6c96818ac0f5a2f72d99e4fee146bd362b"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-regional-militarization-01-r01___baseline-ming-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/ming-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785783149539,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 46,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 92261,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-regional-militarization-01-r01___baseline-ming-random",
+      "digests": {
+        "meta.json": "c959cb8e1e7a542d93cd2e2f235571d46e7df00fda291b5c9f4aeea80417ab48",
+        "events.jsonl": "9821dc8287a3c6b966dbc7c5a41eb7727f217f87f37dc1875101f94fe10f77e9"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-regional-militarization-01-r02___baseline-qin-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/qin-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785792961811,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 33,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 82108,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-regional-militarization-01-r02___baseline-qin-random",
+      "digests": {
+        "meta.json": "ba4ef4c6a450085c004345e4b5c9d086057e7c77d2b3edca7c3f414730e50b4d",
+        "events.jsonl": "9e0c1d7f9f626328618055149600fc5f1d9a8edaf196a87bdea3711a283edda7"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-regional-militarization-01-r04___baseline-zhou-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785807293556,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 34,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 72108,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-regional-militarization-01-r04___baseline-zhou-random",
+      "digests": {
+        "meta.json": "ba585e87f7c4a8047d3f8068bf0c5f58ded00b08f6783c2c064b374259f2a038",
+        "events.jsonl": "cc977f08e238f18b7477141000cb1f16102d36237425a02fcf4a303b0b0fc37c"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-regional-militarization-01-r04__china-tang",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "china/tang",
+      "topology": "historical",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785807293562,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 26,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 56672,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-regional-militarization-01-r04__china-tang",
+      "digests": {
+        "meta.json": "cf96451eeb3bc977e1aebe4a2645260eb4684b274e4db08c55e3ff124933d144",
+        "events.jsonl": "ec77c210b1439f0a2057ce79a67d5ae5c4a513fffa711d0d251463756ca86bb8"
+      }
+    },
+    {
+      "matchId": "e3-cn-qwen-regional-militarization-01-r05___baseline-zhou-random",
+      "backend": "cn:qwen",
+      "command": "cc-qwen",
+      "regime": "_baseline/zhou-random",
+      "topology": "random",
+      "taskHash": "3e8ed92a4aedc5bb",
+      "taskLabel": "regional-militarization",
+      "status": "done",
+      "startedAt": 1785822389260,
+      "dispatchObservability": "stream_json_verbose_dispatch_v1",
+      "eventCount": 30,
+      "mechanismEvents": [],
+      "skillEvents": [
+        "skill",
+        "skill"
+      ],
+      "sizeBytes": 62718,
+      "sourceAbsPath": "/Users/leo/.civagent/matches/e3-cn-qwen-regional-militarization-01-r05___baseline-zhou-random",
+      "digests": {
+        "meta.json": "df31f35ffbeb0b6eecc71688d4fb99f8e4c1018dcf1c12dbc030743bab70c40f",
+        "events.jsonl": "8f22db2bb9f2330845fce40cffbc2c1eb940be3c01d5c59db798c831a6644564"
+      }
+    }
+  ],
+  "tournaments": [
+    {
+      "tournamentId": "2026-06-25T16-38-17-860-icow",
+      "sourceAbsPath": "/Users/leo/.civagent/tournaments/2026-06-25T16-38-17-860-icow",
+      "files": [
+        "manifest.json",
+        "result.md"
+      ],
+      "digests": {
+        "manifest.json": "688eebeb89b02cda72cb239aafb8a82abf26559a38e9d5d02e4ce9bcaff9a095",
+        "result.md": "90c4dbe423069ee41cbde405fd3b86b6df702f2021545d58fff136c8fec8e500"
+      },
+      "sizeBytes": 1697
+    },
+    {
+      "tournamentId": "2026-06-25T16-19-16-062-ffoi",
+      "sourceAbsPath": "/Users/leo/.civagent/tournaments/2026-06-25T16-19-16-062-ffoi",
+      "files": [
+        "manifest.json",
+        "result.md"
+      ],
+      "digests": {
+        "manifest.json": "de4f9f03adadb992fc49af3b2dc9914d77b83a5d0bd9d5097921f0a6efccca6c",
+        "result.md": "3104f60be406cd6f8a7b48706e40fc2a4419d4f070e80b5395bde48bdece57e6"
+      },
+      "sizeBytes": 2096
+    },
+    {
+      "tournamentId": "2026-06-25T16-20-18-047-7rkg",
+      "sourceAbsPath": "/Users/leo/.civagent/tournaments/2026-06-25T16-20-18-047-7rkg",
+      "files": [
+        "manifest.json",
+        "result.md"
+      ],
+      "digests": {
+        "manifest.json": "23bf9b3da7531623f30c6959c4ae7c8bad4e7f3e5a52ee259d628987284da596",
+        "result.md": "0a3454dc521d295cad605a0488fc62f6111b26a32dadb27537bc1fb8e137189a"
+      },
+      "sizeBytes": 2122
+    }
+  ]
+}

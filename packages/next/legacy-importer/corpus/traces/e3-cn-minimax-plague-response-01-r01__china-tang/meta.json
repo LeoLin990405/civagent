@@ -1,0 +1,162 @@
+{
+  "matchId": "e3-cn-minimax-plague-response-01-r01__china-tang",
+  "regime": "china/tang",
+  "backend": "cn:minimax",
+  "command": "cc-minimax",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785781200052,
+  "status": "vetoed",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "zhongshu",
+        "order": 1,
+        "responsibility": "Draft an emergency imperial edict (赈灾诏) declaring the plague emergency across the major circuits, suspending routine taxation labor drafts in afflicted prefectures, and authorizing extraordinary public-health measures including compulsory isolation, state grain release, and recruitment of physicians"
+      },
+      {
+        "office": "menxia",
+        "order": 2,
+        "responsibility": "Review the emergency edict for legal and constitutional form; invoke the censors' remonstrance duty, counter-sign the decree, and certify that it complies with the Tang code and precedents (永徽/开元律) before transmission"
+      },
+      {
+        "office": "shangshu",
+        "order": 3,
+        "responsibility": "Receive the approved edict and issue coordinating implementation orders (符) to the Six Ministries; consolidate weekly reports from each ministry and present a joint progress memorial to the throne so the emperor retains visibility over the whole response"
+      },
+      {
+        "office": "hubu",
+        "order": 4,
+        "responsibility": "Open an emergency treasury allocation (赈济银) sourced from court reserves and donor contributions, dispatch grain from state and equitable granaries (常平仓/义仓) to the afflicted prefectures, suspend the poll tax (租调) in those prefectures for the duration of the emergency, and account for every disbursement against receipts at circuit level"
+      },
+      {
+        "office": "gongbu",
+        "order": 5,
+        "responsibility": "Construct and equip isolation wards and pest-houses (病坊/疠人坊) at each prefectural and county seat, dispatch craftsmen to repair roads and bridges needed for grain convoys and physician travel, and supply coffins (义棺) and burial implements to prevent mass unattended burial"
+      },
+      {
+        "office": "xingbu",
+        "order": 6,
+        "responsibility": "Define and publish the emergency public-health ordinances — mandatory reporting of cases, closure of affected wards, prohibition on leaving afflicted areas, price ceilings on medicine and grain, and penalties (杖/徒) for profiteering or concealment of infections — and prosecute violators; commission circuit-level judicial review so that quarantine decrees do not become a cover for extortion"
+      },
+      {
+        "office": "bingbu",
+        "order": 7,
+        "responsibility": "Provide courier relays and escort for grain convoys and physician teams on the major post roads, deploy garrison troops to enforce cordons around infected wards, supervise disinfection of the capital's western and eastern markets where foreign merchants congregate, and station mobile medical units along the empire's trunk routes"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "hubu",
+      "gongbu",
+      "xingbu",
+      "bingbu"
+    ],
+    "planned_unique_offices": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "hubu",
+      "gongbu",
+      "xingbu",
+      "bingbu"
+    ],
+    "declared_planned_offices": [
+      "zhongshu",
+      "menxia",
+      "shangshu",
+      "bingbu",
+      "hubu",
+      "gongbu",
+      "xingbu"
+    ],
+    "declared_not_planned_offices": [
+      "libu_ritual",
+      "libu_personnel"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 7,
+      "unique_planned_offices": 7,
+      "declared_planned_offices": 7,
+      "declared_not_planned_offices": 2,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785781412810,
+  "exitCode": null,
+  "signal": "SIGKILL",
+  "mechanisms": {
+    "vetoes": 1,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_failed",
+    "requiredOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "menxia",
+      "shangshu",
+      "xingbu",
+      "zhongshu"
+    ],
+    "dispatchedOffices": [
+      "menxia",
+      "zhongshu"
+    ],
+    "missingOffices": [
+      "bingbu",
+      "gongbu",
+      "hubu",
+      "libu_personnel",
+      "libu_ritual",
+      "shangshu",
+      "xingbu"
+    ],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 3,
+    "officeTurnCount": 3,
+    "officesInvoked": [
+      "zhongshu",
+      "menxia"
+    ],
+    "officeCount": 2,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

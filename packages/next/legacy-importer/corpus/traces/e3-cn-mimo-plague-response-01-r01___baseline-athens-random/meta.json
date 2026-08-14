@@ -1,0 +1,89 @@
+{
+  "matchId": "e3-cn-mimo-plague-response-01-r01___baseline-athens-random",
+  "regime": "_baseline/athens-random",
+  "backend": "cn:mimo",
+  "command": "cc-mimo",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785754569367,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parse_failed",
+    "dispatches": null,
+    "error": "expected exactly one dispatch-plan marker block"
+  },
+  "planDiff": {
+    "plan_status": "parse_failed",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": false,
+    "reason": "expected exactly one dispatch-plan marker block",
+    "planned_sequence": null,
+    "planned_unique_offices": null,
+    "declared_planned_offices": null,
+    "declared_not_planned_offices": null,
+    "undeclared_planned_offices": null,
+    "duplicate_planned_offices": null,
+    "counts": null
+  },
+  "endedAt": 1785754897966,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 1,
+    "edicts": 1
+  },
+  "impeachments": [
+    "target"
+  ],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_failed",
+    "requiredOffices": [
+      "archon",
+      "boule",
+      "dikasterion",
+      "ekklesia",
+      "rhetor",
+      "strategos"
+    ],
+    "dispatchedOffices": [
+      "Explore"
+    ],
+    "missingOffices": [
+      "archon",
+      "boule",
+      "dikasterion",
+      "ekklesia",
+      "rhetor",
+      "strategos"
+    ],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 1,
+    "officeTurnCount": 106,
+    "officesInvoked": [
+      "Explore"
+    ],
+    "officeCount": 1,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

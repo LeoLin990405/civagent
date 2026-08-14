@@ -1,0 +1,146 @@
+{
+  "matchId": "e3-cn-minimax-plague-response-01-r01___baseline-qin-random",
+  "regime": "_baseline/qin-random",
+  "backend": "cn:minimax",
+  "command": "cc-minimax",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785781200050,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "emperor",
+        "order": 1,
+        "responsibility": "Issue an emergency edict declaring epidemic state of calamity; grant centralized authority to override provincial governors, suspend normal fiscal/legal routines, and mobilize the entire empire for containment."
+      },
+      {
+        "office": "chengxiang",
+        "order": 2,
+        "responsibility": "Coordinate the whole-of-government response: convene daily joint briefings, allocate personnel and supplies across the affected major cities, set mortality-tracking and reporting cadence, and synchronize the ministries' actions."
+      },
+      {
+        "office": "zhisu-finance",
+        "order": 3,
+        "responsibility": "Open emergency treasury: release funds for medicine, grain reserves, physicians' stipends, and burial costs; suspend tax collection in afflicted prefectures to prevent famine; audit grain stores against hoarding."
+      },
+      {
+        "office": "shaofu-works",
+        "order": 4,
+        "responsibility": "Rapid-build isolation wards and pest-houses inside each major city, expand mass-burial and crematoria capacity, repair wells and sanitation works, and requisition workshops to produce medical supplies and coffins."
+      },
+      {
+        "office": "taiwei",
+        "order": 5,
+        "responsibility": "Enforce cordon sanitaire between cities and inside afflicted wards, command logistics corps to move grain and medicine along protected routes, conscript labor for the works ministry, and maintain order to prevent panic-driven collapse."
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "emperor",
+      "chengxiang",
+      "zhisu-finance",
+      "shaofu-works",
+      "taiwei"
+    ],
+    "planned_unique_offices": [
+      "emperor",
+      "chengxiang",
+      "zhisu-finance",
+      "shaofu-works",
+      "taiwei"
+    ],
+    "declared_planned_offices": [
+      "emperor",
+      "chengxiang",
+      "taiwei",
+      "zhisu-finance",
+      "shaofu-works"
+    ],
+    "declared_not_planned_offices": [
+      "yushi-censor",
+      "tingwei-justice"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 5,
+      "unique_planned_offices": 5,
+      "declared_planned_offices": 5,
+      "declared_not_planned_offices": 2,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785781339801,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "dispatchedOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 7,
+    "officeTurnCount": 7,
+    "officesInvoked": [
+      "emperor",
+      "chengxiang",
+      "taiwei",
+      "shaofu-works",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "officeCount": 7,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

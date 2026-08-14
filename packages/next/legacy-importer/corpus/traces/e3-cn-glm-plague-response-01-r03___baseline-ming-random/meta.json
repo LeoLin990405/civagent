@@ -1,0 +1,144 @@
+{
+  "matchId": "e3-cn-glm-plague-response-01-r03___baseline-ming-random",
+  "regime": "_baseline/ming-random",
+  "backend": "cn:glm",
+  "command": "cc-glm",
+  "task": "An epidemic is spreading through major cities, killing 5–10% of the population per month. Coordinate an immediate public-health response within your governance structure.",
+  "startedAt": 1785786197442,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "shoufu",
+        "order": 1,
+        "responsibility": "总体指挥与跨部协调：确立防疫为头等政务，统筹户、兵、礼、工各部行动，每日听取疫情奏报，决断封城、迁徙管制等重大决策，对奏疏做最终裁决"
+      },
+      {
+        "office": "hubu",
+        "order": 2,
+        "responsibility": "调配赈灾银粮、统计人口死亡与流徙、平抑粮价药价、拨发各州府防疫经费，依据死亡数据动态调整资源投放优先级"
+      },
+      {
+        "office": "bingbu",
+        "order": 3,
+        "responsibility": "在各主要城市实施隔离封锁与交通管制，调度军队维持秩序、防止暴乱，组织医疗人员与物资的紧急运送，必要时执行强制隔离"
+      },
+      {
+        "office": "libu-ritual",
+        "order": 4,
+        "responsibility": "统辖太医院制定诊疗方案、派遣医官赴各城施治、采集与颁布药方，主持安葬祭祀以稳定民心，发布官方防疫告示引导民众行为"
+      },
+      {
+        "office": "gongbu",
+        "order": 5,
+        "responsibility": "紧急修筑隔离病坊与收容所，改善城市排水与街道清洁等公共卫生工程，赶制棺木与掩埋设施以防尸骸堆积引发继发疫病"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "shoufu",
+      "hubu",
+      "bingbu",
+      "libu-ritual",
+      "gongbu"
+    ],
+    "planned_unique_offices": [
+      "shoufu",
+      "hubu",
+      "bingbu",
+      "libu-ritual",
+      "gongbu"
+    ],
+    "declared_planned_offices": [
+      "shoufu",
+      "hubu",
+      "bingbu",
+      "libu-ritual",
+      "gongbu"
+    ],
+    "declared_not_planned_offices": [
+      "silijian",
+      "libu",
+      "xingbu"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 5,
+      "unique_planned_offices": 5,
+      "declared_planned_offices": 5,
+      "declared_not_planned_offices": 3,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785786420191,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "bingbu",
+      "libu",
+      "libu-ritual",
+      "shoufu",
+      "silijian",
+      "xingbu"
+    ],
+    "dispatchedOffices": [
+      "bingbu",
+      "libu",
+      "libu-ritual",
+      "shoufu",
+      "silijian",
+      "xingbu"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 6,
+    "officeTurnCount": 6,
+    "officesInvoked": [
+      "shoufu",
+      "silijian",
+      "libu",
+      "bingbu",
+      "xingbu",
+      "libu-ritual"
+    ],
+    "officeCount": 6,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "matchId": "e3-cn-qwen-regional-militarization-01-r02___baseline-qin-random",
+  "regime": "_baseline/qin-random",
+  "backend": "cn:qwen",
+  "command": "cc-qwen",
+  "task": "Several regional governors have raised private armies under the pretext of local defence, and their forces now collectively outnumber the standing national army. The central government's tax collectors and judicial officers are being turned away at provincial borders. One governor has begun minting coins bearing his own insignia, and another has negotiated a separate truce with a neighbouring power without central authorisation. The state risks permanent fragmentation if this trend continues unchecked. Design a strategy to restore central military authority that combines political incentives, targeted enforcement, and institutional reforms, while avoiding a multi-front civil war that the centre cannot currently win.",
+  "startedAt": 1785792961811,
+  "status": "done",
+  "dispatchObservability": "stream_json_verbose_dispatch_v1",
+  "dispatchPlan": {
+    "status": "parsed_nonempty",
+    "dispatches": [
+      {
+        "office": "chengxiang",
+        "order": 1,
+        "responsibility": "Design and coordinate the overall political settlement: amnesty and legitimization offers for compliant governors, negotiated surrender terms, titles and court positions to split the coalition, and sequencing so no governor bloc faces a common existential threat"
+      },
+      {
+        "office": "taiwei",
+        "order": 2,
+        "responsibility": "Plan the military posture that backs the strategy without triggering multi-front war: concentrate the standing army on one decisive axis, secure the capital and granaries, deter neighbouring powers, and prepare targeted operations to remove only the most defiant governor(s) while offering the rest an off-ramp"
+      },
+      {
+        "office": "zhisu-finance",
+        "order": 3,
+        "responsibility": "Restore fiscal and monetary sovereignty: reopen tax collection routes, declare the unauthorized coinage illegal, set a deadline and exchange rate for recalling rebel coins, and fund compliance incentives (stipends, relief grants) to buy provincial loyalty"
+      },
+      {
+        "office": "yushi-censor",
+        "order": 4,
+        "responsibility": "Dispatch censors to audit each governor's forces, finances, and conduct; distinguish loyal local defence from separatism; document evidence of illegal minting and unauthorized treaties; and draft the post-crisis provincial oversight system to prevent recurrence"
+      },
+      {
+        "office": "tingwei-justice",
+        "order": 5,
+        "responsibility": "Frame targeted enforcement as legal process rather than civil war: issue formal charges (illegal coinage, unauthorized diplomacy, obstruction of tax officers) against the ringleader(s) only, guarantee due-process terms to induce defections, and codify the revised limits on provincial military and fiscal powers"
+      }
+    ],
+    "error": null
+  },
+  "planDiff": {
+    "plan_status": "parsed_nonempty",
+    "supported_dimensions": [
+      "planned office sequence (descriptive; not an edge path)",
+      "planned office membership in declared nodes",
+      "declared offices omitted from the plan",
+      "undeclared and repeated planned offices"
+    ],
+    "unsupported_dimensions": {
+      "directed_edge_alignment": "the coordinator plan is not an office-to-office call trace",
+      "edge_kind_alignment": "plan steps do not encode command/review/info/veto",
+      "multiedge_coverage": "a repeated office name cannot identify which parallel declared edge was intended",
+      "edge_exercise": "the plan records intent before execution, not whether any declared edge fired"
+    },
+    "comparison_available": true,
+    "reason": null,
+    "planned_sequence": [
+      "chengxiang",
+      "taiwei",
+      "zhisu-finance",
+      "yushi-censor",
+      "tingwei-justice"
+    ],
+    "planned_unique_offices": [
+      "chengxiang",
+      "taiwei",
+      "zhisu-finance",
+      "yushi-censor",
+      "tingwei-justice"
+    ],
+    "declared_planned_offices": [
+      "chengxiang",
+      "taiwei",
+      "yushi-censor",
+      "tingwei-justice",
+      "zhisu-finance"
+    ],
+    "declared_not_planned_offices": [
+      "emperor",
+      "shaofu-works"
+    ],
+    "undeclared_planned_offices": [],
+    "duplicate_planned_offices": [],
+    "counts": {
+      "plan_steps": 5,
+      "unique_planned_offices": 5,
+      "declared_planned_offices": 5,
+      "declared_not_planned_offices": 2,
+      "undeclared_planned_offices": 0
+    }
+  },
+  "endedAt": 1785793302790,
+  "exitCode": 0,
+  "signal": null,
+  "mechanisms": {
+    "vetoes": 0,
+    "impeachments": 0,
+    "edicts": 0
+  },
+  "impeachments": [],
+  "sediment": {
+    "skipped": "skill learning disabled (--no-skill / CIVAGENT_SKILL_LEARN=off)"
+  },
+  "dispatchEnforcement": {
+    "status": "enforcement_passed",
+    "requiredOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "dispatchedOffices": [
+      "chengxiang",
+      "emperor",
+      "shaofu-works",
+      "taiwei",
+      "tingwei-justice",
+      "yushi-censor",
+      "zhisu-finance"
+    ],
+    "missingOffices": [],
+    "attempts": 1,
+    "basis": "declared_topology_nodes_with_incoming_edges"
+  },
+  "topologyParticipation": {
+    "status": "participation_observed",
+    "dispatchCount": 7,
+    "officeTurnCount": 8,
+    "officesInvoked": [
+      "emperor",
+      "chengxiang",
+      "taiwei",
+      "yushi-censor",
+      "tingwei-justice",
+      "zhisu-finance",
+      "shaofu-works"
+    ],
+    "officeCount": 7,
+    "captureCapability": "stream_json_verbose_dispatch_v1",
+    "matchComplete": true,
+    "reason": "at least one coordinator-to-office dispatch token was observed"
+  }
+}
