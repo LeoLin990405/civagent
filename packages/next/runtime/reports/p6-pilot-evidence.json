@@ -1,0 +1,1053 @@
+{
+  "schema": "p6-pilot-evidence/1",
+  "instrumentVersion": "native-next-v1-p6pilot",
+  "design": {
+    "strata": [
+      "cn:doubao",
+      "cn:glm",
+      "cn:qwen",
+      "cn:minimax"
+    ],
+    "topologies": [
+      "historical",
+      "random"
+    ],
+    "tasks": [
+      "border-city-autonomy",
+      "regional-militarization",
+      "plague-response"
+    ],
+    "seeds": [
+      1
+    ],
+    "budgetPerCell": 1000
+  },
+  "assignmentsDigest": "9e851d4b0025ec6bd5b77ea1f1b99a5a1a036f2f3043fa8f8f0d1f96598b9ca6",
+  "cells": [
+    {
+      "cellId": "p6-cn:glm-random-border-city-autonomy-s1",
+      "stratum": "cn:glm",
+      "topology": "random",
+      "task": "border-city-autonomy",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "d90644d8c3a5e6471454732b636adb3c9456a421bbcfd3776017f55bd31d96f8",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:doubao-historical-border-city-autonomy-s1",
+      "stratum": "cn:doubao",
+      "topology": "historical",
+      "task": "border-city-autonomy",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "87b053dd4f12f2ca40e6597316bac3690ad084c2ed023e555055a8884d53ab73",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:qwen-random-border-city-autonomy-s1",
+      "stratum": "cn:qwen",
+      "topology": "random",
+      "task": "border-city-autonomy",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "73c30bc803f7b2b965c6d074b4bdd2b97cf57a682e8b19329ef5e1b8325a7c3e",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:doubao-random-border-city-autonomy-s1",
+      "stratum": "cn:doubao",
+      "topology": "random",
+      "task": "border-city-autonomy",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "234f3e0fa909fc739766858570456d366024f944f71ac2f7d090ada30137d0d9",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:minimax-random-border-city-autonomy-s1",
+      "stratum": "cn:minimax",
+      "topology": "random",
+      "task": "border-city-autonomy",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "854cbb290e2611c56c56e612a1b290e24f3dfcaca1f1d216e604dd9657fbc231",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:qwen-historical-border-city-autonomy-s1",
+      "stratum": "cn:qwen",
+      "topology": "historical",
+      "task": "border-city-autonomy",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "aaa4aeaec80156e4bf64cda3f4880c5615fe09ef7e26de449804353353d46a6d",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:minimax-historical-border-city-autonomy-s1",
+      "stratum": "cn:minimax",
+      "topology": "historical",
+      "task": "border-city-autonomy",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "30537ae674028b618f384aaa6ef2ba077188226bbedbcd3adbe683490cfc51ea",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:glm-historical-border-city-autonomy-s1",
+      "stratum": "cn:glm",
+      "topology": "historical",
+      "task": "border-city-autonomy",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "2c63a8ca4e9e0d6a979d6916ca974de46da780a06bf1c68c6219a5efbdaedcaa",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:doubao-historical-regional-militarization-s1",
+      "stratum": "cn:doubao",
+      "topology": "historical",
+      "task": "regional-militarization",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "27656d6209656bfef1be097f2eb04379c56228a9f5a12ce129966911ffc7661b",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:qwen-random-regional-militarization-s1",
+      "stratum": "cn:qwen",
+      "topology": "random",
+      "task": "regional-militarization",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "e749f1750dc56b7a6d9311305a17ae8a66d0f5739a2c7c671752f6310f0eb10b",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:minimax-random-regional-militarization-s1",
+      "stratum": "cn:minimax",
+      "topology": "random",
+      "task": "regional-militarization",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "8f16fcd14fdd82970cef460a945db75b6c701399de436b060972b7691ad87b56",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:minimax-historical-regional-militarization-s1",
+      "stratum": "cn:minimax",
+      "topology": "historical",
+      "task": "regional-militarization",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "d40609954a639369e4df943f298225026e92e44456c4331cfaad444dfa945884",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:glm-random-regional-militarization-s1",
+      "stratum": "cn:glm",
+      "topology": "random",
+      "task": "regional-militarization",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "b4f5e0cdfa273288c67e5af4835063b0a4da04bfe92a943070dfc1dfbb6497cf",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:qwen-historical-regional-militarization-s1",
+      "stratum": "cn:qwen",
+      "topology": "historical",
+      "task": "regional-militarization",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "f8c613e5fbddfe029bb6295c0dcbe14ca10c6f07e38612e589863cdd18241f6d",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:doubao-random-regional-militarization-s1",
+      "stratum": "cn:doubao",
+      "topology": "random",
+      "task": "regional-militarization",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "56167060501632c387901cd1086800514778821560357497445caea13cef7d68",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:glm-historical-regional-militarization-s1",
+      "stratum": "cn:glm",
+      "topology": "historical",
+      "task": "regional-militarization",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "7d5e1f051c86021a2964270bded86834ce91f30beb9d71f8b495d789c99e6f09",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:qwen-historical-plague-response-s1",
+      "stratum": "cn:qwen",
+      "topology": "historical",
+      "task": "plague-response",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "81a2c1dbfadce7a63397b8349da5e1d958598cf0a34122302c80e12fd0e0dca6",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:minimax-random-plague-response-s1",
+      "stratum": "cn:minimax",
+      "topology": "random",
+      "task": "plague-response",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "311ec56f3cad6a490fd8aea35427d1d3792e8b6f83654090a9a92d1f4c84e88a",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:minimax-historical-plague-response-s1",
+      "stratum": "cn:minimax",
+      "topology": "historical",
+      "task": "plague-response",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "c9888352de115c6ecc6caafd7c887bfbcbe45c8f37808b8f67c0a518722b1985",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:doubao-historical-plague-response-s1",
+      "stratum": "cn:doubao",
+      "topology": "historical",
+      "task": "plague-response",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "e4ce0c7874f066893187aed097ffb54306da30abb5010bac553b32c149691b05",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:qwen-random-plague-response-s1",
+      "stratum": "cn:qwen",
+      "topology": "random",
+      "task": "plague-response",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "3ce1fcc112d5b99e868127e82f6dade6b9cf96161e021a708e06dd4ac0d78805",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:doubao-random-plague-response-s1",
+      "stratum": "cn:doubao",
+      "topology": "random",
+      "task": "plague-response",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "a3efb5f460994ac7d13dfd7e65f079484f01d9e27a8107a6da59ebe79b5c5b16",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:glm-random-plague-response-s1",
+      "stratum": "cn:glm",
+      "topology": "random",
+      "task": "plague-response",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "5bd127d31f44a1ae32f0af062db3d4265e604d6612d273936b977a706c7e39ee",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    },
+    {
+      "cellId": "p6-cn:glm-historical-plague-response-s1",
+      "stratum": "cn:glm",
+      "topology": "historical",
+      "task": "plague-response",
+      "seed": 1,
+      "status": "ok",
+      "usageTokens": 35,
+      "evidenceDigest": "ac9c3a0a0fca6ee77d3809b638d63e6c63ef6ccb9fba1cd7faccb91f52866aed",
+      "eventCount": 4,
+      "participation": {
+        "invoked": 1,
+        "started": 1,
+        "contributed": 1,
+        "settled": 1
+      }
+    }
+  ],
+  "judging": [
+    {
+      "pairId": "cn:doubao-border-city-autonomy",
+      "stratum": "cn:doubao",
+      "task": "border-city-autonomy",
+      "passes": [
+        {
+          "swap": false,
+          "scores": {
+            "A": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            },
+            "B": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            }
+          },
+          "operationId": "op-judge-cn:doubao-border-city-autonomy-n"
+        },
+        {
+          "swap": true,
+          "scores": {
+            "A": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            },
+            "B": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            }
+          },
+          "operationId": "op-judge-cn:doubao-border-city-autonomy-s"
+        }
+      ],
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 8
+        },
+        "digest": "1a4b61175a1c8bf1f7108608a7787f0bc74cb3fca5e9e236dc4e628699466e96"
+      },
+      "swapAgreed": true
+    },
+    {
+      "pairId": "cn:doubao-regional-militarization",
+      "stratum": "cn:doubao",
+      "task": "regional-militarization",
+      "passes": [
+        {
+          "swap": false,
+          "scores": {
+            "A": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            },
+            "B": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            }
+          },
+          "operationId": "op-judge-cn:doubao-regional-militarization-n"
+        },
+        {
+          "swap": true,
+          "scores": {
+            "A": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            },
+            "B": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            }
+          },
+          "operationId": "op-judge-cn:doubao-regional-militarization-s"
+        }
+      ],
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 8
+        },
+        "digest": "1a4b61175a1c8bf1f7108608a7787f0bc74cb3fca5e9e236dc4e628699466e96"
+      },
+      "swapAgreed": true
+    },
+    {
+      "pairId": "cn:doubao-plague-response",
+      "stratum": "cn:doubao",
+      "task": "plague-response",
+      "passes": [
+        {
+          "swap": false,
+          "scores": {
+            "A": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            },
+            "B": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            }
+          },
+          "operationId": "op-judge-cn:doubao-plague-response-n"
+        },
+        {
+          "swap": true,
+          "scores": {
+            "A": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            },
+            "B": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            }
+          },
+          "operationId": "op-judge-cn:doubao-plague-response-s"
+        }
+      ],
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 8
+        },
+        "digest": "1a4b61175a1c8bf1f7108608a7787f0bc74cb3fca5e9e236dc4e628699466e96"
+      },
+      "swapAgreed": true
+    },
+    {
+      "pairId": "cn:glm-border-city-autonomy",
+      "stratum": "cn:glm",
+      "task": "border-city-autonomy",
+      "passes": [
+        {
+          "swap": false,
+          "scores": {
+            "A": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            },
+            "B": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            }
+          },
+          "operationId": "op-judge-cn:glm-border-city-autonomy-n"
+        },
+        {
+          "swap": true,
+          "scores": {
+            "A": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            },
+            "B": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            }
+          },
+          "operationId": "op-judge-cn:glm-border-city-autonomy-s"
+        }
+      ],
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 8
+        },
+        "digest": "1a4b61175a1c8bf1f7108608a7787f0bc74cb3fca5e9e236dc4e628699466e96"
+      },
+      "swapAgreed": true
+    },
+    {
+      "pairId": "cn:glm-regional-militarization",
+      "stratum": "cn:glm",
+      "task": "regional-militarization",
+      "passes": [
+        {
+          "swap": false,
+          "scores": {
+            "A": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            },
+            "B": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            }
+          },
+          "operationId": "op-judge-cn:glm-regional-militarization-n"
+        },
+        {
+          "swap": true,
+          "scores": {
+            "A": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            },
+            "B": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            }
+          },
+          "operationId": "op-judge-cn:glm-regional-militarization-s"
+        }
+      ],
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 8
+        },
+        "digest": "1a4b61175a1c8bf1f7108608a7787f0bc74cb3fca5e9e236dc4e628699466e96"
+      },
+      "swapAgreed": true
+    },
+    {
+      "pairId": "cn:glm-plague-response",
+      "stratum": "cn:glm",
+      "task": "plague-response",
+      "passes": [
+        {
+          "swap": false,
+          "scores": {
+            "A": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            },
+            "B": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            }
+          },
+          "operationId": "op-judge-cn:glm-plague-response-n"
+        },
+        {
+          "swap": true,
+          "scores": {
+            "A": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            },
+            "B": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            }
+          },
+          "operationId": "op-judge-cn:glm-plague-response-s"
+        }
+      ],
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 8
+        },
+        "digest": "1a4b61175a1c8bf1f7108608a7787f0bc74cb3fca5e9e236dc4e628699466e96"
+      },
+      "swapAgreed": true
+    },
+    {
+      "pairId": "cn:qwen-border-city-autonomy",
+      "stratum": "cn:qwen",
+      "task": "border-city-autonomy",
+      "passes": [
+        {
+          "swap": false,
+          "scores": {
+            "A": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            },
+            "B": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            }
+          },
+          "operationId": "op-judge-cn:qwen-border-city-autonomy-n"
+        },
+        {
+          "swap": true,
+          "scores": {
+            "A": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            },
+            "B": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            }
+          },
+          "operationId": "op-judge-cn:qwen-border-city-autonomy-s"
+        }
+      ],
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 8
+        },
+        "digest": "1a4b61175a1c8bf1f7108608a7787f0bc74cb3fca5e9e236dc4e628699466e96"
+      },
+      "swapAgreed": true
+    },
+    {
+      "pairId": "cn:qwen-regional-militarization",
+      "stratum": "cn:qwen",
+      "task": "regional-militarization",
+      "passes": [
+        {
+          "swap": false,
+          "scores": {
+            "A": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            },
+            "B": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            }
+          },
+          "operationId": "op-judge-cn:qwen-regional-militarization-n"
+        },
+        {
+          "swap": true,
+          "scores": {
+            "A": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            },
+            "B": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            }
+          },
+          "operationId": "op-judge-cn:qwen-regional-militarization-s"
+        }
+      ],
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 8
+        },
+        "digest": "1a4b61175a1c8bf1f7108608a7787f0bc74cb3fca5e9e236dc4e628699466e96"
+      },
+      "swapAgreed": true
+    },
+    {
+      "pairId": "cn:qwen-plague-response",
+      "stratum": "cn:qwen",
+      "task": "plague-response",
+      "passes": [
+        {
+          "swap": false,
+          "scores": {
+            "A": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            },
+            "B": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            }
+          },
+          "operationId": "op-judge-cn:qwen-plague-response-n"
+        },
+        {
+          "swap": true,
+          "scores": {
+            "A": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            },
+            "B": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            }
+          },
+          "operationId": "op-judge-cn:qwen-plague-response-s"
+        }
+      ],
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 8
+        },
+        "digest": "1a4b61175a1c8bf1f7108608a7787f0bc74cb3fca5e9e236dc4e628699466e96"
+      },
+      "swapAgreed": true
+    },
+    {
+      "pairId": "cn:minimax-border-city-autonomy",
+      "stratum": "cn:minimax",
+      "task": "border-city-autonomy",
+      "passes": [
+        {
+          "swap": false,
+          "scores": {
+            "A": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            },
+            "B": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            }
+          },
+          "operationId": "op-judge-cn:minimax-border-city-autonomy-n"
+        },
+        {
+          "swap": true,
+          "scores": {
+            "A": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            },
+            "B": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            }
+          },
+          "operationId": "op-judge-cn:minimax-border-city-autonomy-s"
+        }
+      ],
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 8
+        },
+        "digest": "1a4b61175a1c8bf1f7108608a7787f0bc74cb3fca5e9e236dc4e628699466e96"
+      },
+      "swapAgreed": true
+    },
+    {
+      "pairId": "cn:minimax-regional-militarization",
+      "stratum": "cn:minimax",
+      "task": "regional-militarization",
+      "passes": [
+        {
+          "swap": false,
+          "scores": {
+            "A": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            },
+            "B": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            }
+          },
+          "operationId": "op-judge-cn:minimax-regional-militarization-n"
+        },
+        {
+          "swap": true,
+          "scores": {
+            "A": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            },
+            "B": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            }
+          },
+          "operationId": "op-judge-cn:minimax-regional-militarization-s"
+        }
+      ],
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 8
+        },
+        "digest": "1a4b61175a1c8bf1f7108608a7787f0bc74cb3fca5e9e236dc4e628699466e96"
+      },
+      "swapAgreed": true
+    },
+    {
+      "pairId": "cn:minimax-plague-response",
+      "stratum": "cn:minimax",
+      "task": "plague-response",
+      "passes": [
+        {
+          "swap": false,
+          "scores": {
+            "A": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            },
+            "B": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            }
+          },
+          "operationId": "op-judge-cn:minimax-plague-response-n"
+        },
+        {
+          "swap": true,
+          "scores": {
+            "A": {
+              "legality": 2,
+              "feasibility": 3,
+              "resilience": 3
+            },
+            "B": {
+              "legality": 3,
+              "feasibility": 3,
+              "resilience": 2
+            }
+          },
+          "operationId": "op-judge-cn:minimax-plague-response-s"
+        }
+      ],
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 8
+        },
+        "digest": "1a4b61175a1c8bf1f7108608a7787f0bc74cb3fca5e9e236dc4e628699466e96"
+      },
+      "swapAgreed": true
+    }
+  ],
+  "analysis": {
+    "runtime": "native-next-v1-p6pilot",
+    "topologyEffect": {
+      "pairs": 12,
+      "histMean": 8,
+      "randMean": 8,
+      "effect": 0
+    },
+    "byStratum": {
+      "cn:doubao": {
+        "cells": 6,
+        "cost": {
+          "historicalMean": 35,
+          "randomMean": 35
+        }
+      },
+      "cn:glm": {
+        "cells": 6,
+        "cost": {
+          "historicalMean": 35,
+          "randomMean": 35
+        }
+      },
+      "cn:qwen": {
+        "cells": 6,
+        "cost": {
+          "historicalMean": 35,
+          "randomMean": 35
+        }
+      },
+      "cn:minimax": {
+        "cells": 6,
+        "cost": {
+          "historicalMean": 35,
+          "randomMean": 35
+        }
+      }
+    },
+    "judgeSwapAgreement": 1,
+    "cost": {
+      "cellTokens": 840,
+      "judgeTokens": 360,
+      "totalTokens": 1200
+    },
+    "digest": "5dae20e54f8b24708b5d15accc82c892973361c47306073894a2d669adfcc24a"
+  },
+  "missingness": {
+    "budgetOverflow": [],
+    "failedCellsInDenominator": 24
+  },
+  "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p6test-JCGasV"
+}
