@@ -24,7 +24,7 @@ runtime. All work lives on `docs/harness-next-plan`, pushed to
 | **P3** | SIGKILL matrix, recovery, cancel, projection rebuild, contract freeze | ✅ **600/600** trials (100×6 boundaries), zero violations | `P3-EVIDENCE.md`, `crash-matrix-100x6.json` |
 | **P4** | Owned tournament, paired blind judging, skill provenance | ✅ eligibility/caps/deadline/strata; 21 denials tested; raw evidence survives | `P4-EVIDENCE.md`, `p4-slice-evidence.json` |
 | **P5** | civ.describe, scoped civ.events, atomic subscribe, CLI + GUI | ✅ 11 host tests + 4 WS tests + GUI | `P5-EVIDENCE.md`, `GUI-EVIDENCE.md` |
-| **P6** | Preregistered factorial pilot (machinery lane) | ✅ frozen preregistration; 24-cell deterministic pilot; power calculator | `P6-PREREGISTRATION.md`, `P6-EVIDENCE.md`, `power.mjs` |
+| **P6** | Preregistered factorial pilot (machinery lane) | ✅ frozen preregistration; 24-cell deterministic pilot; power calculator; **legacy factorial arm** over the frozen corpus (22 cells, 10 paired blind judgings, honest missingness) | `P6-PREREGISTRATION.md`, `P6-EVIDENCE.md`, `power.mjs`, `p6-legacy-lane.mjs` |
 
 ## Cross-cutting plan sections
 

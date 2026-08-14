@@ -1,0 +1,271 @@
+{
+  "schema": "p6-legacy-lane-evidence/1",
+  "runtime": "legacy-cc-v5",
+  "instrumentVersion": "legacy-cc-v5-1460441",
+  "corpusDigest": "88da968f0a006039d8be495938178c0d11eca9161e439b4acc53d496f28df7a8",
+  "cells": 22,
+  "missing": [
+    {
+      "stratum": "cn:qwen",
+      "task": "plague-response",
+      "topology": "historical"
+    },
+    {
+      "stratum": "cn:minimax",
+      "task": "regional-militarization",
+      "topology": "historical"
+    }
+  ],
+  "pairs": [
+    {
+      "pairId": "cn:doubao-border-city-autonomy",
+      "stratum": "cn:doubao",
+      "task": "border-city-autonomy",
+      "runtime": "legacy-cc-v5",
+      "arms": {
+        "historical": {
+          "matchId": "e1c-border-city-autonomy-01-r01__china-zhou",
+          "digest": "a12cc620e1218b6ab2e4fb9d64f5be33b75c8ed27ad0343642cdec7b659754d1"
+        },
+        "random": {
+          "matchId": "e1c-border-city-autonomy-01-r01___baseline-ming-random",
+          "digest": "b3b955a12e8638ed0219eb5c70fcc1634b5260fa0798639b60b72cadc2d187fe"
+        }
+      },
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 7
+        },
+        "digest": "91ffe422bc5b680a687cc3a1b751b44f6e2cd8ca4030a7aae3f2077eb2dc248d"
+      },
+      "judgeBlind": true
+    },
+    {
+      "pairId": "cn:doubao-regional-militarization",
+      "stratum": "cn:doubao",
+      "task": "regional-militarization",
+      "runtime": "legacy-cc-v5",
+      "arms": {
+        "historical": {
+          "matchId": "2026-07-30T09-42-02-492-9d86__china-qin",
+          "digest": "018b5c3281852f5a76147f647feb0400cbe7f2db1b395357dddb1f6d50b12415"
+        },
+        "random": {
+          "matchId": "e1c-regional-militarization-01-r01___baseline-qin-random",
+          "digest": "4f41fd908414c9b079534029108af3808b1811860a72578157f7b50759757d1e"
+        }
+      },
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 7
+        },
+        "digest": "91ffe422bc5b680a687cc3a1b751b44f6e2cd8ca4030a7aae3f2077eb2dc248d"
+      },
+      "judgeBlind": true
+    },
+    {
+      "pairId": "cn:doubao-plague-response",
+      "stratum": "cn:doubao",
+      "task": "plague-response",
+      "runtime": "legacy-cc-v5",
+      "arms": {
+        "historical": {
+          "matchId": "2026-07-30T09-20-18-212-10tm__china-tang",
+          "digest": "cc77c52c7d4ab097f2ef085ca6904bc766c13bbcdd79d4ea7cf5b7bf0e1ada43"
+        },
+        "random": {
+          "matchId": "e1c-plague-response-01-r01___baseline-qin-random",
+          "digest": "c8f2ee09a0b0efa0e20d4901e0292b4279ba56240ef2b9575724a9877cbc2457"
+        }
+      },
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 7
+        },
+        "digest": "91ffe422bc5b680a687cc3a1b751b44f6e2cd8ca4030a7aae3f2077eb2dc248d"
+      },
+      "judgeBlind": true
+    },
+    {
+      "pairId": "cn:glm-border-city-autonomy",
+      "stratum": "cn:glm",
+      "task": "border-city-autonomy",
+      "runtime": "legacy-cc-v5",
+      "arms": {
+        "historical": {
+          "matchId": "e3-cn-glm-border-city-autonomy-01-r01__china-zhou",
+          "digest": "4a1264811dba804b40010c69da545d413c9831648cf2d51942a268e958a69ccd"
+        },
+        "random": {
+          "matchId": "e3-cn-glm-border-city-autonomy-01-r03___baseline-tang-random",
+          "digest": "f75b4a81839f9914b695384481622615fc5dec55f75e0a5ca144e03947055729"
+        }
+      },
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 7
+        },
+        "digest": "91ffe422bc5b680a687cc3a1b751b44f6e2cd8ca4030a7aae3f2077eb2dc248d"
+      },
+      "judgeBlind": true
+    },
+    {
+      "pairId": "cn:glm-regional-militarization",
+      "stratum": "cn:glm",
+      "task": "regional-militarization",
+      "runtime": "legacy-cc-v5",
+      "arms": {
+        "historical": {
+          "matchId": "e3-cn-glm-regional-militarization-01-r03__china-tang",
+          "digest": "8352ed15ae2caa5758a8ade52353458c2b54db2be07eabd25ae157b39ea7b367"
+        },
+        "random": {
+          "matchId": "e3-cn-glm-regional-militarization-01-r01___baseline-qin-random",
+          "digest": "2994fa2dda298eef96a23087ff94296d06615c07081a594830f3bb3a3fc5c9f9"
+        }
+      },
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 7
+        },
+        "digest": "91ffe422bc5b680a687cc3a1b751b44f6e2cd8ca4030a7aae3f2077eb2dc248d"
+      },
+      "judgeBlind": true
+    },
+    {
+      "pairId": "cn:glm-plague-response",
+      "stratum": "cn:glm",
+      "task": "plague-response",
+      "runtime": "legacy-cc-v5",
+      "arms": {
+        "historical": {
+          "matchId": "e3-cn-glm-plague-response-01-r03__china-tang",
+          "digest": "2a41c7b3b7ce1721c24097a3d4d06bf33b44a5416aefd5fa538784cb800353af"
+        },
+        "random": {
+          "matchId": "e3-cn-glm-plague-response-01-r03___baseline-ming-random",
+          "digest": "1baf907521a946c9eb38dc7989f9ee687a866d6efabf95ed792b32abed48bfc6"
+        }
+      },
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 7
+        },
+        "digest": "91ffe422bc5b680a687cc3a1b751b44f6e2cd8ca4030a7aae3f2077eb2dc248d"
+      },
+      "judgeBlind": true
+    },
+    {
+      "pairId": "cn:qwen-border-city-autonomy",
+      "stratum": "cn:qwen",
+      "task": "border-city-autonomy",
+      "runtime": "legacy-cc-v5",
+      "arms": {
+        "historical": {
+          "matchId": "e3-cn-qwen-border-city-autonomy-01-r01__china-tang",
+          "digest": "8fcc543e286336d3ae8f0e5c665857f80b956d58e22e1e80fd17d9b229faa726"
+        },
+        "random": {
+          "matchId": "e3-cn-qwen-border-city-autonomy-01-r03___baseline-tang-random",
+          "digest": "1e71f354d210b2bfc61d818fec7125745d36a9b3adc84b5cff40533573427d3b"
+        }
+      },
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 7
+        },
+        "digest": "91ffe422bc5b680a687cc3a1b751b44f6e2cd8ca4030a7aae3f2077eb2dc248d"
+      },
+      "judgeBlind": true
+    },
+    {
+      "pairId": "cn:qwen-regional-militarization",
+      "stratum": "cn:qwen",
+      "task": "regional-militarization",
+      "runtime": "legacy-cc-v5",
+      "arms": {
+        "historical": {
+          "matchId": "e3-cn-qwen-regional-militarization-01-r04__china-tang",
+          "digest": "ba9edbfbea9dd1a42426d1628cbb8a590d3f0c09fa49c306c293310766d0eef2"
+        },
+        "random": {
+          "matchId": "e3-cn-qwen-regional-militarization-01-r05___baseline-zhou-random",
+          "digest": "3d928eca29da0e5c25b956c3d293cf9514ba556853989b43e210fdee574a8208"
+        }
+      },
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 7
+        },
+        "digest": "91ffe422bc5b680a687cc3a1b751b44f6e2cd8ca4030a7aae3f2077eb2dc248d"
+      },
+      "judgeBlind": true
+    },
+    {
+      "pairId": "cn:minimax-border-city-autonomy",
+      "stratum": "cn:minimax",
+      "task": "border-city-autonomy",
+      "runtime": "legacy-cc-v5",
+      "arms": {
+        "historical": {
+          "matchId": "e3-cn-minimax-border-city-autonomy-01-r01__global-athens",
+          "digest": "abda9b514787f67667e831be99d79ab4c2f93e55827945918429d55ba09feccd"
+        },
+        "random": {
+          "matchId": "e3-cn-minimax-border-city-autonomy-01-r01___baseline-athens-random",
+          "digest": "48259ad31090246e1c4835eca88554ffc99b18b3ada44526c353c0877361c99e"
+        }
+      },
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 7
+        },
+        "digest": "91ffe422bc5b680a687cc3a1b751b44f6e2cd8ca4030a7aae3f2077eb2dc248d"
+      },
+      "judgeBlind": true
+    },
+    {
+      "pairId": "cn:minimax-plague-response",
+      "stratum": "cn:minimax",
+      "task": "plague-response",
+      "runtime": "legacy-cc-v5",
+      "arms": {
+        "historical": {
+          "matchId": "e3-cn-minimax-plague-response-01-r05__china-ming",
+          "digest": "f992eacc52dc5c8844a7b82db73abacf0a44905122c5ed69bad55240c3609db3"
+        },
+        "random": {
+          "matchId": "e3-cn-minimax-plague-response-01-r01___baseline-qin-random",
+          "digest": "c05a3c6ecda84ace6e8b4dacc020bc213b3037655b35bebaf85ee42cfb38d49e"
+        }
+      },
+      "aggregate": {
+        "total": {
+          "A": 8,
+          "B": 7
+        },
+        "digest": "91ffe422bc5b680a687cc3a1b751b44f6e2cd8ca4030a7aae3f2077eb2dc248d"
+      },
+      "judgeBlind": true
+    }
+  ],
+  "analysis": {
+    "topologyEffect": {
+      "pairs": 10,
+      "histMean": 8,
+      "randMean": 7,
+      "effect": 1
+    },
+    "digest": "cb6aeaae4ff05cbcc48d5f5a7cd9f3785cd9dd8d7f9832908115f3626c8d65bf"
+  },
+  "note": "legacy arm is a separate runtime factor; never pooled with native-next-v1 rankings (plan §2)"
+}

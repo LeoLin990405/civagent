@@ -122,7 +122,7 @@
         "passId": "p1",
         "swap": false,
         "purpose": "judge",
-        "operationId": "op-dbdfeb9b-50e3-4858-9594-aee751d89c51",
+        "operationId": "op-002a8b9a-3331-466e-9885-6bb918000b15",
         "scores": {
           "A": {
             "legality": 3,
@@ -140,7 +140,7 @@
         "passId": "p2",
         "swap": true,
         "purpose": "judge",
-        "operationId": "op-bb1e785c-e985-4712-bbad-af95490b8782",
+        "operationId": "op-021560cd-d455-4dc3-9cb9-d02703836cdb",
         "scores": {
           "A": {
             "legality": 2,
@@ -179,7 +179,7 @@
   "skills": {
     "skill1": {
       "state": "PROMOTED",
-      "digest": "9921fd0adca85ec6b8aaf8a2509321ad774925c0e0e6a8a5aae5272c5a91cc0a",
+      "digest": "17f944fcca77c0cec801859860d4d999b71efb1177a58fcc2627607ed4a93aeb",
       "approvalIdentity": "p4-approver-1"
     },
     "skill2": {
@@ -199,8 +199,8 @@
     ]
   },
   "rawEvidence": {
-    "casBefore": "d470f64c8c46a42ccb4de02cb557b172240b204e8abae260243b34648ef8802c",
-    "casAfter": "d470f64c8c46a42ccb4de02cb557b172240b204e8abae260243b34648ef8802c",
+    "casBefore": "3b55fd471856cd9062b10bdd1d14cb47d45c57f87fe12424a9096fbccc908f99",
+    "casAfter": "3b55fd471856cd9062b10bdd1d14cb47d45c57f87fe12424a9096fbccc908f99",
     "survives": true,
     "committedEvents": 20,
     "ownedMatches": [
@@ -209,5 +209,5 @@
     ],
     "joined": true
   },
-  "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p4test-PKAA27"
+  "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p4test-8TyjNn"
 }
