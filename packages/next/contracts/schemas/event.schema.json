@@ -20,7 +20,7 @@
     "turnId": { "type": ["string", "null"] },
     "operationId": { "type": ["string", "null"] },
     "type": {
-      "enum": ["match.admitted", "turn.observed", "operation.observed", "judge.observed", "skill.event", "mechanism.triggered", "match.terminal", "legacy.unmapped", "turn.claimed", "model.start_intent", "model.raw_chunk", "model.response", "model.error", "model.cancelled", "surface.revision", "operation.outcome", "recovery.completed"]
+      "enum": ["match.admitted", "turn.observed", "operation.observed", "judge.observed", "skill.event", "mechanism.triggered", "match.terminal", "legacy.unmapped", "turn.claimed", "model.start_intent", "model.raw_chunk", "model.response", "model.error", "model.cancelled", "surface.revision", "operation.outcome", "recovery.completed", "handoff/accepted_and_target_enqueued", "handoff/terminal_and_parent_enqueued", "handoff/claimed"]
     },
     "actor": { "type": "string", "description": "Producer identity: regime id, judge, skill-learner, system, or an office/session id in the native epoch." },
     "spanId": { "type": "string", "description": "Observability span (16-hex on legacy import)." },

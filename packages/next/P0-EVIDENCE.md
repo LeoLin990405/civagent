@@ -68,10 +68,11 @@ CORPUS VERIFY PASSED
 
 ### 1.3 Declared coverage gaps (in the ledger, not hidden)
 
-1. **Topology treatments `flat` and `solo` do not exist in the legacy corpus** (all 13
-   regimes are historical or `*_random`). They are native-epoch-only treatments; the
-   plan's §19 four-level topology factorial can be fully executed only after native
-   fixtures exist (P2+). The frozen corpus covers historical + random only.
+1. **Topology treatments `flat` and `solo` have no legacy *traces*** (the 795-match
+   corpus is historical or `*_random` only). The *artifacts* do exist
+   (`regimes/_baseline/tang-flat`, `tang-solo`) — the P2 RegimeIR compiler compiles
+   all four §19 treatments from real artifacts; the frozen corpus itself covers
+   historical + random only.
 2. **npm registry lacks `@deepseek-ai/dsh-*@0.1.0-rc.5`** (see §2) — the
    `harness-adapter` must build seam packages from the pinned source, not install the
    exact pinned version from npm.

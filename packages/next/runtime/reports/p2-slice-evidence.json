@@ -1,0 +1,381 @@
+{
+  "schema": "p2-slice-evidence/1",
+  "regime": "china/tang",
+  "treatment": "historical",
+  "regimeDigest": "83f1b605392e0df27acefb15016130e354238dd07093a4f244e9f6bbfa71222d",
+  "instrumentVersion": "native-next-v1-p2slice",
+  "modes": {
+    "observational": {
+      "matchId": "p2-observational-china-tang",
+      "mode": "observational",
+      "regimeId": "china/tang",
+      "regimeDigest": "83f1b605392e0df27acefb15016130e354238dd07093a4f244e9f6bbfa71222d",
+      "instrumentVersion": "native-next-v1-p2slice",
+      "participation": {
+        "runId": "p2-observational-china-tang",
+        "mode": "observational",
+        "regimeId": "china/tang",
+        "epoch": "native-next-v1",
+        "instrumentVersion": "native-next-v1-p2slice",
+        "offices": {
+          "bingbu": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "gongbu": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "hubu": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "libu_personnel": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "libu_ritual": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "menxia": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "shangshu": {
+            "invoked": 7,
+            "started": 8,
+            "contributed": 2,
+            "settled": 7
+          },
+          "xingbu": {
+            "invoked": 2,
+            "started": 3,
+            "contributed": 2,
+            "settled": 2
+          },
+          "zhongshu": {
+            "invoked": 1,
+            "started": 3,
+            "contributed": 3,
+            "settled": 1
+          }
+        }
+      },
+      "roster": {
+        "mode": "observational",
+        "required": 9,
+        "missing": [],
+        "complete": true
+      },
+      "topology": {
+        "mode": "observational",
+        "declaredCount": 15,
+        "exercisedDeclaredCount": 15,
+        "unknownObservedCount": 1,
+        "unknownEdgeRate": 0.0625
+      },
+      "eventCount": 108,
+      "committedTypes": [
+        "handoff/accepted_and_target_enqueued",
+        "handoff/claimed",
+        "handoff/terminal_and_parent_enqueued",
+        "model.raw_chunk",
+        "model.response",
+        "model.start_intent",
+        "operation.outcome",
+        "surface.revision",
+        "turn.claimed"
+      ],
+      "modeEvidence": {
+        "undeclaredEdgeAcceptedAndRecorded": true,
+        "topologyAfterUndeclared": {
+          "mode": "observational",
+          "declaredCount": 15,
+          "exercisedDeclaredCount": 15,
+          "unknownObservedCount": 1,
+          "unknownEdgeRate": 0.0625
+        }
+      },
+      "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p2-7SHXjX"
+    },
+    "roster_enforced": {
+      "matchId": "p2-roster_enforced-china-tang",
+      "mode": "roster_enforced",
+      "regimeId": "china/tang",
+      "regimeDigest": "83f1b605392e0df27acefb15016130e354238dd07093a4f244e9f6bbfa71222d",
+      "instrumentVersion": "native-next-v1-p2slice",
+      "participation": {
+        "runId": "p2-roster_enforced-china-tang",
+        "mode": "roster_enforced",
+        "regimeId": "china/tang",
+        "epoch": "native-next-v1",
+        "instrumentVersion": "native-next-v1-p2slice",
+        "offices": {
+          "bingbu": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "gongbu": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "hubu": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "libu_personnel": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "libu_ritual": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "menxia": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "shangshu": {
+            "invoked": 7,
+            "started": 8,
+            "contributed": 2,
+            "settled": 7
+          },
+          "xingbu": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "zhongshu": {
+            "invoked": 0,
+            "started": 1,
+            "contributed": 1,
+            "settled": 0
+          }
+        }
+      },
+      "roster": {
+        "mode": "roster_enforced",
+        "required": 9,
+        "missing": [],
+        "complete": true
+      },
+      "topology": {
+        "mode": "roster_enforced",
+        "declaredCount": 15,
+        "exercisedDeclaredCount": 15,
+        "unknownObservedCount": 0,
+        "unknownEdgeRate": 0
+      },
+      "eventCount": 96,
+      "committedTypes": [
+        "handoff/accepted_and_target_enqueued",
+        "handoff/claimed",
+        "handoff/terminal_and_parent_enqueued",
+        "model.raw_chunk",
+        "model.response",
+        "model.start_intent",
+        "operation.outcome",
+        "surface.revision",
+        "turn.claimed"
+      ],
+      "modeEvidence": {},
+      "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p2-NXJhIl"
+    },
+    "graph_enforced": {
+      "matchId": "p2-graph_enforced-china-tang",
+      "mode": "graph_enforced",
+      "regimeId": "china/tang",
+      "regimeDigest": "83f1b605392e0df27acefb15016130e354238dd07093a4f244e9f6bbfa71222d",
+      "instrumentVersion": "native-next-v1-p2slice",
+      "participation": {
+        "runId": "p2-graph_enforced-china-tang",
+        "mode": "graph_enforced",
+        "regimeId": "china/tang",
+        "epoch": "native-next-v1",
+        "instrumentVersion": "native-next-v1-p2slice",
+        "offices": {
+          "bingbu": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "gongbu": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "hubu": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "libu_personnel": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "libu_ritual": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "menxia": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "shangshu": {
+            "invoked": 7,
+            "started": 8,
+            "contributed": 2,
+            "settled": 7
+          },
+          "xingbu": {
+            "invoked": 1,
+            "started": 2,
+            "contributed": 2,
+            "settled": 1
+          },
+          "zhongshu": {
+            "invoked": 0,
+            "started": 1,
+            "contributed": 1,
+            "settled": 0
+          }
+        }
+      },
+      "roster": {
+        "mode": "graph_enforced",
+        "required": 9,
+        "missing": [],
+        "complete": true
+      },
+      "topology": {
+        "mode": "graph_enforced",
+        "declaredCount": 15,
+        "exercisedDeclaredCount": 15,
+        "unknownObservedCount": 0,
+        "unknownEdgeRate": 0
+      },
+      "eventCount": 96,
+      "committedTypes": [
+        "handoff/accepted_and_target_enqueued",
+        "handoff/claimed",
+        "handoff/terminal_and_parent_enqueued",
+        "model.raw_chunk",
+        "model.response",
+        "model.start_intent",
+        "operation.outcome",
+        "surface.revision",
+        "turn.claimed"
+      ],
+      "modeEvidence": {
+        "unknownEdge": {
+          "accepted": false,
+          "rejectReason": "graph: edge e99-unknown is not declared in the graph",
+          "handoff": {
+            "handoffId": "h-2c377011-ee55-4df7-810a-a07da27b6adb",
+            "sourceOfficeId": "zhongshu",
+            "sourceSessionId": "sess-zhongshu",
+            "targetOfficeId": "menxia",
+            "targetSessionId": "sess-menxia",
+            "edgeId": "e99-unknown",
+            "edgeKind": "command",
+            "artifactRefs": [],
+            "causalParentId": "sess-zhongshu",
+            "mode": "one-shot",
+            "context": "fresh",
+            "joinPolicy": "await",
+            "idempotencyKey": "ik-44162798-4ac0-47c5-9d9a-97ca83286414",
+            "state": "REJECTED",
+            "rejectReason": "graph: edge e99-unknown is not declared in the graph",
+            "terminal": null,
+            "participation": {
+              "invoked": false,
+              "started": false,
+              "contributed": false,
+              "settled": false
+            }
+          }
+        },
+        "wrongKind": {
+          "accepted": false,
+          "rejectReason": "graph: edge e1-zhongshu-menxia kind command != vote",
+          "handoff": {
+            "handoffId": "h-f2d1b649-184f-49eb-9045-092c851aaf3f",
+            "sourceOfficeId": "zhongshu",
+            "sourceSessionId": "sess-zhongshu",
+            "targetOfficeId": "menxia",
+            "targetSessionId": "sess-menxia",
+            "edgeId": "e1-zhongshu-menxia",
+            "edgeKind": "vote",
+            "artifactRefs": [],
+            "causalParentId": "sess-zhongshu",
+            "mode": "one-shot",
+            "context": "fresh",
+            "joinPolicy": "await",
+            "idempotencyKey": "ik-7818aa76-d6d8-4941-9002-e810ad909c1c",
+            "state": "REJECTED",
+            "rejectReason": "graph: edge e1-zhongshu-menxia kind command != vote",
+            "terminal": null,
+            "participation": {
+              "invoked": false,
+              "started": false,
+              "contributed": false,
+              "settled": false
+            }
+          }
+        },
+        "schemaInvalid": {
+          "rejected": true,
+          "reasons": [
+            "causalParentId required",
+            "idempotencyKey required"
+          ]
+        },
+        "markerText": {
+          "actorOffice": "menxia",
+          "marker": "[VETO]",
+          "granted": false,
+          "reason": "printed markers are text, not authority (plan §8.2)",
+          "policyDigest": "93a9753404bc659cb401efe91fc083aea21546c7f22198a528442ece01ffe3e1",
+          "at": 1786697599137
+        }
+      },
+      "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p2-nvxstv"
+    }
+  }
+}

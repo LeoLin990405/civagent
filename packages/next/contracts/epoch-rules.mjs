@@ -18,6 +18,8 @@ export const CANONICAL_TYPES = [
   "turn.claimed", "model.start_intent", "model.raw_chunk", "model.response",
   "model.error", "model.cancelled", "surface.revision", "operation.outcome",
   "recovery.completed",
+  // native durable inbox (P2)
+  "handoff/accepted_and_target_enqueued", "handoff/terminal_and_parent_enqueued", "handoff/claimed",
 ];
 export const LEGACY_EPOCH = "legacy-cc-v5";
 export const LEGACY_BASELINE = "1460441528069465dca7263dba3e9ac01b18c78a";
