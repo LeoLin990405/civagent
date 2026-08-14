@@ -109,7 +109,7 @@
           "unknownEdgeRate": 0.0625
         }
       },
-      "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p2-rt2g0C"
+      "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p2-eOvjcX"
     },
     "roster_enforced": {
       "matchId": "p2-roster_enforced-china-tang",
@@ -206,7 +206,7 @@
         "turn.claimed"
       ],
       "modeEvidence": {},
-      "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p2-TNIIc2"
+      "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p2-pFXulp"
     },
     "graph_enforced": {
       "matchId": "p2-graph_enforced-china-tang",
@@ -307,7 +307,7 @@
           "accepted": false,
           "rejectReason": "graph: edge e99-unknown is not declared in the graph",
           "handoff": {
-            "handoffId": "h-89926148-482e-4b58-bfc9-f044516a7439",
+            "handoffId": "h-6d1810a5-cbe2-40f0-9ee5-cbbb0cdb3862",
             "sourceOfficeId": "zhongshu",
             "sourceSessionId": "sess-zhongshu",
             "targetOfficeId": "menxia",
@@ -319,7 +319,7 @@
             "mode": "one-shot",
             "context": "fresh",
             "joinPolicy": "await",
-            "idempotencyKey": "ik-a59d9eae-c95a-447f-b528-0275945a8fcf",
+            "idempotencyKey": "ik-2471e34b-ce30-46d9-8066-e8c18ec88a3e",
             "state": "REJECTED",
             "rejectReason": "graph: edge e99-unknown is not declared in the graph",
             "terminal": null,
@@ -335,7 +335,7 @@
           "accepted": false,
           "rejectReason": "graph: edge e1-zhongshu-menxia kind command != vote",
           "handoff": {
-            "handoffId": "h-9444ae4a-57eb-4b1d-bed9-e757b5223cbf",
+            "handoffId": "h-0876b579-6be0-4308-9978-dbe6cbfa0426",
             "sourceOfficeId": "zhongshu",
             "sourceSessionId": "sess-zhongshu",
             "targetOfficeId": "menxia",
@@ -347,7 +347,7 @@
             "mode": "one-shot",
             "context": "fresh",
             "joinPolicy": "await",
-            "idempotencyKey": "ik-c89bece8-d9e8-4520-be23-e1bd0cccb16a",
+            "idempotencyKey": "ik-d6e7039a-fa90-49d9-aeb6-74c9b11a2352",
             "state": "REJECTED",
             "rejectReason": "graph: edge e1-zhongshu-menxia kind command != vote",
             "terminal": null,
@@ -372,10 +372,10 @@
           "granted": false,
           "reason": "printed markers are text, not authority (plan §8.2)",
           "policyDigest": "93a9753404bc659cb401efe91fc083aea21546c7f22198a528442ece01ffe3e1",
-          "at": 1786702188113
+          "at": 1786702715306
         }
       },
-      "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p2-dLq7FV"
+      "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p2-80keWK"
     }
   }
 }
