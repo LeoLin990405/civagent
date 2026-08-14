@@ -1,21 +1,21 @@
 {
   "slice": "vertical-slice-v1",
   "matchId": "slice-match-1",
-  "dir": "/Users/leo/Projects/civagent/packages/next/runtime/reports/slice-run-nGVs8z",
+  "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-slice-5CvEvc",
   "manifest": {
     "digest": "850e3f284189bc7050b3253dc6c4f8bb85241f54b38af8e39e74b1681fb5091f",
     "bytes": 748,
     "instrumentVersion": "native-next-v1-850e3f284189bc70",
-    "artifact": "/Users/leo/Projects/civagent/packages/next/runtime/reports/slice-run-nGVs8z/manifest-850e3f284189.json"
+    "artifact": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-slice-5CvEvc/manifest-850e3f284189.json"
   },
   "request": {
-    "artifactDigest": "sha256:cb56fbbf3ae4b78b04850a54067d608535da279a60f0afb239bbe5c3f2e6ee01",
+    "artifactDigest": "sha256:7b6f20fb1f1e0e12a0c3131aceba5d260da6539fae67122d6ff2b3c7bfd9e1d6",
     "exact": true
   },
   "startIntentBeforeTransport": true,
   "rawChunksSpilledToCas": true,
   "response": {
-    "artifactDigest": "sha256:da241bb05464414d1bf2b699230c085927880e3af3e5c8bb62324b4432dcf805",
+    "artifactDigest": "sha256:390117613e1cc4127eebc0bf19f9d41b1d817b665983b3d60007ee4aa8b7849c",
     "usage": {
       "inputTokens": 42,
       "outputTokens": 37
@@ -73,7 +73,7 @@
     {
       "seq": 2,
       "type": "model.start_intent",
-      "payloadDigest": "0ee55a96fea79ad46a3d810aaed77fc52d4cdcf6f800933b1da5f7843b5d671b"
+      "payloadDigest": "5cade18e462d940a403565f0a2fa98a0284c991800cfe837ddb5093ed83d246b"
     },
     {
       "seq": 3,
@@ -88,7 +88,7 @@
     {
       "seq": 5,
       "type": "model.response",
-      "payloadDigest": "06e6f0065a28f3608c6346fca60970285a7f8400b0a200aed1dbc7cca7aad87c"
+      "payloadDigest": "4a3660509c50d69e52635dd268c4a57e4138c7e335bd28991e35881a33763192"
     },
     {
       "seq": 6,
@@ -107,5 +107,5 @@
     }
   ],
   "committedLength": 9,
-  "casInventoryDigest": "35b2142eab7777e4b9b3e9e1b15b28dfbff6e2c74b8eb7fb6827d61eb46b3a3f"
+  "casInventoryDigest": "0edb0ae2ea6ac32daeffa247d9a603193d2458daa267148d6e46228e697aa0af"
 }

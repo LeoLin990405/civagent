@@ -18,6 +18,7 @@
  *  10. zero resource residue (design-level: no timers/sockets; fds closed)
  */
 import fs from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
@@ -100,8 +101,9 @@ function emit(store, instrumentVersion, opts) {
  * @param {object} opts {dir, matchId?, sessionId?, script?}
  */
 export function runVerticalSlice(opts = {}) {
-  fs.mkdirSync(SLICE_REPORT_DIR, { recursive: true });
-  const dir = opts.dir ?? fs.mkdtempSync(path.join(SLICE_REPORT_DIR, "slice-run-"));
+  // scratch runs go to the OS temp dir; only the final evidence JSON is kept
+  // under reports/ (never commit per-run artifact trees)
+  const dir = opts.dir ?? fs.mkdtempSync(path.join(os.tmpdir(), "civ-slice-"));
   const fdBaseline = countOpenFds();
 
   // ── 1. manifest ──────────────────────────────────────────────────────────

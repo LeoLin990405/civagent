@@ -32,3 +32,4 @@ regimes/**/*.new
 
 # CCB project-local runtime (agent panes, worktrees, sockets) — never commit
 .ccb/
+packages/next/runtime/reports/slice-run-*/
