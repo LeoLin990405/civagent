@@ -1,0 +1,213 @@
+{
+  "schema": "p4-slice-evidence/1",
+  "instrumentVersion": "native-next-v1-p4slice",
+  "tournament": {
+    "tournamentId": "p4-tournament-1",
+    "epoch": "native-next-v1",
+    "instrumentVersion": "native-next-v1-p4slice",
+    "designVersion": "p4-design-1",
+    "task": "边境军事威胁与财政赤字",
+    "digest": "1df4c43f7e847cc53c44dcb3d578a8ad48ac3905900e02c776dcd5fd1e97d34b",
+    "matches": [
+      {
+        "matchId": "p4-m-tang",
+        "regime": "china/tang",
+        "provider": "fake",
+        "stratum": "cn:doubao",
+        "seed": 1,
+        "state": "TERMINAL",
+        "score": 8
+      },
+      {
+        "matchId": "p4-m-qin",
+        "regime": "china/qin",
+        "provider": "fake",
+        "stratum": "cn:doubao",
+        "seed": 1,
+        "state": "TERMINAL",
+        "score": 7
+      },
+      {
+        "matchId": "p4-cap-0",
+        "regime": "china/qin",
+        "provider": "fake",
+        "stratum": "cn:glm",
+        "seed": 9,
+        "state": "CANCELLED",
+        "score": null
+      },
+      {
+        "matchId": "p4-cap-1",
+        "regime": "china/qin",
+        "provider": "fake",
+        "stratum": "cn:glm",
+        "seed": 9,
+        "state": "CANCELLED",
+        "score": null
+      }
+    ],
+    "ranking": [
+      {
+        "rank": 1,
+        "matchId": "p4-m-tang",
+        "regime": "china/tang",
+        "stratum": "cn:doubao",
+        "score": 8
+      },
+      {
+        "rank": 2,
+        "matchId": "p4-m-qin",
+        "regime": "china/qin",
+        "stratum": "cn:doubao",
+        "score": 7
+      }
+    ]
+  },
+  "ranking": [
+    {
+      "rank": 1,
+      "matchId": "p4-m-tang",
+      "regime": "china/tang",
+      "stratum": "cn:doubao",
+      "score": 8
+    },
+    {
+      "rank": 2,
+      "matchId": "p4-m-qin",
+      "regime": "china/qin",
+      "stratum": "cn:doubao",
+      "score": 7
+    }
+  ],
+  "admissions": [
+    {
+      "matchId": "p4-m-tang",
+      "stratum": "cn:doubao",
+      "state": "TERMINAL"
+    },
+    {
+      "matchId": "p4-m-qin",
+      "stratum": "cn:doubao",
+      "state": "TERMINAL"
+    }
+  ],
+  "denialEvidence": [
+    {
+      "label": "one-sided pair",
+      "denied": true,
+      "reason": "one-sided pair cannot enter the pool"
+    },
+    {
+      "label": "unknown stratum",
+      "denied": true,
+      "reason": "stratum cn:mystery not in E3 strata block (cn:doubao/cn:glm/cn:qwen/cn:minimax)"
+    },
+    {
+      "label": "missing seed",
+      "denied": true,
+      "reason": "seed required"
+    },
+    {
+      "label": "global cap",
+      "denied": true,
+      "reason": "global cap 4 reached"
+    }
+  ],
+  "judge": {
+    "eligibilityProblems": [
+      "identical arms (one-sided pair)"
+    ],
+    "passes": [
+      {
+        "passId": "p1",
+        "swap": false,
+        "purpose": "judge",
+        "operationId": "op-31906592-8315-42ab-b34e-f7ca8063ef23",
+        "scores": {
+          "A": {
+            "legality": 3,
+            "feasibility": 2,
+            "resilience": 3
+          },
+          "B": {
+            "legality": 2,
+            "feasibility": 3,
+            "resilience": 2
+          }
+        }
+      },
+      {
+        "passId": "p2",
+        "swap": true,
+        "purpose": "judge",
+        "operationId": "op-68bed7b0-4384-477f-99ec-a84a215b43e3",
+        "scores": {
+          "A": {
+            "legality": 2,
+            "feasibility": 3,
+            "resilience": 2
+          },
+          "B": {
+            "legality": 3,
+            "feasibility": 2,
+            "resilience": 3
+          }
+        }
+      }
+    ],
+    "aggregate": {
+      "A": {
+        "legality": 3,
+        "feasibility": 2,
+        "resilience": 3
+      },
+      "B": {
+        "legality": 2,
+        "feasibility": 3,
+        "resilience": 2
+      },
+      "total": {
+        "A": 8,
+        "B": 7
+      },
+      "passes": 2,
+      "digest": "09aab0def90ea141f41911454a6b87163517c8686e80443c67e1ff3d53f2f16e"
+    },
+    "swapBalanced": true,
+    "blindInputNoMetadata": true
+  },
+  "skills": {
+    "skill1": {
+      "state": "PROMOTED",
+      "digest": "8e8858cdad981f31d3d1746130b1ef036f45897dec2c4833d3efdaafd39bbfb9",
+      "approvalIdentity": "p4-approver-1"
+    },
+    "skill2": {
+      "state": "REJECTED"
+    },
+    "matchSkillSetDigest": "d17cc5bd8fd58aa3f30ab2b445b8e641e9a78062219c70504753c6b25345f387"
+  },
+  "strata": {
+    "blocks": [
+      "cn:doubao",
+      "cn:glm",
+      "cn:qwen",
+      "cn:minimax"
+    ],
+    "used": [
+      "cn:doubao"
+    ]
+  },
+  "rawEvidence": {
+    "casBefore": "d66401d375dd95dd39f8580884c92ebc12bf116ad0891302d22ecbec9e925867",
+    "casAfter": "d66401d375dd95dd39f8580884c92ebc12bf116ad0891302d22ecbec9e925867",
+    "survives": true,
+    "committedEvents": 20,
+    "ownedMatches": [
+      "p4-m-tang",
+      "p4-m-qin"
+    ],
+    "joined": true
+  },
+  "dir": "/var/folders/40/q3rypsbx6rq34177xts5jk5c0000gn/T/civ-p4test-OKf3rg"
+}

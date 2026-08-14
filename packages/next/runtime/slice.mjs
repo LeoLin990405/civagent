@@ -49,7 +49,7 @@ export const SLICE_MANIFEST_INPUTS = {
   skillSetDigest: null,
   retryPolicy: "none",
   compaction: "off",
-  purposeRegistry: ["planner"],
+  purposeRegistry: ["planner", "office", "judge", "extractor", "auditor", "summary"],
   eventSchema: "civ.event/1",
   segmentSchema: "civ.segment/1",
   idSchema: "civ.id/1",
