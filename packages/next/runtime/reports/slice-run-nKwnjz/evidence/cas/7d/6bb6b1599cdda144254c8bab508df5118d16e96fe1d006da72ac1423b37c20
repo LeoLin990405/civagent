@@ -1,0 +1,1 @@
+{"matchId":"slice-match-1","messages":[{"content":"设计边境三镇的治理方案。","role":"user"}],"model":"fake-model","operationId":"op-2e289db8-944e-4a6e-991e-2917073001a9","purpose":"planner","schema":"civ.request/1","sessionId":"slice-session-1","systemPrompt":"你是本朝首席谋臣。","tools":[],"turnId":"turn-e318f71d-e55a-4239-b714-ce85a8c3c6eb"}

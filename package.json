@@ -19,7 +19,7 @@
     "start:frontend": "cd frontend && npm run dev",
     "dev": "concurrently \"npm run start:server\" \"npm run start:frontend\"",
     "test:frontend": "cd frontend && npm test",
-    "test:next": "node --test packages/next/contracts/test/epoch.test.mjs"
+    "test:next": "node --test packages/next/contracts/test/epoch.test.mjs packages/next/runtime/test/slice.test.mjs packages/next/runtime/test/state-machines.test.mjs packages/next/runtime/test/segment.test.mjs"
   },
   "type": "module",
   "engines": {

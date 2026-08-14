@@ -34,8 +34,6 @@ import crypto from "node:crypto";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = path.resolve(__dirname, "../../..");
-
 const LEGACY_BASELINE = "1460441528069465dca7263dba3e9ac01b18c78a";
 const HARNESS_BASELINE = "47f943859bef60e4160492346772ded9b24f765a";
 const INSTRUMENT = "legacy-cc-v5";
@@ -150,7 +148,7 @@ function collectTournaments() {
     if (!fs.statSync(dir).isDirectory()) continue;
     const result = path.join(dir, "result.md");
     const manifest = path.join(dir, "manifest.json");
-    if (!fs.existsSync(result)) continue;
+    if (!fs.existsSync(result) || !fs.existsSync(manifest)) continue;
     const files = fs.readdirSync(dir).filter((f) => f.endsWith(".md") || f.endsWith(".json"));
     out.push({ id: d, dir, files, sizeBytes: files.reduce((s, f) => s + fs.statSync(path.join(dir, f)).size, 0) });
   }
@@ -230,7 +228,7 @@ function main() {
       "meta.json": sha256(path.join(outDir, "meta.json")),
       "events.jsonl": sha256(path.join(outDir, "events.jsonl")),
     };
-    const { dir, ...rest } = m;
+    const { dir: _dir, ...rest } = m;
     traces.push({ ...rest, sourceAbsPath: m.dir, digests, sizeBytes: m.sizeBytes });
     totalBytes += m.sizeBytes;
   }

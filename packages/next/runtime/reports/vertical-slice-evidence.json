@@ -1,0 +1,111 @@
+{
+  "slice": "vertical-slice-v1",
+  "matchId": "slice-match-1",
+  "dir": "/Users/leo/Projects/civagent/packages/next/runtime/reports/slice-run-nGVs8z",
+  "manifest": {
+    "digest": "850e3f284189bc7050b3253dc6c4f8bb85241f54b38af8e39e74b1681fb5091f",
+    "bytes": 748,
+    "instrumentVersion": "native-next-v1-850e3f284189bc70",
+    "artifact": "/Users/leo/Projects/civagent/packages/next/runtime/reports/slice-run-nGVs8z/manifest-850e3f284189.json"
+  },
+  "request": {
+    "artifactDigest": "sha256:cb56fbbf3ae4b78b04850a54067d608535da279a60f0afb239bbe5c3f2e6ee01",
+    "exact": true
+  },
+  "startIntentBeforeTransport": true,
+  "rawChunksSpilledToCas": true,
+  "response": {
+    "artifactDigest": "sha256:da241bb05464414d1bf2b699230c085927880e3af3e5c8bb62324b4432dcf805",
+    "usage": {
+      "inputTokens": 42,
+      "outputTokens": 37
+    }
+  },
+  "surface": {
+    "revision": 1,
+    "hash": "d4459b3b179daa2b2de68b3a0ad165ebcaf3d593d3f556bc671e78bca4d620c2",
+    "replayEqual": true,
+    "replayedHash": "d4459b3b179daa2b2de68b3a0ad165ebcaf3d593d3f556bc671e78bca4d620c2"
+  },
+  "crashClassifications": {
+    "a": {
+      "scenario": "start intent committed, crash before receipt",
+      "path": [
+        "START_INTENT_DURABLE",
+        "START_OUTCOME_UNKNOWN",
+        "OP_FLUSHED"
+      ],
+      "notMisclassifiedAsNotStarted": true,
+      "committedTypes": [
+        "model.start_intent",
+        "model.error"
+      ]
+    },
+    "b": {
+      "scenario": "receipt durable, terminal missing",
+      "operationState": "EFFECT_OUTCOME_UNKNOWN",
+      "classified": true
+    },
+    "c": {
+      "scenario": "uncertain operation never auto-retried; explicit retry is a new id",
+      "newOperationId": "crash-c-op-retry-1",
+      "retryOfOperationId": "crash-c-op",
+      "idempotencyKeyPreserved": true,
+      "automaticRetry": false
+    }
+  },
+  "hiddenRequests": {
+    "zero": true,
+    "requestCount": 1
+  },
+  "residue": null,
+  "events": [
+    {
+      "seq": 0,
+      "type": "match.admitted",
+      "payloadDigest": "d92c3a0682f7df41bd08d36493368d27e6e741ebed399bc30b501985834c2534"
+    },
+    {
+      "seq": 1,
+      "type": "turn.claimed",
+      "payloadDigest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+    },
+    {
+      "seq": 2,
+      "type": "model.start_intent",
+      "payloadDigest": "0ee55a96fea79ad46a3d810aaed77fc52d4cdcf6f800933b1da5f7843b5d671b"
+    },
+    {
+      "seq": 3,
+      "type": "model.raw_chunk",
+      "payloadDigest": "3400394140e8dfdef5d714e2a7e96f50c866a267ee916ce4e5f0651f6e675636"
+    },
+    {
+      "seq": 4,
+      "type": "model.raw_chunk",
+      "payloadDigest": "d20b20964dad5de82d8ae7b39ca8ae5d1a0b320fea43123fa00a1f3a6ffb8dc1"
+    },
+    {
+      "seq": 5,
+      "type": "model.response",
+      "payloadDigest": "06e6f0065a28f3608c6346fca60970285a7f8400b0a200aed1dbc7cca7aad87c"
+    },
+    {
+      "seq": 6,
+      "type": "operation.outcome",
+      "payloadDigest": "e5edfe1ecc6f5cc0e11a797e0eb9f9d26a80f9c950a88b260ac4d0278d388203"
+    },
+    {
+      "seq": 7,
+      "type": "surface.revision",
+      "payloadDigest": "6bcc2636a8ae836d7bdd50e965dba64f39a28dac6f33eec2dc2d9ada2b247962"
+    },
+    {
+      "seq": 8,
+      "type": "match.terminal",
+      "payloadDigest": "909914c2aa46972550cf4747b41e216aea273d5282661a2abb8397c2589ffcb9"
+    }
+  ],
+  "committedLength": 9,
+  "casInventoryDigest": "35b2142eab7777e4b9b3e9e1b15b28dfbff6e2c74b8eb7fb6827d61eb46b3a3f"
+}

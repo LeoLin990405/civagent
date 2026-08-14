@@ -24,7 +24,7 @@ import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 import {
   LEGACY_EPOCH, LEGACY_INSTRUMENT, EVENT_SCHEMA,
-  sha256Hex, validateCanonicalEvent, assertEpochSeparation, assertIdDiscipline,
+  sha256Hex, canonicalJson, assertEpochSeparation, assertIdDiscipline,
 } from "../contracts/epoch-rules.mjs";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -221,7 +221,7 @@ export function mapLegacyEvent(e, canonicalSeq) {
     artifactRefs: [], // raw capture was not preserved by the legacy instrument
     payload,
   };
-  canonical.payloadDigest = sha256Hex(JSON.stringify(canonical.payload));
+  canonical.payloadDigest = sha256Hex(Buffer.from(canonicalJson(canonical.payload)));
   return { event: canonical, unmapped };
 }
 

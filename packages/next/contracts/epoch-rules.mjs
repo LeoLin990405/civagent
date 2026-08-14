@@ -5,20 +5,32 @@
  * Used by packages/next/contracts/test/epoch.test.mjs and by the legacy
  * importer (packages/next/legacy-importer/map.mjs).
  */
-import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 
 export const EPOCHS = ["legacy-cc-v5", "native-next-v1"];
 export const CANONICAL_TYPES = [
+  // legacy import surface
   "match.admitted", "turn.observed", "operation.observed", "judge.observed",
   "skill.event", "mechanism.triggered", "match.terminal", "legacy.unmapped",
+  // native runtime surface
+  "turn.claimed", "model.start_intent", "model.raw_chunk", "model.response",
+  "model.error", "model.cancelled", "surface.revision", "operation.outcome",
+  "recovery.completed",
 ];
 export const LEGACY_EPOCH = "legacy-cc-v5";
 export const LEGACY_BASELINE = "1460441528069465dca7263dba3e9ac01b18c78a";
 export const LEGACY_INSTRUMENT = `${LEGACY_EPOCH}-${LEGACY_BASELINE.slice(0, 7)}`;
 export const EVENT_SCHEMA = "civ.event/1";
+
+/** Deterministic canonical JSON: sorted keys, no whitespace. */
+export function canonicalJson(value) {
+  if (value === null || typeof value !== "object") return JSON.stringify(value);
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(",")}]`;
+  const keys = Object.keys(value).sort();
+  return `{${keys.map((k) => `${JSON.stringify(k)}:${canonicalJson(value[k])}`).join(",")}}`;
+}
 
 export function sha256Hex(bytes) {
   return crypto.createHash("sha256").update(bytes).digest("hex");
@@ -42,7 +54,7 @@ export function validateCanonicalEvent(ev) {
     else for (const ref of ev.artifactRefs) if (!/^sha256:[0-9a-f]{64}$/.test(ref)) violations.push(`bad artifact ref ${ref}`);
   }
   if (ev.payloadDigest !== undefined && !/^[0-9a-f]{64}$/.test(ev.payloadDigest)) violations.push(`bad payloadDigest ${ev.payloadDigest}`);
-  const digest = ev.payload === undefined ? null : sha256Hex(JSON.stringify(ev.payload));
+  const digest = ev.payload === undefined ? null : sha256Hex(Buffer.from(canonicalJson(ev.payload)));
   if (digest !== null && ev.payloadDigest !== undefined && digest !== ev.payloadDigest) violations.push("payloadDigest does not match payload bytes");
   return violations;
 }
