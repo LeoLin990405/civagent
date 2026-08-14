@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>CivAgent Next — Research GUI</title>
+  <style>
+    :root { --bg:#0f1115; --panel:#171a21; --line:#2a2f3a; --text:#d7dce4; --dim:#8b93a3; --ok:#3fb950; --warn:#d29922; --bad:#f85149; }
+    * { box-sizing: border-box; }
+    body { margin:0; font:13px/1.45 -apple-system, "PingFang SC", sans-serif; background:var(--bg); color:var(--text); }
+    header { display:flex; gap:12px; align-items:center; padding:10px 16px; border-bottom:1px solid var(--line); }
+    header h1 { font-size:15px; margin:0; }
+    #state { padding:2px 8px; border-radius:4px; font-weight:600; }
+    #state.SNAPSHOT,#state.LIVE,#state.RECONNECTED { background:#12291a; color:var(--ok); }
+    #state.GAP,#state.REPAIR,#state.EXPIRED { background:#2b2113; color:var(--warn); }
+    #state.DENIED { background:#2b1313; color:var(--bad); }
+    #stats { color:var(--dim); margin-left:auto; }
+    main { display:grid; grid-template-columns: 280px 1fr; gap:12px; padding:12px 16px; }
+    .panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:10px; }
+    .panel h2 { font-size:12px; margin:0 0 8px; color:var(--dim); text-transform:uppercase; letter-spacing:.05em; }
+    input, button { background:#0d0f13; color:var(--text); border:1px solid var(--line); border-radius:5px; padding:5px 8px; font-size:12px; }
+    button { cursor:pointer; background:#1c2333; }
+    button:hover { background:#242d42; }
+    label { display:block; margin:8px 0 4px; color:var(--dim); font-size:11px; }
+    #describe { font-family:ui-monospace, Menlo, monospace; font-size:11px; color:var(--dim); white-space:pre-wrap; }
+    #timeline { height:520px; overflow:auto; font-family:ui-monospace, Menlo, monospace; font-size:11px; }
+    .row { display:grid; grid-template-columns: 90px 60px 190px 1fr 70px; gap:8px; padding:2px 6px; border-bottom:1px solid #1d2129; }
+    .row .off { color:var(--dim); } .row .type { color:#79b8ff; } .row .id { color:var(--dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .row .dg { color:#3d4450; }
+    #lanes { display:flex; gap:2px; margin-top:8px; }
+    .lane { flex:1; height:8px; border-radius:2px; background:#1d2129; }
+    .lane.filled { background:#2f81f7; }
+    #notice { display:none; padding:8px; border-radius:6px; margin-top:8px; font-weight:600; }
+    #notice.gap { display:block; background:#2b2113; color:var(--warn); }
+    #notice.expired { display:block; background:#2b1313; color:var(--bad); }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>CivAgent Next · Research GUI</h1>
+    <span id="state">DISCONNECTED</span>
+    <span id="stats"></span>
+  </header>
+  <main>
+    <div class="panel">
+      <h2>Connection</h2>
+      <label>WS URL</label><input id="wsurl" value="ws://127.0.0.1:8899" />
+      <label>Match id</label><input id="match" value="m1" />
+      <label>Scope token</label><input id="scope" value="tok-m1" />
+      <button id="connect">Connect + subscribe</button>
+      <h2 style="margin-top:14px">civ.describe</h2>
+      <div id="describe">—</div>
+    </div>
+    <div class="panel">
+      <h2>Event timeline (canonical contracts only)</h2>
+      <div id="timeline"></div>
+      <div id="lanes"></div>
+      <div id="notice"></div>
+    </div>
+  </main>
+  <script type="module">
+    import { CivClient } from "./civ-client.mjs";
+
+    const $ = (id) => document.getElementById(id);
+    const state = $("state"), stats = $("stats"), timeline = $("timeline"), notice = $("notice");
+
+    let client = null;
+    let ws = null;
+
+    function render(event, offset, generation) {
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `<span class="off">${generation}:${offset}</span><span class="off">s${event.seq ?? "–"}</span><span class="type">${event.type}</span><span class="id">${event.eventId ?? ""}</span><span class="dg">${(event.payloadDigest ?? "").slice(0, 12)}</span>`;
+      timeline.appendChild(row);
+      // bounded DOM: virtual tail window of 200 rows
+      while (timeline.children.length > 200) timeline.removeChild(timeline.firstChild);
+      timeline.scrollTop = timeline.scrollHeight;
+      // per-type lanes (declared/observed projection, never text-inferred)
+      const lanes = $("lanes");
+      lanes.innerHTML = "";
+      const types = [...new Set([...timeline.children].map((r) => r.children[2].textContent))].slice(-12);
+      types.forEach((t) => { const lane = document.createElement("div"); lane.className = "lane filled"; lane.title = t; lanes.appendChild(lane); });
+    }
+
+    function showState(s) {
+      state.textContent = s;
+      state.className = s;
+      if (s === "GAP" || s === "REPAIR") { notice.className = "gap"; notice.textContent = `Gap detected → repair in progress (${client?.stats.gapsDetected ?? 0} gaps)`; }
+      else if (s === "EXPIRED") { notice.className = "expired"; notice.textContent = "Cursor expired → full snapshot applied"; }
+      else notice.className = "";
+    }
+
+    $("connect").onclick = () => {
+      const wsurl = $("wsurl").value;
+      const matchId = $("match").value;
+      const scopeToken = $("scope").value;
+      if (ws) ws.close();
+      client = new CivClient({ matchId, scopeToken, tailLimit: 200, onEvent: render, onState: showState });
+      ws = new WebSocket(wsurl);
+      ws.onopen = async () => {
+        showState("SUBSCRIBING");
+        const describe = await rpc("civ.describe");
+        $("describe").textContent = JSON.stringify(describe.result ?? describe, null, 1);
+        const sub = await rpc("civ.subscribe", { matchId, scopeToken });
+        if (!sub.ok) { showState("DENIED"); $("describe").textContent = JSON.stringify(sub, null, 2); }
+      };
+      ws.onmessage = (m) => { const frame = JSON.parse(m.data); if (frame.rpcId) { pending.resolve?.(frame); } else client.applyFrame(frame); };
+      ws.onclose = () => { showState("DISCONNECTED"); };
+      ws.onerror = () => { showState("DENIED"); };
+    };
+
+    let pending = {};
+    function rpc(method, params = {}) {
+      const rpcId = "gui-" + crypto.randomUUID();
+      return new Promise((resolve) => { pending = { resolve }; ws.send(JSON.stringify({ rpcId, method, params })); });
+    }
+
+    const refresh = () => { if (client) stats.textContent = `applied ${client.stats.applied} · dup ${client.stats.deduplicated} · gaps ${client.stats.gapsDetected} · repairs ${client.stats.repairs} · tail ${client.stats.tailLength}`; };
+    setInterval(refresh, 500);
+  </script>
+</body>
+</html>

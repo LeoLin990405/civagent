@@ -73,7 +73,7 @@ export class RpcServer {
       return this._send(socket, { rpcId, ok: false, error: `unknown method ${method}` });
     }
     try {
-      const result = this._dispatch(method, params);
+      const result = dispatchRpc(this.feed, this.capabilities, method, params);
       if (method === "civ.subscribe" && result.ok) {
         // push the snapshot as event frames, then live frames on publish
         this._pushSubscription(socket, result, params);
@@ -81,30 +81,6 @@ export class RpcServer {
       this._send(socket, { rpcId, ok: true, result });
     } catch (e) {
       this._send(socket, { rpcId, ok: false, error: e.code ?? "ERROR", message: e.message });
-    }
-  }
-
-  _dispatch(method, params) {
-    switch (method) {
-      case "civ.describe":
-        return {
-          schema: "civ.describe/1",
-          protocols: this.capabilities,
-          feedGeneration: this.feed.generation,
-          methods: RPC_METHODS,
-        };
-      case "civ.subscribe": {
-        const { matchId, scopeToken, since } = params;
-        const sub = this.feed.subscribe({ matchId, scopeToken, since });
-        return { ok: true, ...sub };
-      }
-      case "civ.unsubscribe":
-        this.feed.subscriptions.delete(params.subscriptionId);
-        return { ok: true };
-      case "civ.repair":
-        return this.feed.repair({ subscriptionId: params.subscriptionId, fromOffset: params.fromOffset });
-      default:
-        throw new Error(`unhandled ${method}`);
     }
   }
 
@@ -136,6 +112,30 @@ export class RpcServer {
   }
 }
 
+/** Shared RPC dispatch used by both the socket and WebSocket transports. */
+export function dispatchRpc(feed, capabilities, method, params) {
+  switch (method) {
+    case "civ.describe":
+      return {
+        schema: "civ.describe/1",
+        protocols: capabilities,
+        feedGeneration: feed.generation,
+        methods: RPC_METHODS,
+      };
+    case "civ.subscribe": {
+      const { matchId, scopeToken, since } = params;
+      const sub = feed.subscribe({ matchId, scopeToken, since });
+      return { ok: true, ...sub };
+    }
+    case "civ.unsubscribe":
+      feed.subscriptions.delete(params.subscriptionId);
+      return { ok: true };
+    case "civ.repair":
+      return feed.repair({ subscriptionId: params.subscriptionId, fromOffset: params.fromOffset });
+    default:
+      throw new Error(`unhandled ${method}`);
+  }
+}
 /** JSON-framed RPC client over a Unix socket. */
 export class RpcClient {
   constructor(socketPath) {

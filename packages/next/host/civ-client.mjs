@@ -64,7 +64,8 @@ export class CivClient {
       this._setState("LIVE");
       return { action: "applied", repaired };
     }
-    // live event frame
+    // live event frame: adopt the generation from the first live frame
+    if (this.generation === null && frame.generation !== null) this.generation = frame.generation;
     if (frame.generation !== null && this.generation !== null && frame.generation !== this.generation) {
       // server restarted: generation change -> full re-snapshot
       this.gapsDetected++;
