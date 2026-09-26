@@ -1,0 +1,62 @@
+{
+  "id": "demo-t-001",
+  "task": "Establish secure and robust border defense policies for agricultural frontiers facing seasonal tribal raids.",
+  "createdAt": 1790000600000,
+  "demo": true,
+  "demoNote": "Sample fixture bundled for demo mode. Not produced by a model run.",
+  "civs": [
+    {
+      "regime": "china/ming",
+      "backend": "demo-fixture",
+      "matchId": "demo-m-ming",
+      "exitCode": 0,
+      "events": "matches/demo-m-ming/events.jsonl"
+    },
+    {
+      "regime": "china/tang",
+      "backend": "demo-fixture",
+      "matchId": "demo-m-tang",
+      "exitCode": 0,
+      "events": "matches/demo-m-tang/events.jsonl"
+    },
+    {
+      "regime": "global/athens",
+      "backend": "demo-fixture",
+      "matchId": "demo-m-athens",
+      "exitCode": 0,
+      "events": "matches/demo-m-athens/events.jsonl"
+    }
+  ],
+  "judge": {
+    "provider": "demo-fixture (no model)",
+    "resultPath": "result.md",
+    "scores": [
+      {
+        "regime": "china/tang",
+        "score": 7.9,
+        "reason": "【示例数据】样例评分，仅用于演示界面。"
+      },
+      {
+        "regime": "china/ming",
+        "score": 7.4,
+        "reason": "【示例数据】样例评分，仅用于演示界面。"
+      },
+      {
+        "regime": "global/athens",
+        "score": 6.6,
+        "reason": "【示例数据】样例评分，仅用于演示界面。"
+      }
+    ],
+    "topRegime": "china/tang",
+    "swap": true,
+    "passes": 2,
+    "rubric": {
+      "scale": "1-10",
+      "dimensions": [
+        "legality",
+        "feasibility",
+        "resilience"
+      ]
+    }
+  }
+}

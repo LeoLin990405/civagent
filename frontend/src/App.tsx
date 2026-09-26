@@ -11,6 +11,9 @@ import { SkillLibrary } from './components/SkillLibrary';
 import { RegimeEditor } from './components/RegimeEditor';
 import { PlayCircle, AlertCircle, RefreshCw } from 'lucide-react';
 import type { RegimeDetail } from './types/api';
+import { TAB_TITLES } from './components/layout/tabs';
+import { DemoBanner } from './demo/DemoBanner';
+import { isDemoMode } from './demo/demoMode';
 
 export const App: React.FC = () => {
   const [activeTab, setActiveTab] = useState('overview');
@@ -44,18 +47,9 @@ export const App: React.FC = () => {
       
       <main className="main-content">
         <header style={{ padding: '24px 40px', borderBottom: '1px solid var(--border-light)', background: 'var(--bg-glass)', backdropFilter: 'blur(16px)', position: 'sticky', top: 0, zIndex: 5 }}>
-          <h1 className="text-gradient" style={{ margin: 0, fontSize: '24px' }}>
-            {activeTab === 'overview' && 'Empire Overview'}
-            {activeTab === 'regimes' && 'Regime Browser'}
-            {activeTab === 'analytics' && 'Analytics Dashboard'}
-            {activeTab === 'memory' && 'Episodic Memory'}
-            {activeTab === 'veto' && 'Constitution Monitor'}
-            {activeTab === 'launch' && 'Tournament Launcher'}
-            {activeTab === 'editor' && 'Regime Editor'}
-            {activeTab === 'skills' && 'Skill Library'}
-            {activeTab === 'archive' && 'Match Archive'}
-            {activeTab === 'live' && 'Live Court'}
-            {activeTab === 'rankings' && 'Cross-Tournament Rankings'}
+          <h1 className="page-title">
+            {TAB_TITLES[activeTab]?.zh}
+            <span className="page-title-en">{TAB_TITLES[activeTab]?.en}</span>
           </h1>
         </header>
 
@@ -143,6 +137,7 @@ export const App: React.FC = () => {
           )}
         </div>
       </main>
+      {isDemoMode() && <DemoBanner />}
     </div>
   );
 };

@@ -1,0 +1,7 @@
+{"matchId": "demo-m-tang", "regime": "china/tang", "backend": "demo-fixture", "ts": 1790000001000, "seq": 0, "type": "match_start", "actor": "system", "text": "[DEMO] sample match start"}
+{"matchId": "demo-m-tang", "regime": "china/tang", "backend": "demo-fixture", "ts": 1790000010000, "seq": 1, "type": "turn", "actor": "tang#zhongshu", "text": "【示例数据】中书省起草：设节度使统辖沿边诸军，兼领屯田与营田，秋防由节度使临机调度。"}
+{"matchId": "demo-m-tang", "regime": "china/tang", "backend": "demo-fixture", "ts": 1790000019000, "seq": 2, "type": "turn", "actor": "tang#menxia", "text": "【示例数据】门下省封驳：节度使兼领兵、财、民三权，恐成尾大不掉之势。驳回，请分设营田使。"}
+{"matchId": "demo-m-tang", "regime": "china/tang", "backend": "demo-fixture", "ts": 1790000028000, "seq": 3, "type": "turn", "actor": "tang#zhongshu", "text": "【示例数据】中书省改拟：营田使另设，隶户部；节度使只掌兵，三年一迁转。"}
+{"matchId": "demo-m-tang", "regime": "china/tang", "backend": "demo-fixture", "ts": 1790000037000, "seq": 4, "type": "turn", "actor": "tang#shangshu", "text": "【示例数据】尚书省执行：兵部定戍期、户部拨营田种粮、工部修烽堠，分三批下达各州。"}
+{"matchId": "demo-m-tang", "regime": "china/tang", "backend": "demo-fixture", "ts": 1790000046000, "seq": 5, "type": "skill", "status": "staged", "actor": "system", "reason": "[DEMO] sample: skill proposal staged for audit, not saved"}
+{"matchId": "demo-m-tang", "regime": "china/tang", "backend": "demo-fixture", "ts": 1790000055000, "seq": 6, "type": "match_end", "status": "done", "exitCode": 0, "actor": "system", "mechanisms": {"vetoes": 0, "impeachments": 0, "edicts": 0}}

@@ -1,0 +1,11 @@
+{
+  "matchId": "demo-m-athens",
+  "regime": "global/athens",
+  "backend": "demo-fixture",
+  "task": "Establish secure and robust border defense policies for agricultural frontiers facing seasonal tribal raids.",
+  "tsStart": 1790000000000,
+  "tsEnd": 1790000120000,
+  "exitCode": 0,
+  "demo": true,
+  "demoNote": "Sample fixture bundled for demo mode. Not produced by a model run."
+}

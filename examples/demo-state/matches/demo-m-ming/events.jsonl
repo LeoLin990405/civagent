@@ -1,0 +1,8 @@
+{"matchId": "demo-m-ming", "regime": "china/ming", "backend": "demo-fixture", "ts": 1790000000000, "seq": 0, "type": "match_start", "actor": "system", "text": "[DEMO] sample match start"}
+{"matchId": "demo-m-ming", "regime": "china/ming", "backend": "demo-fixture", "ts": 1790000009000, "seq": 1, "type": "turn", "actor": "ming#shoufu", "text": "【示例数据】内阁票拟：沿边九镇分段守御，先修宣府、大同两段墩台；屯田以军户自给为主，户部仅补缺额。"}
+{"matchId": "demo-m-ming", "regime": "china/ming", "backend": "demo-fixture", "ts": 1790000018000, "seq": 2, "type": "turn", "actor": "ming#silijian", "text": "【示例数据】司礼监批红：准票拟前两条；第三条“开马市”留中，待兵部复核边情后再议。"}
+{"matchId": "demo-m-ming", "regime": "china/ming", "backend": "demo-fixture", "ts": 1790000027000, "seq": 3, "type": "veto_triggered", "actor": "system", "reason": "【示例数据】封驳：“留中不发”没有时限，容易变成拖延；要求十日内复奏。"}
+{"matchId": "demo-m-ming", "regime": "china/ming", "backend": "demo-fixture", "ts": 1790000036000, "seq": 4, "type": "turn", "actor": "ming#bingbu", "text": "【示例数据】兵部复议：秋防期(八至十月)增调游兵三营轮戍；烽燧五里一台，夜举火、昼举烟，统一号令。"}
+{"matchId": "demo-m-ming", "regime": "china/ming", "backend": "demo-fixture", "ts": 1790000045000, "seq": 5, "type": "turn", "actor": "ming#hubu", "text": "【示例数据】户部核算：屯田可覆盖约六成军粮，余额以开中盐引招商输粟补足，不另加田赋。"}
+{"matchId": "demo-m-ming", "regime": "china/ming", "backend": "demo-fixture", "ts": 1790000054000, "seq": 6, "type": "skill", "status": "staged", "actor": "system", "reason": "[DEMO] sample: skill proposal staged for audit, not saved"}
+{"matchId": "demo-m-ming", "regime": "china/ming", "backend": "demo-fixture", "ts": 1790000063000, "seq": 7, "type": "match_end", "status": "done", "exitCode": 0, "actor": "system", "mechanisms": {"vetoes": 1, "impeachments": 0, "edicts": 0}}

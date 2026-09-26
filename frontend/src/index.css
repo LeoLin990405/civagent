@@ -44,7 +44,7 @@
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, 'PingFang SC', 'Noto Sans SC', 'Noto Sans CJK SC', 'Microsoft YaHei', sans-serif;
   background-color: var(--bg-darker);
   color: var(--text-main);
   line-height: 1.5;
@@ -297,3 +297,45 @@ code, pre {
 .transition-colors { transition-property: color, background-color, border-color, text-decoration-color, fill, stroke; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 150ms; }
 .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
 @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .5; } }
+
+/* Page title: Chinese primary, English secondary. Solid text (no gradient
+   clip) so CJK glyphs stay crisp. */
+.page-title {
+  margin: 0;
+  font-size: 24px;
+  color: var(--text-main);
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  font-family: 'Songti SC', 'Noto Serif SC', 'Noto Serif CJK SC', 'Source Han Serif SC', serif;
+}
+.page-title-en {
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+.nav-label { display: flex; flex-direction: column; line-height: 1.2; }
+.nav-label-zh { font-size: 14px; }
+.nav-label-en { font-size: 10px; letter-spacing: 0.04em; color: var(--text-dark); }
+
+/* Demo mode notice — fixed, always visible, not dismissable. */
+.demo-banner {
+  position: fixed;
+  left: 260px;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  display: flex;
+  gap: 14px;
+  align-items: baseline;
+  padding: 10px 40px;
+  background: #1c1608;
+  border-top: 1px solid rgba(245, 158, 11, 0.45);
+  color: #f3dfb2;
+  font-size: 12px;
+}
+.demo-banner strong { color: var(--accent-gold); letter-spacing: 0.06em; white-space: nowrap; }
+html[data-demo='1'] .main-content { padding-bottom: 48px; }

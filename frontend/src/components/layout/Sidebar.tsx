@@ -1,4 +1,6 @@
 import React from 'react';
+import { TAB_TITLES } from './tabs';
+import { isDemoMode } from '../../demo/demoMode';
 import { Layers, Activity, History, ShieldAlert, Cpu, Globe, Trophy, Archive, Rocket, BookOpen, Edit3 } from 'lucide-react';
 
 interface SidebarProps {
@@ -8,17 +10,17 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => {
   const tabs = [
-    { id: 'overview', label: 'Empire Overview', icon: <Layers size={20} /> },
-    { id: 'launch', label: 'Launch', icon: <Rocket size={20} /> },
-    { id: 'regimes', label: 'Regime Browser', icon: <Globe size={20} /> },
-    { id: 'analytics', label: 'Analytics Dashboard', icon: <Activity size={20} /> },
-    { id: 'memory', label: 'Episodic Memory', icon: <History size={20} /> },
-    { id: 'editor', label: 'Editor', icon: <Edit3 size={20} /> },
-    { id: 'skills', label: 'Skills', icon: <BookOpen size={20} /> },
-    { id: 'veto', label: 'Constitution', icon: <ShieldAlert size={20} /> },
-    { id: 'archive', label: 'Match Archive', icon: <Archive size={20} /> },
-    { id: 'live', label: 'Live Court', icon: <Cpu size={20} /> },
-    { id: 'rankings', label: 'Rankings', icon: <Trophy size={20} /> },
+    { id: 'overview', icon: <Layers size={20} /> },
+    { id: 'launch', icon: <Rocket size={20} /> },
+    { id: 'regimes', icon: <Globe size={20} /> },
+    { id: 'analytics', icon: <Activity size={20} /> },
+    { id: 'memory', icon: <History size={20} /> },
+    { id: 'editor', icon: <Edit3 size={20} /> },
+    { id: 'skills', icon: <BookOpen size={20} /> },
+    { id: 'veto', icon: <ShieldAlert size={20} /> },
+    { id: 'archive', icon: <Archive size={20} /> },
+    { id: 'live', icon: <Cpu size={20} /> },
+    { id: 'rankings', icon: <Trophy size={20} /> },
   ];
 
   return (
@@ -64,19 +66,25 @@ export const Sidebar: React.FC<SidebarProps> = ({ activeTab, setActiveTab }) => 
             {React.cloneElement(tab.icon as React.ReactElement<{ color?: string }>, {
               color: activeTab === tab.id ? 'var(--accent-blue)' : 'var(--text-muted)'
             })}
-            {tab.label}
+            <span className="nav-label">
+              <span className="nav-label-zh">{TAB_TITLES[tab.id].zh}</span>
+              <span className="nav-label-en">{TAB_TITLES[tab.id].en}</span>
+            </span>
           </button>
         ))}
       </nav>
 
       <div style={{ marginTop: 'auto', padding: '16px', borderRadius: '12px', background: 'rgba(255,255,255,0.03)', fontSize: '12px', color: 'var(--text-muted)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-          <span>Status</span>
-          <span style={{ color: 'var(--accent-emerald)' }}>● ONLINE</span>
+          <span>Data</span>
+          {/* Demo mode must never claim a live server. */}
+          <span style={{ color: isDemoMode() ? 'var(--accent-gold)' : 'var(--accent-emerald)' }}>
+            {isDemoMode() ? '● DEMO 示例' : '● LIVE'}
+          </span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <span>Server</span>
-          <span>localhost:3001</span>
+          <span>{isDemoMode() ? '未连接 (fixtures)' : 'localhost:3001'}</span>
         </div>
       </div>
     </div>

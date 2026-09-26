@@ -1,0 +1,11 @@
+{
+  "matchId": "demo-m-tang",
+  "regime": "china/tang",
+  "backend": "demo-fixture",
+  "task": "Establish secure and robust border defense policies for agricultural frontiers facing seasonal tribal raids.",
+  "tsStart": 1790000001000,
+  "tsEnd": 1790000121000,
+  "exitCode": 0,
+  "demo": true,
+  "demoNote": "Sample fixture bundled for demo mode. Not produced by a model run."
+}
