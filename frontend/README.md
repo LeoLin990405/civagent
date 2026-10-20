@@ -71,3 +71,25 @@ export default defineConfig([
   },
 ])
 ```
+
+## Demo mode (no backend)
+
+Open `http://localhost:5173/?demo=1` (or build with `VITE_DEMO=1 npm run build`) to run the
+dashboard with **no server**. `/api/*` GETs are answered from `src/demo/fixtures.json` and Live
+Court replays a finished sample transcript over a fake EventSource.
+
+- Regime catalog / identity / topology / skill stats / scenarios are real `regimes/` data.
+- Tournament, matches, Live Court transcript and rankings are **hand-written samples** from
+  `examples/demo-state/` — every record is `demo: true`, backend `demo-fixture`, text prefixed
+  `【示例数据】`/`[DEMO]`.
+- A fixed "DEMO · 示例数据" banner is always shown and the sidebar says "未连接 (fixtures)"
+  instead of claiming a live server. Writes are refused (403); "launch" does not run anything.
+
+Regenerate fixtures after changing regimes or demo-state (from repo root, after `npm ci`):
+
+```sh
+node frontend/scripts/build-demo-fixtures.mjs
+```
+
+The script runs the real server routes in-process against a throwaway `HOME`, so your own
+`~/.civagent` is never read.
